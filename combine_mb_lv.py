@@ -189,7 +189,7 @@ smooth_comb_res = fill_outside_grid(comb_res, 12, 14)
 
 smooth_comb_res = comb_res.copy()
 for zz in range(comb_mod.grid_z.shape[0]):
-    smooth_comb_res[:, :, zz] = 10**smooth_2d(np.log10(smooth_comb_res[:, :, zz]), 9)/3.
+    smooth_comb_res[:, :, zz] = 10**smooth_2d(np.log10(smooth_comb_res[:, :, zz]), 9)/2.
 
 smooth_comb_res = fill_outside_grid(smooth_comb_res, 5, 12)
 
