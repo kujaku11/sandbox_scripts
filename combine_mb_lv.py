@@ -176,9 +176,11 @@ lv_res = interp_grid(lv_mod,
     
 mb_nan = np.where(np.nan_to_num(mb_res) == 0) 
 mb_res[mb_nan] = mb_res[np.where(np.nan_to_num(mb_res) != 0)].mean()                                    
+mb_res[mb_res > 5000.00] = 5000                                    
 # combine the resistivity models into one
 comb_res = lv_res.copy()
-comb_res[80:] = (mb_res[80:]*lv_res[80:])**(1/2.)
+#comb_res[80:] = (mb_res[80:]*lv_res[80:])**(1/2.)
+comb_res[75:] = mb_res[75:]
 
 # make sure there are no nan
 comb_res[np.where(np.nan_to_num(comb_res) == 0)] = 100.00
@@ -187,13 +189,13 @@ smooth_comb_res = fill_outside_grid(comb_res, 12, 14)
 
 smooth_comb_res = comb_res.copy()
 for zz in range(comb_mod.grid_z.shape[0]):
-    smooth_comb_res[:, :, zz] = 10**smooth_2d(np.log10(smooth_comb_res[:, :, zz]), 9)/1.
+    smooth_comb_res[:, :, zz] = 10**smooth_2d(np.log10(smooth_comb_res[:, :, zz]), 9)/3.
 
 smooth_comb_res = fill_outside_grid(smooth_comb_res, 5, 12)
 
 comb_mod.res_model = smooth_comb_res
 comb_mod.write_model_file(save_path=r"c:\Users\jpeacock\Documents\LV\Inversions",
-                          model_fn_basename=r"lv_mb_gm_sm.rho")
+                          model_fn_basename=r"lv_mb_sm.rho")
 
 
 #--> plot to see how we did
