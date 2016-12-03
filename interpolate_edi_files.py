@@ -12,7 +12,7 @@ import numpy as np
 
 # In[2]:
 
-edi_path = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_JRP\Interpolated"
+edi_path = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_JRP\Rotated_m18_deg"
 edi_list = [os.path.join(edi_path, edi_fn) for edi_fn in os.listdir(edi_path) if edi_fn.endswith('.edi')]
 
 
