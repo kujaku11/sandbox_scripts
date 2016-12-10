@@ -10,13 +10,13 @@ import os
 import mtpy.utils.latlongutmconversion as utm2ll
 import numpy as np
 
-mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_final_err05_cov04_NLCG_040.rho"
-dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_modem_data_ef05.dat"
+#mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_final_err05_cov04_NLCG_040.rho"
+#dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_modem_data_ef05.dat"
 
-#mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\modem_inv\mshs_err03_cov03_NLCG_070.rho"
-#dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\modem_inv\mshs_modem_data_err10_old.dat"
+mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err05_cov035_NLCG_137.rho"
+dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err05_cov035_NLCG_137.dat"
 
-save_root = 'mshn'
+save_root = 'mb'
 
 #--> read model file
 mod_obj = modem.Model()

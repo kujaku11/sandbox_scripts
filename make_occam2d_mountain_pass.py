@@ -14,7 +14,7 @@ ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
 ocd.model_mode = 'log_tm'
 ocd.phase_tm_err = 5
 ocd.res_tm_err = 30
-ocd.save_path = r"c:\MinGW32-xy\Peacock\occam\MountainPass\inv02_tm_rot"
+ocd.save_path = r"c:\MinGW32-xy\Peacock\occam\MountainPass\inv03_tm_rot"
 ocd._rotate_to_strike = True
 ocd.write_data_file()
 

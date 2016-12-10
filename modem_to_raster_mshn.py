@@ -15,10 +15,10 @@ import os
 #model_fn = r"c:\Users\jpeacock\Documents\LV\Maps\lv_geo_ws_err03_cov5_NLCG_054.rho"
 #model_fn = r"c:\Users\jpeacock\Documents\LV\lv_geo_ws_err03_cov5_NLCG_118.rho"
 #model_fn = r"c:\Users\jpeacock\Documents\LV\Maps\lv_big_err03_NLCG_122.r1ho"
-model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_err05_cov03_NLCG_063.rho"
+model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_final_err05_cov04_NLCG_040.rho"
 
 
-save_path = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_model_slices_063"
+save_path = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_mt_model_slices"
 #save_path = r"/mnt/hgfs/jpeacock/Documents/LV/Maps/geo_model_slices_02"
 #model_center = (-118.833, 37.815) # lv center
 model_center = (-122.262046, 46.346436) # lv16 lower left
@@ -37,7 +37,7 @@ modem_raster = a2r.ModEM_to_Raster()
 modem_raster.model_fn = model_fn
 ll_cc = modem_raster.get_model_lower_left_coord(model_center=model_center,
                                                 pad_east=12, pad_north=12)
-modem_raster.lower_left_corner = (ll_cc[0]-.003, ll_cc[1]+.002)
+modem_raster.lower_left_corner = (ll_cc[0]-.006, ll_cc[1]-.001)
 modem_raster.save_path = save_path
 modem_raster.projection = 'WGS84'
 modem_raster.rotation_angle = 0

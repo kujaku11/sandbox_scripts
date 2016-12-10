@@ -10,7 +10,8 @@ import numpy as np
 import mtpy.utils.latlongutmconversion as utm2ll
 
 #---------------------------------------------------
-sfn = r"c:\Users\jpeacock\Documents\LVEarthquakeLocations_lldm.csv"
+#sfn = r"c:\Users\jpeacock\Documents\LVEarthquakeLocations_lldm.csv"
+sfn = r"c:\Users\jpeacock\Documents\MonoBasin\EQ_DD_locations.csv"
 
 #save_sfn = sfn[:-4]+'_lldm.csv'
 #sfid = file(save_sfn, 'w')
@@ -18,22 +19,25 @@ sfn = r"c:\Users\jpeacock\Documents\LVEarthquakeLocations_lldm.csv"
 #sfid.close()
 
 
-east_0 = 336800.
-north_0 = 4167510.0
+#east_0 = 336800.
+#north_0 = 4167510.0
+east_0 = 337350.-1200
+north_0 = 4178250.0
 
 s_array = np.loadtxt(sfn, delimiter=',', 
                      dtype = [('lat', np.float),
                               ('lon', np.float),
                               ('depth', np.float),
                               ('mag', np.float)],
-                     skiprows=1)
+                     skiprows=78,
+                     usecols=(1, 2, 3, 8))
 
 #zone0, east_0, north_0 = utm2ll.LLtoUTM(23, s_array['lat'].mean(), 
 #                                        s_array['lon'].mean()) 
 
 
-s_array = s_array[np.where((s_array['lat']<=37.8) & (s_array['lat']>=37.50))]
-s_array = s_array[np.where((s_array['lon']>=-119.1) & (s_array['lon']<=-118.5))]
+s_array = s_array[np.where((s_array['lat']<=38.0) & (s_array['lat']>=37.50))]
+s_array = s_array[np.where((s_array['lon']>=-119.15) & (s_array['lon']<=-118.6))]
                                         
 #print east_0, north_0
 east = np.zeros(s_array.shape[0])
@@ -54,5 +58,5 @@ z = s_array['depth'].copy()
 mag = s_array['mag'].copy()
 
     
-pointsToVTK(r"/mnt/hgfs/jpeacock/Documents/LV/EQ_DD_locations_lvc_big", x, y, z, 
+pointsToVTK(r"c:\Users\jpeacock\Documents\LV\EQ_DD_locations_lvc_big", x, y, z, 
             data={'mag':mag, 'depth':z})
