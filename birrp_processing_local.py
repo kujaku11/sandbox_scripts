@@ -40,6 +40,9 @@ b_param_dict = {'c2threshb':.45,
                 'ainlin':.0001,
                 'nar':11}
 
+kwargs_dict = {'calibration_list':['3154', '3164', '3264'],
+               '_max_nread':16000000}
+
 
 zp_obj = zp.Z3D_to_edi(station_dir=local_station_path,
                        rr_station_dir=rr_local_station_path)
@@ -54,7 +57,8 @@ plot_obj, comb_edi_fn = zp_obj.process_data(df_list=[4096, 256, 16],
                                             sr_dict={4096:(1000., 25),
                                                      256:(24.999, .126), 
                                                      16:(.125, .0001)},
-                                            birrp_param_dict=b_param_dict)
+                                            birrp_param_dict=b_param_dict,
+                                            **kwargs_dict)
                                             
 cp_edi_fn = os.path.join(copy_edi_path, station+'.edi')
 shutil.copy(comb_edi_fn, cp_edi_fn)

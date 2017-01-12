@@ -13,20 +13,24 @@ import mtpy.utils.calculator as MTcc
 import mtpy.imaging.mtplot as mtplot
 import os
 
-edi_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\edi_files_fixed_lon\104_rr.edi"
-new_edi_fn = '{0}_dr.edi'.format(edi_fn[0:-4])
+edi_fn = r"c:\Users\jrpeacock\Documents\Test_Data\HalfSpaceSQC\par16ew.edi"
+edi_fn_d = '{0}_d.edi'.format(edi_fn[0:-4])
+edi_fn_dr = '{0}_dr.edi'.format(edi_fn[0:-4])
 
-if os.path.isfile(new_edi_fn) == True:
-    os.remove(new_edi_fn)
+if os.path.isfile(edi_fn_d) == True:
+    os.remove(edi_fn_d)
+    
+if os.path.isfile(edi_fn_dr) == True:
+    os.remove(edi_fn_dr)
     
 mt1 = mt.MT(edi_fn)
 nf = 16
 
-#D = np.array([[1.05, .6],
-#              [.2, .90]])
-#              
-#mt1.Z.z = np.dot(mt1.Z.z, D)
-#mt1.write_edi_file(r"c:\Users\jpeacock\Documents\ShanesBugs\HalfSpaceSQC\par10ew_distortion.edi")
+D = np.array([[1.00, .02],
+              [.02, .90]])
+              
+mt1.Z.z = np.dot(mt1.Z.z, D)
+mt1.write_edi_file(edi_fn_d)
 
 
 #def find_distortion(z_object, g = 'det', lo_dims = None):
@@ -40,7 +44,7 @@ nf = 16
 
 z_obj = copy.deepcopy(mt1.Z)
 z_obj.z = z_obj.z[0:nf]
-z_obj.zerr = z_obj.zerr[0:nf]
+z_obj.z_err = z_obj.z_err[0:nf]
 z_obj.freq = z_obj.freq[0:nf]
 
 z_obj.z[10, :, :] = 0.0+0.0j
@@ -80,13 +84,13 @@ for idx, dim in enumerate(dim_arr):
                                     (1./gi*np.dot(z_obj.z.imag[idx], rot_mat))]),
                             axis=0)  
 
-        if z_obj.zerr is not None:
+        if z_obj.z_err is not None:
             #find errors of entries for calculating weights
 
-            gr_err = 1./gr*np.abs(z_obj.zerr[idx])
+            gr_err = 1./gr*np.abs(z_obj.z_err[idx])
             gr_err[np.where(gr_err == 0.0)] = 1.0 
             
-            gi_err = 1./gi*np.abs(z_obj.zerr[idx])
+            gi_err = 1./gi*np.abs(z_obj.z_err[idx])
             gi_err[np.where(gi_err == 0.0)] = 1.0 
             
             dis_err[idx] = np.mean(np.array([gi_err, gr_err]), 
@@ -98,8 +102,8 @@ for idx, dim in enumerate(dim_arr):
         if np.isnan(strike_ang):
             strike_ang = 0.0
         
-        if z_obj.zerr is not None:
-            err_arr = z_obj.zerr[idx]
+        if z_obj.z_err is not None:
+            err_arr = z_obj.z_err[idx]
             err_arr[np.where(err_arr == 0.0)] = 1.0
         else:
             err_arr = None
@@ -203,22 +207,22 @@ dis_avg, weights_sum = np.average(dis[nonzero_idx],
 
 dis_avg_err = np.sqrt(1./weights_sum)
                                       
-d, new_z, new_z_err = mt1.Z.no_distortion(dis_avg, 
-                                          distortion_err_tensor=dis_avg_err)
+d, new_z, new_z_err = mt1.Z.remove_distortion(dis_avg, 
+                                              distortion_err_tensor=dis_avg_err)
 
 new_z_err = np.nan_to_num(new_z_err)
 new_z_err[np.where(new_z_err == 0.0)] = 1.0
 
 mt1.Z.z = new_z
-mt1.Z.zerr = new_z_err
+mt1.Z.z_err = new_z_err
 
 #mt1.write_edi_file(r"c:\Users\jpeacock\Documents\ShanesBugs\HalfSpaceSQC\par10ew_dr.edi")
-mt1.write_edi_file(new_edi_fn)
+mt1.write_edi_file(edi_fn_dr)
 
 #print 'Initial D = {0}'.format(D)
 print 'Found   D = {0}'.format(d)
 
-pm = mtplot.plot_multiple_mt_responses(fn_list=[edi_fn, new_edi_fn], 
+pm = mtplot.plot_multiple_mt_responses(fn_list=[edi_fn, edi_fn_dr], 
                                         plot_style='all', 
                                         plot_num=2,
                                         fig_size=[8, 6])
