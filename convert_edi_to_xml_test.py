@@ -167,6 +167,19 @@ class XML_Config(object):
                                                                      'LastMod':None,
                                                                      'Author':None,
                                                                      '_name':'ProcessingSoftware'}),
+                                        'SignConvention':r'exp(+i\omega t)',
+                                        'RemoteRef(type=Robust Remote Processing)':None,
+                                        'RemoteInfo':Dummy(**{'_name':'RemoteInfo',
+                                                              'Project':None,
+                                                              'Survey':None,
+                                                              'ID':None,
+                                                              'Name':None,
+                                                              'YearCollected':None,
+                                                              'Location':Dummy(**{'_name':'Location(datum=WGS84)',
+                                                                                  'Latitude':None,
+                                                                                  'Longitude':None,
+                                                                                  'Elevation(units=meters)':None}),
+                                                               }),
                                         '_name':'ProcessingInfo'})
                                         
         self.Datum = None
@@ -242,8 +255,74 @@ class XML_Config(object):
 
                 else:
                     setattr(self, key, value)
+                    
+    def write_cfg_file(self, cfg_fn=None):
+        """
+        write out configuration file        
+        """
+        if cfg_fn is not None:
+            self.cfg_fn = cfg_fn
+            
+        line_list = []
+        
+        for attr_00 in sorted(self.__dict__.keys()):
+            attr_00_value = getattr(self, attr_00)
+            
+            if attr_00 == 'Data':
+                continue
+            
+            if type(attr_00_value) in [int, float, str]:
+                line_list.append(self._write_cfg_line(attr_00, 
+                                                      getattr(self, attr_00)))
+            elif isinstance(attr_00_value, Dummy):
+                for attr_01 in sorted(attr_00_value.__dict__.keys()):
+                    attr_01_value = getattr(attr_00_value, attr_01)
+                    if type(attr_01_value) in [float, int, str] or attr_01_value is None:
+                        line_list.append(self._write_cfg_line('{0}.{1}'.format(attr_00,
+                                                                               attr_01),
+                                                              attr_01_value))
+                    elif isinstance(attr_01_value, Dummy):
+                        for attr_02 in sorted(attr_01_value.__dict__.keys()):
+                            attr_02_value = getattr(attr_01_value, attr_02)
+                            if type(attr_02_value) in [float, int, str] or attr_02_value is None:
+                                line_list.append(self._write_cfg_line('{0}.{1}.{2}'.format(attr_00,
+                                                                                           attr_01,
+                                                                                           attr_02),
+                                                                      attr_02_value))
+                            elif isinstance(attr_02_value, Dummy):
+                                for attr_03 in sorted(attr_02_value.__dict__.keys()):
+                                    attr_03_value = getattr(attr_02_value, attr_03)
+                                    if type(attr_03_value) in [float, int, str] or attr_03_value is None:
+                                        line_list.append(self._write_cfg_line('{0}.{1}.{2}.{3}'.format(attr_00,
+                                                                                                       attr_01,   
+                                                                                                       attr_02,
+                                                                                                       attr_03),
+                                                                              attr_03_value))
+                                    elif isinstance(attr_03_value, Dummy):
+                                        for attr_04 in sorted(attr_03_value.__dict__.keys()):
+                                            print attr_04
+                                            attr_04_value = getattr(attr_03_value, attr_03)
+                                            if type(attr_03_value) in [float, int, str] or attr_04_value is None:
+                                                line_list.append(self._write_cfg_line('{0}.{1}.{2}.{3}.{4}'.format(attr_00,
+                                                                                                                   attr_01,   
+                                                                                                                   attr_02,
+                                                                                                                   attr_03,
+                                                                                                                   attr_04),
+                                                                                      attr_04_value))
+                line_list.append(' ')
+        with open(self.cfg_fn, 'w') as fid:
+            fid.write('\n'.join(line_list))
+            
+        print '-'*50
+        print '    Wrote xml configuration file to {0}'.format(self.cfg_fn)
+        print '-'*50
 
+    def _write_cfg_line(self, key, value):
+        return '{0} = {1}'.format(key, value)
 
+#==============================================================================
+#  EDI to XML
+#==============================================================================
 class EDI_to_XML(object):
     """
     convert an EDI file to XML format
@@ -280,7 +359,8 @@ class EDI_to_XML(object):
                             'DataTypes',
                             'InputChannels',
                             'OutputChannels',
-                            'Data']
+                            'Data',
+                            'PeriodRange']
         
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
@@ -362,13 +442,25 @@ class EDI_to_XML(object):
                                               'Declination(epoch=1995)':self.cfg_obj.Declination,
                                               '_name':'Location(datum={0})'.format(self.cfg_obj.Datum)})
         
+       
+        # processing information
+        self.cfg_obj.ProcessingInfo.RemoteInfo.Project = self.cfg_obj.Project       
+        self.cfg_obj.ProcessingInfo.RemoteInfo.Survey = self.cfg_obj.Survey
+        self.cfg_obj.ProcessingInfo.RemoteInfo.YearCollected = self.cfg_obj.Site.DateCollected
         
+       
         # Field Notes
         self.cfg_obj.FieldNotes = Dummy()
         self.cfg_obj.FieldNotes._name = 'FieldNotes(run=1)'
         self.cfg_obj.FieldNotes.Instrument = self.cfg_obj.Instrument
         self.cfg_obj.FieldNotes.Electrode = self.cfg_obj.Electrode
         self.cfg_obj.FieldNotes.Magnetometer = self.cfg_obj.Magnetometer
+        self.cfg_obj.FieldNotes.Magnetometer.HX = str(self.mt_obj.edi_object.Define_measurement.meas_hx.acqchan)
+        self.cfg_obj.FieldNotes.Magnetometer.HY = str(self.mt_obj.edi_object.Define_measurement.meas_hy.acqchan)
+        try:        
+            self.cfg_obj.FieldNotes.Magnetometer.HZ = str(self.mt_obj.edi_object.Define_measurement.meas_hz.acqchan)
+        except AttributeError:
+            pass
         #TODO: need to fill in more information on dipoles and magnetometers        
         
         # Input Channels
@@ -410,7 +502,7 @@ class EDI_to_XML(object):
         self.cfg_obj.OutputChannels.electric_ex = Dummy()
         self.cfg_obj.OutputChannels.electric_ex._name = 'Electric'+ex
             
-        ey = '(name=ex)(z=0)(y={0:.1f})(x={1:.1f})(y2={2:.1f})(x2={3:.1f})'.format(
+        ey = '(name=ey)(z=0)(y={0:.1f})(x={1:.1f})(y2={2:.1f})(x2={3:.1f})'.format(
                   self.mt_obj.edi_object.Define_measurement.meas_ey.y,
                   self.mt_obj.edi_object.Define_measurement.meas_ey.x,
                   self.mt_obj.edi_object.Define_measurement.meas_ey.y2,
@@ -418,26 +510,90 @@ class EDI_to_XML(object):
         self.cfg_obj.OutputChannels.electric_ey = Dummy()
         self.cfg_obj.OutputChannels.electric_ey._name = 'Electric'+ey
             
+            
+        self.cfg_obj.PeriodRange = Dummy()
+        self.cfg_obj.PeriodRange._name = 'PeriodRange(min={0:.9f})(max={1:.9f})'.format(
+                                         (1./self.mt_obj.Z.freq.max()),
+                                         (1./self.mt_obj.Z.freq.min()))
         self.format_data()
         
     def format_data(self):
-        nf = self.mt_obj.Z.freq.size
-        z_header = 'Z(units=[mV/km]/[nT])(type=complex)(size=2 2)'
+        """
+        format the Z and tipper data apporpriately
+        """
+        # --> useful variables
+        comp_dict_z = {(0, 0):('Zxx', 'Hx', 'Ex'), 
+                       (0, 1):('Zxy', 'Hy', 'Ex'), 
+                       (1, 0):('Zyx', 'Hx', 'Ey'),
+                       (1, 1):('Zyy', 'Hy', 'Ey')}
+                            
+        comp_dict_t = {(0, 0):('Tx', 'Hx', 'Hz'),
+                       (0, 1):('Ty', 'Hy', 'Hz')}
+                       
+        header_dict = {}
+        header_dict['z'] = 'Z(units=[mV/km]/[nT])(type=complex)(size=2 2)'
+        header_dict['z.var'] = 'Z.VAR(type=real)(size=2 2)'
+        header_dict['t'] = 'T(units=[])(type=complex)(size=1 2)'
+        header_dict['t.var'] = 'T.VAR(type=real)(size=1 2)'
         
-        self.cfg_obj.Data = Dummy(**{'_name':'Data(count={0})'.format(nf)})        
-        for ii in range(nf):
-            p_name = 'Period_{0:02}'.format(ii)
+        attr_dict = {}
+        attr_dict['z'] = 'z'
+        attr_dict['z.var'] = 'z_err'
+        attr_dict['t'] = 'tipper'
+        attr_dict['t.var'] = 'tipper_err'
+
+        nf = self.mt_obj.Z.freq.size        
+
+        # make the data element
+        self.cfg_obj.Data = Dummy(**{'_name':'Data(count={0})'.format(nf)})  
+        
+        # loop through each period and add appropriate information
+        for f_index in range(nf):
+            # set attribute period name with the index value
+            # we are setting _name to have the necessary information so
+            # we can name the attribute whatever we want.
             setattr(self.cfg_obj.Data, 
-                    p_name, 
-                    Dummy(**{'_name':'Period(units=sec)(value={0:.6g})'.format(self.mt_obj.Z.freq[ii])}))
+                    'Period_{0:02}'.format(f_index), 
+                    Dummy(**{'_name':'Period(units=sec)(value={0:.6g})'.format(1./self.mt_obj.Z.freq[f_index])}))
             
-#            for kk in range(2):
-#                for jj in range(2):
-                    
-            setattr(getattr(self.cfg_obj.Data, p_name), 
-                    z_header,
-                    'ballz')
-            
+            # Get information from data
+            for estimate in ['z', 'z.var', 't', 't.var']:
+                value_dict = {'_name':header_dict[estimate]}
+                if 'z' in estimate:
+                    for e_index in range(2):
+                        for h_index in range(2):
+                            c = comp_dict_z[(e_index, h_index)]
+                            key_name = 'value(name={0})(input={1})(output={2})'.format(c[0], c[1], c[2])
+                            if estimate == 'z':
+                                z_value = getattr(self.mt_obj.Z, attr_dict[estimate])[f_index, e_index, h_index]                            
+                                key_value = '{0:<+.8e} {1:<+.8e}'.format(z_value.real, 
+                                                                         z_value.imag)
+                            elif estimate == 'z.var':
+                                z_value = getattr(self.mt_obj.Z, attr_dict[estimate])[f_index, e_index, h_index]                            
+                                key_value = '{0:<+.8e}'.format(z_value)
+                                                                      
+                            value_dict[key_name] = key_value
+                if 't' in estimate and self.mt_obj.Tipper.tipper is not None:
+                    for e_index in range(1):
+                        for h_index in range(2):
+                            c = comp_dict_t[(e_index, h_index)]
+                            key_name = 'value(name={0})(input={1})(output={2})'.format(c[0], c[1], c[2])
+                            if estimate == 't':
+                                z_value = getattr(self.mt_obj.Tipper, attr_dict[estimate])[f_index, e_index, h_index]                            
+                                key_value = '{0:<+.8e} {1:<+.8e}'.format(z_value.real, 
+                                                                         z_value.imag)
+                            elif estimate == 't.var':
+                                z_value = getattr(self.mt_obj.Tipper, attr_dict[estimate])[f_index, e_index, h_index]                            
+                                key_value = '{0:<+.8e}'.format(z_value)
+                                                                      
+                            value_dict[key_name] = key_value
+    
+                # set the period attribute to have attributes for each
+                # components of Z            
+                setattr(getattr(self.cfg_obj.Data, 
+                                'Period_{0:02}'.format(f_index)), 
+                        estimate.capitalize(),
+                        Dummy(**value_dict))
             
         
         
@@ -466,11 +622,11 @@ class EDI_to_XML(object):
             value = getattr(self.cfg_obj, element)
             
             # check if it is just a value
-            if type(value) in [float, int, str]:
+            if type(value) in [float, int, str] or value is None:
                 self.write_element(emtf, {element:value})
                 
             # if its a class Dummy, then check for single values or another
-            # class Dummy
+            # class Dummy, probably a better way to code this with while loops
             elif isinstance(value, Dummy):
                 print value._name
                 # make a new tree limb
@@ -481,34 +637,59 @@ class EDI_to_XML(object):
                     if '_name' in attr:
                         pass
                     else:
-                        new_value = getattr(value, attr)
-                        if isinstance(new_value, Dummy):
+                        attr_value = getattr(value, attr)
+                        if isinstance(attr_value, Dummy):
                             # make a new tree limb
-                            newer_element = self.make_element(new_element, 
-                                                              new_value._name)
+                            new_element_02 = self.make_element(new_element, 
+                                                              attr_value._name)
                             
                             # loop over attributes within the Dummy class, skipping _name
-                            for new_attr in sorted(new_value.__dict__.keys()):
-                                if '_name' in attr:
+                            for attr_02 in sorted(attr_value.__dict__.keys()):
+                                if '_name' in attr_02:
                                     pass
                                 else:
-                                    newer_value = getattr(new_value, new_attr)
-                                    if isinstance(new_value, Dummy):
-                                        newest_element = self.make_element(newer_element, 
-                                                                           newer_value._name)
-                                                                          
-                                        self.write_element(newest_element, 
-                                                           newer_value.__dict__)
-                                    elif type(new_value) in [float, int, str]:
-                                        self.write_element(newer_element, {new_attr:newer_value})
-#                            newer_element = self.make_element(new_element, 
-#                                                              new_value._name)
-#                                                              
-#                            newest_value = get_attr()
-#                            self.write_element(newer_element, 
-#                                               new_value.__dict__)
-                        elif type(new_value) in [float, int, str]:
-                            self.write_element(new_element, {attr:new_value})
+                                    attr_02_value = getattr(attr_value, attr_02)
+                                    if isinstance(attr_02_value, Dummy):
+                                        new_element_03 = self.make_element(new_element_02,
+                                                                           attr_02_value._name)
+                                        # loop over attributes within the Dummy class, skipping _name
+                                        for attr_03 in sorted(attr_02_value.__dict__.keys()):
+                                            if '_name' in attr_03:
+                                                pass
+                                            else:
+                                                attr_03_value = getattr(attr_02_value, attr_03)
+                                                if isinstance(attr_03_value, Dummy):
+                                                    new_element_04 = self.make_element(new_element_03, 
+                                                                                       attr_03_value._name)
+                                                    # loop over attributes within the Dummy class, skipping _name
+                                                    for attr_04 in sorted(attr_03_value.__dict__.keys()):
+                                                        if '_name' in attr_04:
+                                                            pass
+                                                        else:
+                                                            attr_04_value = getattr(attr_03_value, attr_04)
+                                                            if isinstance(attr_04_value, Dummy):
+                                                                new_element_05 = self.make_element(new_element_04, 
+                                                                                                   attr_04_value._name)
+                                                                for attr_05 in sorted(attr_04_value.__dict__.keys()):
+                                                                    if '_name' in attr_05:
+                                                                        pass
+                                                                    else:
+                                                                        attr_05_value = getattr(attr_04_value, attr_05)
+                                                                        self.write_element(new_element_05,
+                                                                                           {attr_05:attr_05_value})
+                                                            else:
+                                                                self.write_element(new_element_04, 
+                                                                                   {attr_04:attr_04_value})
+                                                else:
+                                                    self.write_element(new_element_03,
+                                                                       {attr_03:attr_03_value})
+                                        
+                                    elif type(attr_02_value) in [float, int, str] or attr_02_value is None:
+                                        self.write_element(new_element_02, 
+                                                           {attr_02:attr_02_value})
+
+                        elif type(attr_value) in [float, int, str] or attr_value is None:
+                            self.write_element(new_element, {attr:attr_value})
             
             # write out estimates
             elif type(value) in [list, tuple]:
@@ -525,22 +706,29 @@ class EDI_to_XML(object):
         print '-'*50
         print '    Wrote xml file to: {0}'.format(self.xml_fn)
         print '-'*50
-        # make a nice print out
-        reparsed = minidom.parseString(ET.tostring(emtf, 'utf-8'))
-        print(reparsed.toprettyxml(indent='    '))  
+#        # make a nice print out
+#        reparsed = minidom.parseString(ET.tostring(emtf, 'utf-8'))
+#        print(reparsed.toprettyxml(indent='    ')) 
         
-#==============================================================================
-# Do the dirty work
-#==============================================================================
-test = EDI_to_XML()
-test.edi_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\EDI_Files_birrp_mshs\Rotated_m18_deg\ms11.edi"
-test.cfg_fn = r"C:\Users\jpeacock\Documents\PyScripts\xml_cfg_test.cfg"
-test.write_xml()
+    def read_xml_file(self, xml_fn):
+        """
+        read in an xml file
+        """
+        pass
+#        self.xml_fn = xml_fn
+#        
+#        self.cfg_obj = XML_Config()
+#        
+##==============================================================================
+## Do the dirty work
+##==============================================================================
+#test = EDI_to_XML()
+#test.edi_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\EDI_Files_birrp_mshs\Rotated_m18_deg\ms11.edi"
+#test.cfg_fn = r"C:\Users\jpeacock\Documents\PyScripts\xml_cfg_test.cfg"
+#test.write_xml()
+#
+#test.cfg_obj.write_cfg_file(r"C:\Users\jpeacock\Documents\PyScripts\xml_cfg_test_out.cfg")
 
-cfg_test = XML_Config()
-cfg_test.read_cfg_file(cfg_fn)
-
-print isinstance(cfg_test.Provenance, Dummy)
 
     
 
