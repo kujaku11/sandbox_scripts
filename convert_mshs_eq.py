@@ -19,17 +19,22 @@ sv_path = os.path.dirname(eq_fn)
 
 eq_df = pd.read_csv(eq_fn)
 
-# model center
-east_0 = 564530.
-north_0 = 5105250.
+## model center
+#east_0 = 564530.
+#north_0 = 5105250.
+#
+#x = np.zeros_like(eq_df.Lat)
+#y = np.zeros_like(eq_df.Lon)
+#for lat, lon, index in zip(eq_df.Lat, eq_df.Lon, range(x.size)):
+#    zone, east, north = utm2ll.LLtoUTM(23, lat, lon)
+#    x[index] = (east-east_0)/1000.
+#    y[index] = (north-north_0)/1000.
+#    
+#pointsToVTK(eq_fn[:-4], y, x, np.array(eq_df.Depth_Km), 
+#            data={'depth':np.array(eq_df.Depth_Km), 
+#                  'magnitude':np.array(eq_df.Magnitude)})
+                  
+# get only the earthquake information
+eq_csv = eq_df[['Lat', 'Lon','Depth_Km', 'Magnitude']]
+eq_csv.to_csv(r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\pnsn_eq_catalog_ll.csv")
 
-x = np.zeros_like(eq_df.Lat)
-y = np.zeros_like(eq_df.Lon)
-for lat, lon, index in zip(eq_df.Lat, eq_df.Lon, range(x.size)):
-    zone, east, north = utm2ll.LLtoUTM(23, lat, lon)
-    x[index] = (east-east_0)/1000.
-    y[index] = (north-north_0)/1000.
-    
-pointsToVTK(eq_fn[:-4], y, x, np.array(eq_df.Depth_Km), 
-            data={'depth':np.array(eq_df.Depth_Km), 
-                  'magnitude':np.array(eq_df.Magnitude)})

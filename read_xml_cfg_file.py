@@ -19,6 +19,7 @@ et_xml = ET.XMLParser(xml_fn)
 root = et_xml.getroot()
 
 for ch in root.getchildren():
+    
     print ch.items()
 
 #cfg_fn = r"C:\Users\jpeacock\Documents\PyScripts\xml_cfg_test.cfg"

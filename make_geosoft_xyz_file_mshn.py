@@ -45,7 +45,7 @@ for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
                           xx+c_north, 
                           yy+c_east, 
                           zz, 
-                          mod_obj.res_model[ii, jj, kk]))
+                          np.log10(mod_obj.res_model[ii, jj, kk])))
 
 save_fn = os.path.join(os.path.dirname(mfn), '{0}_resistivity.xyz'.format(save_root))
 with open(save_fn, 'w') as fid:
