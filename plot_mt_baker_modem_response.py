@@ -9,7 +9,7 @@ import mtpy.modeling.modem_new as modem
 import os
 
 dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_modem_data_err05_rot_edit.dat"
-rfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err05_cov035_NLCG_137.dat"
+rfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err03_tip02_cov03_NLCG_016.dat"
 sv_path = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\Report"
 
 data_obj = modem.Data()

@@ -9,7 +9,7 @@ import mtpy.utils.array2raster as a2r
 import os
 
 #model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_tip02_cov03_NLCG_083.rho"
-model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_tip02_cov03_NLCG_080.rho"
+model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err03_tip02_cov03_NLCG_016.rho"
 
 
 save_path = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_final_mt_model_slices"
