@@ -52,7 +52,7 @@ data_obj = modem.Data(edi_list=s_edi_list,
                       station_locations=mod_obj.station_locations,
                       period_list=inv_period_list)
 data_obj.error_type = 'egbert'
-data_obj.error_egbert = 10.0
+data_obj.error_egbert = 5.0
 data_obj.error_tipper = .1
 data_obj.get_mt_dict()
 data_obj._fill_data_array()
@@ -60,7 +60,7 @@ data_obj.data_array['elev'][:] = 0.0
 
 #--> here is where you can rotate the data
 data_obj.write_data_file(save_path=save_path, 
-                         fn_basename="imush_modem_data_err{0:.0f}.dat".format(data_obj.error_egbert))
+                         fn_basename="imush_modem_data_err{0:.0f}_rot_tip.dat".format(data_obj.error_egbert))
 
 #==============================================================================
 # make the covariance file
