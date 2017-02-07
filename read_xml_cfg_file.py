@@ -6,57 +6,56 @@ Created on Wed Jan 11 18:02:53 2017
 """
 
 import xml.etree.cElementTree as ET
+import mtpy.core.mt_xml as mtxml
 
 class Dummy(object):
     def __init__(self, **kwargs):
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
 
+def make_attr_str(child):
+    tag = child.tag
+    attributes = child.attrib
+    for key in attributes.keys():
+        tag += '({0}={1})'.format(key, attributes[key])
+        
+    return tag
+
 xml_fn = r"C:\Users\jpeacock\Documents\PyScripts\ORL09bc_J9.xml"
 
-et_xml = ET.XMLParser(xml_fn)
+et_xml = ET.parse(xml_fn)
 
 root = et_xml.getroot()
 
-for ch in root.getchildren():
+e2xml = mtxml.EDI_to_XML()
+
+
+for child_00 in root.getchildren()[0:11]:
+    attr_00 = make_attr_str(child_00)
     
-    print ch.items()
+    if len(child_00.getchildren()) > 0:
+        value_00 = Dummy()
+        for child_01 in child_00.getchildren():
+            attr_01 = make_attr_str(child_01)
+            if len(child_01.getchildren()) > 0:
+                value_01 = Dummy()
+                for child_02 in child_01.getchildren():
+                    attr_02 = make_attr_str(child_02)
+                    value_02 = child_02.text
+                    setattr(value_01, attr_02, value_02)
+                setattr(value_01, '_name', attr_01)
 
-#cfg_fn = r"C:\Users\jpeacock\Documents\PyScripts\xml_cfg_test.cfg"
-
-#with open(cfg_fn, 'r') as fid:
-#    lines = fid.readlines()
-#    
-#    
-#cfg_dict = {}    
-#for line in lines:
-#    if line[0] == '#':
-#        pass
-#    elif line == '\n':
-#        pass
-#    else:
-#        line_list = line.strip().split('=')
-#        key = line_list[0].strip()
-#        value = line_list[1].strip()
-#        
-#        if key.find('.') > 0:
-#            key_list = key.split('.')
-#            if len(key_list) == 2:
-#                try:
-#                    cfg_dict[key_list[0]][key_list[1]] = value
-#                except KeyError:
-#                    cfg_dict[key_list[0]] = {key_list[1]:value}
-#            elif len(key_list) == 3:
-#                try: 
-#                    cfg_dict[key_list[0]][key_list[1]][key_list[2]] = value
-#                except KeyError:
-#                    try:
-#                        cfg_dict[key_list[0]][key_list[1]] = {key_list[2]:value}
-#                    except KeyError:
-#                        cfg_dict[key_list[0]] = {key_list[1]:{key_list[2]:value}}
-#        
-#        else:
-#            cfg_dict[key] = value
-
+            else:
+                value_01 = child_01.text
+            setattr(value_00, attr_01, value_01)
         
+        setattr(value_00, '_name', attr_00)
         
+    else:
+        value_00 = child_00.text
+    setattr(e2xml.cfg_obj, attr_00, value_00)
+    
+e2xml.write_xml(xml_fn=r"C:\Users\jpeacock\Documents\PyScripts\Test_read_xml.xml")
+    
+   
+

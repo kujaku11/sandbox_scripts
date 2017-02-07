@@ -1,46 +1,31 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jan 23 17:53:56 2017
+Created on Mon Feb 06 15:57:59 2017
 
 @author: jpeacock
 """
 
-import mtpy.usgs.zen as zen
 import os
+import mtpy.usgs.zen as zen
 
-dir_path = r"d:\Peacock\MTData\sev"
+station_folder = r"d:\Peacock\MTData\MP_2017\mp205"
 
-ant_list = []
-#for folder in os.listdir(dir_path):
-for folder in ['MT008_rr']:
-
-    folder_path = os.path.join(dir_path, folder)
-    if os.path.isdir(folder_path):
-        print '='*50
-        print '     {0}'.format(folder)
-        for fn in os.listdir(folder_path):
-            fn_path = os.path.join(folder_path, fn)
-            if os.path.isfile(fn_path) and fn_path.endswith('.Z3D'):
-                zt = zen.Zen3D(fn=fn_path)
-                zt.read_all_info()
-#                if zt.df in [1024, '1024']:
-#                    os.remove(fn_path)
-#                    print 'Removed -> {0}'.format(fn_path)
-                
-                channel = zt.metadata.ch_cmp.upper()
-                if channel in ['HX', 'HY', 'HZ']:
-                    ant_list.append(zt.metadata.ch_number)
-                
-                st = zt.schedule.Time.replace(':','')
-                sd = zt.schedule.Date.replace('-','')
-                sv_fn = '{0}_{1}_{2}_{3}_{4}.Z3D'.format(folder, 
-                                                         sd, 
-                                                         st,
-                                                         int(zt.df),
-                                                         channel)
-                os.rename(fn_path, os.path.join(folder_path, sv_fn))
-                print 'renamed {0} to {1}'.format(fn_path,
-                                                  os.path.join(folder_path, 
-                                                               sv_fn))
-                
-ant_set = sorted(list(set(ant_list)))
+for fn in os.listdir(station_folder):
+    if fn.endswith('.Z3D'):
+        z3d_obj = zen.Zen3D(os.path.join(station_folder, fn))
+        z3d_obj.read_all_info()
+        
+        station = os.path.basename(station_folder)
+        channel = z3d_obj.metadata.ch_cmp.upper()
+        st = z3d_obj.schedule.Time.replace(':','')
+        sd = z3d_obj.schedule.Date.replace('-','')
+        sv_fn = '{0}_{1}_{2}_{3}_{4}.Z3D'.format(station,
+                                                 sd, 
+                                                 st, 
+                                                 int(z3d_obj.df),
+                                                 channel)
+        
+        os.rename(os.path.join(station_folder, fn),
+                  os.path.join(station_folder, sv_fn))
+                  
+        print 'renamed {0} to {1}'.format(fn, sv_fn)
