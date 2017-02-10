@@ -92,20 +92,17 @@ def read_element(element):
                                             get_info_from_element(child_03))
                     
     
-    
-                
-            else:
-                pass
-                    
-    
-    else:
-        pass
-            
     return child
 
 
-ext_url = et_xml.find('ProcessingInfo')
-k = read_element(ext_url)
+k = mtxml.Dummy()
+root = et_xml.getroot()
+for element_00 in root.getchildren():
+    setattr(k, element_00.tag, read_element(element_00))
+    
+
+#ext_url = et_xml.find('ProcessingInfo')
+#k = read_element(ext_url)
 
 
 
