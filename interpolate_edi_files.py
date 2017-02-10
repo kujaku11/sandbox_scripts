@@ -12,7 +12,7 @@ import numpy as np
 
 # In[2]:
 
-edi_path = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_JRP\Rotated_m18_deg"
+edi_path = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_tipper_rot_geographic_north\Edited"
 edi_list = [os.path.join(edi_path, edi_fn) for edi_fn in os.listdir(edi_path) if edi_fn.endswith('.edi')]
 
 
@@ -26,7 +26,8 @@ if not os.path.isdir(save_path):
 # In[4]:
 
 # make a new frequency list to interpolate on to [1000 Hz - 1000 sec]
-interp_freq = np.logspace(np.log10(7.3242e-04), 3, num=48)
+interp_freq = 1./np.logspace(-np.log10(1000), np.log10(25000), num=64)
+#interp_freq = np.logspace(np.log10(7.3242e-04), 3, num=48)
 
 
 # In[5]:
