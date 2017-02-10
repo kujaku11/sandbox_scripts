@@ -26,13 +26,11 @@ def get_info_from_element(element):
     
 def get_attr_name(parent, attr_name):
     if hasattr(parent, attr_name):
-        print 'parent already has attribute {0}'.format(attr_name)
-        new_attr_name = '{0}_{1:02}'.format(attr_name, 1)
-        if hasattr(parent, new_attr_name):
-            count = 2
-            while hasattr(parent, '{0}_{1:02}'.format(attr_name, count)):
-                new_attr_name = '{0}_{1:02}'.format(attr_name, count)
-                count += 1
+        for ii in range(1, 10):
+            new_attr_name = '{0}_{1:02}'.format(attr_name, ii)
+            if not hasattr(parent, new_attr_name):
+                break
+
     else:
         new_attr_name = attr_name
     
@@ -50,6 +48,8 @@ def read_element(element):
     read a given element and return something useful
     """
     
+    
+    
     child = get_info_from_element(element)
     
     children = element.getchildren()
@@ -60,41 +60,52 @@ def read_element(element):
             
             children_01 = child_00.getchildren()
             if len(children_01) > 0:
+                parent_01 = getattr(child, attr_name)
                 for child_01 in children_01:
-                    attr_01_name = get_attr_name(getattr(child, attr_name),
+                    attr_01_name = get_attr_name(parent_01,
                                                  child_01.tag)
                                                  
-                    setattr(getattr(child, child_00.tag), attr_01_name,
+                    setattr(parent_01, 
+                            attr_01_name,
                             get_info_from_element(child_01))
+                            
+                    children_02 = child_01.getchildren()
+                    if len(children_02) > 0:
+                        parent_02 = getattr(parent_01, attr_01_name)
+                        for child_02 in children_02:
+                            attr_02_name = get_attr_name(parent_02, 
+                                                         child_02.tag)
+                                                         
+                            setattr(parent_02,
+                                    attr_02_name,
+                                    get_info_from_element(child_02))
+                                    
+                            children_03 = child_02.getchildren()
+                            if len(children_03) > 0:
+                                parent_03 = getattr(parent_02, attr_02_name)
+                                for child_03 in children_03:
+                                    attr_03_name = get_attr_name(parent_03, 
+                                                                 child_03.tag)
+                                                                 
+                                    setattr(parent_03,
+                                            attr_03_name,
+                                            get_info_from_element(child_03))
                     
-
-
+    
+    
                 
             else:
                 pass
                     
-
+    
     else:
         pass
-        
+            
     return child
 
-# read description
-#description = et_xml.find('Description')
-#k = read_element(description)
 
-ext_url = et_xml.find('FieldNotes')
+ext_url = et_xml.find('ProcessingInfo')
 k = read_element(ext_url)
 
 
-#root = et_xml.getroot()
-#
-#
-#
-#
-
-#    
-##e2xml.write_xml(xml_fn=r"C:\Users\jpeacock\Documents\PyScripts\Test_read_xml.xml")
-#    
-#   
 
