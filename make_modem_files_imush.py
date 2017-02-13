@@ -13,7 +13,7 @@ import mtpy.modeling.modem_new as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_tipper_rot_geographic_north\Edited"
+edi_path = r"c:\Users\jpeacock\Documents\iMush\imush_edi_files_final"
 save_path = r"c:\Users\jpeacock\Documents\iMush\modem_inv"
 
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
@@ -52,7 +52,7 @@ data_obj = modem.Data(edi_list=s_edi_list,
                       station_locations=mod_obj.station_locations,
                       period_list=inv_period_list)
 data_obj.error_type = 'floor_egbert'
-data_obj.error_egbert = 5.0
+data_obj.error_egbert = 10.0
 data_obj.error_tipper = .05
 data_obj.get_mt_dict()
 data_obj._fill_data_array()
