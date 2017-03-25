@@ -9,9 +9,10 @@ import mtpy.core.mt as mt
 import numpy as np
 import os
 
+ss = 518
 
-lp_fn = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_JRP\Rotated_m16_deg\WAD04.edi"
-bb_fn = r"c:\Users\jpeacock\Documents\iMush\iMush_edited_edi_files_JRP\Rotated_m16_deg\CFWB23.edi"
+lp_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Edited\med{0}_lp.edi".format(ss)
+bb_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Edited\med{0}.edi".format(ss)
 
 mt_lp = mt.MT(lp_fn)
 mt_bb = mt.MT(bb_fn)
@@ -21,10 +22,10 @@ comb_fn = os.path.join(os.path.dirname(bb_fn),
 if os.path.exists(comb_fn):
     os.remove(comb_fn)
 
-mt_lp.Tipper.rotate(-90)
+#mt_lp.Tipper.rotate(-90)
 #mt_lp.Tipper.tipper *= -1-1j
-s, mt_lp.Z.z = mt_lp.Z.remove_ss(reduce_res_factor_x=.80,
-                                 reduce_res_factor_y=.60)
+s, mt_lp.Z.z = mt_lp.Z.remove_ss(reduce_res_factor_x=1.2,
+                                 reduce_res_factor_y=1.1)
 
 common_freq = 1./30
 

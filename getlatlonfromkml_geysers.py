@@ -5,16 +5,16 @@ Created on Sat Jun 22 15:27:16 2013
 @author: jpeacock-pr
 """
 
-import os
-import numpy as np
-import garmin
+#import os
+#import numpy as np
+#import garmin
 import simplekml as kml
 
 #kml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSitesNoNames.kml"
 #txt_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSites.txt"
 #nkml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSitesShortNames.kml"
 
-kml_file = r"c:\Users\jpeacock\Documents\ClearLake\Geysers_proposed_mt_sites.kml"
+kml_file = r"c:\Users\jpeacock\Documents\ClearLake\Geysers_proposed_MT_just_sites_2017_num.kml"
 txt_file = r"c:\Users\jpeacock\Documents\ClearLake\Geysers_proposed_mt_sites.txt"
 #nkml_file = r"C:\Users\jpeacock-pr\Google Drive\iMush\iMUSH_SiteStatus_2015_07_06_shortnames.kml"
 #==============================================================================
@@ -31,7 +31,7 @@ lon_list = []
 
 
 
-ii = 1
+count = 1
 for ii, kline in enumerate(klines):
     if kline.find('coordinates') > 0:
         klist = kline.strip().split(',')
@@ -40,8 +40,13 @@ for ii, kline in enumerate(klines):
             lat_list.append(float(klist[1].split('<')[0]))
     if kline.find('name') > 0:
         station = kline.strip().split('>')[1].split('<')[0]
-        if len(station) == 3:
-            station_list.append(station)
+        if len(station) >= 3:
+#            station_list.append(station)
+            if station.lower() in ['egs']:
+                pass
+            else:
+                station_list.append('gz{0:02}'.format(count))
+                count += 1
         
 #==============================================================================
 # write information to a text file for a garmin
@@ -49,15 +54,16 @@ for ii, kline in enumerate(klines):
 
 tfid = file(txt_file, 'w')
 
-header_line = ','.join(['{0}'.format('station'),
-                       '{0}'.format('latitude'),
-                       '{0}\n'.format('longitude')])
-tfid.write(header_line)
+lines = [','.join(['{0}'.format('station'),
+                   '{0}'.format('latitude'),
+                   '{0}\n'.format('longitude')])]
+
 for station,lat,lon in zip(station_list, lat_list, lon_list):
-    tfid.write(','.join(['{0}'.format(station),
+    lines.append(','.join(['{0}'.format(station),
                          '{0:.6f}'.format(lat),
                          '{0:.6f}\n'.format(lon)]))
-tfid.close()
+with open(txt_file, 'w') as fid:
+    fid.writelines(lines)
 
 
 ##==============================================================================
@@ -68,4 +74,4 @@ tfid.close()
 #for station,lat,lon in zip(station_list, lat_list, lon_list):
 #    nkml.newpoint(name=station, coords=[(lon,lat)])
 #
-#nkml.save(nkml_file)
+#nkml.save(kml_file[0:-4]+'_num.kml')

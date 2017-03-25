@@ -8,7 +8,7 @@ Created on Wed May 25 17:17:14 2016
 
 import os
 import numpy as np
-import mtpy.modeling.modem_new as modem
+import mtpy.modeling.modem as modem
 
 #==============================================================================
 # Inputs
@@ -42,7 +42,7 @@ mod_obj.mesh_rotation_angle = 0
 mod_obj.make_mesh()
 mod_obj.plot_mesh()
 
-mod_obj.write_model_file(model_fn=os.path.join(save_path, r"imush_modem_sm.rho"))
+mod_obj.write_model_file(model_fn=os.path.join(save_path, r"imush_modem_sm_02.rho"))
 
 #==============================================================================
 # Make the data file
@@ -52,15 +52,15 @@ data_obj = modem.Data(edi_list=s_edi_list,
                       station_locations=mod_obj.station_locations,
                       period_list=inv_period_list)
 data_obj.error_type = 'floor_egbert'
-data_obj.error_egbert = 10.0
-data_obj.error_tipper = .05
+data_obj.error_egbert = 5
+data_obj.error_tipper = .04
 data_obj.get_mt_dict()
 data_obj._fill_data_array()
 data_obj.data_array['elev'][:] = 0.0
 
 #--> here is where you can rotate the data
 data_obj.write_data_file(save_path=save_path, 
-                         fn_basename="imush_modem_data_err{0:02.0f}_tip05.dat".format(data_obj.error_egbert))
+                         fn_basename="imush_modem_data_err{0:02.0f}_tip04.dat".format(data_obj.error_egbert))
 
 #==============================================================================
 # make the covariance file

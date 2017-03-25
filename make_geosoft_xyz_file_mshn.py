@@ -16,6 +16,9 @@ dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_mo
 #mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\modem_inv\mshs_err03_cov03_NLCG_070.rho"
 #dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSHS\modem_inv\mshs_modem_data_err10_old.dat"
 
+#mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_err03_tip02_cov03_NLCG_016.rho"
+#dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_modem_data_err05_rot_edit.dat"
+
 save_root = 'mshn'
 
 #--> read model file
@@ -28,18 +31,28 @@ d_obj.read_data_file(dfn)
 
 #--> get center position
 model_center = d_obj.center_position
-c_zone, c_east, c_north = utm2ll.LLtoUTM(23, model_center[0], model_center[1])
+#c_zone, c_east, c_north = utm2ll.LLtoUTM(23, model_center[0], model_center[1])
+c_zone, c_east, c_north = (0, 0, 0)
 
 #--> set padding
 east_pad = mod_obj.pad_east+4
 north_pad = mod_obj.pad_north+4
-z_pad = np.where(mod_obj.grid_z > 20000)[0][0]
+z_pad = np.where(mod_obj.grid_z > 50000)[0][0]
 
 #--> write model xyz file
-lines = []
-for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
-    for jj, yy in enumerate(mod_obj.grid_east[east_pad:-east_pad]):
-        for ii, xx in enumerate(mod_obj.grid_north[north_pad:-north_pad]):
+lines = ['# Resistivity model for {0}'.format(save_root.upper())]
+lines.append('# Model Center(lat, lon) WGS84: {0:>+.6f}, {1:>+.6f}'.format(model_center[0], 
+                                                      model_center[1]))
+lines.append('#{0:>12}{1:>12}{2:>12}{3:>12}'.format('Northing (m)',
+                                                              'Easting (m)',
+                                                              'Depth (m)',
+                                                              'Log10(res (Ohm-m))'))
+#for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
+#    for jj, yy in enumerate(mod_obj.grid_east[east_pad:-east_pad]):
+#        for ii, xx in enumerate(mod_obj.grid_north[north_pad:-north_pad]):
+for kk, zz in enumerate(mod_obj.grid_z):
+    for jj, yy in enumerate(mod_obj.grid_east):
+        for ii, xx in enumerate(mod_obj.grid_north):
             
             lines.append('{0:>12.1f}{1:12.1f}{2:12.1f}{3:12.2f}'.format(
                           xx+c_north, 
@@ -47,21 +60,23 @@ for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
                           zz, 
                           np.log10(mod_obj.res_model[ii, jj, kk])))
 
-save_fn = os.path.join(os.path.dirname(mfn), '{0}_resistivity.xyz'.format(save_root))
+save_fn = os.path.join(os.path.dirname(mfn), '{0}_resistivity_rel_coord.xyz'.format(save_root))
 with open(save_fn, 'w') as fid:
     fid.write('\n'.join(lines))
     
 print 'Wrote file {0}'.format(save_fn)
 #--> write data xyz file
-d_lines = ['{0:<8}{1:>14}{2:>14}{3:>14}'.format('station', 'east', 'north', 'elevation')]
+d_lines = ['{0:<8}{1:>14}{2:>14}{3:>14}{4:>14}{5:>14}'.format('station', 'rel_east', 'rel_north', 'elevation', 'lat', 'lon')]
 for s_arr in d_obj.station_locations: 
-    d_lines.append('{0:<8}{1:>14.2f}{2:>14.2f}{3:>14.2f}'.format(
+    d_lines.append('{0:<8}{1:>14.2f}{2:>14.2f}{3:>14.2f}{4:>14.2f}{5:>14.2f}'.format(
                     s_arr['station'], 
-                    s_arr['east'],
-                    s_arr['north'],
-                    s_arr['elev']))
+                    s_arr['rel_east'],
+                    s_arr['rel_north'],
+                    s_arr['elev'],
+                    s_arr['lat'],
+                    s_arr['lon']))
                     
-save_fn = os.path.join(os.path.dirname(mfn), '{0}_stations.xyz'.format(save_root))
+save_fn = os.path.join(os.path.dirname(mfn), '{0}_stations_rel_coord.xyz'.format(save_root))
 with open(save_fn, 'w') as fid:
     fid.write('\n'.join(d_lines))
 print 'Wrote file {0}'.format(save_fn)
