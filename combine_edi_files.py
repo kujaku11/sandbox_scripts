@@ -9,10 +9,10 @@ import mtpy.core.mt as mt
 import numpy as np
 import os
 
-ss = 518
+ss = 520
 
-lp_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Edited\med{0}_lp.edi".format(ss)
-bb_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Edited\med{0}.edi".format(ss)
+lp_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\med{0}_lp.edi".format(ss)
+bb_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\med{0}_bb.edi".format(ss)
 
 mt_lp = mt.MT(lp_fn)
 mt_bb = mt.MT(bb_fn)
@@ -27,7 +27,7 @@ if os.path.exists(comb_fn):
 s, mt_lp.Z.z = mt_lp.Z.remove_ss(reduce_res_factor_x=1.2,
                                  reduce_res_factor_y=1.1)
 
-common_freq = 1./30
+common_freq = 1./3
 
 lp_index = np.where(mt_lp.Z.freq < common_freq)[0]
 bb_index = np.where(mt_bb.Z.freq > common_freq)[0]

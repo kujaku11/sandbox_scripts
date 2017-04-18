@@ -9,10 +9,10 @@ import mtpy.utils.array2raster as a2r
 import os
 
 #model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_tip02_cov03_NLCG_083.rho"
-model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\imush_sm02_err10_cov05_NLCG_054.rho"
+model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\imush_err05_cov04_NLCG_080.rho"
 
 
-save_path = r"c:\Users\jpeacock\Documents\iMush\modem_inv\imush_err10_054_mt_model_slices"
+save_path = r"c:\Users\jpeacock\Documents\iMush\modem_inv\imush_err05_mt_model_slices"
 #save_path = r"/mnt/hgfs/jpeacock/Documents/LV/Maps/geo_model_slices_02"
 #model_center = (-118.833, 37.815) # lv center
 model_center = (-122.080378, 46.387827)
