@@ -7,16 +7,16 @@ Created on Thu Feb 23 18:47:08 2017
 
 import mtpy.modeling.modem as modem
 
-dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip04_edited.dat"
+dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
 sv_fn = modem.os.path.basename(dfn)[0:modem.os.path.basename(dfn).find('_')]
 
 d_obj = modem.Data()
 d_obj.read_data_file(dfn)
 
-d_obj.error_type = 'floor_egbert'
+d_obj.error_type = 'egbert'
 d_obj.inv_mode = '1'
-d_obj.error_egbert = 10.0
-d_obj.error_tipper = .05
+d_obj.error_egbert = 3.0
+d_obj.error_tipper = .02
 d_obj.data_array['elev'][:] = 0.0
 
 if d_obj.inv_mode == '2':

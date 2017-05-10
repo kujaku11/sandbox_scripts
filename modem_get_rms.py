@@ -7,7 +7,7 @@ Created on Mon Feb 13 10:59:30 2017
 import numpy as np
 import mtpy.modeling.modem as modem
 
-res_fn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_01\mp_err03_cov03_NLCG_053.res"
+res_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_err03_tip02_cov025_NLCG_054.res"
 rms_thresh = 3.0
 
 res_obj = modem.Data()

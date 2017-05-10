@@ -18,6 +18,13 @@ save_path = r"c:\Users\jpeacock\Documents\iMush\modem_inv"
 
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
               if ss.endswith('.edi')]
+
+# remove stations that are too close together.
+del_list = [os.path.join(edi_path, 'mshn{0}.edi'.format(ss)) for ss in 
+            [42, 46, 55, 65, 74, 76, 84, 92]]
+
+for sd in del_list:
+    s_edi_list.remove(sd)
                   
 if not os.path.exists(save_path):
     os.mkdir(save_path)
@@ -31,10 +38,11 @@ mod_obj.cell_size_north = 1000
 mod_obj.pad_east = 18
 mod_obj.pad_north = 18
 mod_obj.pad_stretch_h = 1.5
+mod_obj.pad_stretch_v = 1.5
 mod_obj.pad_z = 5
-mod_obj.n_layers = 40
+mod_obj.n_layers = 50
 mod_obj.z1_layer = 30
-mod_obj.z_target_depth = 80000.
+mod_obj.z_target_depth = 60000.
 
 #--> here is where you can rotate the mesh
 mod_obj.mesh_rotation_angle = 0
@@ -51,16 +59,16 @@ inv_period_list = np.logspace(-np.log10(300), np.log10(10000), num=23)
 data_obj = modem.Data(edi_list=s_edi_list, 
                       station_locations=mod_obj.station_locations,
                       period_list=inv_period_list)
-data_obj.error_type = 'floor_egbert'
-data_obj.error_egbert = 5
-data_obj.error_tipper = .04
+data_obj.error_type = 'egbert'
+data_obj.error_egbert = 3
+data_obj.error_tipper = .03
 data_obj.get_mt_dict()
 data_obj._fill_data_array()
 data_obj.data_array['elev'][:] = 0.0
 
 #--> here is where you can rotate the data
 data_obj.write_data_file(save_path=save_path, 
-                         fn_basename="imush_modem_data_err{0:02.0f}_tip04.dat".format(data_obj.error_egbert))
+                         fn_basename="imush_modem_data_err{0:02.0f}_tip03.dat".format(data_obj.error_egbert))
 
 #==============================================================================
 # make the covariance file
