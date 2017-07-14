@@ -18,6 +18,29 @@ import mtpy.usgs.zen as zen
 
 fn = r"d:\Peacock\MTData\Umatilla\hf05\hf05_20170517_193018_256_EX.Z3D" 
 #==============================================================================
+class MT_TS(object):
+    """
+    MT time series object that will read/write data in different formats
+    including hdf5, txt, miniseed.
+    
+    Metadata
+    -----------
+    
+        ==================== ==================================================
+        Name                 Description        
+        ==================== ==================================================
+        azimuth              clockwise angle from coordinate system N (deg)
+        calibration_fn       file name for calibration data
+        component            component name [ 'ex' | 'ey' | 'hx' | 'hy' | 'hz']
+        coordinate_system    [ geographic | geomagnetic ]
+        datum                datum of geographic location ex. WGS84
+        declination          geomagnetic declination (deg)
+        dipole_length        length of dipole
+        ==================== ==================================================
+    
+    .. note:: Currently only supports hdf5 and text files
+    """
+
 
 z1 = zen.Zen3D(fn)
 z1.read_z3d()
@@ -45,7 +68,8 @@ if not os.path.exists(h5_fn):
     ts_arr.attrs.lat = z1.header.lat
     ts_arr.attrs.lon = z1.header.long
     ts_arr.attrs.datum = 'WGS84'
-    ts_arr.attrs.instrument = 'Zonge Zen'
+    ts_arr.attrs.data_logger = 'Zonge Zen'
+    ts_arr.attrs.instrument_num = None
     ts_arr.attrs.calibration_fn = None
     ts_arr.attrs.declination = 3.6
     
