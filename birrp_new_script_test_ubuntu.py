@@ -16,14 +16,15 @@ reload(zp)
 #h.df_list = [256]
 #h.rr_station_dir = [r"/mnt/hgfs/MTData/Geysers/gz08/TS", 
 #                    r"/mnt/hgfs/MTData/Geysers/gz06/TS"]
-h = zp.Z3D_to_edi(r"/mnt/hgfs/MTData/Geysers/gz02/TS")
-h.df_list = [16]
+h = zp.Z3D_to_edi(r"/mnt/hgfs/MTData/Geysers/gz13")
+h.df_list = [256]
 h.max_blocks = 3
-h.rr_station_dir = [r"/mnt/hgfs/MTData/Geysers/gz08/TS", 
-                    r"/mnt/hgfs/MTData/Geysers/gz06/TS"]
+h.rr_station_dir = [r"/mnt/hgfs/MTData/Geysers/gz28", 
+                    r"/mnt/hgfs/MTData/Geysers/gz14"]
 h.coil_cal_path = r"/mnt/hgfs/MTData/Ant_calibrations/rsp_cal"
 h.birrp_exe = r"/home/jpeacock/Documents/birrp_5.3.2/birrp532_large"
-sd = h.get_schedules_fn_from_dir(use_blocks_dict={16:[1, 2]})
+t = h.make_mtpy_ascii_files()
+sd = h.get_schedules_fn_from_dir(use_blocks_dict={256:[0, 1, 2]})
 sf_list = h.write_script_files(sd)
 #h.process_data()
 
