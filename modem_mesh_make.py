@@ -9,19 +9,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def get_padding_cells(cell_width, max_distance, num_cells):
-    scaling = ((max_distance)/(cell_width))**(1./num_cells) 
-
-    padding= np.round([cell_width*scaling**ii for ii in 
-                         range(1, num_cells+1, 1)], -2)
-                         
-    min_diff = cell_width
-    for ii in range(padding.size-1):
-        diff = padding[ii+1]-padding[ii]
-        if diff <= min_diff:
-            padding[ii] = cell_width*1.2
-           
-        min_diff = diff
+    scaling = ((max_distance)/(cell_width*1.2))**(1./(num_cells-1)) 
+    print scaling
+    
+    padding = np.zeros(num_cells)
+    for ii in range(num_cells):
+        exp_pad = np.round((cell_width*1.2)*scaling**ii, -2)
+        mult_pad = np.round((cell_width*1.2)*((1-1.2**(ii+1))/(1-1.2)), -2)
+        padding[ii] = max([exp_pad, mult_pad])
         
+        print exp_pad, mult_pad
     return padding
 
 west = -10000
@@ -36,8 +33,8 @@ z_ext = 300000
 cell_size_east = 500
 cell_size_north = 500
 
-pad_east = 12
-pad_north = 12
+pad_east = 18
+pad_north = 18
 
 pad_cell_num = 4
 
