@@ -5,7 +5,7 @@ Created on Mon Aug 31 11:41:58 2015
 @author: jpeacock
 """
 
-import mtpy.modeling.modem_new as modem
+import mtpy.modeling.modem as modem
 import mtpy.modeling.ws3dinv as ws
 import scipy.interpolate as spi
 import numpy as np
@@ -202,3 +202,10 @@ def interpolate_model_grid(old_model_fn, new_model_fn, save_path=None,
 #modem_fn = r"/home/jpeacock/Documents/ModEM/LV/geo_err12/lv_geo_err12_cov5_NLCG_037.rho"
 #interpolate_model_grid(ws_fn, modem_fn, pad=5, new_fn_basename='lv_ws_sm.rho',
 #                       shift_east = 4500, shift_north = 1700)
+
+mod_fn_big = r"c:\Users\jpeacock\Documents\folsom\inversions\inv_01_dr\sev_tip03_NLCG_031.rho"
+mod_fn_small = r"c:\Users\jpeacock\Documents\folsom\inversions\inv_01_dr\sev_modem_small.rho"
+interpolate_model_grid(mod_fn_big,
+                       mod_fn_small, 
+                       new_fn_basename='sev_modem_model.rho',
+                       pad=3)
