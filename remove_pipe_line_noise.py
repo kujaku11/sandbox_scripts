@@ -24,7 +24,7 @@ def read_z3d(fn):
     
     ts_obj.ts = pd.DataFrame({'data': z1.convert_counts()})
     ts_obj.station = z1.station
-    ts_obj.sampling_rate = int(z1.df)
+    ts_obj.sampling_rate = float(z1.df)
     ts_obj.start_time_utc = z1.zen_schedule
     ts_obj.n_samples = int(z1.time_series.size)
     ts_obj.component = z1.metadata.ch_cmp
@@ -113,12 +113,12 @@ avg_window = avg_window/window_count
 ## need to figure out a way to scale the noise to match the data
 
 ## make sure the ends meet so there are no weird artifacts
-#ends = np.median([avg_window[0:11], avg_window[-11:]])
+ends = np.median([avg_window[0:11], avg_window[-11:]])
+
+avg_window[0:10] = np.median(avg_window[0:11])
+avg_window[-10:] = np.median(avg_window[-11:])
 #
-#avg_window[0:10] = ends
-#avg_window[-10:] = ends
-#
-#noise =
+#noise = 
 
 
 ## get windows, being sure to over lap so to catch the full wave form
