@@ -5,13 +5,15 @@ Created on Wed Jul 19 16:28:19 2017
 @author: jpeacock
 """
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import mtpy.core.ts as mtts
 import mtpy.usgs.zen as zen
-import mtpy.imaging.plotspectrogram as plot_spectrogram
-import mtpy.processing.filter as mtfilter
+#import mtpy.imaging.plotspectrogram as plot_spectrogram
+#import mtpy.processing.filter as mtfilter
 import scipy.signal as signal
+import scipy.interpolate as interpolate
+import scipy.optimize as optimize
 import pandas as pd
 
 def read_z3d(fn):
@@ -62,132 +64,82 @@ def low_pass(f, low_pass_freq, cutoff_freq, sampling_rate):
     return f_filt
     
 fn = r"d:\Peacock\MTData\Umatilla\um102\um102_20170606_230518_256_HX.Z3D"
-
 ts_obj = read_z3d(fn)
-
-ts_df = ts_obj.ts
+n = ts_obj.ts.data.size
+t_arr = np.arange(0, n/ts_obj.sampling_rate, 1./ts_obj.sampling_rate)
 
 noise_per = 5
 
-n = 2**14
-
-#ts_filt, filt_list = mtfilter.adaptive_notch_filter(np.array(ts_obj.ts[0:n])[:, 0], 
-#                                                    df=ts_obj.sampling_rate,
-#                                                    notches=[30, 60, 120, 180])
-
-# be sure to detrend the signal before processing
-#ts_df['detrend'] = ts_df.apply(signal.detrend)
-#ts_filt = low_pass(ts, 30, 60, 
-#                   ts_obj.sampling_rate)
-
 window_len = int(noise_per*ts_obj.sampling_rate)
 avg_window = np.zeros(window_len)
+window_num = int(ts_obj.ts.data.size/window_len)
+avg_window_arr = np.zeros((window_num, window_len))
 
 index_00 = 0
 index_01 = window_len
 
 window_count = 1
-while index_01 < ts_df.data.size:
-    window = signal.detrend(ts_df.data[index_00:index_01])
-#    avg_window += window
-    avg_window += low_pass(window, 30, 60, ts_obj.sampling_rate)
-    
-#    if index_00 == 0:
-#        avg_window[:] = window
-#        
-#    else:
-#        lag = -1*get_max_correlation(avg_window, window)
-#        # positive shift    
-#        if lag >= 0:     
-#            avg_window[0:window_len-lag] += window[lag:]
-#        elif lag < 0:
-#            avg_window[lag:] += window[:-lag]
-#        avg
-            
+while index_01 < n:
+    # detrend the data using just the mean, if you use the default 'linear'
+    # then you get an unwanted slope in the resulting window
+    # filter the data to get rid of all the high frequency crap
+    window = signal.detrend(low_pass(ts_obj.ts.data[index_00:index_01],
+                                     14,
+                                     55,
+                                     ts_obj.sampling_rate),
+                            type='constant')
+
+    # need to get rid of edge effects
+    edge_median = np.median(np.append(window[0:5], window[-5:]))
+    window[0:3] = edge_median
+    window[-3:] = edge_median
+    avg_window_arr[window_count-1, :] = window
+   
     index_00 += window_len
     index_01 += window_len
     window_count += 1
-            
-avg_window = avg_window/window_count
 
-## need to figure out a way to scale the noise to match the data
+avg_window = np.median(avg_window_arr, axis=0)
 
-## make sure the ends meet so there are no weird artifacts
-ends = np.median([avg_window[0:11], avg_window[-11:]])
-
-avg_window[0:10] = np.median(avg_window[0:11])
-avg_window[-10:] = np.median(avg_window[-11:])
+## try to fit the periodic noise to the data
+#class PeriodicNoise(object):
+#    def __init__(self, periodic_noise, t):
+#        self.periodic_noise = periodic_noise
+#        self.t = t
+#        self.interpolate_noise()
+#        
+#    def interpolate_noise(self):
+#        self.noise_interp = interpolate.interp1d(self.t, self.periodic_noise)
+#        
+#    def func(self, new_t, a):
+#        return a*self.noise_interp(new_t)
 #
-#noise = 
-
-
-## get windows, being sure to over lap so to catch the full wave form
-#index_list = []
-#for ii in range(num_windows):
-#    if ii == 0:
-#        index_00 = 0
-#        index_01 = window_len+window_overlap
-#        windows[ii, window_overlap:] = ts_filt[index_00:index_01]
-#    else:
-#        index_00 = ii*window_len-window_overlap
-#        index_01 = (ii+1)*window_len+window_overlap
-#        windows[ii, :] = ts_filt[index_00:index_01]
-#    index_list.append([index_00, index_01])
+#PN = PeriodicNoise(avg_window, t_arr[0:window_len])
+#a_num = 50
+#da = window_num/a_num
+#a_arr = np.zeros(a_num)
+#for ii, aa in enumerate(np.arange(0, window_num-da, da)):
+#    p_obj, p_cov = optimize.curve_fit(PN.func, 
+#                                      t_arr[0:window_len],  
+#                                      avg_window_arr[aa])
+#    a_arr[ii] = p_obj[0]
 #
-## align the windows through correlation
-#avg_window = np.zeros(window_width)
-#for window in windows[1:]:
-#    lag_shift = -1*get_max_correlation(windows[1], window)
+#multiplier = a_arr.max()
+## make a periodic noise signal
+#pn = np.zeros(ts_obj.ts.data.size)
 #
-#    # positive shift    
-#    if lag_shift >= 0:     
-#        avg_window[0:window_width-lag_shift] += window[lag_shift:]
-#    elif lag_shift < 0:
-#        avg_window[lag_shift:] += window[:-lag_shift]
+#index_00 = 0
+#index_01 = window_len
+#
+#window_count = 1
+#while index_01 < n:
+#    pn[index_00:index_01] = avg_window*multiplier
+#   
+#    index_00 += window_len
+#    index_01 += window_len
+#    window_count += 1
 #    
-## compute average
-#avg_window = avg_window/(num_windows-1)
+#index_diff = n-index_00
+#pn[index_00:] = window[0:index_diff]        
 #
-## correlate the window with the time series to get the delta functions
-#xc = signal.correlate(ts_filt, avg_window)[window_width:]
-#xc[np.where(xc < 0.5)] = 0
-#
-## get delta functions
-#deltas = np.zeros_like(ts_filt)
-#for ii, index in enumerate(index_list):
-#    xc_window = xc[index[0]:index[1]]
-#    d_index = xc_window.argmax()+ii*window_width
-#    deltas[d_index] = 1
-#    
-#noise = signal.fftconvolve(avg_window, deltas)[0:n]
-#
-#ts_clean = ts_filt-noise
-
-
-
-
-
-
-#spec = plot_spectrogram.PlotTF(ts_filt, 
-#                               **{'df':256, 
-#                                 'time_units': 'sec',
-#                                 'tstep':8,
-#                                 'plot_type':'all',
-#                                 'font_size':9})
-
-#ft = np.fft.fft(ts_obj.ts[0:n])
-#f = np.fft.fftfreq(n, 1./ts_obj.sampling_rate)
-#
-#fig = plt.figure()
-#
-#ax = fig.add_subplot(1, 1, 1)
-#ax.loglog(f, abs(ft)**2)
-#ax.set_xlabel('Frequency')
-#ax.set_ylabel('Power')
-#
-##ax2 = fig.add_subplot(2, 1, 2)
-##ax2.plot(np.arange(n)/ts_obj.sampling_rate, ts_obj.ts[0:n])
-##ax2.set_xlabel('time (s)')
-##ax2.set_ylabel('{0}'.format(ts_obj.component))
-#
-#plt.show()
+#new_ts = ts_obj.ts.data-pn
