@@ -88,11 +88,16 @@ while index_01 < n:
                                      55,
                                      ts_obj.sampling_rate),
                             type='constant')
+                            
+    # need to get rid of edge effect
+    edge_polyfit = np.polyfit(np.arange(60), 
+                              np.append(window[-35:-5], window[5:35]), 
+                              3)
 
-    # need to get rid of edge effects
-    edge_median = np.median(np.append(window[0:5], window[-5:]))
-    window[0:3] = edge_median
-    window[-3:] = edge_median
+    edge_polyval = np.polyval(edge_polyfit, np.arange(70))
+    window[-11:] = edge_polyval[24:35]
+    window[0:11] = edge_polyval[35:46]
+    
     avg_window_arr[window_count-1, :] = window
    
     index_00 += window_len
@@ -101,45 +106,45 @@ while index_01 < n:
 
 avg_window = np.median(avg_window_arr, axis=0)
 
-## try to fit the periodic noise to the data
-#class PeriodicNoise(object):
-#    def __init__(self, periodic_noise, t):
-#        self.periodic_noise = periodic_noise
-#        self.t = t
-#        self.interpolate_noise()
-#        
-#    def interpolate_noise(self):
-#        self.noise_interp = interpolate.interp1d(self.t, self.periodic_noise)
-#        
-#    def func(self, new_t, a):
-#        return a*self.noise_interp(new_t)
-#
-#PN = PeriodicNoise(avg_window, t_arr[0:window_len])
-#a_num = 50
-#da = window_num/a_num
-#a_arr = np.zeros(a_num)
-#for ii, aa in enumerate(np.arange(0, window_num-da, da)):
-#    p_obj, p_cov = optimize.curve_fit(PN.func, 
-#                                      t_arr[0:window_len],  
-#                                      avg_window_arr[aa])
-#    a_arr[ii] = p_obj[0]
-#
-#multiplier = a_arr.max()
-## make a periodic noise signal
-#pn = np.zeros(ts_obj.ts.data.size)
-#
-#index_00 = 0
-#index_01 = window_len
-#
-#window_count = 1
-#while index_01 < n:
-#    pn[index_00:index_01] = avg_window*multiplier
-#   
-#    index_00 += window_len
-#    index_01 += window_len
-#    window_count += 1
-#    
-#index_diff = n-index_00
-#pn[index_00:] = window[0:index_diff]        
-#
-#new_ts = ts_obj.ts.data-pn
+# try to fit the periodic noise to the data
+class PeriodicNoise(object):
+    def __init__(self, periodic_noise, t):
+        self.periodic_noise = periodic_noise
+        self.t = t
+        self.interpolate_noise()
+        
+    def interpolate_noise(self):
+        self.noise_interp = interpolate.interp1d(self.t, self.periodic_noise)
+        
+    def func(self, new_t, a):
+        return a*self.noise_interp(new_t)
+
+PN = PeriodicNoise(avg_window, t_arr[0:window_len])
+a_num = 20
+da = window_num/a_num
+a_arr = np.zeros(a_num)
+for ii, aa in enumerate(np.arange(0, window_num-da, da)):
+    p_obj, p_cov = optimize.curve_fit(PN.func, 
+                                      t_arr[0:window_len],  
+                                      avg_window_arr[aa])
+    a_arr[ii] = p_obj[0]
+
+multiplier = a_arr.max()
+# make a periodic noise signal
+pn = np.zeros(ts_obj.ts.data.size)
+
+index_00 = 0
+index_01 = window_len
+
+window_count = 1
+while index_01 < n:
+    pn[index_00:index_01] = avg_window*multiplier
+   
+    index_00 += window_len
+    index_01 += window_len
+    window_count += 1
+    
+index_diff = n-index_00
+pn[index_00:] = window[0:index_diff]        
+
+new_ts = ts_obj.ts.data-pn

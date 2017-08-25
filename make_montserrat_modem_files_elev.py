@@ -20,7 +20,7 @@ data_fn = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv04_dr\mont_modem
 model_fn = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv04_dr\mont_base.rho"
 
 # path to save files to
-sv_path = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv04_dr"
+sv_path = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv05_dr"
 
 if not os.path.join(sv_path):
     os.mkdir(sv_path)
@@ -50,50 +50,53 @@ m_obj.read_model_file(model_fn)
 
 d_obj = modem.Data()
 d_obj.read_data_file(data_fn)
-mont_model_center = (d_obj.center_point.east+800, 
+mont_model_center = (d_obj.center_point.east+1000, 
                      d_obj.center_point.north+2900)
+                     
+m_obj.add_topography_to_model(dem_fn, 
+                              model_center=mont_model_center,
+                              cell_size=dem_cell_size,
+                              elev_cell=30)
 
-### 1.) read in the dem and center it onto the resistivity model 
-e_east, e_north, elevation = modem.read_dem_ascii(dem_fn, cell_size=dem_cell_size, 
-                                        model_center=mont_model_center, 
-                                        rot_90=0)
-      
-### 1b) need to remove the non data points and set them to the minimum value
-### because they are usually at the edges of the grid.                                   
-elevation[np.where(elevation == -9999.0)] = elevation[np.where(elevation != -9999.0)].min()
-
-#### 1c) read in bathymetry data
-#b_east, b_north, bathymetry = modem.read_dem_ascii(bathym_fn, 
-#                                                   cell_size=bathym_cell_size,
-#                                                   model_center=mont_model_center,
-#                                                   rot_90=0)
-                                                   
-### 2a) interpolate the elevation model onto the model grid
-m_elev =  modem.interpolate_elevation(e_east, 
-                                      e_north, 
-                                      elevation, 
-                                      m_obj.grid_east, 
-                                      m_obj.grid_north, 
-                                      pad=1)
-                                      
-### 2b) 
-
-### 2c) need to merge the two together  can't interpolate bathymetry, its too
-### large, need to think of a more clever way to add in long distance 
-### bathymetry.  Maybe interpolate onto the coarser grid of the padding cells
-### then add it to m_elev?
-
-### 3.) make a resistivity model that incoorporates topography
-res_mod_elev, elev_nodes_z =  modem.make_elevation_model(m_elev, m_obj.nodes_z, 
-                                                         elevation_cell=elev_cell,
-                                                         fill_res=sm_res) 
+#### 1.) read in the dem and center it onto the resistivity model 
+#e_east, e_north, elevation = modem.read_dem_ascii(dem_fn, cell_size=dem_cell_size, 
+#                                        model_center=mont_model_center, 
+#                                        rot_90=0)
+#      
+#### 1b) need to remove the non data points and set them to the minimum value
+#### because they are usually at the edges of the grid.                                   
+#elevation[np.where(elevation == -9999.0)] = elevation[np.where(elevation != -9999.0)].min()
+#
+##### 1c) read in bathymetry data
+##b_east, b_north, bathymetry = modem.read_dem_ascii(bathym_fn, 
+##                                                   cell_size=bathym_cell_size,
+##                                                   model_center=mont_model_center,
+##                                                   rot_90=0)
+#                                                   
+#### 2a) interpolate the elevation model onto the model grid
+#m_elev =  modem.interpolate_elevation(e_east, 
+#                                      e_north, 
+#                                      elevation, 
+#                                      m_obj.grid_east, 
+#                                      m_obj.grid_north, 
+#                                      pad=1)
+#                                      
+#### 2b) 
+#
+#### 2c) need to merge the two together  can't interpolate bathymetry, its too
+#### large, need to think of a more clever way to add in long distance 
+#### bathymetry.  Maybe interpolate onto the coarser grid of the padding cells
+#### then add it to m_elev?
+#
+#### 3.) make a resistivity model that incoorporates topography
+#res_mod_elev, elev_nodes_z =  modem.make_elevation_model(m_elev, m_obj.nodes_z, 
+#                                                         elevation_cell=elev_cell,
+#                                                         fill_res=sm_res) 
 # there is data missing in the res mod so it puts sea water down to 
 # unreasonable depths, set those cells to starting model resistivity                                                         
-res_mod_elev[:, :, 43:][np.where(res_mod_elev[:, :, 43:] == .3)] = sm_res
+m_obj.res_model[:, :, 43:][np.where(m_obj.res_model[:, :, 43:] == .3)] = sm_res
 
 ### 4.) write new model file  
-m_obj.nodes_z = elev_nodes_z
-m_obj.res_model = res_mod_elev
 m_obj.model_fn = None
 m_obj.write_model_file(**{'save_path':sv_path,
                           'model_fn_basename':'mont_topography.rho'})
