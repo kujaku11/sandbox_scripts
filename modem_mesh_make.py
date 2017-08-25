@@ -76,7 +76,11 @@ grid_north = np.append(np.append(-1*padding_north[::-1]+station_south,
 
 
 
-
+m = np.logspace(np.log10(10), 
+            np.log10(50000-np.logspace(np.log10(10), 
+            np.log10(50000), 
+            num=30)[-2]), 
+            num=30-5)
 
 
 
