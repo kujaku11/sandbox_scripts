@@ -2,10 +2,13 @@
 """
 Created on Mon Apr 20 11:02:57 2015
 
+Add topography to ModEM models and data file, and covariance
+
 @author: jpeacock
 """
-
-
+#==============================================================================
+# Imports
+#==============================================================================
 import os
 import mtpy.modeling.modem as modem
 
@@ -25,28 +28,38 @@ if not os.path.exists(sv_path):
 #==============================================================================
 # Input Parameters
 #==============================================================================
+# number of cells to make elevation similar from edge of model
 pad = 5
+
+# cell size of dem
 dem_cell_size = 200.
+
+# air resistivity
 res_air = 1e12
+
+# size of elevation cells
 elev_cell = 30
 
 ##==============================================================================
 ##  Do all the work
 ##==============================================================================
-
 m_obj = modem.Model()
 m_obj.read_model_file(model_fn)
 
 d_obj = modem.Data()
 d_obj.read_data_file(data_fn)
+
+# sometimes you need to adjust the center of the model, distance is in meters
 model_center = (d_obj.center_point.east-500, 
                      d_obj.center_point.north+200)
 
+# add topography to model, can set a max elevation to remove isolated peaks
+# which can cause errors in ModEM
 new_model_fn = m_obj.add_topography_to_model(dem_fn,
                                               model_fn, 
                                               model_center=model_center,
-                                              cell_size=200, 
-                                              elev_cell=30,
+                                              cell_size=dem_cell_size, 
+                                              elev_cell=elev_cell,
                                               elev_max=1260.)
                                               
 
@@ -63,9 +76,11 @@ cov.smoothing_z = 0.4
 cov.save_path = sv_path
 cov.write_covariance_file(model_fn=new_model_fn)
 
-#m_obj.write_vtk_file()
-#d_obj.write_vtk_station_file()
+# make paraview files if needed
+m_obj.write_vtk_file()
+d_obj.write_vtk_station_file()
 
+# plot the model and make sure everything looks good
 mm = modem.ModelManipulator(model_fn=new_model_fn, 
                             data_fn=n_dfn, 
                             depth_index=42, 
