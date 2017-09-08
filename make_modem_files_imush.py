@@ -62,14 +62,18 @@ inv_period_list = np.logspace(-np.log10(300), np.log10(10000), num=23)
 data_obj = modem.Data(edi_list=s_edi_list,
                       period_list=inv_period_list)
 data_obj.error_type_z = 'egbert_floor'
-data_obj.error_value_z = 3.0
-data_obj.error_value_tipper = .03
+data_obj.error_value_z = 7.0
+data_obj.error_value_tipper = .04
 data_obj.error_type_tipper = 'abs_floor'
+data_obj.inv_mode = '2'
 
+##--> here is where you can rotate the data
+data_obj.write_data_file(save_path=save_path, 
+                         fn_basename="imush_modem_data_err{0:02.0f}.dat".format(data_obj.error_value_z))
 
 #--> here is where you can rotate the data
-data_obj.write_data_file(save_path=save_path, 
-                         fn_basename="imush_modem_data_err{0:02.0f}_tip03_new.dat".format(data_obj.error_value_z))
+#data_obj.write_data_file(save_path=save_path, 
+#                         fn_basename="imush_modem_data_tip{0:02.0f}.dat".format(data_obj.error_value_tipper*100))
 
 #==============================================================================
 # make the covariance file
