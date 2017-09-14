@@ -55,13 +55,13 @@ if not os.path.exists(npy_fn):
         occam_sv_path = os.path.join(save_dir, mt_obj.station)
         iter_fn = os.path.join(occam_sv_path, 'Det_{0}.iter'.format(iter_num))
         resp_fn = os.path.join(occam_sv_path, 'Det_{0}.resp'.format(iter_num))
-        model_fn = os.path.join(occam_sv_path, 'Model1D')
+        m_fn = os.path.join(occam_sv_path, 'Model1D')
         
         # check to see if inversions already exist
         if os.path.exists(iter_fn):
                                     
             ocm = occam1d.Model()
-            ocm.read_iter_file(iter_fn, model_fn)
+            ocm.read_iter_file(iter_fn, m_fn)
             oned_res_arr[dd]['station'] = mt_obj.station
             oned_res_arr[dd]['grid_east'] = mt_obj.grid_east
             oned_res_arr[dd]['grid_north'] = mt_obj.grid_north
@@ -69,7 +69,7 @@ if not os.path.exists(npy_fn):
             
             # need to find elevation
             depth_index = np.where(mdm.grid_z == mt_obj.grid_elev)[0][0]
-            depth_res = np.repeat(1E12, depth_index)
+            depth_res = np.repeat(fill_res, depth_index)
             depth_res = np.append(depth_res, ocm.model_res[2:, 1])
             oned_res_arr[dd]['res'] = depth_res[0:mdm.res_model.shape[2]+1]
             
@@ -128,7 +128,7 @@ if not os.path.exists(npy_fn):
                 
                 # need to find elevation
                 depth_index = np.where(mdm.grid_z == mt_obj.grid_elev)[0][0]
-                depth_res = np.repeat(1E12, depth_index)
+                depth_res = np.repeat(fill_res, depth_index)
                 depth_res = np.append(depth_res, ocm.model_res[2:, 1])
                 oned_res_arr[dd]['res'] = depth_res[0:mdm.res_model.shape[2]+1]
                 if plot:
@@ -258,7 +258,10 @@ for n_index in range(new_res.shape[0]):
 #==============================================================================
 # finally smooth the result
 #==============================================================================
-#new_res = ndimage.gaussian_filter(new_res, 1.5)
+new_res = ndimage.gaussian_filter(new_res, 1.5)
+new_res = 10**new_res
+new_res[np.where(mdm.res_model > 1E9)] = 1E12
+
 
 mdm.res_model = new_res
 mdm.write_model_file(model_fn_basename=r"geysers_1d_sm.rho")
