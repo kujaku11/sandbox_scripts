@@ -26,6 +26,7 @@ save_dir = os.path.dirname(data_fn)
 opath = 'c:\\MinGW32-xy\\Peacock\\occam\\occam1d.exe'
 iter_num = 4
 fill_res = np.log10(50.)
+plot = False
 
 #==============================================================================
 # Read data and model files
@@ -54,27 +55,35 @@ if not os.path.exists(npy_fn):
         occam_sv_path = os.path.join(save_dir, mt_obj.station)
         iter_fn = os.path.join(occam_sv_path, 'Det_{0}.iter'.format(iter_num))
         resp_fn = os.path.join(occam_sv_path, 'Det_{0}.resp'.format(iter_num))
+        model_fn = os.path.join(occam_sv_path, 'Model1D')
+        
         # check to see if inversions already exist
         if os.path.exists(iter_fn):
                                     
             ocm = occam1d.Model()
-            ocm.read_iter_file(iter_fn)
+            ocm.read_iter_file(iter_fn, model_fn)
             oned_res_arr[dd]['station'] = mt_obj.station
             oned_res_arr[dd]['grid_east'] = mt_obj.grid_east
             oned_res_arr[dd]['grid_north'] = mt_obj.grid_north
             oned_res_arr[dd]['grid_elev'] = mt_obj.grid_elev
-            oned_res_arr[dd]['res'] = ocm.model_res[2:, 1]
             
-            pr = occam1d.Plot1DResponse(data_te_fn=os.path.join(occam_sv_path,
-                                                                'Occam1d_DataFile_DET.dat'),
-                                        model_fn=os.path.join(occam_sv_path,
-                                                                'Model1D'),
-                                        resp_te_fn=resp_fn,
-                                        iter_te_fn=iter_fn, 
-                                        depth_limits=(0, 20))
-            pr.save_figure(os.path.join(save_dir,
-                                        '{0}_1d_resp.png'.format(mt_obj.station)),
-                           fig_dpi=900)
+            # need to find elevation
+            depth_index = np.where(mdm.grid_z == mt_obj.grid_elev)[0][0]
+            depth_res = np.repeat(1E12, depth_index)
+            depth_res = np.append(depth_res, ocm.model_res[2:, 1])
+            oned_res_arr[dd]['res'] = depth_res[0:mdm.res_model.shape[2]+1]
+            
+            if plot:
+                pr = occam1d.Plot1DResponse(data_te_fn=os.path.join(occam_sv_path,
+                                                                    'Occam1d_DataFile_DET.dat'),
+                                            model_fn=os.path.join(occam_sv_path,
+                                                                    'Model1D'),
+                                            resp_te_fn=resp_fn,
+                                            iter_te_fn=iter_fn, 
+                                            depth_limits=(0, 20))
+                pr.save_figure(os.path.join(save_dir,
+                                            '{0}_1d_resp.png'.format(mt_obj.station)),
+                               fig_dpi=900)
         else:
             mt_obj.Z.compute_resistivity_phase()
             rho = mt_obj.Z.resistivity
@@ -116,17 +125,22 @@ if not os.path.exists(npy_fn):
                 oned_res_arr[dd]['grid_east'] = mt_obj.grid_east
                 oned_res_arr[dd]['grid_north'] = mt_obj.grid_north
                 oned_res_arr[dd]['grid_elev'] = mt_obj.grid_elev
-                oned_res_arr[dd]['res'] = ocm.model_res[2:, 1]
                 
-                pr = occam1d.Plot1DResponse(data_te_fn=ocd.data_fn,
-                                            model_fn=ocm.model_fn,
-                                            resp_te_fn=resp_fn,
-                                            iter_te_fn=iter_fn, 
-                                            depth_limits=(0, 20))
-                pr.save_figure(os.path.join(save_dir,
-                                            '{0}_1d_resp.png'.format(mt_obj.station)),
-                               fig_dpi=900)
-                    
+                # need to find elevation
+                depth_index = np.where(mdm.grid_z == mt_obj.grid_elev)[0][0]
+                depth_res = np.repeat(1E12, depth_index)
+                depth_res = np.append(depth_res, ocm.model_res[2:, 1])
+                oned_res_arr[dd]['res'] = depth_res[0:mdm.res_model.shape[2]+1]
+                if plot:
+                    pr = occam1d.Plot1DResponse(data_te_fn=ocd.data_fn,
+                                                model_fn=ocm.model_fn,
+                                                resp_te_fn=resp_fn,
+                                                iter_te_fn=iter_fn, 
+                                                depth_limits=(0, 20))
+                    pr.save_figure(os.path.join(save_dir,
+                                                '{0}_1d_resp.png'.format(mt_obj.station)),
+                                   fig_dpi=900)
+                        
         
             except IOError:
                 print '-'*50
@@ -244,7 +258,7 @@ for n_index in range(new_res.shape[0]):
 #==============================================================================
 # finally smooth the result
 #==============================================================================
-new_res = ndimage.gaussian_filter(new_res, 1.5)
+#new_res = ndimage.gaussian_filter(new_res, 1.5)
 
 mdm.res_model = new_res
 mdm.write_model_file(model_fn_basename=r"geysers_1d_sm.rho")
