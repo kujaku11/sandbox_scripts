@@ -7,64 +7,62 @@ Created on Wed Jul 19 16:28:19 2017
 import numpy as np
 #import matplotlib.pyplot as plt
 
-import mtpy.core.ts as mtts
+#import mtpy.core.ts as mtts
 import mtpy.usgs.zen as zen
 #import mtpy.imaging.plotspectrogram as plot_spectrogram
-#import mtpy.processing.filter as mtfilter
+import mtpy.processing.filter as mtfilter
 import scipy.signal as signal
 import scipy.interpolate as interpolate
 import scipy.optimize as optimize
 import pandas as pd
-
-def read_z3d(fn):
-    z1 = zen.Zen3D(fn)
-    z1.read_z3d()
-    z1.station = '{0}{1}'.format(z1.metadata.line_name, z1.metadata.rx_xyz0[0:2])
-    
-    #h5_fn = r"d:\Peacock\MTData\Umatilla\hf05\hf05_20170517_193018_256_EX.h5"
-    ts_obj = mtts.MT_TS()
-    
-    ts_obj.ts = pd.DataFrame({'data': z1.convert_counts()})
-    ts_obj.station = z1.station
-    ts_obj.sampling_rate = float(z1.df)
-    ts_obj.start_time_utc = z1.zen_schedule
-    ts_obj.n_samples = int(z1.time_series.size)
-    ts_obj.component = z1.metadata.ch_cmp
-    ts_obj.coordinate_system = 'geomagnetic'
-    ts_obj.dipole_length = float(z1.metadata.ch_length)
-    ts_obj.azimuth = float(z1.metadata.ch_azimuth)
-    ts_obj.units = 'mV'
-    ts_obj.lat = z1.header.lat
-    ts_obj.lon = z1.header.long
-    ts_obj.datum = 'WGS84'
-    ts_obj.data_logger = 'Zonge Zen'
-    ts_obj.instrument_num = None
-    ts_obj.calibration_fn = None
-    ts_obj.declination = 3.6
-    
-    return ts_obj
+#
+#def read_z3d(fn):
+#    z1 = zen.Zen3D(fn)
+#    z1.read_z3d()
+#    z1.station = '{0}{1}'.format(z1.metadata.line_name, z1.metadata.rx_xyz0[0:2])
+#    
+#    #h5_fn = r"d:\Peacock\MTData\Umatilla\hf05\hf05_20170517_193018_256_EX.h5"
+#    ts_obj = mtts.MT_TS()
+#    
+#    ts_obj.ts = pd.DataFrame({'data': z1.convert_counts()})
+#    ts_obj.station = z1.station
+#    ts_obj.sampling_rate = float(z1.df)
+#    ts_obj.start_time_utc = z1.zen_schedule
+#    ts_obj.n_samples = int(z1.time_series.size)
+#    ts_obj.component = z1.metadata.ch_cmp
+#    ts_obj.coordinate_system = 'geomagnetic'
+#    ts_obj.dipole_length = float(z1.metadata.ch_length)
+#    ts_obj.azimuth = float(z1.metadata.ch_azimuth)
+#    ts_obj.units = 'mV'
+#    ts_obj.lat = z1.header.lat
+#    ts_obj.lon = z1.header.long
+#    ts_obj.datum = 'WGS84'
+#    ts_obj.data_logger = 'Zonge Zen'
+#    ts_obj.instrument_num = None
+#    ts_obj.calibration_fn = None
+#    ts_obj.declination = 3.6
+#    
+#    return ts_obj
     
 #==============================================================================
 # try to remove pipeline noise 
 #==============================================================================
-def get_max_correlation(x, y):
-    xc = signal.correlate(x, y)
-    lag = xc.argmax()-len(x)+1
-    return lag
-    
-def low_pass(f, low_pass_freq, cutoff_freq, sampling_rate):
-    nyq = .5*sampling_rate
-    filt_order, wn = signal.buttord(low_pass_freq/nyq, 
-                                    cutoff_freq/nyq, 
-                                    3, 40)
-                                    
-    b, a = signal.butter(filt_order, wn, btype='low')
-    f_filt = signal.filtfilt(b, a, f)
-    
-    return f_filt
+#def low_pass(f, low_pass_freq, cutoff_freq, sampling_rate):
+#    nyq = .5*sampling_rate
+#    filt_order, wn = signal.buttord(low_pass_freq/nyq, 
+#                                    cutoff_freq/nyq, 
+#                                    3, 40)
+#                                    
+#    b, a = signal.butter(filt_order, wn, btype='low')
+#    f_filt = signal.filtfilt(b, a, f)
+#    
+#    return f_filt
     
 fn = r"d:\Peacock\MTData\Umatilla\um102\um102_20170606_230518_256_HX.Z3D"
-ts_obj = read_z3d(fn)
+#fn = r"d:\Peacock\MTData\Umatilla\um102\um102_20170606_230018_4096_EX.Z3D"
+z1 = zen.Zen3D()
+ts_obj = z1.read_z3d_to_ts(fn)
+
 n = ts_obj.ts.data.size
 t_arr = np.arange(0, n/ts_obj.sampling_rate, 1./ts_obj.sampling_rate)
 
@@ -83,7 +81,7 @@ while index_01 < n:
     # detrend the data using just the mean, if you use the default 'linear'
     # then you get an unwanted slope in the resulting window
     # filter the data to get rid of all the high frequency crap
-    window = signal.detrend(low_pass(ts_obj.ts.data[index_00:index_01],
+    window = signal.detrend(mtfilter.low_pass(ts_obj.ts.data[index_00:index_01],
                                      14,
                                      55,
                                      ts_obj.sampling_rate),
@@ -120,9 +118,9 @@ class PeriodicNoise(object):
         return a*self.noise_interp(new_t)
 
 PN = PeriodicNoise(avg_window, t_arr[0:window_len])
-a_num = 20
-da = window_num/a_num
-a_arr = np.zeros(a_num)
+a_num = 20.
+da = int(np.ceil(window_num/a_num))
+a_arr = np.zeros(int(a_num))
 for ii, aa in enumerate(np.arange(0, window_num-da, da)):
     p_obj, p_cov = optimize.curve_fit(PN.func, 
                                       t_arr[0:window_len],  
@@ -148,3 +146,6 @@ index_diff = n-index_00
 pn[index_00:] = window[0:index_diff]        
 
 new_ts = ts_obj.ts.data-pn
+
+ts_obj.ts = pd.DataFrame({'data':new_ts})
+ts_obj.write_ascii_file(fn_ascii=fn[:-6]+'.{0}'.format(ts_obj.component.upper()))

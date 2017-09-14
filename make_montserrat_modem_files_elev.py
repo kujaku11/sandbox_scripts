@@ -22,7 +22,7 @@ model_fn = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv04_dr\mont_base
 # path to save files to
 sv_path = r"c:\Users\jpeacock\Documents\Montserrat\modem_inv\Inv05_dr"
 
-if not os.path.join(sv_path):
+if not os.path.exists(sv_path):
     os.mkdir(sv_path)
 #==============================================================================
 # Input Parameters
@@ -50,7 +50,7 @@ m_obj.read_model_file(model_fn)
 
 d_obj = modem.Data()
 d_obj.read_data_file(data_fn)
-mont_model_center = (d_obj.center_point.east+1000, 
+mont_model_center = (d_obj.center_point.east+1200, 
                      d_obj.center_point.north+2900)
                      
 m_obj.add_topography_to_model(dem_fn, 
@@ -102,11 +102,13 @@ m_obj.write_model_file(**{'save_path':sv_path,
                           'model_fn_basename':'mont_topography.rho'})
 
 #write new data file 
-
-                      
-n_dfn = modem.change_data_elevation(d_obj.data_fn, m_obj.model_fn, 
-                                    new_data_fn=os.path.join(sv_path, 
-                                                             'mont_data_elev_shift.dat'))
+d_obj.center_stations(m_obj.model_fn)                     
+d_obj.change_data_elevation(m_obj.model_fn)
+ 
+n_dfn = d_obj.write_data_file(fn_basename=r"mont_data_topo_c.dat",
+                              compute_error=False,
+                              fill=False,
+                              elevation=True)                                   
 
 # write covariance file
 cov = modem.Covariance()

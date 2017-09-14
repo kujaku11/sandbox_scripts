@@ -13,12 +13,15 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\DR"
-save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv02_dr"
+edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\SS"
+save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03"
 
 fn_stem = 'geysers'
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
               if ss.endswith('.edi')]
+                  
+s_edi_list.remove(os.path.join(edi_path, 'gz05.edi'))
+#s_edi_list.remove(os.path.join(edi_path, 'gz31.edi'))
                   
 if not os.path.exists(save_path):
     os.mkdir(save_path)
@@ -31,7 +34,7 @@ data_obj = modem.Data(edi_list=s_edi_list,
                       period_list=inv_period_list)
 
 data_obj.error_type_z = 'eigen_floor'
-data_obj.error_value_z = 7.0
+data_obj.error_value_z = 3.0
 data_obj.inv_mode = '2'
 
 #--> here is where you can rotate the data
