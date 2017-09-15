@@ -18,15 +18,15 @@ import mtpy.modeling.occam1d as occam1d
 #==============================================================================
 # Inputs
 #==============================================================================
-model_fn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_1d_sm_topo_ocean.rho"
-data_fn = r"C:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_data_err03_tec.dat"
+model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_sm.rho"
+data_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_modem_data_err03.dat"
 npy_fn = os.path.join(os.path.dirname(model_fn), 'np_res_array_1d.npy')
 
 save_dir = os.path.dirname(data_fn)
 opath = 'c:\\MinGW32-xy\\Peacock\\occam\\occam1d.exe'
 iter_num = 4
-fill_res = np.log10(50.)
-plot = False
+fill_res = np.log10(100.)
+plot = True
 
 #==============================================================================
 # Read data and model files
@@ -272,8 +272,8 @@ new_res[np.where(mdm.res_model > 1E9)] = 1E12
 new_res[np.where(mdm.res_model < .31)] = .3
 
 mdm.res_model = new_res
-mdm.write_model_file(model_fn_basename=r"geysers_1d_sm_smooth.rho")
-mdm.write_vtk_file(vtk_fn_basename='gz_1d_sm_smooth')
+mdm.write_model_file(model_fn_basename=r"hf_1d_sm_smooth.rho")
+mdm.write_vtk_file(vtk_fn_basename='hf_1d_sm_smooth')
     
 
     
