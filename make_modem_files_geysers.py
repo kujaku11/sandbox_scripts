@@ -14,6 +14,7 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
+<<<<<<< HEAD
 # path to edi files
 edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\DR"
 
@@ -21,6 +22,18 @@ edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\DR"
 save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv02_dr"
 
 # make the save folder if it doesn't already exist
+=======
+edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\SS"
+save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03"
+
+fn_stem = 'geysers'
+s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
+              if ss.endswith('.edi')]
+                  
+s_edi_list.remove(os.path.join(edi_path, 'gz05.edi'))
+#s_edi_list.remove(os.path.join(edi_path, 'gz31.edi'))
+                  
+>>>>>>> 2dbb49e0d3a3b750b9f6d3c196bd630554021b22
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 
@@ -43,6 +56,7 @@ data_obj = modem.Data(edi_list=s_edi_list,
 
 # set the error type for Z and T
 data_obj.error_type_z = 'eigen_floor'
+<<<<<<< HEAD
 data_obj.error_value_z = 7.0
 
 data_obj.error_type_tipper = 'abs_floor'
@@ -50,6 +64,10 @@ data_obj.error_value_tipper = .03
 
 # set inversion mode
 data_obj.inv_mode = '1'
+=======
+data_obj.error_value_z = 3.0
+data_obj.inv_mode = '2'
+>>>>>>> 2dbb49e0d3a3b750b9f6d3c196bd630554021b22
 
 #--> here is where you can rotate the data
 data_obj.rotation_angle = 0
