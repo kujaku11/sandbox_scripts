@@ -8,6 +8,10 @@ Created on Wed Jul 19 16:28:19 2017
 # Imports
 #==============================================================================
 import os
+import sys
+from cStringIO import StringIO
+import subprocess
+
 import numpy as np
 import datetime
 import mtpy.usgs.zen as zen
@@ -35,6 +39,10 @@ def remove_pipeline_noise(fn, noise_per, pad_edge=0.10, pad_width=0.03,
     
     # number of samples
     n = z1.ts_obj.ts.data.size
+    
+    # filter out powerline noise
+    if z1.df == 4096:
+        z1.apply_adaptive_notch_filter()
     
     # relative time array to correspond with data
     t_arr = np.arange(0, n/z1.ts_obj.sampling_rate, 1./z1.ts_obj.sampling_rate)
@@ -89,8 +97,9 @@ def remove_pipeline_noise(fn, noise_per, pad_edge=0.10, pad_width=0.03,
     # for robustness
     avg_window = np.median(avg_window_arr, axis=0)
     
-    if np.median(avg_window) < tol:
+    if abs(np.median(avg_window)) < tol:
         z1.write_ascii_mt_file()
+        print '{0:.3g} < {1:3g}'.format(np.median(avg_window), tol)
         raise PipelineError('Average window is just noise, skipping {0}'.format(fn))
     #==============================================================================
     # For some reason the median window does not come out with the same amplitude
@@ -152,19 +161,42 @@ def remove_pipeline_noise(fn, noise_per, pad_edge=0.10, pad_width=0.03,
     time_diff = et-st
     
     print '==> Took: {0:.2f} seconds'.format(time_diff.seconds+time_diff.microseconds*1E-6)
+
+#==============================================================================
+# this should capture all the print statements from zen
+class Capturing(list):
+    def __enter__(self):
+        self._stdout = sys.stdout
+        sys.stdout = self._stringio = StringIO()
+        return self
+    def __exit__(self, *args):
+        self.extend(self._stringio.getvalue().splitlines())
+        sys.stdout = self._stdout
+
     
 #==============================================================================
 # Loop through files
 #==============================================================================
-dir_path = r"d:\Peacock\MTData\Umatilla\um102"
-
 # noise period, this is something you will have to find, should make a 
 # function to do it automatically
 noise_period = 5 
 
-for fn in [os.path.join(dir_path, ff) for ff in os.listdir(dir_path) if ff.endswith('.Z3D')]:
-    try:
-        remove_pipeline_noise(fn, noise_period)
-    except PipelineError:
-        print '-'*72
-        print 'Did not remove noise from {0}'.format(fn)
+dir_path = r"d:\Peacock\MTData\Umatilla"
+
+folders = ['um{0}'.format(ss) for ss in [134]]
+
+for station_folder in folders:
+    if 'um' in station_folder:
+        with Capturing() as output:
+            station_path = os.path.join(dir_path, station_folder)
+            for fn in os.listdir(station_path):
+                if fn.endswith('Z3D'):
+                    fn = os.path.join(station_path, fn)
+                    try:
+                        remove_pipeline_noise(fn, noise_period, tol=5e-6)
+                    except PipelineError:
+                        print '-'*72
+                        print 'Did not remove noise from {0}'.format(fn)
+        log_fn = os.path.join(station_path, 'Filter.log')
+        with open(log_fn, 'w') as log_fid:
+            log_fid.write('\n'.join(output))
