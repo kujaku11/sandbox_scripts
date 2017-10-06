@@ -14,24 +14,16 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited\SS"
-save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03"
+edi_path = r"d:\Peacock\MTData\Umatilla\EDI_Files_birrp_field\Edited"
+save_path = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv_02"
 
-fn_stem = 'geysers'
+fn_stem = 'umatilla'
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
               if ss.endswith('.edi')]
                   
-
-
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 
-# all modem files with start with this
-fn_stem = 'geysers'
-
-# make a list of edi files
-s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
-              if ss.endswith('.edi')]
 #==============================================================================
 # Make the data file
 #==============================================================================
@@ -51,24 +43,45 @@ data_obj.error_type_tipper = 'abs_floor'
 data_obj.error_value_tipper = .03
 
 # set inversion mode
-data_obj.inv_mode = '1'
+data_obj.inv_mode = '2'
 
 #--> here is where you can rotate the data
 data_obj.rotation_angle = 0
 
 # write out the data file
-data_obj.write_data_file(save_path=save_path, 
-                         fn_basename="{2}_modem_data_err{0:02.0f}_tip{1:02.0f}.dat".format(data_obj.error_value_z,
-                                        data_obj.error_value_tipper*100, fn_stem))
-
+if data_obj.inv_mode == '2':
+    data_obj.write_data_file(save_path=save_path,
+                          fn_basename='{0}_modem_data_ef{1:02.0f}.dat'.format(
+                                          fn_stem, 
+                                          data_obj.error_value_z),
+                          fill=True,
+                          compute_error=True,
+                          elevation=False)
+elif data_obj.inv_mode == '5':
+    data_obj.write_data_file(save_path=save_path,
+                          fn_basename='{0}_modem_data_tip{1:02.0f}.dat'.format(
+                                          fn_stem, 
+                                          data_obj.error_value_tipper*100),
+                          fill=True,
+                          compute_error=True,
+                          elevation=False)
+else:
+    data_obj.write_data_file(save_path,
+                          fn_basename='{0}_modem_data_ef{1:02.0f}_tip{2:02.0f}.dat'.format(
+                                          fn_stem, 
+                                          data_obj.error_value_z,
+                                          data_obj.error_value_tipper*100),
+                          fill=True,
+                          compute_error=True,
+                          elevation=False)
 #==============================================================================
 # First make the mesh
 #==============================================================================
 mod_obj = modem.Model(data_obj.station_locations)
 
 # cell size inside the station area
-mod_obj.cell_size_east = 200
-mod_obj.cell_size_north = 200
+mod_obj.cell_size_east = 500
+mod_obj.cell_size_north = 500
 
 # number of cell_size cells outside the station area.  This is to reduce the
 # effect of changin cell sized outside the station area
@@ -92,13 +105,13 @@ mod_obj.z_target_depth = 30000
 mod_obj.pad_z = 4
 
 # number of layers
-mod_obj.n_layers = 30
+mod_obj.n_layers = 40
 
 # thickness of 1st layer.  If you are not using topography or the topography 
 # in your area is minimal, this is usually around 5 or 10 meters.  If the 
 # topography is severe in the model area then a larger number is necessary to 
 # minimize the number of extra layers.
-mod_obj.z1_layer = 30
+mod_obj.z1_layer = 20
 
 #--> here is where you can rotate the mesh
 mod_obj.mesh_rotation_angle = 0
@@ -127,7 +140,7 @@ cfg_obj.add_dict(obj=data_obj)
 cfg_obj.add_dict(obj=mod_obj)
 cfg_obj.add_dict(obj=cov)
 cfg_obj.write_config_file(save_dir=save_path, 
-                          config_fn_basename='Inv02_dr.cfg')
+                          config_fn_basename='inv_02.cfg')
                           
 
 

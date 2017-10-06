@@ -8,7 +8,7 @@ Created on Wed Jul 19 14:39:00 2017
 import os
 import numpy as np
 
-fn_path = r"/mnt/hgfs/MTData/Umatilla/hf11/TS"
+fn_path = r"/mnt/hgfs/MTData/Umatilla/um112/TS"
 
 comp = 'hy'
 
@@ -19,7 +19,9 @@ for fn in fn_list:
     print '-'*40
     print '    Reading {0}'.format(fn)
     with open(fn, 'r') as fid:
-        header = fid.readline()
+        header = []
+        for ii in range(22):
+            header.append(fid.readline())
 
     x = np.loadtxt(fn, skiprows=1)
     x *= -1
@@ -28,7 +30,7 @@ for fn in fn_list:
     print '    <-> Flipped Polarity'
 
     with open(fn, 'w') as fid:
-        fid.write(header)
+        fid.writelines(header)
         fid.write('\n'.join(list(ts)))
 
     print '    Wrote {0}:'.format(fn)             

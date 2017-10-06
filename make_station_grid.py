@@ -7,8 +7,7 @@ Created on Mon Jan 11 10:38:18 2016
 
 import simplekml as skml
 import numpy as np
-import os
-import mtpy.utils.latlongutmconversion as ll2utm
+import mtpy.utils.gis_tools as gis_tools
 
 ###MSH north
 #ll_utm = {'zone':'10T', 
@@ -43,59 +42,24 @@ import mtpy.utils.latlongutmconversion as ll2utm
 #          'easting_max':531800.,
 #          'northing_min':4302600.,
 #          'northing_max':4322900.}
-ll_utm = {'zone':'11T', 
-          'easting_min':364000.,
-          'easting_max':392100.,
-          'northing_min':5040000.,
-          'northing_max':5068300.}
+#ll_utm = {'zone':'11T', 
+#          'easting_min':364000.,
+#          'easting_max':392100.,
+#          'northing_min':5040000.,
+#          'northing_max':5068300.}
 
-spacing_east = 3000.
-spacing_north = 3000.
+## Gabbs valley
+ll_utm = {'zone':'11N', 
+          'easting_min':394800.,
+          'easting_max':402800.,
+          'northing_min':4287500.,
+          'northing_max':4296000.}
+
+spacing_east = 1000.
+spacing_north = 1000.
 dx = 200
 
-#center_east = (ll_utm['easting_max']+ll_utm['easting_min'])/2.
-#center_north = (ll_utm['northing_max']+ll_utm['northing_min'])/2.
-#
-#east = float(center_east)
-#north = float(center_north)
-#count = 0
-#
-#east_list_p = [east]
-#
-#while east < ll_utm['easting_max']:
-#    east += count*dx+spacing_east 
-#    count += 1
-#    east_list_p.append(east)
-#    
-#count = 1
-#east_list_n = []
-#east = float(center_east)
-#
-#while east > ll_utm['easting_min']:
-#    east -= count*dx+spacing_east 
-#    count += 1
-#    east_list_n.append(east)
-#
-#east_arr = np.array(east_list_n[::-1]+east_list_p)    
-#
-#count = 0
-#north_list_p = [north]
-#north = float(center_north)
-#
-#while north < ll_utm['northing_max']:
-#    north += count*dx+spacing_north 
-#    count += 1
-#    north_list_p.append(north)
-#    
-#count = 1
-#north_list_n = []
-#north = float(center_north)
-#while north > ll_utm['northing_min']:
-#    north -= count*dx+spacing_north 
-#    count += 1
-#    north_list_n.append(north)
-#
-#north_arr = np.array(north_list_n[::-1]+north_list_p) 
+ 
 
 east_arr = np.arange(ll_utm['easting_min'], 
                      ll_utm['easting_max']+spacing_east,
@@ -105,18 +69,18 @@ north_arr = np.arange(ll_utm['northing_min'],
                      ll_utm['northing_max']+spacing_east,
                      spacing_east)
                      
-kml_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\umatilla_MT_preliminary_{0:.0f}m.kml".format(spacing_east)
+kml_fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\gabbs_valley_MT_preliminary_{0:.0f}m.kml".format(spacing_east)
 
 kml_obj = skml.Kml()
 count = 0
 for ii, east in enumerate(east_arr):
     for jj, north in enumerate(north_arr):
-#        east += (-east_arr.shape[0]/2.+ii)*dx.
-#        north += (-north_arr.shape[0]/2.+jj)*dx.
-        lat_ii, lon_jj = ll2utm.UTMtoLL(23, north, east, ll_utm['zone'])
-#        kml_obj.newpoint(name='CL{0}{1}'.format(ii, jj),
-#                         coords=[(lon_jj, lat_ii)])
-        kml_obj.newpoint(name='',
+
+        lat_ii, lon_jj = gis_tools.project_point_utm2ll(east, 
+                                                        north, 
+                                                        ll_utm['zone'])
+
+        kml_obj.newpoint(name='GV{0:02}'.format(count),
                          coords=[(lon_jj, lat_ii)])
                          
         count += 1
