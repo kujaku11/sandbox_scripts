@@ -36,23 +36,27 @@ for ii, east in enumerate(model_center_ne[1]-m_obj.grid_east[:-1]):
     lon[ii] = lon_00
 
 #nc_obj = netCDF4.Dataset(m_obj.model_fn[:-4]+'.nc', 'w', format='NETCDF4')
-nc_obj = netCDF4.Dataset(r"c:\Users\jrpeacock\test_00.nc", 'w', format='NETCDF4')
+nc_obj = netCDF4.Dataset(r"c:\Users\jrpeacock\test_01.nc", 'w', format='NETCDF4')
 nc_obj.setncattr('description', 'Resistivity Model from ModEM')
 
 # dimensions
-nc_obj.createDimension('latitude', lat.size)
-nc_obj.createDimension('longitude', lon.size)
-nc_obj.createDimension('depth', m_obj.grid_z.size-1)
+nc_lat = nc_obj.createDimension('latitude', lat.size)
+nc_lon = nc_obj.createDimension('longitude', lon.size)
+nc_depth = nc_obj.createDimension('depth', m_obj.grid_z.size-1)
 
 # variables
-nc_lat = nc_obj.createVariable('latitude', 'f8', ('latitude',))
-nc_lon = nc_obj.createVariable('longitude', 'f8', ('longitude',))
-nc_depth = nc_obj.createVariable('depth', 'f8', ('depth',))
+nc_lats = nc_obj.createVariable('latitude', 'f8', ('latitude',))
+nc_lons = nc_obj.createVariable('longitude', 'f8', ('longitude',))
+nc_depths = nc_obj.createVariable('depth', 'f8', ('depth',))
 nc_res = nc_obj.createVariable('resistivity', 'f8',
                                ('latitude', 'longitude', 'depth'))
-nc_lat[:] = lat
-nc_lon[:] = lon
-nc_depth[:] = m_obj.grid_z[:-1]
+nc_lats[:] = lat
+nc_lons[:] = lon
+nc_depths[:] = m_obj.grid_z[:-1]
 nc_res[:] = m_obj.res_model
+
+nc_lats.units = 'degrees'
+nc_lons.units = 'degrees'
+nc_depths.units = 'kilometers'
 
 nc_obj.close()
