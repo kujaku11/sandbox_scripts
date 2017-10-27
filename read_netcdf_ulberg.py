@@ -9,10 +9,10 @@ import netCDF4
 import numpy as np
 import mtpy.utils.gis_tools as gis_tools
 import mtpy.utils.array2raster as a2r
-#from evtk.hl import gridToVTK
+from evtk.hl import gridToVTK
 import os
 
-nc_fn = r"c:\Users\jrpeacock\Downloads\ulbergVPmodel_Run_124.nc"
+nc_fn = r"c:\Users\jpeacock\Documents\iMush\vp_depth_slices_ulberg\ulbergVPmodel_Run_124.nc"
 
 nc_obj = netCDF4.Dataset(nc_fn, 'r')
 
@@ -32,33 +32,48 @@ upper_right = gis_tools.project_point_ll2utm(lat.max(), lon.max())
 d_east = (upper_right[0]-lower_left[0])/lon.size
 d_north = (upper_right[1]-lower_left[1])/lat.size
 
-east = np.arange(lower_left[0], upper_right[0], d_east)/1000.
-north = np.arange(lower_left[1], upper_right[1]-d_north, d_north)/1000.
+east = np.arange(lower_left[0], upper_right[0]+d_east, d_east)/1000.
+north = np.arange(lower_left[1], upper_right[1], d_north)/1000.
 
-for zz in range(depth.size):
-    raster_fn = os.path.join(r"c:\Users\jrpeacock\vp_depth_slices_ulberg",
-                             "{0:02}_dvp_{1:.0f}_WGS84.tif".format(zz, depth[zz]))
-    raster_fn = raster_fn.replace('-', 'm')
-    a2r.array2raster(raster_fn, 
-                     (float(lon.min()), float(lat.min())), 
-                     1200.0, 
-                     1200.0, 
-                     dvp[zz, :, :].T)
+#for zz in range(depth.size):
+#    raster_fn = os.path.join(r"c:\Users\jpeacock\Documents\iMush\vp_depth_slices_ulberg",
+#                             "{0:02}_vp_{1:.0f}_WGS84.tif".format(zz, depth[zz]))
+#    raster_fn = raster_fn.replace('-', 'm')
+#    a2r.array2raster(raster_fn, 
+#                     (float(lon.min()), float(lat.min())), 
+#                     1730.0, 
+#                     1202.0, 
+#                     (vp[zz, :, :]))
 
-#depth = np.append(depth, depth[-1]+(depth[-1]-depth[-2]))
 
-#vtk_vp = np.nan_to_num(np.rot90(vp.T))
-#vtk_dvp = np.nan_to_num(np.rot90(dvp.T))
-#
-##vtk_vp = np.nan_to_num(vp.reshape((lat.size, lon.size, depth[:-1].size)))
-##vtk_dvp = np.nan_to_num(np.rot90(dvp.T))
-#
-#gridToVTK(r"c:\Users\jrpeacock\Google Drive\MSH\imush_ulberg_velocity", 
-#          north,
-#          east,
+
+vtk_vp = np.zeros((lat.size, lon.size, depth.size))
+vtk_dvp = np.zeros((lat.size, lon.size, depth.size))
+for z_index in range(depth.size):
+    vtk_vp[:, :, z_index] = vp[z_index, ::-1, ::-1]
+    vtk_dvp[:, :, z_index] = dvp[z_index, ::-1, ::-1]
+    
+mt_east, mt_north, mt_zone = gis_tools.project_point_ll2utm(46.44891,
+                                                            -122.031869)
+msh_east, msh_north, msh_zone = gis_tools.project_point_ll2utm(46.199109,
+                                                               -122.188576)
+
+d_east = (mt_east-msh_east)/1000.+7
+d_north = (mt_north-msh_north)/1000.+18
+depth = np.append(depth, depth[-1]+(depth[-1]-depth[-2]))
+gridToVTK(r"c:\Users\jpeacock\Documents\iMush\imush_ulberg_velocity", 
+          msh_north/1000.-north-d_north,
+          msh_east/1000.-east-d_east,
+          depth,
+          cellData={'vp':vtk_vp,
+                    'd_vp':vtk_dvp})
+    
+#gridToVTK(r"c:\Users\jpeacock\Documents\iMush\imush_ulberg_velocity", 
+#          north-msh_north/1000.+d_north/1000.,
+#          east-msh_east/1000.+d_east/1000.,
 #          depth,
-#          cellData={'vp':vp,
-#                    'd_vp':dvp})
+#          cellData={'vp':vtk_vp,
+#                    'd_vp':vtk_dvp})
 #
 #nc_obj.variables['latitude'][:] = north
 #nc_obj.variables['longitude'][:] = east

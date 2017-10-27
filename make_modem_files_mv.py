@@ -14,7 +14,7 @@ import mtpy.modeling.modem as modem
 # Inputs
 #==============================================================================
 edi_path = r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\Edited"
-save_path = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv01"
+save_path = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv02"
 
 fn_stem = 'mv'
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
@@ -31,9 +31,9 @@ data_obj = modem.Data(edi_list=s_edi_list,
                       period_list=inv_period_list)
 
 data_obj.error_type_z = 'eigen_floor'
-data_obj.error_value_z = 5.0
+data_obj.error_value_z = 3.0
 data_obj.error_type_tipper = 'abs_floor'
-data_obj.error_value_tipper = .05
+data_obj.error_value_tipper = .02
 data_obj.inv_mode = '1'
 
 #--> here is where you can rotate the data
