@@ -21,7 +21,7 @@ lat = nc_obj.variables['latitude'][:]
 lon = nc_obj.variables['longitude'][:]
 
 vp = np.nan_to_num(nc_obj.variables['vp'][:])
-dvp = np.nan_to_num(nc_obj.variables['dvp_ulberg'][:])
+dvp = nc_obj.variables['dvp_ulberg_mask'][:]
 
 # the arrays are (depth, lat, lon) --> (z, y, x)
 # taking the transpose will give (lon, lat, depth) --> (x, y, z)
@@ -34,16 +34,16 @@ d_north = (upper_right[1]-lower_left[1])/lat.size
 
 east = np.arange(lower_left[0], upper_right[0]+d_east, d_east)/1000.
 north = np.arange(lower_left[1], upper_right[1], d_north)/1000.
-
+#
 #for zz in range(depth.size):
-#    raster_fn = os.path.join(r"c:\Users\jpeacock\Documents\iMush\vp_depth_slices_ulberg",
-#                             "{0:02}_vp_{1:.0f}_WGS84.tif".format(zz, depth[zz]))
+#    raster_fn = os.path.join(r"c:\Users\jpeacock\Documents\iMush\dvp_depth_slices_ulberg",
+#                             "{0:02}_dvp_{1:.0f}_WGS84.tif".format(zz, depth[zz]))
 #    raster_fn = raster_fn.replace('-', 'm')
 #    a2r.array2raster(raster_fn, 
 #                     (float(lon.min()), float(lat.min())), 
 #                     1730.0, 
 #                     1202.0, 
-#                     (vp[zz, :, :]))
+#                     (dvp[zz, :, :]))
 
 
 
