@@ -9,7 +9,7 @@ import mtpy.utils.array2raster as a2r
 import os
 
 #model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_tip02_cov03_NLCG_083.rho"
-model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul\imush_fin_hp_L100_NLCG_011.rho"
+model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul_final_model\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
 
 
 save_path = r"c:\Users\jpeacock\Documents\iMush\modem_inv\imush_paul_final"
@@ -29,10 +29,10 @@ check_dir(save_path)
 
 modem_raster = a2r.ModEM_to_Raster()
 modem_raster.model_fn = model_fn
-ll_cc = modem_raster.get_model_lower_left_coord(model_center=model_center,
-                                                pad_east=10, pad_north=10)
-modem_raster.lower_left_corner = (ll_cc[0]+.125, ll_cc[1]-.131)
+#ll_cc = modem_raster.get_model_lower_left_coord(model_center=model_center,
+#                                                pad_east=10, pad_north=10)
+modem_raster.lower_left_corner = (-123.526, 45.278)
 modem_raster.save_path = save_path
 modem_raster.projection = 'WGS84'
 modem_raster.rotation_angle = 0.0
-modem_raster.write_raster_files()
+modem_raster.write_raster_files(pad_east=10, pad_north=10)
