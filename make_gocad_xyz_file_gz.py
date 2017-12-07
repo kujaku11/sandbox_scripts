@@ -24,12 +24,12 @@ clip = 6
 m_to_feet = 3.280839895
 
 # need to center the location, which is in the nodes
-east = m_obj.nodes_east[clip:-clip]*m_to_feet
-north = m_obj.nodes_north[clip:-clip]*m_to_feet
+east = m_obj.nodes_east[clip:-clip+1]*m_to_feet
+north = m_obj.nodes_north[clip:-clip+1]*m_to_feet
 z = m_obj.nodes_z[0:-clip]*m_to_feet
-res = m_obj.res_model[clip:-clip,
-                      clip:-clip,
-                      0:-clip]
+res = m_obj.res_model[clip:-clip+1,
+                      clip:-clip+1,
+                      0:-clip+1]
 
 east = np.array([east[0:ii].sum() for ii in range(east.size)])
 north = np.array([north[0:ii].sum() for ii in range(north.size)])
@@ -41,7 +41,7 @@ north -= north.max()/2
 # Need to shift into projected coordinates
 east += model_center_proj[0]
 north += model_center_proj[1]
-z -= 1260
+z -= (1260*m_to_feet)
 
 lines = ['# USGS MT RESISTIVITY MODEL',
          '# Author = J. Peacock',

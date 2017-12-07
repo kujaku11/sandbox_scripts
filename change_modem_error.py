@@ -9,7 +9,7 @@ import mtpy.modeling.modem as modem
 import os
 
 #dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
-dfn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_01\gv_modem_data_err03_tip02.dat"
+dfn = r"c:\Users\jpeacock\Documents\Geothermal\GraniteSprings\modem_inv\inv_01\gs_modem_data_err03_tip02.dat"
 sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
 
 d_obj = modem.Data()
@@ -17,9 +17,9 @@ d_obj.read_data_file(dfn)
 
 d_obj.error_type_z = 'egbert_floor'
 d_obj.error_type_tipper = 'abs_floor'
-d_obj.inv_mode = '1'
-d_obj.error_value_z = 5.0
-d_obj.error_value_tipper = .03
+d_obj.inv_mode = '2'
+d_obj.error_value_z = 7.0
+d_obj.error_value_tipper = .02
 
 
 if d_obj.inv_mode == '2':

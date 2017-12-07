@@ -28,7 +28,7 @@ c_east, c_north = (331570, 4173660)
 #--> set padding
 east_pad = mod_obj.pad_east+4
 north_pad = mod_obj.pad_north+4
-z_pad = np.where(mod_obj.grid_z > 20000)[0][0]
+z_pad = np.where(mod_obj.grid_z > 30000)[0][0]
 
 cos_ang = np.cos(np.deg2rad(rot_angle))
 sin_ang = np.sin(np.deg2rad(rot_angle))
@@ -36,7 +36,7 @@ rot_matrix = np.matrix(np.array([[cos_ang, sin_ang],
                                  [-sin_ang, cos_ang]]))
 
 #--> write model xyz file
-lines = []
+lines = ['# north (m) east(m) depth(m) resistivity (Ohm-m)']
 for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
     for jj, yy in enumerate(mod_obj.grid_east[east_pad:-east_pad]):
         for ii, xx in enumerate(mod_obj.grid_north[north_pad:-north_pad]):
