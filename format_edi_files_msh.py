@@ -7,9 +7,11 @@ Created on Wed Dec 06 15:50:19 2017
 import os
 import mtpy.core.mt as mt
 
-cfg_fn = r"D:\Peacock\MTData\EDI_Folders\MSH_EDI_Files\msh_zonge.cfg"
-
-edi_path = r"d:\Peacock\MTData\EDI_Folders\MSH_EDI_Files"
+dir_path = r"c:\Users\jrpeacock\Documents\EDI_Folders"
+cfg_fn = os.path.join(dir_path, r"MSH_EDI_Files\msh_zonge.cfg")
+edi_path = os.path.join(dir_path, r"MSH_EDI_Files")
+sv_path = os.path.join(dir_path, r"MSHN_EDI_Files")
+xml_sv_path = os.path.join(dir_path, "MSHN_XML_Files")
 
 edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
             if edi.endswith('.edi')]
@@ -44,5 +46,8 @@ for edi in edi_list:
     for rm_key in rm_keys:
         mt_obj.Notes.info_dict.pop(rm_key)
         
-    mt_obj.write_mt_file(save_dir=r"d:\Peacock\MTData\EDI_Folders\MSHN_EDI_Files")
+    #mt_obj.write_mt_file(save_dir=sv_path)
+    mt_obj.write_mt_file(save_dir=xml_sv_path, file_type='xml')
+    
+    
     
