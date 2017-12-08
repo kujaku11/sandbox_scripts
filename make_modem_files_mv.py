@@ -13,15 +13,12 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = r"d:\Peacock\MTData\Umatilla\EDI_Files_birrp\Edited"
-save_path = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01"
+edi_path = r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\Edited"
+save_path = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv02"
 
-fn_stem = 'hf'
+fn_stem = 'mv'
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
               if ss.endswith('.edi')]
-                  
-s_edi_list.remove(os.path.join(edi_path, 'um100.edi'))
-s_edi_list.remove(os.path.join(edi_path, 'orf08.edi'))
                 
 if not os.path.exists(save_path):
     os.mkdir(save_path)
@@ -35,7 +32,9 @@ data_obj = modem.Data(edi_list=s_edi_list,
 
 data_obj.error_type_z = 'eigen_floor'
 data_obj.error_value_z = 3.0
-data_obj.inv_mode = '2'
+data_obj.error_type_tipper = 'abs_floor'
+data_obj.error_value_tipper = .02
+data_obj.inv_mode = '1'
 
 #--> here is where you can rotate the data
 data_obj.write_data_file(save_path=save_path, 
@@ -46,18 +45,18 @@ data_obj.write_data_file(save_path=save_path,
 # First make the mesh
 #==============================================================================
 mod_obj = modem.Model(data_obj.station_locations)
-mod_obj.cell_size_east = 500
-mod_obj.cell_size_north = 500
-mod_obj.pad_east = 8
-mod_obj.pad_north = 8
+mod_obj.cell_size_east = 250
+mod_obj.cell_size_north = 250
+mod_obj.pad_east = 12
+mod_obj.pad_north = 12
 mod_obj.ew_ext = 300000
 mod_obj.ns_ext = 300000
 mod_obj.z_bottom = 250000
 mod_obj.z_target_depth = 30000
 mod_obj.pad_z = 4
-mod_obj.pad_num = 3
-mod_obj.n_layers = 30
-mod_obj.z1_layer = 20
+mod_obj.pad_num = 2
+mod_obj.n_layers = 50
+mod_obj.z1_layer = 10
 
 #--> here is where you can rotate the mesh
 mod_obj.mesh_rotation_angle = 0
@@ -66,7 +65,7 @@ mod_obj.make_mesh()
 mod_obj.plot_mesh()
 
 mod_obj.write_model_file(save_path=save_path, 
-                         model_fn_basename="hf_sm02.rho")
+                         model_fn_basename="{0}_sm02.rho".format(fn_stem))
 #==============================================================================
 # make the covariance file
 #==============================================================================

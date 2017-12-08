@@ -18,8 +18,8 @@ import mtpy.modeling.occam1d as occam1d
 #==============================================================================
 # Inputs
 #==============================================================================
-model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_sm02_topo.rho"
-data_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_data_ef03_tec.dat"
+model_fn = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv01\mv_sm02.rho"
+data_fn = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv01\mv_modem_data_err05_edit.dat"
 npy_fn = os.path.join(os.path.dirname(model_fn), 'np_res_array_1d.npy')
 
 save_dir = os.path.dirname(data_fn)
@@ -47,7 +47,7 @@ if not os.path.exists(npy_fn):
                                                             ('grid_east', np.float),
                                                             ('grid_north', np.float),
                                                             ('grid_elev', np.float),
-                                                            ('res', (np.float, mdm.grid_z.shape))])
+                                                            ('res', (np.float, mdm.nodes_z.shape))])
     
     #--> compute 1D models 
     for dd, key in enumerate(sorted(mdd.mt_dict.keys())):
@@ -272,8 +272,8 @@ new_res[np.where(mdm.res_model > 1E9)] = 1E12
 new_res[np.where(mdm.res_model < .31)] = .3
 
 mdm.res_model = new_res
-mdm.write_model_file(model_fn_basename=r"hf_1d_sm_smooth.rho")
-mdm.write_vtk_file(vtk_fn_basename='hf_1d_sm_smooth')
+mdm.write_model_file(model_fn_basename=r"mv_1d_sm_smooth.rho")
+mdm.write_vtk_file(vtk_fn_basename='mv_1d_sm_smooth')
     
 
     

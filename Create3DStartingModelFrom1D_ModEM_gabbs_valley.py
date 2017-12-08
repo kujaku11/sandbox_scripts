@@ -18,15 +18,15 @@ import mtpy.modeling.occam1d as occam1d
 #==============================================================================
 # Inputs
 #==============================================================================
-model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_sm02_topo.rho"
-data_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv01\hf_data_ef03_tec.dat"
+model_fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_01\gv_sm02.rho"
+data_fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_01\gv_modem_data_err03_tip02.dat"
 npy_fn = os.path.join(os.path.dirname(model_fn), 'np_res_array_1d.npy')
 
 save_dir = os.path.dirname(data_fn)
 opath = 'c:\\MinGW32-xy\\Peacock\\occam\\occam1d.exe'
-iter_num = 4
+iter_num = 5
 fill_res = np.log10(100.)
-plot = True
+plot = False
 
 #==============================================================================
 # Read data and model files
@@ -104,10 +104,11 @@ if not os.path.exists(npy_fn):
             #--> write occam1d model file
             ocm = occam1d.Model()
             ocm.save_path = ocd.save_path
-            ocm.write_model_file(model_depth=mdm.grid_z[1:])
+            ocm.write_model_file(model_depth=mdm.grid_z)
             
             #--> write occam1d startup file
             ocs = occam1d.Startup()
+            ocs.start_rho = mdm.res_model.mean()
             ocs.data_fn = data_tm_fn
             ocs.model_fn = ocm.model_fn
             ocs.save_path = ocd.save_path
@@ -259,8 +260,8 @@ for n_index in range(new_res.shape[0]):
 # finally smooth the result
 #==============================================================================
 # smooth data with an increasing gaussian
-gw_0 = 1.5
-gw_n = 20
+gw_0 = 1.1
+gw_n = 25
 a = (gw_n-gw_0)/(mdm.nodes_z.size)**3
 
 for ii in range(mdm.nodes_z.size):
@@ -272,8 +273,8 @@ new_res[np.where(mdm.res_model > 1E9)] = 1E12
 new_res[np.where(mdm.res_model < .31)] = .3
 
 mdm.res_model = new_res
-mdm.write_model_file(model_fn_basename=r"hf_1d_sm_smooth.rho")
-mdm.write_vtk_file(vtk_fn_basename='hf_1d_sm_smooth')
+mdm.write_model_file(model_fn_basename=r"gs_1d_sm_smooth.rho")
+mdm.write_vtk_file(vtk_fn_basename='gs_1d_sm_smooth')
     
 
     

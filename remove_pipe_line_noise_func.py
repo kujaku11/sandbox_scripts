@@ -99,7 +99,7 @@ def remove_pipeline_noise(fn, noise_per, pad_edge=0.10, pad_width=0.03,
     
     if abs(np.median(avg_window)) < tol:
         z1.write_ascii_mt_file()
-        print '{0:.3g} < {1:3g}'.format(np.median(avg_window), tol)
+        print '{0:.3g} < {1:3g}'.format(abs(np.median(avg_window)), tol)
         raise PipelineError('Average window is just noise, skipping {0}'.format(fn))
     #==============================================================================
     # For some reason the median window does not come out with the same amplitude
@@ -183,7 +183,7 @@ noise_period = 5
 
 dir_path = r"d:\Peacock\MTData\Umatilla"
 
-folders = ['um{0}'.format(ss) for ss in [134]]
+folders = ['um{0}'.format(ss) for ss in [120, 113, 104]]
 
 for station_folder in folders:
     if 'um' in station_folder:
@@ -193,7 +193,7 @@ for station_folder in folders:
                 if fn.endswith('Z3D'):
                     fn = os.path.join(station_path, fn)
                     try:
-                        remove_pipeline_noise(fn, noise_period, tol=5e-6)
+                        remove_pipeline_noise(fn, noise_period, tol=1e-10)
                     except PipelineError:
                         print '-'*72
                         print 'Did not remove noise from {0}'.format(fn)

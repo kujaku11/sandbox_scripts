@@ -55,38 +55,31 @@ import mtpy.utils.gis_tools as gis_tools
 #          'northing_min':4287500.,
 #          'northing_max':4296000.}
 ## Gabbs valley
-ll_utm = {'zone':'11N', 
-          'easting_min':400800.,
-          'easting_max':645000.,
-          'northing_min':3612500.,
-          'northing_max':4004000.}
+ll_utm = {'lon_min':-118.0,
+          'lon_max':-114.3,
+          'lat_min':32.75,
+          'lat_max':35.75}
 
-spacing_east = 30000.
-spacing_north = 30000.
+spacing_east = 30./111.34
+spacing_north = 20./111.34
 
 
  
 
-east_arr = np.arange(ll_utm['easting_min'], 
-                     ll_utm['easting_max']+spacing_east,
-                     spacing_east)
+lat_arr = np.arange(ll_utm['lat_min'], 
+                     ll_utm['lat_max']+spacing_north,
+                     spacing_north)
                      
-north_arr = np.arange(ll_utm['northing_min'], 
-                     ll_utm['northing_max']+spacing_east,
+lon_arr = np.arange(ll_utm['lon_min'], 
+                     ll_utm['lon_max']+spacing_east,
                      spacing_east)
                      
 kml_fn = r"c:\Users\jpeacock\Documents\MountainPass\mojave_{0:.0f}m.kml".format(spacing_east)
 
 kml_obj = skml.Kml()
 count = 0
-for ii, east in enumerate(east_arr):
-    print '-'*30
-    for jj, north in enumerate(north_arr):
-        print east, north
-
-        lat_ii, lon_jj = gis_tools.project_point_utm2ll(east, 
-                                                        north, 
-                                                        ll_utm['zone'])
+for ii, lat_ii in enumerate(lat_arr):
+    for jj, lon_jj in enumerate(lon_arr):
 
         kml_obj.newpoint(name='MJ{0:02}'.format(count),
                          coords=[(lon_jj, lat_ii)])
