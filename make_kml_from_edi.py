@@ -9,11 +9,13 @@ import simplekml as skml
 import mtpy.core.mt as mt
 import os
 
-edi_path = r"d:\Peacock\MTData\GabbsValley\EDI_Files_birrp"
+edi_path = r"d:\Peacock\MTData\EDI_Folders\LV_EDI_Files"
 
 edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
-            if edi.find('.edi')>0]
+            if edi.find('.edi')>0  and 'LV' not in edi]
                     
+edi_list = [edi_fn for edi_fn in edi_list if int(edi_fn[-7:-4]) < 400 and
+            int(edi_fn[-7:-4]) > 167]
 
 kml_obj = skml.Kml()
 
@@ -27,7 +29,7 @@ for edi in edi_list:
     pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/dir_60.png'
     pnt.style.iconstyle.scale = .8
 
-kml_obj.save(os.path.join(edi_path, "gv_mt_stations.kml"))
+kml_obj.save(os.path.join(edi_path, "lv_mt_stations.kml"))
     
             
             
