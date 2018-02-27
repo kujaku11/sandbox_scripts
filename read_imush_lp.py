@@ -34,8 +34,15 @@ with open(fn[:-4]+'_ew.txt', 'w') as fid:
     fid.write('\n'.join(lines))
     
 # write vtk file
-pointsToVTK(fn[0:-4], 
-            (northing-5144510)/1000., 
-            (easting-573840)/1000.,
+#pointsToVTK(fn[0:-4], 
+#            (northing-5144510)/1000., 
+#            (easting-573840)/1000.,
+#            lp_arr['depth'],
+#            data={'depth':lp_arr['depth'], 'mag':lp_arr['mag']})  
+#  
+# write vtk file shear zone
+pointsToVTK(fn[0:-4]+'_shz', 
+            (northing-5128858.)/1000., 
+            (easting-562012.)/1000.,
             lp_arr['depth'],
-            data={'depth':lp_arr['depth'], 'mag':lp_arr['mag']})    
+            data={'depth':lp_arr['depth'], 'mag':lp_arr['mag']}) 

@@ -27,19 +27,19 @@ pts.projection = map_projection
 pts.ellipse_size = 2800
 
 #save files for data
-pts.save_path = os.path.join(save_path, 'SA_GIS_PT_Data_GN')
-check_dir(pts.save_path)
-pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
+#pts.save_path = os.path.join(save_path, 'SA_GIS_PT_Data_GN')
+#check_dir(pts.save_path)
+#pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
 
 #save files for model response
-pts.save_path = os.path.join(save_path, 'GIS_PT_Response_rotate')
-check_dir(pts.save_path)
-pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
-
-#save files for data-model
-pts.save_path = os.path.join(save_path, 'GIS_PT_Residual_rotate')
-check_dir(pts.save_path)
-pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
+#pts.save_path = os.path.join(save_path, 'GIS_PT_Response_GN')
+#check_dir(pts.save_path)
+#pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
+#
+##save files for data-model
+#pts.save_path = os.path.join(save_path, 'GIS_PT_Residual_GN')
+#check_dir(pts.save_path)
+#pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
 
 #----------------------------------------------------------------
 #--> write tipper information
@@ -51,16 +51,16 @@ tps.arrow_lw = 100
 tps.projection = map_projection
 
 #save files for data
-tps.save_path = os.path.join(save_path, 'SA_GIS_Tip_Data_GN')
-check_dir(tps.save_path)
-tps.write_tip_shape_files_modem(dfn, rotation_angle=theta_r)
+#tps.save_path = os.path.join(save_path, 'SA_GIS_Tip_Data_GN')
+#check_dir(tps.save_path)
+#tps.write_tip_shape_files_modem(dfn, rotation_angle=theta_r)
 
 #save files for response
-tps.save_path = os.path.join(save_path, 'GIS_Tip_Resp_rotate')
-check_dir(tps.save_path)
-tps.write_tip_shape_files_modem(rfn, rotation_angle=theta_r)
+#tps.save_path = os.path.join(save_path, 'GIS_Tip_Resp_GN')
+#check_dir(tps.save_path)
+#tps.write_tip_shape_files_modem(rfn, rotation_angle=theta_r)
 
 #save files for response
-tps.save_path = os.path.join(save_path, 'GIS_Tip_Residual_rotate')
+tps.save_path = os.path.join(save_path, 'GIS_Tip_Residual_GN')
 check_dir(tps.save_path)
 tps.write_tip_shape_files_modem_residual(dfn, rfn, rotation_angle=theta_r)

@@ -8,7 +8,7 @@ Created on Wed Dec 03 10:40:47 2014
 import simplekml as skml
 import os
 
-csv_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\umatilla_reservation_mt_sites.csv"
+csv_fn = r"c:\Users\jpeacock\Documents\Geothermal\MountainHome\MH-MT-2018.csv"
 
 with open(csv_fn, 'r') as fid:
     csv_lines = fid.readlines()
@@ -18,13 +18,13 @@ with open(csv_fn, 'r') as fid:
 kml_obj = skml.Kml()
 
 
-for line in csv_lines[1:]:
+for ii, line in enumerate(csv_lines[1:]):
     csv_list = line.strip().split(',')
     if len(csv_list) < 3:
         break
 #    station = 'HF{0:02}'.format(int(csv_list[0].split()[-1]))
-    station = 'UM{0}{1:02}'.format(csv_list[0][0], int(csv_list[0][1:]))
-    lat = float(csv_list[1])
+    station = 'CM{0}'.format(300+ii+1)
+    lat = float(csv_list[3])
     lon = float(csv_list[2])
     pnt = kml_obj.newpoint(name=station, 
                            coords=[(lon, lat, 0.0)])
@@ -35,7 +35,7 @@ for line in csv_lines[1:]:
 
 #kml_obj.save(csv_fn[:-4]+'.kml')
 kml_obj.save(os.path.join(os.path.dirname(csv_fn), 
-                          'umatilla_reservation_mt_sites.kml'))
+                          'mh_mt_sites_2018.kml'))
     
             
             
