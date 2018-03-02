@@ -93,8 +93,8 @@ def interp_grid(old_model_obj, new_model_obj, shift_east=0, shift_north=0,
 #  interpolate all models onto the same grid
 #==============================================================================
 dfn = r"C:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_02\shz_modem_data_err03_tip02_edit.dat"
-mfn_imush = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul_final_model\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
-mfn_shz = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_02\shz_sm02.rho"
+mfn_imush = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_02\shz_z04_t03_c02_NLCG_012.rho"
+mfn_shz = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_02\shz_smt_z04_t03_c02_NLCG_045.rho"
 
 modem_data = modem.Data()
 modem_data.read_data_file(dfn)
@@ -105,26 +105,26 @@ modem_imush.read_model_file(mfn_imush)
 modem_shz = modem.Model()
 modem_shz.read_model_file(mfn_shz)
 
-imush_center = (46.450149, -122.032858)
-shz_center = (46.310461, -122.194629)
-
-imush_east, imush_north, zone = gis_tools.project_point_ll2utm(imush_center[0],
-                                                               imush_center[1])
-shz_east, shz_north, zone = gis_tools.project_point_ll2utm(shz_center[0],
-                                                           shz_center[1])
-
-d_east = imush_east-shz_east+8500
-d_north = imush_north-shz_north+8000
-
-imush_res = interp_grid(modem_imush, modem_shz, 
-                        shift_east=d_east, shift_north=d_north, 
-                        smooth_kernel=1, pad=3)
+#imush_center = (46.450149, -122.032858)
+#shz_center = (46.310461, -122.194629)
+#
+#imush_east, imush_north, zone = gis_tools.project_point_ll2utm(imush_center[0],
+#                                                               imush_center[1])
+#shz_east, shz_north, zone = gis_tools.project_point_ll2utm(shz_center[0],
+#                                                           shz_center[1])
+#
+#d_east = imush_east-shz_east+8500
+#d_north = imush_north-shz_north+8000
+#
+#imush_res = interp_grid(modem_imush, modem_shz, 
+#                        shift_east=d_east, shift_north=d_north, 
+#                        smooth_kernel=1, pad=3)
 
 
 #--> average all as a geometric mean
-#avg_res = (modem_shz.res_model*imush_res)**(1./2)
+avg_res = (modem_shz.res_model*modem_imush.res_model)**(1./2)
 #avg_res = (nr_ws_hs1*nr_ws_sm1*nr_ws_sm2*nr_nt*nr_tip)**(1./5)
-avg_res = imush_res
+#avg_res = imush_res
 
 x, y = np.meshgrid(modem_shz.grid_east, modem_shz.grid_north)
 kk = 30
@@ -136,7 +136,7 @@ ax1 = fig.add_subplot(1,3,1, aspect='equal')
 ax1.pcolormesh(x, y, np.log10(modem_shz.res_model[:, :, kk]), **kwargs)
 
 ax2 = fig.add_subplot(1,3,2, aspect='equal', sharex=ax1, sharey=ax1)
-ax2.pcolormesh(x, y, np.log10(imush_res[:, :, kk]), **kwargs)
+ax2.pcolormesh(x, y, np.log10(modem_imush.res_model[:, :, kk]), **kwargs)
 
 ax3 = fig.add_subplot(1,3,3, aspect='equal', sharex=ax1, sharey=ax1)
 ax3.pcolormesh(x, y, np.log10(avg_res[:, :, kk]), **kwargs)
@@ -149,8 +149,8 @@ for ax in [ax1, ax2, ax3]:
 plt.show()
 
 modem_shz.res_model = avg_res.copy()
-modem_shz.write_model_file(model_fn_basename='shz_sm_imush.rho')
-modem_shz.write_vtk_file(vtk_fn_basename='shz_sm_imush')
+modem_shz.write_model_file(model_fn_basename='shz_sm_avg.rho')
+modem_shz.write_vtk_file(vtk_fn_basename='shz_sm_avg')
 
 #modem_shz.res_model = imush_res
 #modem_shz.write_model_file(model_fn_basename='imush_sm.rho')
