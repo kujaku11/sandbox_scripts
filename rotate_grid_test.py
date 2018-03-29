@@ -9,7 +9,7 @@ import os
 import mtpy.core.mt as mt
 import matplotlib.pyplot as plt
 
-edipath = r"d:\Peacock\MTData\MB_May2014\EDI_Files"
+edipath = r"d:\Peacock\MTData\EDI_Folders\LV_EDI_Files"
 edilst = [mt.MT(os.path.join(edipath, edi)) for edi in os.listdir(edipath)[0:20]
           if edi.find('.edi') > 0]
 
