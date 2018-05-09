@@ -9,7 +9,7 @@ import simplekml as skml
 import mtpy.core.mt as mt
 import os
 
-edi_path = r"c:\Users\jpeacock\Documents\Geothermal\Fallon\MT\MT"
+edi_path = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited"
 
 edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
             if edi.find('.edi')>0]
@@ -27,7 +27,7 @@ for edi in edi_list:
     pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/dir_60.png'
     pnt.style.iconstyle.scale = .8
 
-kml_obj.save(os.path.join(edi_path, "fallon_mt_stations_2017.kml"))
+kml_obj.save(os.path.join(edi_path, "camas_mt_stations_2018.kml"))
     
             
             

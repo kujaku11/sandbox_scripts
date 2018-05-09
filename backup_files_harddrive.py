@@ -5,8 +5,6 @@ Created on Wed Apr 22 10:08:47 2015
 @author: jpeacock
 """
 import os
-import paramiko
-import getpass
 import time
 
 #==============================================================================
@@ -19,21 +17,15 @@ import time
 #folder_list = ['PyScripts', 'ModEM', 'wsinv3d']
 
 #dirpath = r"/mnt/hgfs/jpeacock/Documents"
-dirpath = r"/home/jpeacock/Documents"
+dirpath = os.path.abspath(r"c:\Users\jpeacock\Documents")
+svpath = os.path.abspath(r"e:\jpeacock")
 os.chdir(dirpath)
 
 folder_list = [folder for folder in os.listdir(dirpath) if os.path.isdir(folder)]
 
-host = 'mold.wr.usgs.gov'
-user_name = input("type username as 'user_name': ")
-#os.system('stty -echo')
-pass_word = getpass.getpass("type password: ", stream=None)
 
-mold_root = r"/gp/{0}/Documents".format(user_name)
-port = 22
-
-log_fid = file(r"/home/jpeacock/file_transfer_{0}.log".format(
-                time.strftime('%Y_%m_%d', time.localtime())), 
+log_fid = file(os.path.join(dirpath, "file_transfer_{0}.log".format(
+                time.strftime('%Y_%m_%d', time.localtime()))), 
                 'w')
 #==============================================================================
 # Helper functions
@@ -75,10 +67,6 @@ def check_fn_date(mold_fn, local_fn, sftp_obj):
     
 
 #==============================================================================
-## create a sftp instance
-transport = paramiko.Transport(host, port)
-transport.connect(username=user_name, password=pass_word)
-sftp = paramiko.SFTPClient.from_transport(transport)
 
 # loop over all folders and files
 start_time = time.ctime()
