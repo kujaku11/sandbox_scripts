@@ -15,44 +15,152 @@ from collections import Counter
 
 import numpy as np
 import scipy.signal as sps
+import pandas as pd
 
 import mtpy.usgs.zen as zen
 import mtpy.utils.filehandling as mtfh
+import mtpy.utils.gis_tools as gis_tools
 #==============================================================================
 # Cache files
 #==============================================================================
+class UTC(datetime.tzinfo):
+    def utcoffset(self, df):
+        return datetime.timedelta(hours=0)
+    def dst(self, df):
+        return datetime.timedelta(0)
+    def tzname(self, df):
+        return "UTC"
+
 class Metadata(object):
     def __init__(self, fn=None, **kwargs):
         self.fn = fn
         self.SurveyID = None
         self.SiteID = None
         self.RunID = None
-        self.SiteLatitude = None
-        self.SiteLongitude = None
-        self.SiteElevation = None
-        self.AcqStartTime = None
-        self.AcqStopTime = None
-        self.AcqSmpFreq = None
-        self.AcqNumSmp = None
-        self.channel_dict = {'ChnNum':[], 
-                             'ChnID':[],
-                             'InstrumentID':[],
-                             'Azimuth':[],
-                             'Dipole_Length':[]}
+        self._latitude = None
+        self._longitude = None
+        self._elevation = None
+        self._start_time = None
+        self._stop_time = None
+        self._sampling_rate = None
+        self._n_samples = None
+        self.channel_dict = None
         self.MissingDataFlag = 1e9
-        self.Nchan = None
+        self._chn_num = None
         self.CoordinateSystem = None
-        self._time_fmt = '%Y-%m-%dT%H%M%S %Z'
+        self._time_fmt = '%Y-%m-%dT%H:%M:%S %Z'
         self._metadata_len = 30
+        
+        self._key_list = ['SurveyID',
+                          'SiteID',
+                          'RunID',
+                          'SiteLatitude',
+                          'SiteLongitude',
+                          'SiteElevation',
+                          'AcqStartTime',
+                          'AcqStopTime',
+                          'AcqSmpFreq',
+                          'AcqNumSmp',
+                          'Nchan',
+                          'CoordinateSystem',
+                          'ChnSettings',
+                          'MissingDataFlag',
+                          'DataSet']
+        
+        self._chn_settings = ['ChnNum',
+                              'ChnID',
+                              'InstrumentID',
+                              'Azimuth',
+                              'Dipole_Length']
+        self._chn_fmt = {'ChnNum':'<7',
+                         'ChnID':'<6',
+                         'InstrumentID':'<13',
+                         'Azimuth':'>8.1f',
+                         'Dipole_Length':'>13.1f'}
 
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
             
+            
+    @property
+    def SiteLatitude(self):
+        return gis_tools.convert_position_float2str(self._latitude)
+    
+    @SiteLatitude.setter
+    def SiteLatitude(self, lat):
+        self._latitude = gis_tools.assert_lat_value(lat)
+        
+    @property
+    def SiteLongitude(self):
+        return gis_tools.convert_position_float2str(self._longitude)
+    
+    @SiteLongitude.setter
+    def SiteLongitude(self, lon):
+        self._longitude = gis_tools.assert_lon_value(lon)
+        
+    @property
+    def SiteElevation(self):
+        return self._elevation
+    
+    @SiteElevation.setter
+    def SiteElevation(self, elev):
+        self._elevation = gis_tools.assert_elevation_value(elev)
+        
+    @property
+    def AcqStartTime(self):
+        return self._start_time.strftime(self._time_fmt)
+    
+    @AcqStartTime.setter
+    def AcqStartTime(self, time_string):
+        dt = datetime.datetime.strptime(time_string, self._time_fmt)
+        self._start_time = datetime.datetime(dt.year, dt.month, dt.day,
+                                             dt.hour, dt.minute, dt.second,
+                                             dt.microsecond, tzinfo=UTC())
+        
+    @property
+    def AcqStopTime(self):
+        return self._stop_time.strftime(self._time_fmt)
+    
+    @AcqStopTime.setter
+    def AcqStopTime(self, time_string):
+        dt = datetime.datetime.strptime(time_string, self._time_fmt)
+        self._stop_time = datetime.datetime(dt.year, dt.month, dt.day,
+                                            dt.hour, dt.minute, dt.second,
+                                            dt.microsecond, tzinfo=UTC())
+    
+    @property
+    def Nchan(self):
+        return self._chn_num
+    
+    @Nchan.setter
+    def Nchan(self, n_channel):
+        try:
+            self._chn_num = int(n_channel)
+        except ValueError:
+            print("{0} is not a number, setting Nchan to 0".format(n_channel))
+            
+    @property
+    def AcqSmpFreq(self):
+        return self._sampling_rate
+    @AcqSmpFreq.setter
+    def AcqSmpFreq(self, df):
+        self._sampling_rate = float(df)
+
+    @property
+    def AcqNumSmp(self):
+        return self._n_samples
+
+    @AcqNumSmp.setter
+    def AcqNumSmp(self, n_samples):
+        self._n_samples = int(n_samples)            
+
     def read_metadata(self, meta_lines=None):
         """
         read in a meta from the raw string
         """
         chn_find = False
+        comp = 0
+        self.channel_dict = {}
         if meta_lines is None:
             with open(self.fn, 'r') as fid:
                 meta_lines = [fid.readline() for ii in range(self._metadata_len)]
@@ -68,26 +176,97 @@ class Metadata(object):
                 elif len(value) < 1:
                     chn_find = True
                 setattr(self, key, value)
+            elif 'coordinate' in line:
+                self.CoordinateSystem = ' '.join(line.strip().split()[-2:])
             else:
                 if chn_find is True:
-                    line_list = line.strip().split()
-                    if len(line_list) == 5:
-                        self.channel_dict['ChnNum'].append(line_list[0])
-                        self.channel_dict['ChnID'].append(line_list[1])
-                        self.channel_dict['InstrumentID'].append(line_list[2])
-                        self.channel_dict['Azimuth'].append(line_list[3])
-                        self.channel_dict['Dipole_Length'].append(line_list[4])
+                    if 'chnnum' in line.lower():
+                        ch_key = line.strip().split()
                     else:
-                        print('Not sure what line this is')
-      
+                        line_list = line.strip().split()
+                        if len(line_list) == 5:
+                            comp += 1
+                            self.channel_dict[comp] = {}
+                            for key, value in zip(ch_key, line_list):
+                                if key.lower() in ['azimuth', 'dipole_length']:
+                                    value = float(value)
+                                self.channel_dict[comp][key] = value
+                        else:
+                            print('Not sure what line this is')
+                            
+    def write_metadata(self):
+        """
+        Write out metadata in the format of PB
+        
+        returns a list of lines to write use '\n'.join(lines) to write out
+        """
+        lines = []
+        for key in self._key_list:
+            if key in ['ChnSettings']:
+                lines.append('{0}:'.format(key))
+                lines.append(' '.join(self._chn_settings))
+                for chn_key in sorted(self.channel_dict.keys()):
+                    chn_line = []
+                    for comp_key in self._chn_settings:
+                        chn_line.append('{0:{1}}'.format(self.channel_dict[chn_key][comp_key],
+                                        self._chn_fmt[comp_key]))
+                    lines.append(''.join(chn_line))
+            elif key in ['DataSet']:
+                lines.append('{0}:'.format(key))
+                return lines
+            else:
+                lines.append('{0}: {1}'.format(key, getattr(self, key)))
+
+
+# =============================================================================
+# Class for the asc file
+# =============================================================================
+class USGSasc(Metadata):
+    """
+    read and write Paul's ascii formatted time series
+    """
+    
+    def __init__(self, **kwargs):
+        Metadata.__init__(self)
+        self.ts = None
+        self.fn = None
+        for key in kwargs.keys():
+            setattr(self, key, kwargs[key])
+            
+    def read_asc_file(self, fn=None):
+        if fn is not None:
+            self.fn = fn
+            
+        data_line = self.read_metadata()
+        self.ts = pd.read_csv(self.fn,
+                              delim_whitespace=True,
+                              skiprows=data_line,
+                              dtype=np.float32)
+        
+    def write_asc_file(self, save_fn):
+        meta_lines = self.write_metadata()
+        with open(save_fn, 'w') as fid:
+            fid.write('\n'.join(meta_lines))
+        with open(save_fn, 'a') as fid:
+            self.ts.to_csv(save_fn, 
+                           sep=' ', 
+                           float_format='%10.2f', 
+                           index=False,
+                           quoting=None)
+            
         
 # =============================================================================
 # Test Metadata
 # =============================================================================
 fn = r"C:\Users\jpeacock\Downloads\rgr003a_converted.asc"
 
-meta_obj = Metadata(fn=fn)
-ln = meta_obj.read_metadata()
+#meta_obj = Metadata(fn=fn)
+#ln = meta_obj.read_metadata()
+
+asc_obj = USGSasc()
+asc_obj.read_asc_file(fn)
+asc_obj.write_asc_file(r"c:\Users\jpeacock\test.asc")
+
 
                 
                 

@@ -9,7 +9,7 @@ import simplekml as skml
 import mtpy.core.mt as mt
 import os
 
-edi_path = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited"
+edi_path = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg\Camas_EDI_Files_new"
 
 edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
             if edi.find('.edi')>0]
