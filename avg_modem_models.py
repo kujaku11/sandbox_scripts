@@ -8,8 +8,7 @@ Average all existing model of long valley
 """
 
 import numpy as np
-import mtpy.modeling.ws3dinv as ws
-import mtpy.modeling.modem_new as modem
+import mtpy.modeling.modem as modem
 import matplotlib.pyplot as plt
 import scipy.signal as sps
 import scipy.interpolate as spi

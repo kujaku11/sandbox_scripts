@@ -16,11 +16,13 @@ import time
 #               'Receipts', 'Reviews', 'TexDocs', 'Travel', 'Forms',
 #               'MountainPass', 'Geothermal', 'iMush', 'SanPabloBay', 
 #               'SaudiArabia', 'ShanesBugs', 'Antarctica']
-folder_list = ['PyScripts', 'ModEM', 'wsinv3d']
+#folder_list = ['PyScripts', 'ModEM', 'wsinv3d']
 
 #dirpath = r"/mnt/hgfs/jpeacock/Documents"
 dirpath = r"/home/jpeacock/Documents"
 os.chdir(dirpath)
+
+folder_list = [folder for folder in os.listdir(dirpath) if os.path.isdir(folder)]
 
 host = 'mold.wr.usgs.gov'
 user_name = input("type username as 'user_name': ")
