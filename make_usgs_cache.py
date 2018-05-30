@@ -274,7 +274,8 @@ class USGSasc(Metadata):
                               skiprows=data_line,
                               dtype=np.float32)
         
-    def write_asc_file(self, save_fn, chunk_size=1024):
+    def write_asc_file(self, save_fn, chunk_size=1024, str_fmt='%11.7g'):
+        print('START --> {0}'.format(time.ctime()))
         str_fmt = lambda x: '{0:>11.7g}'.format(x)
         meta_lines = self.write_metadata()
         with open(save_fn, 'w') as fid:
@@ -283,10 +284,11 @@ class USGSasc(Metadata):
             for chunk in range(int(self.ts.shape[0]/chunk_size)):
     
                 out = np.array(self.ts[chunk*chunk_size:(chunk+1)*chunk_size])
-                lines = ['']
-                for ii in range(chunk_size):
-                    lines.append(''.join([str_fmt(num) for num in out[ii, :]]))
-                fid.write('\n'.join(lines))
+                out = np.char.mod(str_fmt, out)
+                lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
+                fid.write(lines)
+                fid.write('\n')
+        print('END --> {0}'.format(time.ctime()))
             
 # =============================================================================
 # Z3D to USGS ascii
