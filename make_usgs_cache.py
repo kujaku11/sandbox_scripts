@@ -11,6 +11,9 @@ import time
 import datetime
 from collections import Counter
 
+import urllib2 as url
+import xml.etree.ElementTree as ET
+
 import numpy as np
 import scipy.signal as sps
 import pandas as pd
@@ -369,7 +372,19 @@ class Metadata(object):
         """
         get elevation from national map
         """  
-        pass        
+        # the url for national map elevation query
+        nm_url = r"https://nationalmap.gov/epqs/pqs.php?x={0:.5f}&y={1:.5f}&units=Meters&output=xml"
+
+        # call the url and get the response
+        response = url.urlopen(nm_url.format(self._latitude, self._longitude))
+        
+        # read the xml response and convert to a float
+        info = ET.ElementTree(ET.fromstring(response.read()))
+        info = info.getroot()
+        for elev in info.iter('Elevation'):
+            nm_elev = float(elev.text)        
+        
+        return nm_elev
 
     def read_metadata(self, meta_lines=None):
         """
