@@ -17,7 +17,7 @@ d_obj.read_data_file(dfn)
 
 d_obj.error_type_z = 'eigen_floor'
 d_obj.error_type_tipper = 'abs_floor'
-d_obj.inv_mode = '5'
+d_obj.inv_mode = '1'
 d_obj.error_value_z = 7.0
 d_obj.error_value_tipper = .03
 

@@ -39,7 +39,8 @@ class Z3DCollection(object):
         self._ch_factor = '9.5367431640625e-10'
         self.verbose = True
         self.log_lines = []
-        self.chn_order = ['ex','hy','ey','hx','hz']
+        self.chn_order = ['hx','ex','hy','ey','hz']
+        self.meta_notes = None
         
     def get_time_blocks(self, z3d_dir):
         """
@@ -120,9 +121,10 @@ class Z3DCollection(object):
         check to make sure timeseries line up with eachother.
         
         """
-        
+        # get number of channels
         n_fn = len(fn_list)
         
+        # make an empty array to put things into
         t_arr = np.zeros(n_fn, 
                          dtype=[('comp', 'S3'),
                                 ('start', np.int64),
@@ -135,19 +137,18 @@ class Z3DCollection(object):
                                 ('ch_azm', np.float32),
                                 ('ch_length', np.float32),
                                 ('ch_num', np.float32),
-                                ('ch_box', 'S6')])
+                                ('ch_box', 'S6'),
+                                ('n_samples', np.int32),
+                                ('t_diff', np.int32)])
             
-        index_dict = dict([(comp.lower(), ii) for ii, comp in enumerate(self.chn_order)])               
-        print '-'*50
-        for fn in fn_list:
+        print('-'*50)
+        for ii, fn in enumerate(fn_list):
             z3d_obj = zen.Zen3D(fn)
             z3d_obj.read_z3d()
             
             # convert the time index into an integer
             dt_index = z3d_obj.ts_obj.ts.data.index.astype(np.int64)/10.**9
             
-            ii = index_dict[z3d_obj.metadata.ch_cmp.lower()]
-            print ii
             # extract useful data
             t_arr[ii]['comp'] = z3d_obj.metadata.ch_cmp.lower()
             t_arr[ii]['start'] = dt_index[0]
@@ -158,9 +159,17 @@ class Z3DCollection(object):
             t_arr[ii]['lon'] = z3d_obj.header.long
             t_arr[ii]['elev'] = z3d_obj.header.alt
             t_arr[ii]['ch_azm'] = z3d_obj.metadata.ch_azimuth
-            t_arr[ii]['ch_length'] = z3d_obj.metadata.ch_length
+            if 'e' in t_arr[ii]['comp']:
+                t_arr[ii]['ch_length'] = z3d_obj.metadata.ch_length
             t_arr[ii]['ch_num'] = z3d_obj.metadata.ch_number
-            t_arr[ii]['ch_box'] = z3d_obj.header.box_number
+            t_arr[ii]['ch_box'] = int(z3d_obj.header.box_number)
+            t_arr[ii]['n_samples'] = z3d_obj.ts_obj.ts.shape[0]
+            t_arr[ii]['t_diff'] = int((dt_index[-1]-dt_index[0])*z3d_obj.df)-\
+                                      z3d_obj.ts_obj.ts.shape[0]
+            try:
+                self.meta_notes = z3d_obj.metadata.notes.replace('\r', ' ').replace('\x00', '').rstrip()
+            except AttributeError:
+                pass
 
             if self.verbose:
                 print '{0} -- {1:<16.2f}{2:<16.2f} sec'.format(z3d_obj.metadata.ch_cmp,
@@ -170,8 +179,9 @@ class Z3DCollection(object):
             self.log_lines.append('{0} -- {1:<16.2f}{2:<16.2f} sec'.format(z3d_obj.metadata.ch_cmp,
                                                            dt_index[0],
                                                            dt_index[-1]))
-            # reorder according to the channel list
+        # cut the array to only those channels with data
         t_arr = t_arr[np.nonzero(t_arr['start'])]
+        
         return t_arr
     
     def merge_ts(self, fn_list, decimate=1):
@@ -187,7 +197,8 @@ class Z3DCollection(object):
         
         # figure out the max length of the array, getting the time difference into
         # seconds and then multiplying by the sampling rate
-        ts_len = int((stop-start)*df)
+        max_ts_len = int((stop-start)*df)
+        ts_len = min([meta_arr['n_samples'].max(), max_ts_len])
         
         if decimate > 1:
             ts_len /= decimate
@@ -202,8 +213,10 @@ class Z3DCollection(object):
             
             dt_index = z3d_obj.ts_obj.ts.data.index.astype(np.int64)/10**9
             index_0 = np.where(dt_index == start)[0][0]
-            index_1 = np.where(dt_index == stop)[0][0]
+            #index_1 = np.where(dt_index == stop)[0][0]
+            index_1 = min([ts_len-index_0, z3d_obj.ts_obj.ts.shape[0]-index_0])
             t_diff = ts_len-(index_1-index_0)
+            meta_arr[ii]['t_diff'] = t_diff
 
             if t_diff != 0:
                 if self.verbose:
@@ -221,9 +234,28 @@ class Z3DCollection(object):
             else:
                 ts_db[m_arr['comp']][0:ts_len-t_diff] = z3d_obj.ts_obj.ts.data[index_0:index_1]
 
-        # reorder the columns
-        ts_db = ts_db[self.chn_order]
+        # reorder the columns        
+        ts_db = ts_db[self.get_chn_order]
+        
+        # return the pandas database and the metadata array 
         return ts_db, meta_arr 
+    
+    def get_chn_order(self, chn_list):
+        """
+        get the order of the array according to the components
+        """
+        
+        if len(chn_list) == 5:
+            return self.chn_order
+        else:
+            chn_order = []
+            for chn_00 in self.chn_order:
+                for chn_01 in chn_list:
+                    if chn_00.lower() == chn_01.lower():
+                        chn_order.append(chn_00.lower())
+                        continue
+            
+            return chn_order
 
 #==============================================================================
 # Need a dummy utc time zone for the date time format
@@ -308,11 +340,21 @@ class Metadata(object):
         
     @property
     def SiteElevation(self):
-        return self._elevation
-    
-    @SiteElevation.setter
-    def SiteElevation(self, elev):
-        self._elevation = gis_tools.assert_elevation_value(elev)
+        """
+        get elevation from national map
+        """  
+        # the url for national map elevation query
+        nm_url = r"https://nationalmap.gov/epqs/pqs.php?x={0:.5f}&y={1:.5f}&units=Meters&output=xml"
+
+        # call the url and get the response
+        response = url.urlopen(nm_url.format(self._longitude, self._latitude))
+        
+        # read the xml response and convert to a float
+        info = ET.ElementTree(ET.fromstring(response.read()))
+        info = info.getroot()
+        for elev in info.iter('Elevation'):
+            nm_elev = float(elev.text) 
+        return nm_elev 
         
     @property
     def AcqStartTime(self):
@@ -367,24 +409,6 @@ class Metadata(object):
     @AcqNumSmp.setter
     def AcqNumSmp(self, n_samples):
         self._n_samples = int(n_samples)  
-
-    def get_nm_elevation(self):
-        """
-        get elevation from national map
-        """  
-        # the url for national map elevation query
-        nm_url = r"https://nationalmap.gov/epqs/pqs.php?x={0:.5f}&y={1:.5f}&units=Meters&output=xml"
-
-        # call the url and get the response
-        response = url.urlopen(nm_url.format(self._latitude, self._longitude))
-        
-        # read the xml response and convert to a float
-        info = ET.ElementTree(ET.fromstring(response.read()))
-        info = info.getroot()
-        for elev in info.iter('Elevation'):
-            nm_elev = float(elev.text)        
-        
-        return nm_elev
 
     def read_metadata(self, meta_lines=None):
         """
@@ -465,6 +489,7 @@ class USGSasc(Metadata):
         self.ts = None
         self.fn = None
         self.station_dir = os.getcwd()
+        self.meta_notes = None
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
             
@@ -472,6 +497,7 @@ class USGSasc(Metadata):
         zc_obj = Z3DCollection()
         self.ts, meta_arr = zc_obj.merge_ts(fn_list)
         self.fill_metadata(meta_arr)
+        self.meta_notes = zc_obj.meta_notes
         
     def read_mtft24_cfg(self, mtft24_cfg_fn):
         """
@@ -490,7 +516,8 @@ class USGSasc(Metadata):
             if int(self.channel_dict[chn]['Azimuth']) != int(zm.Chn_Azimuth[index]):
                 self.channel_dict[chn]['Azimuth'] = float(zm.Chn_Azimuth[index])
             if float(self.channel_dict[chn]['Dipole_Length']) != float(zm.Chn_Length[index]):
-                self.channel_dict[chn]['Dipole_length'] = float(zm.Chn_Length[index])
+                if 'e' in chn.lower(): 
+                    self.channel_dict[chn]['Dipole_Length'] = float(zm.Chn_Length[index])
         
         
     def fill_metadata(self, meta_arr):
@@ -500,17 +527,18 @@ class USGSasc(Metadata):
         self.AcqStopTime = meta_arr['stop'].min()
         self.Nchan = self.ts.shape[1]
         self.RunID = 1
-        self.SiteElevation = np.median(meta_arr['elev'])
         self.SiteLatitude = np.median(meta_arr['lat'])
         self.SiteLongitude = np.median(meta_arr['lon'])
         self.SiteID = os.path.basename(meta_arr['fn'][0]).split('_')[0]
         self.station_dir = os.path.dirname(meta_arr['fn'][0])
         self.channel_dict = dict([(comp.capitalize(),
                                    {'ChnNum':meta_arr['ch_num'][ii],
-                                    'ChnID':meta_arr['comp'][ii],
+                                    'ChnID':meta_arr['comp'][ii].capitalize(),
                                     'InstrumentID':meta_arr['ch_box'][ii],
                                     'Azimuth':meta_arr['ch_azm'][ii],
-                                    'Dipole_Length':meta_arr['ch_length'][ii]})
+                                    'Dipole_Length':meta_arr['ch_length'][ii],
+                                    'n_samples':meta_arr['n_samples'][ii],
+                                    'n_diff':meta_arr['t_diff'][ii]})
                                    for ii, comp in enumerate(meta_arr['comp'])])
 
     def read_asc_file(self, fn=None, str_fmt='%11.7g'):
@@ -526,17 +554,44 @@ class USGSasc(Metadata):
         read_time = et-st
         print('Reading took {0}'.format(read_time.total_seconds()))
         
+    def convert_electrics(self):
+        """
+        convert electric fields into mV/km
+        """
+        
+        try:
+            self.ts.ex /= (self.channel_dict['Ex']['Dipole_Length']/1000.)
+        except AttributeError:
+            print('No EX')
+            
+                
+        try:
+            self.ts.ey /= (self.channel_dict['Ey']['Dipole_Length']/1000.)
+        except AttributeError:
+            print('No EY')
+        
     def write_asc_file(self, save_fn, chunk_size=1024, str_fmt='%11.7g', 
                        full=True):
+        """
+        write an ascii file in the USGS archive format
+        """
+        # get the number of characters in the desired string
+        s_num = int(str_fmt[1:str_fmt.find('.')])
+        
+        # convert electric fields into mV/km
+        self.convert_electrics()
+        
         print('START --> {0}'.format(time.ctime()))
         st = datetime.datetime.now()
-        s_num = int(str_fmt[1:str_fmt.find('.')])
-        #str_fmt = lambda x: '{0:>11.7g}'.format(x)
+        
+        # write meta data first
         meta_lines = self.write_metadata()
         with open(save_fn, 'w') as fid:
-            h_line = [''.join(['{0:>{1}}'.format(c.upper(), s_num) 
+            h_line = [''.join(['{0:>{1}}'.format(c.capitalize(), s_num) 
                       for c in self.ts.columns])]
             fid.write('\n'.join(meta_lines+h_line) + '\n')
+            
+            # write out data
             if full is False:
                 out = np.array(self.ts[0:chunk_size])
                 out[np.where(out == 0)] = float(self.MissingDataFlag)
@@ -590,15 +645,92 @@ class USGSasc(Metadata):
         meta_dict[key]['site'] = self.SiteID
         meta_dict[key]['lat'] = self._latitude
         meta_dict[key]['lon'] = self._longitude
-        meta_dict[key]['elev'] = self._elevation
-        #meta_dict[key]['elev_nm'] = self.get_nm_elevation()
+        meta_dict[key]['elev'] = self.SiteElevation
+        try:
+            meta_dict[key]['hx_azm'] = self.channel_dict['Hx']['Azimuth']
+            meta_dict[key]['hx_id'] = self.channel_dict['Hx']['ChnNum']
+            meta_dict[key]['hx_nsamples'] = self.channel_dict['Hx']['n_samples']
+            meta_dict[key]['hx_ndiff'] = self.channel_dict['Hx']['n_diff']
+            meta_dict[key]['zen_num'] = self.channel_dict['Hx']['InstrumentID']
+        except KeyError:
+            meta_dict[key]['hx_azm'] = None
+            meta_dict[key]['hx_id'] = None
+            meta_dict[key]['hx_nsamples'] = None
+            meta_dict[key]['hx_ndiff'] = None
+        try:
+            meta_dict[key]['hy_azm'] = self.channel_dict['Hy']['Azimuth']
+            meta_dict[key]['hy_id'] = self.channel_dict['Hy']['ChnNum']
+            meta_dict[key]['hy_nsamples'] = self.channel_dict['Hy']['n_samples']
+            meta_dict[key]['hy_ndiff'] = self.channel_dict['Hy']['n_diff']
+            meta_dict[key]['zen_num'] = self.channel_dict['Hy']['InstrumentID']
+        except KeyError:
+            meta_dict[key]['hy_azm'] = None
+            meta_dict[key]['hy_id'] = None
+            meta_dict[key]['hy_nsamples'] = None
+            meta_dict[key]['hy_ndiff'] = None
+        try:
+            meta_dict[key]['hz_azm'] = self.channel_dict['Hz']['Azimuth']
+            meta_dict[key]['hz_id'] = self.channel_dict['Hz']['ChnNum']
+            meta_dict[key]['hz_nsamples'] = self.channel_dict['Hz']['n_samples']
+            meta_dict[key]['hz_ndiff'] = self.channel_dict['Hz']['n_diff']
+            meta_dict[key]['zen_num'] = self.channel_dict['Hz']['InstrumentID']
+        except KeyError:
+            meta_dict[key]['hz_azm'] = None
+            meta_dict[key]['hz_id'] = None
+            meta_dict[key]['hy_nsamples'] = None
+            meta_dict[key]['hy_ndiff'] = None
         
+        try:
+            meta_dict[key]['ex_azm'] = self.channel_dict['Ex']['Azimuth']
+            meta_dict[key]['ex_id'] = self.channel_dict['Ex']['ChnNum']
+            meta_dict[key]['ex_len'] = self.channel_dict['Ex']['Dipole_Length']
+            meta_dict[key]['ex_nsamples'] = self.channel_dict['Ex']['n_samples']
+            meta_dict[key]['ex_ndiff'] = self.channel_dict['Ex']['n_diff']
+            meta_dict[key]['zen_num'] = self.channel_dict['Ex']['InstrumentID']
+        except KeyError:
+            meta_dict[key]['ex_azm'] = None
+            meta_dict[key]['ex_id'] = None
+            meta_dict[key]['ex_len'] = None
+            meta_dict[key]['ex_nsamples'] = None
+            meta_dict[key]['ex_ndiff'] = None
+        
+        try:
+            meta_dict[key]['ey_azm'] = self.channel_dict['Ey']['Azimuth']
+            meta_dict[key]['ey_id'] = self.channel_dict['Ey']['ChnNum']
+            meta_dict[key]['ey_len'] = self.channel_dict['Ey']['Dipole_Length']
+            meta_dict[key]['ey_nsamples'] = self.channel_dict['Ey']['n_samples']
+            meta_dict[key]['ey_ndiff'] = self.channel_dict['Ey']['n_diff']
+            meta_dict[key]['zen_num'] = self.channel_dict['Ey']['InstrumentID']
+        except KeyError:
+            meta_dict[key]['ey_azm'] = None
+            meta_dict[key]['ey_id'] = None
+            meta_dict[key]['ey_len'] = None
+            meta_dict[key]['ey_nsamples'] = None
+            meta_dict[key]['ey_ndiff'] = None
+        
+        meta_dict[key]['start_date'] = self.AcqStartTime
+        meta_dict[key]['stop_date'] = self.AcqStopTime
+        meta_dict[key]['sampling_rate'] = self.AcqSmpFreq
+        meta_dict[key]['n_samples'] = self.AcqNumSmp
+        meta_dict[key]['n_chan'] = self.Nchan
+        
+        
+        if meta_dict[key]['zen_num'] in [24, 25, 26, 46]:
+            meta_dict[key]['collected_by'] = 'USGS'
+        else:
+            meta_dict[key]['collected_by'] = 'OSU'
+        
+        # in the old OSU z3d files there are notes in the metadata section
+        # pass those on
+        meta_dict[key]['notes'] = self.meta_notes
+            
         write_dict_to_configfile(meta_dict, save_fn)
         
 # =============================================================================
 # Test collection
 # =============================================================================
-z3d_path = r"d:\Peacock\MTData\iMUSH_Zen_samples\OSU_2015\G016"
+#z3d_path = r"d:\Peacock\MTData\iMUSH_Zen_samples\OSU_2015\G016"
+z3d_path = r"d:\Peacock\MTData\iMUSH_Zen_samples\OSU_2015\H020_Zen18_dropped_channels"
 
 zc = Z3DCollection()
 m = zc.get_time_blocks(z3d_path)
@@ -606,7 +738,7 @@ m = zc.get_time_blocks(z3d_path)
 zm = USGSasc()
 zm.get_z3d_db(m[0])
 zm.read_mtft24_cfg(r"D:\Peacock\MTData\iMUSH_Zen_samples\USGS_2015\mo015\mtft24.cfg")
-zm.CoordinateSystem = 'Geographic North'
+zm.CoordinateSystem = 'Geomagnetic North'
 zm.SurveyID = 'iMUSH'
 zm.write_asc_file(os.path.join(z3d_path, "test_imush.asc"), str_fmt='%15.7e',
                   full=False)
@@ -614,423 +746,3 @@ zm.write_station_info_metadata()
 #k = zc.check_time_series(m[0])
 #l = zc.check_sampling_rate(k)
 #db, da = zc.merge_ts(m[0])
-
-
- 
-#    #==================================================    
-#    def write_cache_file(self, fn_list, save_fn, station='ZEN', decimate=1):
-#        """
-#        write a cache file from given filenames
-#        
-#        """
-#        #sort the files so they are in order
-#        fn_sort_list = []
-#        for cs in self.chn_order:
-#            for fn in fn_list:
-#                if cs in fn.lower():
-#                    fn_sort_list.append(fn)
-#
-#        fn_list = fn_sort_list
-#        print '-'*15+' Merging '+'-'*15
-#        for fn in fn_list:
-#            print fn
-#            
-#        n_fn = len(fn_list)
-#        self.zt_list = []
-#        for fn in fn_list:
-#            zt1 = zen.Zen3D(fn=fn)
-#            zt1.verbose = self.verbose
-#            try:
-#                zt1.read_z3d(convert_to_mv=False)
-#            except ZenGPSError:
-#                zt1._seconds_diff = 59
-#                zt1.read_z3d(convert_to_mv=False)
-#            self.zt_list.append(zt1)
-#        
-#            #fill in meta data from the time series file
-#            self.meta_data['DATA.DATE0'] = ','+zt1.schedule.Date
-#            self.meta_data['DATA.TIME0'] = ','+zt1.schedule.Time
-#            self.meta_data['TS.ADFREQ'] = ',{0}'.format(int(zt1.df))
-#            self.meta_data['CH.FACTOR'] += ','+self._ch_factor 
-#            self.meta_data['CH.GAIN'] += ','+self._ch_gain
-#            self.meta_data['CH.CMP'] += ','+zt1.metadata.ch_cmp.upper()
-#            self.meta_data['CH.LENGTH'] += ','+zt1.metadata.ch_length
-#            self.meta_data['CH.EXTGAIN'] += ',1'
-#            self.meta_data['CH.NOTCH'] += ',NONE'
-#            self.meta_data['CH.HIGHPASS'] += ',NONE'
-#            self.meta_data['CH.LOWPASS'] += ','+\
-#                                       self._ch_lowpass_dict[str(int(zt1.df))]
-#            self.meta_data['CH.ADCARDSN'] += ','+zt1.header.channelserial
-#            self.meta_data['CH.NUMBER'] += ',{0}'.format(zt1.metadata.ch_number)
-#            self.meta_data['RX.STN'] += ','+zt1.station
-#            
-#        #make sure all files have the same sampling rate
-#        self.check_sampling_rate(self.zt_list)
-#        
-#        #make sure the length of time series is the same for all channels
-#        self.ts, ts_len, temp_fn = self.check_time_series(self.zt_list,
-#                                                          decimate=decimate)
-#        
-#        self.meta_data['TS.NPNT'] = ',{0}'.format(ts_len)
-#        
-#        #get the file name to save to 
-#        if save_fn[-4:] == '.cac':
-#            self.save_fn = save_fn
-#        elif save_fn[-4] == '.':
-#            raise ZenInputFileError('File extension needs to be .cac, not'+\
-#                                    save_fn[-4:])
-#        else:
-#            general_fn = station+'_'+\
-#                         self.meta_data['DATA.DATE0'][1:].replace('-','')+\
-#                         '_'+self.meta_data['DATA.TIME0'][1:].replace(':','')+\
-#                         '_'+self.meta_data['TS.ADFREQ'][1:]+'.cac'
-#            
-#            if os.path.basename(save_fn) != 'Merged':             
-#                save_fn = os.path.join(save_fn, 'Merged')
-#                if not os.path.exists(save_fn):
-#                    os.mkdir(save_fn)
-#            self.save_fn = os.path.join(save_fn, general_fn)
-#                
-#                
-#            
-#        cfid = file(self.save_fn, 'wb+')
-#        #--> write navigation records first        
-#        cfid.write(struct.pack('<i', self._nav_len))
-#        cfid.write(struct.pack('<i', self._flag))
-#        cfid.write(struct.pack('<h', self._type_dict['nav']))
-#        for nd in range(self._nav_len-2):
-#            cfid.write(struct.pack('<b', 0))
-#        cfid.write(struct.pack('<i', self._nav_len))
-#        
-#        #--> write meta data
-#        meta_str = ''.join([key+self.meta_data[key]+'\n' 
-#                             for key in np.sort(self.meta_data.keys())])
-#        
-#        meta_len = len(meta_str)
-#        
-#        cfid.write(struct.pack('<i', meta_len+2))
-#        cfid.write(struct.pack('<i', self._flag))
-#        cfid.write(struct.pack('<h', self._type_dict['meta']))
-#        cfid.write(meta_str)
-#        cfid.write(struct.pack('<i', meta_len+2))
-#        
-#        #--> write calibrations
-#        cal_data1 = 'HEADER.TYPE,Calibrate\nCAL.VER,019\nCAL.SYS,0000,'+\
-#                   ''.join([' 0.000000: '+'0.000000      0.000000,'*3]*27)
-#        cal_data2 = '\nCAL.SYS,0000,'+\
-#                    ''.join([' 0.000000: '+'0.000000      0.000000,'*3]*27)
-#                    
-#        cal_data = cal_data1+(cal_data2*(n_fn-1))
-#        cal_len = len(cal_data)
-#        
-#        cfid.write(struct.pack('<i', cal_len+2))
-#        cfid.write(struct.pack('<i', self._flag))
-#        cfid.write(struct.pack('<h', self._type_dict['cal']))
-#        cfid.write(cal_data[:-1]+'\n')
-#        cfid.write(struct.pack('<i', cal_len+2))
-#        
-#        #--> write data
-#        ts_block_len = int(ts_len)*n_fn*4+2
-#        
-#        #--> Need to scale the time series into counts cause that is apparently
-#        #    what MTFT24 expects
-#        #self.ts = self.ts.astype(np.int32)
-#        
-#        #--> make sure none of the data is above the allowed level
-#        self.ts[np.where(self.ts>2.14e9)] = 2.14e9
-#        self.ts[np.where(self.ts<-2.14e9)] = -2.14e9
-#        
-#        #--> write time series block
-#        cfid.write(struct.pack('<i', ts_block_len))
-#        cfid.write(struct.pack('<i', self._flag))
-#        cfid.write(struct.pack('<h', self._type_dict['ts']))
-#        
-##        #--> need to pack the data as signed integers
-##        for zz in range(ts_len):
-##            cfid.write(struct.pack('<'+'i'*n_fn, *self.ts[zz]))
-#
-#        ## write in chunks, should be faster
-#        chunk_size = 2048
-#        ts_flat = self.ts.flatten()
-#        for chunk in range(int(ts_len/chunk_size)):
-#            index_0 = chunk*chunk_size
-#            index_1 = (chunk+1)*chunk_size
-#            cfid.write(struct.pack('<'+'i'*chunk_size,
-#                                   *ts_flat[index_0:index_1]))                           
-#        # write the last bit
-#        cfid.write(struct.pack('<'+'i'*len(ts_flat[index_1:]),
-#                               *ts_flat[index_1:]))
-#        cfid.write(struct.pack('<i', ts_block_len))
-#        cfid.close()
-#        
-#        if self.verbose:
-#            print 'Saved File to: ', self.save_fn
-#        self.log_lines.append('='*72+'\n')
-#        self.log_lines.append('Saved File to: \n')
-#        self.log_lines.append(' '*4+'{0}\n'.format(self.save_fn))
-#        self.log_lines.append('='*72+'\n')
-#        
-#        #del self.ts
-#        #os.remove(temp_fn)
-#    
-#    
-#    
-##==============================================================================
-## 
-##==============================================================================
-#class ZenGPSError(Exception):
-#    """
-#    error for gps timing
-#    """
-#    pass
-#
-#class ZenSamplingRateError(Exception):
-#    """
-#    error for different sampling rates
-#    """
-#    pass
-#
-#class ZenInputFileError(Exception):
-#    """
-#    error for input files
-#    """
-#    pass
-#
-#class CacheNavigationError(Exception):
-#    """
-#    error for navigation block in cache file
-#    """
-#    pass
-#
-#class CacheMetaDataError(Exception):
-#    """
-#    error for meta data block in cache file
-#    """
-#    pass
-#
-#class CacheCalibrationError(Exception):
-#    """
-#    error for calibration block in cache file
-#    """
-#    pass
-#
-#class CacheTimeSeriesError(Exception):
-#    """
-#    error for time series block in cache file
-#    """
-#    pass
-#
-##==============================================================================
-#def rename_cac_files(station_dir, station='mb'):
-#    """
-#    rename and move .cac files to something more useful
-#    """
-#    fn_list = [os.path.join(station_dir, fn) for fn in os.listdir(station_dir)
-#                if fn[-4:].lower() == '.cac']
-#                    
-#    if len(fn_list) == 0:
-#        raise IOError('Could not find any .cac files')
-#        
-#    save_path = os.path.join(station_dir, 'Merged')
-#    if not os.path.exists(save_path) :
-#        os.mkdir(save_path)
-#    
-#    for fn in fn_list:
-#        cac_obj = Cache(fn)
-#        cac_obj.read_cache_metadata()
-#        station_name = '{0}{1}'.format(station, 
-#                                       cac_obj.metadata.station_number)
-#        station_date = cac_obj.metadata.gdp_date.replace('-', '')
-#        station_time = cac_obj.metadata.gdp_time.replace(':', '')
-#        new_fn = '{0}_{1}_{2}_{3:.0f}.cac'.format(station_name,
-#                                                  station_date, 
-#                                                  station_time,
-#                                                  cac_obj.metadata.ts_adfreq)
-#        new_fn = os.path.join(save_path, new_fn)
-#        shutil.move(fn, new_fn)
-#        print 'moved {0} to {1}'.format(fn, new_fn)
-#        
-##==============================================================================
-## copy and merge Z3D files from SD cards          
-##==============================================================================
-#def copy_and_merge(station, z3d_save_path=None, merge_save_path=None, 
-#                   channel_dict={'1':'HX', '2':'HY', '3':'HZ','4':'EX', 
-#                                 '5':'EY', '6':'HZ'},
-#                   copy_date=None, copy_type='all'):
-#    """
-#    copy files from sd card then merge them together and run mtft24.exe
-#    
-#    Arguments:
-#    ----------
-#        **station** : string
-#                      full station name
-#                      
-#        **z3d_save_path** : string
-#                          full path to save .Z3D files
-#                          
-#        **merge_save_path** : string
-#                             full path to save merged cache files.  If None
-#                             saved to z3d_save_path\Merged
-#                             
-#        
-#        **channel_dict** : dictionary
-#                           keys are the channel numbers as strings and the
-#                           values are the component that corresponds to that 
-#                           channel, values are placed in upper case in the 
-#                           code
-#                           
-#        **copy_date** : YYYY-MM-DD
-#                        date to copy from depending on copy_type
-#                        
-#        **copy_type** : [ 'all' | 'before' | 'after' | 'on' ]
-#                        * 'all' --> copy all files on the SD card
-#                        * 'before' --> copy files before and on this date
-#                        * 'after' --> copy files on and after this date
-#                        * 'on' --> copy files on this date only
-#                        
-#    Returns:
-#    ------------
-#        **mfn_list** : list
-#                      list of merged file names
-#                      
-#    :Example: ::
-#    
-#        >>> import mpty.usgs.zen as zen
-#        >>> mfn_list = zen.copy_and_merge('mt01', z3d_save_path=r"/home/mt")
-#        >>> #copy only after a certain date
-#        >>> mfn_list = zen.copy_and_merge('mt01', z3d_save_path=r"/home/mt",\
-#                                          copy_date='2014/04/20', \
-#                                          copy_type='after')
-#    
-#    """
-#    
-#    #--> copy files from sd cards
-#    cpkwargs = {}
-#    cpkwargs['channel_dict'] = channel_dict
-#    cpkwargs['copy_date'] = copy_date
-#    cpkwargs['copy_type'] = copy_type
-#    if z3d_save_path != None:
-#        cpkwargs['save_path'] = z3d_save_path
-#    
-#    fn_list = zen.copy_from_sd(station, **cpkwargs)
-#    
-#    #--> merge files into cache files
-#    mfn_list = merge_3d_files(fn_list, save_path=merge_save_path)
-#    
-#    return mfn_list
-#
-##==============================================================================
-## merge files into cache files for each sample block   
-##==============================================================================
-#def merge_3d_files(fn_list, save_path=None, verbose=False, 
-#                   calibration_fn=r"c:\MT\amtant.cal"):
-#    """
-#    merge .Z3D files into cache files.  Looks through the file list and 
-#    Combines files with the same start time and sampling rate into a 
-#    cache file.  The calibration file is copied to the merged path for 
-#    later use with mtft24.exe processing code.
-#    
-#    Arguments:
-#    ----------
-#        **fn_list** : list
-#                     list of files to be merged
-#                     
-#        **save_path** : directory to save cach files to
-#        
-#        **verbose** : [ True | False ]
-#                      * True --> prints out information about the merging
-#                      * False--> surpresses print statements
-#        
-#        **calibration_fn** : string
-#                             full path to calibration file for ANT's
-#                             
-#    Outputs:
-#    --------
-#        **merged_fn_list** : nested list of files that were merged together
-#        
-#        A log file is written to save_path\station_merged_log.log that contains
-#        information about the files that were merged together.
-#        
-#     :Example: ::
-#    
-#        >>> import mtpy.usgs.zen as zen
-#        >>> fn_list = zen.copy_from_sd('mt01', save_path=r"/home/mt/survey_1")
-#        >>> zen.merge_3d_files(fn_list, calibration_fn=r"/home/mt/amtant.cal")
-#    
-#    """
-#    
-#    start_time = time.ctime()
-#    merge_list = np.array([[fn]+\
-#                          os.path.basename(fn)[:-4].split('_')
-#                          for fn in fn_list if fn.endswith('.Z3D')])
-#                              
-#    merge_list = np.array([merge_list[:,0], 
-#                          merge_list[:,1],  
-#                          np.core.defchararray.add(merge_list[:,2],
-#                                                   merge_list[:,3]),
-#                          merge_list[:,4],
-#                          merge_list[:,5]])
-#    merge_list = merge_list.T
-#            
-#    station_name = merge_list[0, 1]
-#                  
-#    time_counts = Counter(merge_list[:,2])
-#    time_list = time_counts.keys()
-#    
-#    log_lines = []
-#  
-#    merged_fn_list = []
-#    for tt in time_list:
-#        log_lines.append('+'*72+'\n')
-#        log_lines.append('Files Being Merged: \n')
-#        cache_fn_list = merge_list[np.where(merge_list == tt)[0], 0].tolist()
-#        
-#        for cfn in cache_fn_list:
-#            log_lines.append(' '*4+cfn+'\n')
-#        if save_path is None:
-#            save_path = os.path.dirname(cache_fn_list[0])
-#            
-#        else:
-#            save_path = save_path
-#            
-#        zc = ZenCache()
-#        zc.verbose = verbose
-#        zc.write_cache_file(cache_fn_list, save_path, station=station_name)
-#            
-#        for zt in zc.zt_list:
-#            try:
-#                log_lines.append(zt.log_lines)
-#            except AttributeError:
-#                pass
-#            
-#        merged_fn_list.append(zc.save_fn)
-#        log_lines.append('\n---> Merged Time Series Lengths and Start Time \n')
-#        log_lines.append(zc.log_lines)
-#        log_lines.append('\n')
-#    
-#    end_time = time.ctime()
-#    
-#    #copy the calibration file into the merged folder for mtft24
-#    try:
-#        copy_cal_fn = os.path.join(save_path, 'Merged',
-#                                 os.path.basename(calibration_fn))
-#    except:
-#        copy_cal_fn = os.path.join(save_path, os.path.basename(calibration_fn))
-#        
-#    shutil.copy(calibration_fn, copy_cal_fn)
-#    print 'copied {0} to {1}'.format(calibration_fn, copy_cal_fn)
-#    
-#    print 'Start time: {0}'.format(start_time)
-#    print 'End time:   {0}'.format(end_time)
-#    
-#    if os.path.basename(save_path) != 'Merged':
-#        log_fid = file(os.path.join(save_path, 'Merged', 
-#                                    station_name+'_Merged.log'), 'w')
-#    else:
-#        log_fid = file(os.path.join(save_path, station_name+'_Merged.log'),
-#                       'w')
-#    for line in log_lines:
-#        log_fid.writelines(line)
-#    log_fid.close()
-#        
-#    return merged_fn_list
