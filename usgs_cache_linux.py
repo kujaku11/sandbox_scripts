@@ -48,6 +48,7 @@ class Z3DCollection(object):
         self.log_lines = []
         self.chn_order = ['hx','ex','hy','ey','hz']
         self.meta_notes = None
+        self.leap_seconds = 16
         
     def get_time_blocks(self, z3d_dir):
         """
@@ -63,10 +64,8 @@ class Z3DCollection(object):
         :returns: nested list of files for each time block, sorted by time
          
         """
-        # get list of all files in directory
-        fn_list = os.listdir(z3d_dir)
         
-        # make a list of attributes for each file name, date, time, df
+        fn_list = os.listdir(z3d_dir)
         merge_list = np.array([[fn]+\
                               os.path.basename(fn)[:-4].split('_')
                               for fn in fn_list if fn.endswith('.Z3D')])
@@ -78,8 +77,7 @@ class Z3DCollection(object):
                                merge_list[:,4],
                                merge_list[:,5]])
         merge_list = merge_list.T
-        
-        # get the number of files with the same start time              
+                      
         time_counts = Counter(merge_list[:,2])
         time_list = time_counts.keys()
         log_lines = []
@@ -159,13 +157,15 @@ class Z3DCollection(object):
                                 ('ch_num', np.float32),
                                 ('ch_box', 'S6'),
                                 ('n_samples', np.int32),
-                                ('t_diff', np.int32)])
+                                ('t_diff', np.int32),
+                                ('std', np.float32)])
     
         t_arr['ch_num'] = np.arange(1, n_fn+1)
             
         print('-'*50)
         for ii, fn in enumerate(fn_list):
             z3d_obj = zen.Zen3D(fn)
+            z3d_obj._leap_seconds = self.leap_seconds
             z3d_obj.read_z3d()
             
             # convert the time index into an integer
@@ -189,6 +189,7 @@ class Z3DCollection(object):
             t_arr[ii]['n_samples'] = z3d_obj.ts_obj.ts.shape[0]
             t_arr[ii]['t_diff'] = int((dt_index[-1]-dt_index[0])*z3d_obj.df)-\
                                       z3d_obj.ts_obj.ts.shape[0]
+            t_arr[ii]['std'] = z3d_obj.ts_obj.ts.std()
             try:
                 self.meta_notes = z3d_obj.metadata.notes.replace('\r', ' ').replace('\x00', '').rstrip()
             except AttributeError:
@@ -232,6 +233,7 @@ class Z3DCollection(object):
         
         for ii, m_arr in enumerate(meta_arr):
             z3d_obj = zen.Zen3D(m_arr['fn'])
+            z3d_obj._leap_seconds = self.leap_seconds
             z3d_obj.read_z3d()
             
             dt_index = z3d_obj.ts_obj.ts.data.index.astype(np.int64)/10**9
@@ -298,8 +300,8 @@ class Metadata(object):
     def __init__(self, fn=None, **kwargs):
         self.fn = fn
         self.SurveyID = None
-        self.SiteID = None
         self.RunID = None
+        self._station = None
         self._latitude = None
         self._longitude = None
         self._elevation = None
@@ -344,10 +346,17 @@ class Metadata(object):
         for key in kwargs.keys():
             setattr(self, key, kwargs[key])
             
-            
+    @property
+    def SiteID(self):
+        return self._station.upper()
+    @SiteID.setter
+    def SiteID(self, station):
+        self._station = station
+        
     @property
     def SiteLatitude(self):
-        return gis_tools.convert_position_float2str(self._latitude)
+        return self._latitude
+        #return gis_tools.convert_position_float2str(self._latitude)
     
     @SiteLatitude.setter
     def SiteLatitude(self, lat):
@@ -355,7 +364,8 @@ class Metadata(object):
         
     @property
     def SiteLongitude(self):
-        return gis_tools.convert_position_float2str(self._longitude)
+        return self._longitude
+        #return gis_tools.convert_position_float2str(self._longitude)
     
     @SiteLongitude.setter
     def SiteLongitude(self, lon):
@@ -540,7 +550,11 @@ class USGSasc(Metadata):
             mtft24_cfg_fn = self.locate_mtft24_cfg_fn()
             
         zm = zonge.ZongeMTFT()
-        zm.read_cfg(mtft24_cfg_fn)
+        try:
+            zm.read_cfg(mtft24_cfg_fn)
+        except TypeError:
+            print('*** No MTFT24 file for {0} ***'.format(self.SiteID))
+            return
         
         # need to update channel dict
         # figure out channel order first
@@ -574,7 +588,8 @@ class USGSasc(Metadata):
                                     'Azimuth':meta_arr['ch_azm'][ii],
                                     'Dipole_Length':meta_arr['ch_length'][ii],
                                     'n_samples':meta_arr['n_samples'][ii],
-                                    'n_diff':meta_arr['t_diff'][ii]})
+                                    'n_diff':meta_arr['t_diff'][ii],
+                                    'std':meta_arr['std'][ii]})
                                    for ii, comp in enumerate(meta_arr['comp'])])
 
     def read_asc_file(self, fn=None, str_fmt='%11.7g'):
@@ -614,8 +629,8 @@ class USGSasc(Metadata):
         # make the file name to save to
         if save_fn is None:
             save_fn = os.path.join(self.station_dir, 
-                                   '{0}_{1}_{2}_{3:.0f}.asc'.format(self.SiteID,
-                                    self._start_time.strftime('%Y%m%d'),
+                                   '{0}_{1}T{2}_{3:.0f}.asc'.format(self.SiteID,
+                                    self._start_time.strftime('%Y-%m-%d'),
                                     self._start_time.strftime('%H%M%S'),
                                     self.AcqSmpFreq))
         # get the number of characters in the desired string
@@ -682,12 +697,15 @@ class USGSasc(Metadata):
         """
         
         save_fn = os.path.join(self.station_dir, 
-                                   '{0}_{1}_{2}_{3:.0f}.cfg'.format(self.SiteID,
-                                    self._start_time.strftime('%Y%m%d'),
+                                   '{0}_{1}T{2}_{3:.0f}.cfg'.format(self.SiteID,
+                                    self._start_time.strftime('%Y-%m-%d'),
                                     self._start_time.strftime('%H%M%S'),
                                     self.AcqSmpFreq))
         meta_dict = {}
-        key = self.SiteID
+        key = '{0}_{1}T{2}_{3:.0f}'.format(self.SiteID,
+                                    self._start_time.strftime('%Y-%m-%d'),
+                                    self._start_time.strftime('%H%M%S'),
+                                    self.AcqSmpFreq)
         meta_dict[key] = {}
         meta_dict[key]['site'] = self.SiteID
         meta_dict[key]['lat'] = self._latitude
@@ -698,34 +716,40 @@ class USGSasc(Metadata):
             meta_dict[key]['hx_id'] = self.channel_dict['Hx']['ChnNum']
             meta_dict[key]['hx_nsamples'] = self.channel_dict['Hx']['n_samples']
             meta_dict[key]['hx_ndiff'] = self.channel_dict['Hx']['n_diff']
+            meta_dict[key]['hx_std'] = self.channel_dict['Hx']['std']
             meta_dict[key]['zen_num'] = self.channel_dict['Hx']['InstrumentID']
         except KeyError:
             meta_dict[key]['hx_azm'] = None
             meta_dict[key]['hx_id'] = None
             meta_dict[key]['hx_nsamples'] = None
             meta_dict[key]['hx_ndiff'] = None
+            meta_dict[key]['hx_std'] = None
         try:
             meta_dict[key]['hy_azm'] = self.channel_dict['Hy']['Azimuth']
             meta_dict[key]['hy_id'] = self.channel_dict['Hy']['ChnNum']
             meta_dict[key]['hy_nsamples'] = self.channel_dict['Hy']['n_samples']
             meta_dict[key]['hy_ndiff'] = self.channel_dict['Hy']['n_diff']
+            meta_dict[key]['hy_std'] = self.channel_dict['Hy']['std']
             meta_dict[key]['zen_num'] = self.channel_dict['Hy']['InstrumentID']
         except KeyError:
             meta_dict[key]['hy_azm'] = None
             meta_dict[key]['hy_id'] = None
             meta_dict[key]['hy_nsamples'] = None
             meta_dict[key]['hy_ndiff'] = None
+            meta_dict[key]['hy_std'] = None
         try:
             meta_dict[key]['hz_azm'] = self.channel_dict['Hz']['Azimuth']
             meta_dict[key]['hz_id'] = self.channel_dict['Hz']['ChnNum']
             meta_dict[key]['hz_nsamples'] = self.channel_dict['Hz']['n_samples']
             meta_dict[key]['hz_ndiff'] = self.channel_dict['Hz']['n_diff']
+            meta_dict[key]['hz_std'] = self.channel_dict['Hz']['std']
             meta_dict[key]['zen_num'] = self.channel_dict['Hz']['InstrumentID']
         except KeyError:
             meta_dict[key]['hz_azm'] = None
             meta_dict[key]['hz_id'] = None
-            meta_dict[key]['hy_nsamples'] = None
-            meta_dict[key]['hy_ndiff'] = None
+            meta_dict[key]['hz_nsamples'] = None
+            meta_dict[key]['hz_ndiff'] = None
+            meta_dict[key]['hz_std'] = None
         
         try:
             meta_dict[key]['ex_azm'] = self.channel_dict['Ex']['Azimuth']
@@ -733,6 +757,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ex_len'] = self.channel_dict['Ex']['Dipole_Length']
             meta_dict[key]['ex_nsamples'] = self.channel_dict['Ex']['n_samples']
             meta_dict[key]['ex_ndiff'] = self.channel_dict['Ex']['n_diff']
+            meta_dict[key]['ex_std'] = self.channel_dict['Ex']['std']
             meta_dict[key]['zen_num'] = self.channel_dict['Ex']['InstrumentID']
         except KeyError:
             meta_dict[key]['ex_azm'] = None
@@ -740,6 +765,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ex_len'] = None
             meta_dict[key]['ex_nsamples'] = None
             meta_dict[key]['ex_ndiff'] = None
+            meta_dict[key]['ex_std'] = None
         
         try:
             meta_dict[key]['ey_azm'] = self.channel_dict['Ey']['Azimuth']
@@ -747,6 +773,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ey_len'] = self.channel_dict['Ey']['Dipole_Length']
             meta_dict[key]['ey_nsamples'] = self.channel_dict['Ey']['n_samples']
             meta_dict[key]['ey_ndiff'] = self.channel_dict['Ey']['n_diff']
+            meta_dict[key]['ey_std'] = self.channel_dict['Ey']['std']
             meta_dict[key]['zen_num'] = self.channel_dict['Ey']['InstrumentID']
         except KeyError:
             meta_dict[key]['ey_azm'] = None
@@ -754,6 +781,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ey_len'] = None
             meta_dict[key]['ey_nsamples'] = None
             meta_dict[key]['ey_ndiff'] = None
+            meta_dict[key]['ey_std'] = None
         
         meta_dict[key]['start_date'] = self.AcqStartTime
         meta_dict[key]['stop_date'] = self.AcqStopTime
@@ -762,7 +790,7 @@ class USGSasc(Metadata):
         meta_dict[key]['n_chan'] = self.Nchan
         
         
-        if meta_dict[key]['zen_num'] in [24, 25, 26, 46]:
+        if meta_dict[key]['zen_num'] in [24, 25, 26, 46, '24', '25', '26', '46']:
             meta_dict[key]['collected_by'] = 'USGS'
         else:
             meta_dict[key]['collected_by'] = 'OSU'
@@ -776,11 +804,13 @@ class USGSasc(Metadata):
 # =============================================================================
 # Test collection
 # =============================================================================
-#z3d_path = r"d:\Peacock\MTData\iMUSH_Zen_samples\OSU_2015\G016"
-z3d_path = r"d:\Peacock\MTData\iMUSH_Zen_samples\USGS_2015\mo015"
+z3d_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/OSU_2015/G016"
+#z3d_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/USGS_2015/mo015"
 
 zc = Z3DCollection()
 m = zc.get_time_blocks(z3d_path)
+
+st = datetime.datetime.now()
 
 for m_list in m:
     zm = USGSasc()
@@ -788,8 +818,16 @@ for m_list in m:
     zm.read_mtft24_cfg()
     zm.CoordinateSystem = 'Geomagnetic North'
     zm.SurveyID = 'iMUSH'
-    zm.write_asc_file(str_fmt='%15.7e', full=False)
+#    zm.write_asc_file(str_fmt='%15.7e', full=False)
     zm.write_station_info_metadata()
+    
+et = datetime.datetime.now()
+
+full_time = et-st
+
+print(st)
+print(et)
+print('Took --> {0}'.format(full_time.total_seconds()))
 #k = zc.check_time_series(m[0])
 #l = zc.check_sampling_rate(k)
 #db, da = zc.merge_ts(m[0])
