@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+USGS Ascii
+==============
+
+    * Merge Z3D files into USGS ascii format
+
 Created on Tue Aug 29 16:38:28 2017
 
 @author: jpeacock
@@ -11,6 +16,7 @@ import time
 import datetime
 from collections import Counter
 
+import gzip
 import urllib2 as url
 import xml.etree.ElementTree as ET
 
@@ -40,12 +46,7 @@ class Z3DCollection(object):
     
     def __init__(self):
         
-        self.fn_list = None
-        self.z3d_obj_list = None
-        self.save_fn = None
-        self._ch_factor = '9.5367431640625e-10'
         self.verbose = True
-        self.log_lines = []
         self.chn_order = ['hx','ex','hy','ey','hz']
         self.meta_notes = None
         self.leap_seconds = 16
@@ -104,16 +105,14 @@ class Z3DCollection(object):
     #==================================================
     def check_sampling_rate(self, time_array):
         """
-        check to make sure the sampling rate is the same for all channels
+        Check to make sure the sampling rate is the same for all channels
         
-        Arguments
-        -----------
-            **zt_list** : list of Zen3D instances
+        :param time_array: structured array with key df for sampling rate
+                           made by check_time_series 
+        :type time_array: np.ndarray
         
-        Outputs:
-        --------
-            **None** : raises an error if sampling rates are not all the same
-            
+        :returns: sampling rate
+        :rtype: float
         """
         
         nz = len(time_array)
@@ -125,7 +124,7 @@ class Z3DCollection(object):
         for jj in range(nz):
             tf_array[jj] = np.in1d(df_array, [df_array[jj]])
         
-        false_test = np.where(tf_array==False)
+        false_test = np.where(tf_array == False)
         
         if len(false_test[0]) != 0:
             raise IOError('Sampling rates are not the same for all channels '+\
@@ -136,8 +135,13 @@ class Z3DCollection(object):
     #==================================================
     def check_time_series(self, fn_list):
         """
-        check to make sure timeseries line up with eachother.
+        Check to make sure timeseries line up with eachother.
         
+        :param fn_list: list of files to merge
+        :type fn_list: list
+        
+        :return: time_array
+        :rtype: np.ndarray including all important information for merging
         """
         # get number of channels
         n_fn = len(fn_list)
@@ -195,14 +199,6 @@ class Z3DCollection(object):
             except AttributeError:
                 pass
 
-            if self.verbose:
-                print '{0} -- {1:<16.2f}{2:<16.2f} sec'.format(z3d_obj.metadata.ch_cmp,
-                                                           dt_index[0],
-                                                           dt_index[-1])                 
-
-            self.log_lines.append('{0} -- {1:<16.2f}{2:<16.2f} sec'.format(z3d_obj.metadata.ch_cmp,
-                                                           dt_index[0],
-                                                           dt_index[-1]))
         # cut the array to only those channels with data
         t_arr = t_arr[np.nonzero(t_arr['start'])]
         
@@ -210,7 +206,17 @@ class Z3DCollection(object):
     
     def merge_ts(self, fn_list, decimate=1):
         """
-        merge z3d's based on a mutual start and stop time
+        Merge z3d's based on a mutual start and stop time
+        
+        :param fn_list: list of Z3D files to merge together (full paths)
+        :type fn_list: list
+        
+        :return: pandas database of merged time series
+        :rtype: pandas database
+        
+        :return: time_array that includes all important information
+        :rtype: np.ndarray
+        
         """
         meta_arr = self.check_time_series(fn_list)
         df = self.check_sampling_rate(meta_arr)
@@ -248,9 +254,6 @@ class Z3DCollection(object):
                     print '{0} off by {1} points --> {2} sec'.format(z3d_obj.ts_obj.fn,
                                                                      t_diff,
                                                                      t_diff/z3d_obj.ts_obj.sampling_rate)
-                self.log_lines.append('{0} off by {1} points --> {2} sec \n'.format(z3d_obj.ts_obj.fn,
-                                                                     t_diff,
-                                                                     t_diff/z3d_obj.ts_obj.sampling_rate))
             if decimate > 1:
                  ts_db[:, ii] = sps.resample(z3d_obj.ts_obj.ts.data[index_0:index_1],
                                               ts_len, 
@@ -267,7 +270,15 @@ class Z3DCollection(object):
     
     def get_chn_order(self, chn_list):
         """
-        get the order of the array according to the components
+        Get the order of the array channels according to the components.
+        
+        .. note:: If you want to change the channel order, change the 
+                  parameter Z3DCollection.chn_order
+        
+        :param chn_list: list of channels in data
+        :type chn_list: list
+        
+        :return: channel order list 
         """
         
         if len(chn_list) == 5:
@@ -297,6 +308,25 @@ class UTC(datetime.tzinfo):
 #  Metadata for usgs ascii file
 # =============================================================================
 class Metadata(object):
+    """
+    Container for all the important metadata in a USGS ascii file, including:
+        * 'SurveyID'
+        * 'SiteID'
+        * 'RunID'
+        * 'SiteLatitude'
+        * 'SiteLongitude'
+        * 'SiteElevation'
+        * 'AcqStartTime'
+        * 'AcqStopTime'
+        * 'AcqSmpFreq'
+        * 'AcqNumSmp'
+        * 'Nchan'
+        * 'CoordinateSystem'
+        * 'ChnSettings'
+        * 'MissingDataFlag'
+    
+    
+    """
     def __init__(self, fn=None, **kwargs):
         self.fn = fn
         self.SurveyID = None
@@ -443,14 +473,23 @@ class Metadata(object):
     def AcqNumSmp(self, n_samples):
         self._n_samples = int(n_samples)  
 
-    def read_metadata(self, meta_lines=None):
+    def read_metadata(self, fn=None, meta_lines=None):
         """
-        read in a meta from the raw string
+        Read in a meta from the raw string or file.  Populate all metadata
+        as attributes.
+        
+        :param fn: full path to USGS ascii file
+        :type fn: string
+        
+        :param meta_lines: lines of metadata to read
+        :type meta_lines: list
         """
         chn_find = False
         comp = 0
         self.channel_dict = {}
-        if meta_lines is None:
+        if fn is not None:
+            self.fn = fn
+        if self.fn is not None:
             with open(self.fn, 'r') as fid:
                 meta_lines = [fid.readline() for ii in range(self._metadata_len)]
         for ii, line in enumerate(meta_lines):
@@ -485,10 +524,13 @@ class Metadata(object):
                             
     def write_metadata(self):
         """
-        Write out metadata in the format of PB
+        Write out metadata in the format of USGS ascii.
         
-        returns a list of lines to write use '\n'.join(lines) to write out
+        :return: list of metadate lines.
+        
+        .. note:: meant to use '\n'.join(lines) to write out in a file.
         """
+        
         lines = []
         for key in self._key_list:
             if key in ['ChnSettings']:
@@ -504,7 +546,10 @@ class Metadata(object):
                 lines.append('{0}:'.format(key))
                 return lines
             else:
-                lines.append('{0}: {1}'.format(key, getattr(self, key)))
+                if key in ['SiteLatitude', 'SiteLongitude']:
+                    lines.append('{0}: {1:.5f}'.format(key, getattr(self, key)))
+                else:
+                    lines.append('{0}: {1}'.format(key, getattr(self, key)))
         
         return lines
 
@@ -514,7 +559,20 @@ class Metadata(object):
 # =============================================================================
 class USGSasc(Metadata):
     """
-    read and write Paul's ascii formatted time series
+    Read and write USGS ascii formatted time series
+    
+    :Example: ::
+        
+        >>> zc = Z3DCollection()
+        >>> fn_list = zc.get_time_blocks(z3d_path)
+        >>> zm = USGSasc()
+        >>> zm.SurveyID = 'iMUSH'
+        >>> zm.get_z3d_db(fn_list[0])
+        >>> zm.read_mtft24_cfg()
+        >>> zm.CoordinateSystem = 'Geomagnetic North'
+        >>> zm.SurveyID = 'MT'
+        >>> zm.write_asc_file(str_fmt='%15.7e')
+        >>> zm.write_station_info_metadata()
     """
     
     def __init__(self, **kwargs):
@@ -527,6 +585,14 @@ class USGSasc(Metadata):
             setattr(self, key, kwargs[key])
             
     def get_z3d_db(self, fn_list):
+        """
+        Merge time series from Z3D files into a pandas database
+        
+        :param fn_list: list of Z3D files to merge (full paths)
+        :type fn_list: list
+        
+        Fills ts attribute as pandas database.
+        """
         zc_obj = Z3DCollection()
         self.ts, meta_arr = zc_obj.merge_ts(fn_list)
         self.fill_metadata(meta_arr)
@@ -534,7 +600,9 @@ class USGSasc(Metadata):
         
     def locate_mtft24_cfg_fn(self):
         """
-        try to automatically detect mtft24 file
+        Try to automatically detect mtft24 file
+        
+        :return: path to mtft24.cfg file
         """
         for fn in os.listdir(self.station_dir):
             if 'mtft24' in fn and fn.endswith('cfg'):
@@ -544,7 +612,10 @@ class USGSasc(Metadata):
             
     def read_mtft24_cfg(self, mtft24_cfg_fn=None):
         """
-        read in a MTFT24 configuration file and fill in meta data
+        Read in a MTFT24 configuration file and fill in meta data
+        
+        :param mtft24_cfg_fn: full path to mtft24.cfg
+        :type: string
         """
         if mtft24_cfg_fn is None:
             mtft24_cfg_fn = self.locate_mtft24_cfg_fn()
@@ -571,11 +642,25 @@ class USGSasc(Metadata):
         
         
     def fill_metadata(self, meta_arr):
-        self.AcqNumSmp = self.ts.shape[0]
+        """
+        Fill in metadata from time array made by 
+        Z3DCollection.check_time_series.
+        
+        :param meta_arr: structured array of metadata for the Z3D files to be
+                         combined.
+        :type meta_arr: np.ndarray
+        """
+        try:
+            self.AcqNumSmp = self.ts.shape[0]
+        except AttributeError:
+            pass
         self.AcqSmpFreq = meta_arr['df'].mean()
         self.AcqStartTime = meta_arr['start'].max()
         self.AcqStopTime = meta_arr['stop'].min()
-        self.Nchan = self.ts.shape[1]
+        try:
+            self.Nchan = self.ts.shape[1]
+        except AttributeError:
+            self.Nchan = meta_arr.shape[0]
         self.RunID = 1
         self.SiteLatitude = np.median(meta_arr['lat'])
         self.SiteLongitude = np.median(meta_arr['lon'])
@@ -589,10 +674,17 @@ class USGSasc(Metadata):
                                     'Dipole_Length':meta_arr['ch_length'][ii],
                                     'n_samples':meta_arr['n_samples'][ii],
                                     'n_diff':meta_arr['t_diff'][ii],
-                                    'std':meta_arr['std'][ii]})
+                                    'std':meta_arr['std'][ii],
+                                    'start':meta_arr['start'][ii]})
                                    for ii, comp in enumerate(meta_arr['comp'])])
 
-    def read_asc_file(self, fn=None, str_fmt='%11.7g'):
+    def read_asc_file(self, fn=None):
+        """
+        Read in a USGS ascii file and fill attributes accordingly.
+        
+        :param fn: full path to .asc file to be read in
+        :type fn: string
+        """
         if fn is not None:
             self.fn = fn
         st = datetime.datetime.now()    
@@ -607,7 +699,7 @@ class USGSasc(Metadata):
         
     def convert_electrics(self):
         """
-        convert electric fields into mV/km
+        Convert electric fields into mV/km
         """
         
         try:
@@ -621,10 +713,26 @@ class USGSasc(Metadata):
         except AttributeError:
             print('No EY')
         
-    def write_asc_file(self, save_fn=None, chunk_size=1024, str_fmt='%11.7g', 
-                       full=True):
+    def write_asc_file(self, save_fn=None, chunk_size=1024, str_fmt='%11.7e', 
+                       full=True, compress=False):
         """
-        write an ascii file in the USGS archive format
+        Write an ascii file in the USGS ascii format.
+        
+        :param save_fn: full path to file name to save the merged ascii to
+        :type save_fn: string
+        
+        :param chunck_size: chunck size to write file in blocks, larger numbers
+                            are typically slower. 
+        :type chunck_size: int
+        
+        :param str_fmt: format of the data as written
+        :type str_fmt: string
+        
+        :param full: write out the complete file, mostly for testing.
+        :type full: boolean [ True | False ]
+        
+        :param compress: compress file using gzip
+        :type compress: boolean [ True | False ]
         """
         # make the file name to save to
         if save_fn is None:
@@ -644,30 +752,57 @@ class USGSasc(Metadata):
         
         # write meta data first
         meta_lines = self.write_metadata()
-        with open(save_fn, 'w') as fid:
-            h_line = [''.join(['{0:>{1}}'.format(c.capitalize(), s_num) 
-                      for c in self.ts.columns])]
-            fid.write('\n'.join(meta_lines+h_line) + '\n')
-            
-            # write out data
-            if full is False:
-                out = np.array(self.ts[0:chunk_size])
-                out[np.where(out == 0)] = float(self.MissingDataFlag)
-                out = np.char.mod(str_fmt, out)
-                lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
-                fid.write(lines+'\n')
-                print('END --> {0}'.format(time.ctime()))
-                et = datetime.datetime.now()
-                write_time = et-st
-                print('Writing took: {0} seconds'.format(write_time.total_seconds()))
-                return 
-            
-            for chunk in range(int(self.ts.shape[0]/chunk_size)):
-                out = np.array(self.ts[chunk*chunk_size:(chunk+1)*chunk_size])
-                out[np.where(out == 0)] = float(self.MissingDataFlag)
-                out = np.char.mod(str_fmt, out)
-                lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
-                fid.write(lines+'\n')
+        if compress is True:
+            with gzip.open(save_fn+'.gz', 'wb') as fid:
+                h_line = [''.join(['{0:>{1}}'.format(c.capitalize(), s_num) 
+                          for c in self.ts.columns])]
+                fid.write('\n'.join(meta_lines+h_line) + '\n')
+                
+                # write out data
+                if full is False:
+                    out = np.array(self.ts[0:chunk_size])
+                    out[np.where(out == 0)] = float(self.MissingDataFlag)
+                    out = np.char.mod(str_fmt, out)
+                    lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
+                    fid.write(lines+'\n')
+                    print('END --> {0}'.format(time.ctime()))
+                    et = datetime.datetime.now()
+                    write_time = et-st
+                    print('Writing took: {0} seconds'.format(write_time.total_seconds()))
+                    return 
+                
+                for chunk in range(int(self.ts.shape[0]/chunk_size)):
+                    out = np.array(self.ts[chunk*chunk_size:(chunk+1)*chunk_size])
+                    out[np.where(out == 0)] = float(self.MissingDataFlag)
+                    out = np.char.mod(str_fmt, out)
+                    lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
+                    fid.write(lines+'\n')
+
+        else:
+            with open(save_fn, 'w') as fid:
+                h_line = [''.join(['{0:>{1}}'.format(c.capitalize(), s_num) 
+                          for c in self.ts.columns])]
+                fid.write('\n'.join(meta_lines+h_line) + '\n')
+                
+                # write out data
+                if full is False:
+                    out = np.array(self.ts[0:chunk_size])
+                    out[np.where(out == 0)] = float(self.MissingDataFlag)
+                    out = np.char.mod(str_fmt, out)
+                    lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
+                    fid.write(lines+'\n')
+                    print('END --> {0}'.format(time.ctime()))
+                    et = datetime.datetime.now()
+                    write_time = et-st
+                    print('Writing took: {0} seconds'.format(write_time.total_seconds()))
+                    return 
+                
+                for chunk in range(int(self.ts.shape[0]/chunk_size)):
+                    out = np.array(self.ts[chunk*chunk_size:(chunk+1)*chunk_size])
+                    out[np.where(out == 0)] = float(self.MissingDataFlag)
+                    out = np.char.mod(str_fmt, out)
+                    lines = '\n'.join([''.join(out[ii, :]) for ii in range(out.shape[0])])
+                    fid.write(lines+'\n')
         print('END --> {0}'.format(time.ctime()))
         et = datetime.datetime.now()
         write_time = et-st
@@ -717,6 +852,7 @@ class USGSasc(Metadata):
             meta_dict[key]['hx_nsamples'] = self.channel_dict['Hx']['n_samples']
             meta_dict[key]['hx_ndiff'] = self.channel_dict['Hx']['n_diff']
             meta_dict[key]['hx_std'] = self.channel_dict['Hx']['std']
+            meta_dict[key]['hx_start'] = self.channel_dict['Hx']['start']
             meta_dict[key]['zen_num'] = self.channel_dict['Hx']['InstrumentID']
         except KeyError:
             meta_dict[key]['hx_azm'] = None
@@ -724,12 +860,15 @@ class USGSasc(Metadata):
             meta_dict[key]['hx_nsamples'] = None
             meta_dict[key]['hx_ndiff'] = None
             meta_dict[key]['hx_std'] = None
+            meta_dict[key]['hx_start'] = None
+            
         try:
             meta_dict[key]['hy_azm'] = self.channel_dict['Hy']['Azimuth']
             meta_dict[key]['hy_id'] = self.channel_dict['Hy']['ChnNum']
             meta_dict[key]['hy_nsamples'] = self.channel_dict['Hy']['n_samples']
             meta_dict[key]['hy_ndiff'] = self.channel_dict['Hy']['n_diff']
             meta_dict[key]['hy_std'] = self.channel_dict['Hy']['std']
+            meta_dict[key]['hy_start'] = self.channel_dict['Hy']['start']
             meta_dict[key]['zen_num'] = self.channel_dict['Hy']['InstrumentID']
         except KeyError:
             meta_dict[key]['hy_azm'] = None
@@ -737,12 +876,14 @@ class USGSasc(Metadata):
             meta_dict[key]['hy_nsamples'] = None
             meta_dict[key]['hy_ndiff'] = None
             meta_dict[key]['hy_std'] = None
+            meta_dict[key]['hy_start'] = None
         try:
             meta_dict[key]['hz_azm'] = self.channel_dict['Hz']['Azimuth']
             meta_dict[key]['hz_id'] = self.channel_dict['Hz']['ChnNum']
             meta_dict[key]['hz_nsamples'] = self.channel_dict['Hz']['n_samples']
             meta_dict[key]['hz_ndiff'] = self.channel_dict['Hz']['n_diff']
             meta_dict[key]['hz_std'] = self.channel_dict['Hz']['std']
+            meta_dict[key]['hz_start'] = self.channel_dict['Hz']['start']
             meta_dict[key]['zen_num'] = self.channel_dict['Hz']['InstrumentID']
         except KeyError:
             meta_dict[key]['hz_azm'] = None
@@ -750,6 +891,7 @@ class USGSasc(Metadata):
             meta_dict[key]['hz_nsamples'] = None
             meta_dict[key]['hz_ndiff'] = None
             meta_dict[key]['hz_std'] = None
+            meta_dict[key]['hz_start'] = None
         
         try:
             meta_dict[key]['ex_azm'] = self.channel_dict['Ex']['Azimuth']
@@ -758,6 +900,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ex_nsamples'] = self.channel_dict['Ex']['n_samples']
             meta_dict[key]['ex_ndiff'] = self.channel_dict['Ex']['n_diff']
             meta_dict[key]['ex_std'] = self.channel_dict['Ex']['std']
+            meta_dict[key]['ex_start'] = self.channel_dict['Ex']['start']
             meta_dict[key]['zen_num'] = self.channel_dict['Ex']['InstrumentID']
         except KeyError:
             meta_dict[key]['ex_azm'] = None
@@ -766,6 +909,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ex_nsamples'] = None
             meta_dict[key]['ex_ndiff'] = None
             meta_dict[key]['ex_std'] = None
+            meta_dict[key]['ex_start'] = None
         
         try:
             meta_dict[key]['ey_azm'] = self.channel_dict['Ey']['Azimuth']
@@ -774,6 +918,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ey_nsamples'] = self.channel_dict['Ey']['n_samples']
             meta_dict[key]['ey_ndiff'] = self.channel_dict['Ey']['n_diff']
             meta_dict[key]['ey_std'] = self.channel_dict['Ey']['std']
+            meta_dict[key]['ey_start'] = self.channel_dict['Ey']['start']
             meta_dict[key]['zen_num'] = self.channel_dict['Ey']['InstrumentID']
         except KeyError:
             meta_dict[key]['ey_azm'] = None
@@ -782,6 +927,7 @@ class USGSasc(Metadata):
             meta_dict[key]['ey_nsamples'] = None
             meta_dict[key]['ey_ndiff'] = None
             meta_dict[key]['ey_std'] = None
+            meta_dict[key]['ey_start'] = None
         
         meta_dict[key]['start_date'] = self.AcqStartTime
         meta_dict[key]['stop_date'] = self.AcqStopTime
@@ -801,33 +947,3 @@ class USGSasc(Metadata):
             
         write_dict_to_configfile(meta_dict, save_fn)
         
-# =============================================================================
-# Test collection
-# =============================================================================
-z3d_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/OSU_2015/G016"
-#z3d_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/USGS_2015/mo015"
-
-zc = Z3DCollection()
-m = zc.get_time_blocks(z3d_path)
-
-st = datetime.datetime.now()
-
-for m_list in m:
-    zm = USGSasc()
-    zm.get_z3d_db(m_list)
-    zm.read_mtft24_cfg()
-    zm.CoordinateSystem = 'Geomagnetic North'
-    zm.SurveyID = 'iMUSH'
-#    zm.write_asc_file(str_fmt='%15.7e', full=False)
-    zm.write_station_info_metadata()
-    
-et = datetime.datetime.now()
-
-full_time = et-st
-
-print(st)
-print(et)
-print('Took --> {0}'.format(full_time.total_seconds()))
-#k = zc.check_time_series(m[0])
-#l = zc.check_sampling_rate(k)
-#db, da = zc.merge_ts(m[0])
