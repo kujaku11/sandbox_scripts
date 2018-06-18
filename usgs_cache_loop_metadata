@@ -6,26 +6,53 @@ Created on Tue Jun 12 14:40:38 2018
 @author: jpeacock
 """
 import os
-import datetime
+#import datetime
 
 import mtpy.usgs.usgs_cache as usgs
 
 # =============================================================================
 # Test collection
 # =============================================================================
-#station_path = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/normal"
-station_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush/O015"
+survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 
-zc = usgs.Z3DCollection()
-fn_list = zc.get_time_blocks(station_path)
+for station in os.listdir(survey_dir):
+    
+    station_path = os.path.join(survey_dir, station)
+    if not os.path.isdir(station_path):
+        continue
+    
+    zc = usgs.Z3DCollection()
+    fn_list = zc.get_time_blocks(station_path)
+    
+    for fn_block in fn_list:
+        zm = usgs.USGSasc()
+        zm.get_z3d_db(fn_block)
+#        meta_arr = zc.check_time_series(fn_block)
+#        zm.fill_metadata(meta_arr)
+        zm.CoordinateSystem = 'Geomagnetic North'
+        zm.SurveyID = 'iMUSH'
+        zm.read_mtft24_cfg()
+        zm.write_station_info_metadata()
+        zm.write_asc_file(full=False, compress=True)
 
-for fn_block in fn_list:
-    zm = usgs.USGSasc()
-    meta_arr = zc.check_time_series(fn_block)
-    zm.fill_metadata(meta_arr)
-    zm.CoordinateSystem = 'Geomagnetic North'
-    zm.read_mtft24_cfg()
-    zm.write_station_info_metadata()
+# combine all the .cfg files into useful files
+usgs_cfg_obj = usgs.USGScfg()
+fn_list = usgs_cfg_obj.combine_all_station_info(survey_dir)
+
+##station_path = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/normal"
+#station_path = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush/H020"
+#
+#zc = usgs.Z3DCollection()
+#fn_list = zc.get_time_blocks(station_path)
+#
+#for fn_block in fn_list:
+#    zm = usgs.USGSasc()
+#    meta_arr = zc.check_time_series(fn_block)
+#    zm.fill_metadata(meta_arr)
+#    zm.CoordinateSystem = 'Geomagnetic North'
+#    zm.SurveyID = 'iMUSH'
+#    zm.read_mtft24_cfg()
+#    zm.write_station_info_metadata()
 
 
 #st = datetime.datetime.now()

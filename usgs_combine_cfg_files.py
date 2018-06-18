@@ -8,7 +8,6 @@ import os
 import pandas as pd
 import numpy as np
 import mtpy.utils.configfile as configfile
-import mtpy.usgs.usgs_cache as usgs_cache
 
 # =============================================================================
 # Functions to help analyze config files
@@ -79,7 +78,8 @@ def check_db(database):
 # =============================================================================
 # test the function
 # =============================================================================
-station_dir = r"c:\Users\jpeacock\Documents\imush"
+#station_dir = r"c:\Users\jpeacock\Documents\imush"
+station_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 
 s_count = 0
 for station in os.listdir(station_dir):
@@ -90,7 +90,7 @@ for station in os.listdir(station_dir):
         continue
     
     cfg_fn_list = sorted([os.path.join(cfg_dir, fn) for fn in os.listdir(cfg_dir)
-                          if 'mtft24' not in fn and 'runs' not in fn 
+                          if 'mt' not in fn and 'runs' not in fn 
                           and fn.endswith('.cfg')])
     
     count = 0
