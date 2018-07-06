@@ -54,17 +54,24 @@ import mtpy.utils.gis_tools as gis_tools
 #          'easting_max':402800.,
 #          'northing_min':4287500.,
 #          'northing_max':4296000.}
-## Gabbs valley
-ll_utm = {'lon_min':-118.0,
-          'lon_max':-114.3,
-          'lat_min':32.75,
-          'lat_max':35.75}
+### Gabbs valley
+#ll_utm = {'lon_min':-118.0,
+#          'lon_max':-114.3,
+#          'lat_min':32.75,
+#          'lat_max':35.75}
+#
+#spacing_east = 30./111.34
+#spacing_north = 20./111.34
 
-spacing_east = 30./111.34
-spacing_north = 20./111.34
 
+## Clear Lake
+ll_utm = {'lon_min':-123.15,
+          'lon_max':-122.45,
+          'lat_min':38.75,
+          'lat_max':39.2}
 
- 
+spacing_east = 10./111.34
+spacing_north = 10./111.34
 
 lat_arr = np.arange(ll_utm['lat_min'], 
                      ll_utm['lat_max']+spacing_north,
@@ -74,14 +81,14 @@ lon_arr = np.arange(ll_utm['lon_min'],
                      ll_utm['lon_max']+spacing_east,
                      spacing_east)
                      
-kml_fn = r"c:\Users\jpeacock\Documents\MountainPass\mojave_{0:.0f}m.kml".format(spacing_east)
+kml_fn = r"c:\Users\jpeacock\Documents\ClearLake\clear_lake_{0:.0f}km.kml".format(10)
 
 kml_obj = skml.Kml()
 count = 0
 for ii, lat_ii in enumerate(lat_arr):
     for jj, lon_jj in enumerate(lon_arr):
 
-        kml_obj.newpoint(name='MJ{0:02}'.format(count),
+        kml_obj.newpoint(name='CL{0:02}'.format(count),
                          coords=[(lon_jj, lat_ii)])
                          
         count += 1
