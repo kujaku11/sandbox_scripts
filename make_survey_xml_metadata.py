@@ -7,10 +7,13 @@ Created on Thu Jul 05 14:11:43 2018
 
 import xml.etree.cElementTree as ET
 import xml.dom.minidom as minidom
+import datetime
 
 # =============================================================================
 # Input data
 # =============================================================================
+usgs_str = 'U.S. Geological Survey'
+
 authors = ['Jared R. Peacock', 'Kevin Denton', 'Dave Ponce']
 year = '2018'
 title = 'Magnetotelluric data from Mountain Pass, California'
@@ -27,7 +30,12 @@ purpose = 'survey purpose'
 supplement_info = 'in case something goes wrong or needs more explanation'
 survey_begin = '20160505'
 survey_end = '20160512'
-survey_extent = [-120, -118, 39, 37]
+survey_extent = {'west': -120,
+                 'east': -118, 
+                 'north': 39,
+                 'south': 37,
+                 'elev_min':0,
+                 'elev_max':1500}
 
 science_center = 'GMEGSC'
 program = 'MRP'
@@ -78,7 +86,31 @@ submitter = {'name': 'Jared R. Peacock',
              'postal': '94125',
              'phone':'650-329-4833',
              'email': 'jpeacock@usgs.gov',
-             'country': 'USA'}
+             'country': 'USA',
+             'position': 'Research Geophysicist'}
+
+science_base = {'name': 'Science Base',
+                'org': usgs_str,
+                'address': 'Building 810, Mail Stop 302, Denver Federal Center',
+                'city': 'Denver',
+                'state': 'CO',
+                'postal': '80255',
+                'phone':'1-888-275-8747',
+                'email': 'sciencebase@usgs.gov',
+                'country': 'USA',
+                'liability': 'Unless otherwise stated, all data, metadata and '+\
+                             'related materials are considered to satisfy the '+\
+                             'quality standards relative to the purpose for '+\
+                             'which the data were collected. Although these '+\
+                             'data and associated metadata have been reviewed '+\
+                             'for accuracy and completeness and approved for '+\
+                             'release by the U.S. Geological Survey (USGS), '+\
+                             'no warranty expressed or implied is made '+\
+                             'regarding the display or utility of the data for '+\
+                             'other purposes, nor on all computer systems, nor '+\
+                             'shall the act of distribution constitute any such '+\
+                             'warranty.'}
+
 funding_source = 'Mineral Resources Program'
 
 complete_warning = 'Data set is considered complete for the information '+\
@@ -116,6 +148,30 @@ processing = 'The transfer function estimates provided in the *.edi files and '+
             'periods 0.001-1 Hz. So-called optimal TFs were selected based on'+\
             'examination of phase slope, smooth curve assumptions, and '+\
             'operator discretion.'
+            
+guide_pdf_fn = 'Guide_MT_Data.pdf'
+guide_description = 'Description of available magnetotelluric data types '+\
+                    'from U.S. Geological Survey. This report describes '+\
+                    'typical magnetotelluric instrumentation and the various'+\
+                    'data types required in MT processing and data quality'+\
+                    'assessment (including electric and magnetic field '+\
+                    'time-series, instrument response files, and transfer '+\
+                    'functions), accessible at, '+\
+                    'https://www.sciencebase.gov/catalog/file/get/59400c59e4b0764e6c631120?name=Guide_to_Magnetotelluric_Data_Types.pdf'
+                    
+dictionary_fn = 'MT_Dictionary.csv'
+dictionary_description = 'A data dictionary describing the entity and '+\
+                         'attributes of magnetotelluric data files produced'+\
+                         'by data acquisition and processing of '+\
+                         'magnetotelluric data using NIMS long-period and '+\
+                         'Electromagnetic Instruments MT24 broadband '+\
+                         'magnetotelluric instrumetation, accessible at, '+\
+                         'https://www.sciencebase.gov/catalog/file/get/59400c59e4b0764e6c631120?name=MT_DataDictionary.csv.'
+                         
+shapefile_fn = 'shapefile.shp'
+shapefile_description = 'Table containing attribute information associated '+\
+                        'with the data set.'
+
 # =============================================================================
 # main element
 # =============================================================================
@@ -136,7 +192,7 @@ ET.SubElement(citeinfo, 'geoform').text = 'ASCII, shapefile, image'
 
 pubinfo = ET.SubElement(citeinfo, 'pubinfo')
 ET.SubElement(pubinfo, 'pubplace').text = 'Menlo Park, CA'
-ET.SubElement(pubinfo, 'publish').text = 'U. S. Geological Survey' 
+ET.SubElement(pubinfo, 'publish').text = usgs_str 
 
 ET.SubElement(citeinfo, 'onlink').text = doi_url
 # journal publication
@@ -154,7 +210,7 @@ if journal_citation:
     
     jpubinfo = ET.SubElement(jciteinfo, 'pubinfo')
     ET.SubElement(jpubinfo, 'pubplace').text = 'Menlo Park, CA'
-    ET.SubElement(jpubinfo, 'publish').text = 'U. S. Geological Survey'
+    ET.SubElement(jpubinfo, 'publish').text = usgs_str
     
     ET.SubElement(jciteinfo, 'onlink').text = journal_citation['doi_url']
     
@@ -180,8 +236,8 @@ ET.SubElement(status, 'update').text = 'As needed'
 # extent
 extent = ET.SubElement(idinfo, 'spdom')
 bounding = ET.SubElement(extent, 'bounding')
-for ext, name in zip(survey_extent, ['westbc', 'eastbc', 'northbc', 'southbc']):
-    ET.SubElement(bounding, name).text = '{0:.1f}'.format(ext)
+for name in ['westbc', 'eastbc', 'northbc', 'southbc']:
+    ET.SubElement(bounding, name).text = '{0:.1f}'.format(survey_extent[name[:-2]])
     
 ### keywords
 keywords = ET.SubElement(idinfo, 'keywords')
@@ -221,7 +277,9 @@ c_address = ET.SubElement(contact_info, 'cntaddr')
 ET.SubElement(c_address, 'addrtype').text = 'Mailing and physical'
 for key in ['address', 'city', 'state', 'postal', 'country']:
     ET.SubElement(c_address, key).text = submitter[key]
-    
+
+ET.SubElement(contact_info, 'cntvoice').text = submitter['phone']
+ET.SubElement(contact_info, 'cntemail').text = submitter['email']
 # funding source
 ET.SubElement(idinfo, 'datacred').text = funding_source
 
@@ -266,15 +324,118 @@ ET.SubElement(h_geodetic, 'ellips').text = 'WGS_1984'
 ET.SubElement(h_geodetic, 'semiaxis').text = '6378137.0'
 ET.SubElement(h_geodetic, 'denflat').text = '298.257223563'
 
-
-
+# =============================================================================
+# 
+# =============================================================================
 eainfo = ET.SubElement(metadata, 'eainfo')
+
+overview = ET.SubElement(eainfo, 'overview')
+ET.SubElement(overview, 'eaover').text = guide_pdf_fn
+ET.SubElement(overview, 'eadetcit').text = guide_description
+
+overview_02 = ET.SubElement(eainfo, 'overview')
+ET.SubElement(overview_02, 'eaover').text = dictionary_fn
+ET.SubElement(overview_02, 'eadetcit').text = dictionary_description
+
+detailed = ET.SubElement(eainfo, 'detailed')
+entry_type = ET.SubElement(detailed, 'enttyp')
+ET.SubElement(entry_type, 'enttypl').text = shapefile_fn
+ET.SubElement(entry_type, 'enttypd').text = shapefile_description
+ET.SubElement(entry_type, 'enttrypds').text = usgs_str
+
+entry_attr = ET.SubElement(detailed, 'attr')
+ET.SubElement(entry_attr, 'attrlabl').text = 'Station'
+ET.SubElement(entry_attr, 'attrdef').text = 'Individual station name within MT survey.'
+ET.SubElement(entry_attr, 'attrdefs').text = usgs_str
+entry_attr_dom = ET.SubElement(entry_attr, 'attrdomv')
+ET.SubElement(entry_attr_dom, 'udom').text = 'Station identifier of MT '+\
+                                             'sounding used to distinguish '+\
+                                             'between the soundings associated '+\
+                                             'with this survey.' 
+
+lat_attr = ET.SubElement(detailed, 'attr')
+ET.SubElement(lat_attr, 'attrlabl').text = 'Lat_WGS84'
+ET.SubElement(lat_attr, 'attrdef').text = 'Latitude coordinate of station, '+\
+                                          'referenced to the World Geodetic '+\
+                                          'Service Datum of 1984 (WGS84).'
+ET.SubElement(lat_attr, 'attrdefs').text = usgs_str
+lat_dom = ET.SubElement(lat_attr, 'attrdomv')
+lat_rdom = ET.SubElement(lat_dom, 'rdom')
+ET.SubElement(lat_rdom, 'dommin').text = '{0:.1f}'.format(survey_extent['south'])
+ET.SubElement(lat_rdom, 'dommax').text = '{0:.1f}'.format(survey_extent['north'])
+ET.SubElement(lat_rdom, 'attrunit').text = 'Decimal degrees'
+
+lon_attr = ET.SubElement(detailed, 'attr')
+ET.SubElement(lon_attr, 'attrlabl').text = 'Lon_WGS84'
+ET.SubElement(lon_attr, 'attrdef').text = 'Longitude coordinate of station, '+\
+                                          'referenced to the World Geodetic '+\
+                                          'Service Datum of 1984 (WGS84).'
+ET.SubElement(lon_attr, 'attrdefs').text = usgs_str
+lon_dom = ET.SubElement(lon_attr, 'attrdomv')
+lon_rdom = ET.SubElement(lon_dom, 'rdom')
+ET.SubElement(lon_rdom, 'dommin').text = '{0:.1f}'.format(survey_extent['west'])
+ET.SubElement(lon_rdom, 'dommax').text = '{0:.1f}'.format(survey_extent['east'])
+ET.SubElement(lon_rdom, 'attrunit').text = 'Decimal degrees'
+
+elev_attr = ET.SubElement(detailed, 'attr')
+ET.SubElement(elev_attr, 'attrlabl').text = 'Elev_NAVD88'
+ET.SubElement(elev_attr, 'attrdef').text = 'Elevation, referenced to the North '+\
+                                            'American Vertical Datum of 1988 '+\
+                                            '(NAVD 88)'
+ET.SubElement(elev_attr, 'attrdefs').text = usgs_str
+elev_dom = ET.SubElement(elev_attr, 'attrdomv')
+elev_rdom = ET.SubElement(elev_dom, 'rdom')
+ET.SubElement(elev_rdom, 'dommin').text = '{0:.0f}'.format(survey_extent['elev_min'])
+ET.SubElement(elev_rdom, 'dommax').text = '{0:.0f}'.format(survey_extent['elev_max'])
+ET.SubElement(elev_rdom, 'attrunit').text = 'Meters'
+
+# =============================================================================
+# Distribution Info
+# =============================================================================
 distinfo = ET.SubElement(metadata, 'distinfo')
+
+distribute = ET.SubElement(distinfo, 'distrib')
+center_info = ET.SubElement(distribute, 'cntinfo')
+center_perp = ET.SubElement(center_info, 'cntperp')
+ET.SubElement(center_perp, 'cntper').text = science_base['name']
+ET.SubElement(center_perp, 'cntorg').text = science_base['org']
+center_address = ET.SubElement(center_info, 'cntaddr')
+ET.SubElement(center_address, 'addrtype').text = 'Mailing and physical'
+for key in ['address', 'city', 'state', 'postal', 'country']:
+    ET.SubElement(center_address, key).text = science_base[key]
+ET.SubElement(center_info, 'cntvoice').text = science_base['phone']
+ET.SubElement(center_info, 'cntemail').text = science_base['email']
+ET.SubElement(distinfo, 'disliab').text = science_base['liability']
+
+# =============================================================================
+# Meta info
+# =============================================================================
 metainfo = ET.SubElement(metadata, 'metainfo')
 
+ET.SubElement(metainfo, 'metd').text = datetime.datetime.now().strftime('%Y%m%d')
+meta_center = ET.SubElement(metainfo, 'metc')
+
+### contact information
+meta_contact = ET.SubElement(meta_center, 'cntinfo')
+meta_perp = ET.SubElement(meta_contact, 'cntperp')
+ET.SubElement(meta_contact, 'cntos').text = submitter['position']
+ET.SubElement(meta_perp, 'cntper').text = submitter['name']
+ET.SubElement(meta_perp, 'cntorg').text = submitter['org']
+meta_address = ET.SubElement(meta_contact, 'cntaddr')
+ET.SubElement(meta_address, 'addrtype').text = 'Mailing and physical'
+for key in ['address', 'city', 'state', 'postal', 'country']:
+    ET.SubElement(meta_address, key).text = submitter[key]
+
+ET.SubElement(meta_contact, 'cntvoice').text = submitter['phone']
+ET.SubElement(meta_contact, 'cntemail').text = submitter['email']
+
+ET.SubElement(meta_contact, 'metastdn').text = 'Content Standard for Digital '+\
+                                                'Geospatial Metadata'
+ET.SubElement(meta_contact, 'metastdv').text = 'FGDC-STD-001-1998'
 # =============================================================================
 # write out xml
 # =============================================================================
 xmlstr = minidom.parseString(ET.tostring(metadata, 'utf-8')).toprettyxml(indent="    ", encoding='UTF-8')
-with open(r"d:\Peacock\MTData\test.xml", 'w') as fid:
+#with open(r"d:\Peacock\MTData\test.xml", 'w') as fid:
+with open(r"c:\Users\jpeacock\Documents\imush\test.xml", 'w') as fid:
     fid.write(xmlstr)
