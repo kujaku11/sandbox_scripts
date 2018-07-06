@@ -80,6 +80,42 @@ submitter = {'name': 'Jared R. Peacock',
              'email': 'jpeacock@usgs.gov',
              'country': 'USA'}
 funding_source = 'Mineral Resources Program'
+
+complete_warning = 'Data set is considered complete for the information '+\
+                   'presented, as described in the abstract. Users are '+\
+                   'advised to read the rest of the metadata record '+\
+                   'carefully for additional details.'
+                   
+horizonal_acc = 'Spatial locations were determined from hand-held global '+\
+                'positioning system (GPS) devices. In general, the GPS units '+\
+                'used by field scientists recorded sample locations to '+\
+                'within 100 feet (30 meters) of the true location. The '+\
+                'locations were verified using a geographic information '+\
+                'system (GIS) and digital topographic maps.'
+                
+vert_acc = 'Elevations were determined from USGS, The National Map, Bulk '+\
+           'Point Query Service based on the USGS 3DEP (3D elevation program) '+\
+           '1/3 arc-second layer (10-meter). Vertical accuracy was not '+\
+           'assessed for this specific dataset. The overall absolute '+\
+           'vertical accuracy of the seamless DEMs within the conterminous '+\
+           'United States (2013), expressed as the root mean square error '+\
+           '(RMSE) of 25,310 reference points, was 1.55 meters (USGS, '+\
+           '2014 - http://dx.doi.org/10.3133/ofr20141008). The vertical '+\
+           'accuracy varies across the U.S. as a result of differences in '+\
+           'source DEM quality, terrain relief, land cover, and other factors.'
+
+processing = 'The transfer function estimates provided in the *.edi files and '+\
+            'displayed in the *.png file were constructed by selecting '+\
+            'optimal TF estimates at each period from a suite of data runs. '+\
+            'High (500 Hz), mid (50 Hz), and low (6.25 Hz) frequency broadband '+\
+            'recordings provided TF estimates for 10-100 Hz, 1-10 Hz, and '+\
+            '0.001-1 Hz, respectively. Where available, long period (8 Hz) MT'+\
+            'recordings provided TF estimates for periods from 0.001-0.1 Hz '+\
+            '(10-11,000 seconds). A select few stations have only long period'+\
+            'recordings available, in which case TF estimates are provided for'+\
+            'periods 0.001-1 Hz. So-called optimal TFs were selected based on'+\
+            'examination of phase slope, smooth curve assumptions, and '+\
+            'operator discretion.'
 # =============================================================================
 # main element
 # =============================================================================
@@ -192,16 +228,53 @@ ET.SubElement(idinfo, 'datacred').text = funding_source
 # =============================================================================
 # Data quality
 # =============================================================================
-dataqual = ET.SubElement(metadata, 'dataqual')
+data_quality = ET.SubElement(metadata, 'dataqual')
 
+accuracy = ET.SubElement(data_quality, 'attracc')
+ET.SubElement(accuracy, 'attraccr').text = 'No formal attribute accuracy '+\
+                                           'tests were conducted.'
+ET.SubElement(data_quality, 'logic').text = 'No formal logical accuracy tests'+\
+                                            ' were conducted.'
+ET.SubElement(data_quality, 'complete').text = complete_warning
 
+# accuracy
+position_acc = ET.SubElement(data_quality, 'posacc')
+h_acc = ET.SubElement(position_acc, 'horizpa')
+ET.SubElement(h_acc, 'horizpar').text = horizonal_acc
+v_acc = ET.SubElement(position_acc, 'vertacc')
+ET.SubElement(v_acc, 'vertaccr').text = vert_acc
 
-
+# lineage
+lineage = ET.SubElement(data_quality, 'lineage')
+processing_step_01 = ET.SubElement(lineage, 'procstep')
+ET.SubElement(processing_step_01, 'procdesc').text = processing
+ET.SubElement(processing_step_01, 'procdate').text = year 
+# =============================================================================
+# Spatial reference
+# =============================================================================
 spref = ET.SubElement(metadata, 'spref')
+
+horizontal_sys = ET.SubElement(spref, 'horizontal_sys')
+h_geographic = ET.SubElement(horizontal_sys, 'geograph')
+ET.SubElement(h_geographic, 'latres').text = '0.0197305745'
+ET.SubElement(h_geographic, 'longres').text = '0.0273088247'
+ET.SubElement(h_geographic, 'geogunit').text = 'Decimal seconds'
+
+h_geodetic = ET.SubElement(horizontal_sys, 'geodetic')
+ET.SubElement(h_geodetic, 'horizdn').text = 'D_WGS_1984'
+ET.SubElement(h_geodetic, 'ellips').text = 'WGS_1984'
+ET.SubElement(h_geodetic, 'semiaxis').text = '6378137.0'
+ET.SubElement(h_geodetic, 'denflat').text = '298.257223563'
+
+
+
 eainfo = ET.SubElement(metadata, 'eainfo')
 distinfo = ET.SubElement(metadata, 'distinfo')
 metainfo = ET.SubElement(metadata, 'metainfo')
 
+# =============================================================================
+# write out xml
+# =============================================================================
 xmlstr = minidom.parseString(ET.tostring(metadata, 'utf-8')).toprettyxml(indent="    ", encoding='UTF-8')
 with open(r"d:\Peacock\MTData\test.xml", 'w') as fid:
     fid.write(xmlstr)
