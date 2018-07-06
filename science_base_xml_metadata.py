@@ -54,12 +54,54 @@ class Survey(object):
     def __init__(self):
         self.begin_date = None
         self.end_date = None
-        self.east = None
-        self.west = None
-        self.north = None
-        self.south = None
-        self.elev_min = None
-        self.elev_max = None
+        self._east = None
+        self._west = None
+        self._north = None
+        self._south = None
+        self._elev_min = None
+        self._elev_max = None
+        
+    @property
+    def east(self):
+        return self._east
+    @east.setter
+    def east(self, east):
+        self._east = float(east)
+    
+    @property
+    def west(self):
+        return self._west
+    @west.setter
+    def west(self, west):
+        self._west = float(west)
+        
+    @property
+    def north(self):
+        return self._north
+    @north.setter
+    def north(self, north):
+        self._north = float(north)
+        
+    @property
+    def south(self):
+        return self._south
+    @south.setter
+    def south(self, south):
+        self._south = float(south)
+    
+    @property
+    def elev_min(self):
+        return self._elev_min
+    @elev_min.setter
+    def elev_min(self, elev_min):
+        self._elev_min = float(elev_min)
+        
+    @property
+    def elev_max(self):
+        return self._elev_max
+    @elev_max.setter
+    def elev_max(self, elev_max):
+        self._elev_max = float(elev_max)
         
 class Processing(object):
     """
@@ -86,6 +128,7 @@ class SurveyMetadata(object):
     def __init__(self, **kwargs):
 
         self.usgs_str = 'U.S. Geological Survey'
+        self.xml_fn = None
         self.authors = None
         self.title = None
         self.doi_url = None
@@ -124,19 +167,164 @@ class SurveyMetadata(object):
         """
         Read in configuration file
         """
-        
+        # read in the configuration file
         with open(config_fn, 'r') as fid:
             lines = fid.readlines()
             
         for line in lines:
-            if line.find('#') == 0 or len(line) < 2:
+            # skip comment lines
+            if line.find('#') == 0 or len(line.strip()) < 2:
                 continue
-            key, value = [item.strip() for item in line.strip().split('=')]
-            if key.find('.'):
+            # make a key = value pair
+            key, value = [item.strip() for item in line.split('=', 1)]
+            if value == 'usgs_str':
+                value = self.usgs_str
+            if value.find('[') >= 0 and value.find(']') >= 0:
+                value = value.replace('[', '').replace(']', '')
+                value = value.split(',')
+            
+            # if there is a dot, meaning an object with an attribute separate 
+            if key.find('.') > 0:
                 obj, obj_attr = key.split('.')
                 setattr(getattr(self, obj), obj_attr, value)
             else:
                 setattr(self, key, value)
+                
+    def _assert_date_fmt(self, date):
+        """
+        Make sure that the date is in YYYYMMDD
+        """
+        date = date.replace('-', '')
+        date = date.split(':', 1)[0]
+        
+        return date
+                
+    def _set_id_info(self):
+        """
+        set the ID information
+        """
+        idinfo = ET.SubElement(self.metadata, 'idinfo')
+        
+        citation = ET.SubElement(idinfo, 'citation')
+        citeinfo = ET.SubElement(citation, 'citeinfo')
+        for author in self.authors:
+            ET.SubElement(citeinfo, 'origin').text = author
+        ET.SubElement(citeinfo, 'pubdate').text = datetime.datetime.now().strftime('%Y')
+        ET.SubElement(citeinfo, 'title').text = self.title
+        ET.SubElement(citeinfo, 'geoform').text = 'ASCII, shapefile, image'
+        
+        pubinfo = ET.SubElement(citeinfo, 'pubinfo')
+        ET.SubElement(pubinfo, 'pubplace').text = 'Denver, CO'
+        ET.SubElement(pubinfo, 'publish').text = self.usgs_str 
+        ET.SubElement(citeinfo, 'onlink').text = self.doi_url
+        # journal publication
+        if self.journal_citation:
+            journal = ET.SubElement(citeinfo, 'lworkcit')
+            jciteinfo = ET.SubElement(journal, 'citeinfo')
+            for author in self.journal_citation.author:
+                ET.SubElement(jciteinfo, 'origin').text = author
+            ET.SubElement(jciteinfo, 'pubdate').text = self.journal_citation.date
+            ET.SubElement(jciteinfo, 'title').text = self.journal_citation.title
+            ET.SubElement(jciteinfo, 'geoform').text = 'Publication'
+            serinfo = ET.SubElement(jciteinfo, 'serinfo')
+            ET.SubElement(serinfo, 'sername').text = self.journal_citation.journal
+            ET.SubElement(serinfo, 'issue').text = self.journal_citation.volume
+            
+            jpubinfo = ET.SubElement(jciteinfo, 'pubinfo')
+            ET.SubElement(jpubinfo, 'pubplace').text = 'Denver, CO'
+            ET.SubElement(jpubinfo, 'publish').text = self.usgs_str
+            ET.SubElement(jciteinfo, 'onlink').text = self.journal_citation.doi_url
+            
+        # description
+        description = ET.SubElement(idinfo, 'descript')
+        ET.SubElement(description, 'abstract').text = self.abstract
+        ET.SubElement(description, 'purpose').text = self.purpose
+        ET.SubElement(description, 'supplinf').text = self.supplement_info
+        
+        # dates covered
+        time_period = ET.SubElement(idinfo, 'timeperd')
+        time_info = ET.SubElement(time_period, 'timeinfo')
+        dates = ET.SubElement(time_info, 'rngdates')
+        ET.SubElement(dates, 'begdate').text = self.survey.begin_date
+        ET.SubElement(dates, 'enddate').text = self.survey.end_date
+        ET.SubElement(time_info, 'current').text = 'Ground condition'
+        
+        # status
+        status = ET.SubElement(idinfo, 'status')
+        ET.SubElement(status, 'progress').text = 'Complete'
+        ET.SubElement(status, 'update').text = 'As needed'
+         
+        # extent
+        extent = ET.SubElement(idinfo, 'spdom')
+        bounding = ET.SubElement(extent, 'bounding')
+        for name in ['westbc', 'eastbc', 'northbc', 'southbc']:
+            ET.SubElement(bounding, name).text = '{0:.1f}'.format(getattr(self.survey, 
+                                                                         name[:-2]))
+            
+        ### keywords
+        keywords = ET.SubElement(idinfo, 'keywords')
+        t1 = ET.SubElement(keywords, 'theme')
+        ET.SubElement(t1, 'themekt').text = 'None'
+        for kw in self.keywords_general:
+            ET.SubElement(t1, 'themekey').text = kw     
+        
+        # categories
+        t2 = ET.SubElement(keywords, 'theme')
+        ET.SubElement(t2, 'themkt').text = 'ISO 19115 Topic Categories'
+        ET.SubElement(t2, 'themekey').text = 'GeoscientificInformation'
+        
+        # USGS thesaurus
+        t3 = ET.SubElement(keywords, 'theme')
+        ET.SubElement(t3, 'themekt').text = 'USGS Thesaurus'
+        for kw in self.keywords_thesaurus:
+            ET.SubElement(t3, 'themekey').text = kw
+        
+        # places
+        place = ET.SubElement(keywords, 'place')
+        ET.SubElement(place, 'placekt').text = 'Geographic Names Information System (GNIS)'
+        for loc in self.locations:
+            ET.SubElement(place, 'placekey').text = loc
+            
+        ## constraints
+        ET.SubElement(idinfo, 'accconst').text = 'None'
+        ET.SubElement(idinfo, 'useconst').text = self.use_constraint
+        
+        ### contact information
+        ptcontact = ET.SubElement(idinfo, 'ptcontac')
+        contact_info = ET.SubElement(ptcontact, 'cntinfo')
+        c_perp = ET.SubElement(contact_info, 'cntperp')
+        ET.SubElement(c_perp, 'cntper').text = self.submitter.name
+        ET.SubElement(c_perp, 'cntorg').text = self.submitter.org
+        c_address = ET.SubElement(contact_info, 'cntaddr')
+        ET.SubElement(c_address, 'addrtype').text = 'Mailing and physical'
+        for key in ['address', 'city', 'state', 'postal', 'country']:
+            ET.SubElement(c_address, key).text = getattr(self.submitter, key)
+        
+        ET.SubElement(contact_info, 'cntvoice').text = self.submitter.phone
+        ET.SubElement(contact_info, 'cntemail').text = self.submitter.email
+        # funding source
+        ET.SubElement(idinfo, 'datacred').text = self.submitter.funding_source
+        
+                
+    def write_xml_file(self, xml_fn):
+        """
+        write xml file
+        """
+        self.xml_fn = xml_fn
+        self._set_id_info()
+        xml_str = minidom.parseString(ET.tostring(self.metadata,
+                                                  'utf-8')).toprettyxml(indent="    ", 
+                                                                        encoding='UTF-8')
+        with open(self.xml_fn, 'w') as fid:
+            fid.write(xml_str)
+# =============================================================================
+# Test
+# =============================================================================
+cfg_fn = r"C:\Users\jpeacock\Documents\imush\xml_config_test.txt"
+
+m = SurveyMetadata()
+m.read_config_file(cfg_fn)
+m.write_xml_file(r"c:\Users\jpeacock\Documents\imush\test.xml")
 
 ## =============================================================================
 ## main element
