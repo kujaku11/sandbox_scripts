@@ -1,5 +1,37 @@
 # -*- coding: utf-8 -*-
 """
+A Convenience class to convert information into an XML file that Science Base
+can read.  
+
+The assumed workflow is to make a text file with key = value pairs for the 
+important information.
+
+    ###==================================================###
+    ### Metadata Configuration File for Science Base XML ###
+    ###==================================================###
+    
+    ### General Information
+    authors = [Jared R. Peacock, Kevin Denton, Dave Ponce]
+    title = Magnetotelluric data from Mountain Pass, CA
+    doi_url = https://doi.org/10.5066/F7610XTR
+    
+    ### Key words to associate with dataset
+    keywords_general = [Magnetotellurics, MT, Time Series, Impedance, 
+                        Apparent Resistivity, Phase, Tipper]
+    
+    ### Key words that are synonymous with USGS
+    keywords_thesaurus = [Earth magnetic field, Geophysics, 
+                          Electromagnetic surveying]
+    
+Then convert that to an XML format.
+
+:Example: ::
+    
+    >>> import mtpy.usgs.science_base as sb 
+    >>> sb_xml = sb.SurveyMetadata()
+    >>> sb_xml.read_config_file(r"/home/data/survey_config.txt")
+    >>> sb_xml.write_xml_file(r"/home/data/science_base.xml")
+
 Created on Thu Jul 05 14:11:43 2018
 
 @author: jpeacock
@@ -133,6 +165,35 @@ class Attachment(object):
 class SurveyMetadata(object):
     """
     Container for important information to put in the metadata xml file
+    
+    The assumed workflow is to make a text file with key = value pairs for the 
+    important information.
+    
+        ###==================================================###
+        ### Metadata Configuration File for Science Base XML ###
+        ###==================================================###
+        
+        ### General Information
+        authors = [Jared R. Peacock, Kevin Denton, Dave Ponce]
+        title = Magnetotelluric data from Mountain Pass, CA
+        doi_url = https://doi.org/10.5066/F7610XTR
+        
+        ### Key words to associate with dataset
+        keywords_general = [Magnetotellurics, MT, Time Series, Impedance, 
+                            Apparent Resistivity, Phase, Tipper]
+        
+        ### Key words that are synonymous with USGS
+        keywords_thesaurus = [Earth magnetic field, Geophysics, 
+                              Electromagnetic surveying]
+        
+    Then convert that to an XML format.
+    
+    :Example: ::
+        
+        >>> import mtpy.usgs.science_base as sb 
+        >>> sb_xml = sb.SurveyMetadata()
+        >>> sb_xml.read_config_file(r"/home/data/survey_config.txt")
+        >>> sb_xml.write_xml_file(r"/home/data/science_base.xml")
     """
     
     def __init__(self, **kwargs):
