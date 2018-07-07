@@ -162,7 +162,7 @@ class Attachment(object):
         self.fn = None
         self.description = None
 
-class SurveyMetadata(object):
+class XMLMetadata(object):
     """
     Container for important information to put in the metadata xml file
     
@@ -203,6 +203,7 @@ class SurveyMetadata(object):
         self.authors = None
         self.title = None
         self.doi_url = None
+        self.file_types = 'ASCII data, shapefile, image'
         self.journal_citation = Citation()
         self.purpose = None
         self.abstract = None
@@ -259,7 +260,7 @@ class SurveyMetadata(object):
             key, value = [item.strip() for item in line.split('=', 1)]
             if value == 'usgs_str':
                 value = self.usgs_str
-            if value.find('[') >= 0 and value.find(']') >= 0:
+            if value.find('[') >= 0 and value.find(']') >= 0 and value.find('<') != 0:
                 value = value.replace('[', '').replace(']', '')
                 value = [v.strip() for v in value.split(',')]
             
@@ -291,7 +292,7 @@ class SurveyMetadata(object):
             ET.SubElement(citeinfo, 'origin').text = author
         ET.SubElement(citeinfo, 'pubdate').text = datetime.datetime.now().strftime('%Y')
         ET.SubElement(citeinfo, 'title').text = self.title
-        ET.SubElement(citeinfo, 'geoform').text = 'ASCII, shapefile, image'
+        ET.SubElement(citeinfo, 'geoform').text = self.file_types
         
         pubinfo = ET.SubElement(citeinfo, 'pubinfo')
         ET.SubElement(pubinfo, 'pubplace').text = 'Denver, CO'
@@ -345,6 +346,10 @@ class SurveyMetadata(object):
         keywords = ET.SubElement(idinfo, 'keywords')
         t1 = ET.SubElement(keywords, 'theme')
         ET.SubElement(t1, 'themekt').text = 'None'
+        ET.SubElement(t1, 'themekey').text = self.sc_dict[self.submitter.science_center]
+        ET.SubElement(t1, 'themekey').text = self.submitter.science_center
+        ET.SubElement(t1, 'themekey').text = self.program_dict[self.submitter.program]
+        ET.SubElement(t1, 'themekey').text = self.submitter.program
         for kw in self.keywords_general:
             ET.SubElement(t1, 'themekey').text = kw     
         
@@ -383,7 +388,11 @@ class SurveyMetadata(object):
         ET.SubElement(contact_info, 'cntvoice').text = self.submitter.phone
         ET.SubElement(contact_info, 'cntemail').text = self.submitter.email
         # funding source
-        ET.SubElement(idinfo, 'datacred').text = self.submitter.funding_source
+        try:
+            ET.SubElement(idinfo, 'datacred').text = self.program_dict[self.submitter.funding_source]
+        except KeyError:
+            ET.SubElement(idinfo, 'datacred').text = self.submitter.funding_source
+            
         
     def _set_data_quality(self):
         """
@@ -433,7 +442,7 @@ class SurveyMetadata(object):
         ET.SubElement(h_geodetic, 'semiaxis').text = '6378137.0'
         ET.SubElement(h_geodetic, 'denflat').text = '298.257223563'
         
-    def _set_extra_info(self):
+    def _set_extra_info(self, station=False):
         """
         set the extra info, still not sure what that stands for
         """
@@ -447,57 +456,79 @@ class SurveyMetadata(object):
         ET.SubElement(overview_02, 'eaover').text = self.dictionary.fn
         ET.SubElement(overview_02, 'eadetcit').text = self.dictionary.description
         
-        detailed = ET.SubElement(eainfo, 'detailed')
-        entry_type = ET.SubElement(detailed, 'enttyp')
-        ET.SubElement(entry_type, 'enttypl').text = self.shapefile.fn
-        ET.SubElement(entry_type, 'enttypd').text = self.shapefile.description
-        ET.SubElement(entry_type, 'enttrypds').text = self.usgs_str
+        if station is False:
+            detailed = ET.SubElement(eainfo, 'detailed')
+            entry_type = ET.SubElement(detailed, 'enttyp')
+            ET.SubElement(entry_type, 'enttypl').text = self.shapefile.fn
+            ET.SubElement(entry_type, 'enttypd').text = self.shapefile.description
+            ET.SubElement(entry_type, 'enttrypds').text = self.usgs_str
+            
+            entry_attr = ET.SubElement(detailed, 'attr')
+            ET.SubElement(entry_attr, 'attrlabl').text = 'Station'
+            ET.SubElement(entry_attr, 'attrdef').text = 'Individual station name within MT survey.'
+            ET.SubElement(entry_attr, 'attrdefs').text = self.usgs_str
+            entry_attr_dom = ET.SubElement(entry_attr, 'attrdomv')
+            ET.SubElement(entry_attr_dom, 'udom').text = self.udom 
+            
+            lat_attr = ET.SubElement(detailed, 'attr')
+            ET.SubElement(lat_attr, 'attrlabl').text = 'Lat_WGS84'
+            ET.SubElement(lat_attr, 'attrdef').text = self.lat_def
+            ET.SubElement(lat_attr, 'attrdefs').text = self.usgs_str
+            lat_dom = ET.SubElement(lat_attr, 'attrdomv')
+            lat_rdom = ET.SubElement(lat_dom, 'rdom')
+            ET.SubElement(lat_rdom, 'dommin').text = '{0:.1f}'.format(self.survey.south)
+            ET.SubElement(lat_rdom, 'dommax').text = '{0:.1f}'.format(self.survey.north)
+            ET.SubElement(lat_rdom, 'attrunit').text = 'Decimal degrees'
+            
+            lon_attr = ET.SubElement(detailed, 'attr')
+            ET.SubElement(lon_attr, 'attrlabl').text = 'Lon_WGS84'
+            ET.SubElement(lon_attr, 'attrdef').text = self.lon_def
+            ET.SubElement(lon_attr, 'attrdefs').text = self.usgs_str
+            lon_dom = ET.SubElement(lon_attr, 'attrdomv')
+            lon_rdom = ET.SubElement(lon_dom, 'rdom')
+            ET.SubElement(lon_rdom, 'dommin').text = '{0:.1f}'.format(self.survey.west)
+            ET.SubElement(lon_rdom, 'dommax').text = '{0:.1f}'.format(self.survey.east)
+            ET.SubElement(lon_rdom, 'attrunit').text = 'Decimal degrees'
+            
+            elev_attr = ET.SubElement(detailed, 'attr')
+            ET.SubElement(elev_attr, 'attrlabl').text = 'Elev_NAVD88'
+            ET.SubElement(elev_attr, 'attrdef').text = self.elev_def
+            ET.SubElement(elev_attr, 'attrdefs').text = self.usgs_str
+            elev_dom = ET.SubElement(elev_attr, 'attrdomv')
+            elev_rdom = ET.SubElement(elev_dom, 'rdom')
+            ET.SubElement(elev_rdom, 'dommin').text = '{0:.0f}'.format(self.survey.elev_min)
+            ET.SubElement(elev_rdom, 'dommax').text = '{0:.0f}'.format(self.survey.elev_max)
+            ET.SubElement(elev_rdom, 'attrunit').text = 'Meters'
+            
+    def _set_distribution_info(self):
+        """
+        write distribution information block
+        """
+
+        distinfo = ET.SubElement(self.metadata, 'distinfo')
         
-        entry_attr = ET.SubElement(detailed, 'attr')
-        ET.SubElement(entry_attr, 'attrlabl').text = 'Station'
-        ET.SubElement(entry_attr, 'attrdef').text = 'Individual station name within MT survey.'
-        ET.SubElement(entry_attr, 'attrdefs').text = self.usgs_str
-        entry_attr_dom = ET.SubElement(entry_attr, 'attrdomv')
-        ET.SubElement(entry_attr_dom, 'udom').text = self.udom 
-        
-        lat_attr = ET.SubElement(detailed, 'attr')
-        ET.SubElement(lat_attr, 'attrlabl').text = 'Lat_WGS84'
-        ET.SubElement(lat_attr, 'attrdef').text = self.lat_def
-        ET.SubElement(lat_attr, 'attrdefs').text = self.usgs_str
-        lat_dom = ET.SubElement(lat_attr, 'attrdomv')
-        lat_rdom = ET.SubElement(lat_dom, 'rdom')
-        ET.SubElement(lat_rdom, 'dommin').text = '{0:.1f}'.format(self.survey.south)
-        ET.SubElement(lat_rdom, 'dommax').text = '{0:.1f}'.format(self.survey.north)
-        ET.SubElement(lat_rdom, 'attrunit').text = 'Decimal degrees'
-        
-        lon_attr = ET.SubElement(detailed, 'attr')
-        ET.SubElement(lon_attr, 'attrlabl').text = 'Lon_WGS84'
-        ET.SubElement(lon_attr, 'attrdef').text = self.lon_def
-        ET.SubElement(lon_attr, 'attrdefs').text = self.usgs_str
-        lon_dom = ET.SubElement(lon_attr, 'attrdomv')
-        lon_rdom = ET.SubElement(lon_dom, 'rdom')
-        ET.SubElement(lon_rdom, 'dommin').text = '{0:.1f}'.format(self.survey.west)
-        ET.SubElement(lon_rdom, 'dommax').text = '{0:.1f}'.format(self.survey.east)
-        ET.SubElement(lon_rdom, 'attrunit').text = 'Decimal degrees'
-        
-        elev_attr = ET.SubElement(detailed, 'attr')
-        ET.SubElement(elev_attr, 'attrlabl').text = 'Elev_NAVD88'
-        ET.SubElement(elev_attr, 'attrdef').text = self.elev_def
-        ET.SubElement(elev_attr, 'attrdefs').text = self.usgs_str
-        elev_dom = ET.SubElement(elev_attr, 'attrdomv')
-        elev_rdom = ET.SubElement(elev_dom, 'rdom')
-        ET.SubElement(elev_rdom, 'dommin').text = '{0:.0f}'.format(self.survey.elev_min)
-        ET.SubElement(elev_rdom, 'dommax').text = '{0:.0f}'.format(self.survey.elev_max)
-        ET.SubElement(elev_rdom, 'attrunit').text = 'Meters'
+        distribute = ET.SubElement(distinfo, 'distrib')
+        center_info = ET.SubElement(distribute, 'cntinfo')
+        center_perp = ET.SubElement(center_info, 'cntperp')
+        ET.SubElement(center_perp, 'cntper').text = self.science_base.name
+        ET.SubElement(center_perp, 'cntorg').text = self.science_base.org
+        center_address = ET.SubElement(center_info, 'cntaddr')
+        ET.SubElement(center_address, 'addrtype').text = 'Mailing and physical'
+        for key in ['address', 'city', 'state', 'postal', 'country']:
+            ET.SubElement(center_address, key).text = getattr(self.science_base,
+                                                              key)
+        ET.SubElement(center_info, 'cntvoice').text = self.science_base.phone
+        ET.SubElement(center_info, 'cntemail').text = self.science_base.email
+        ET.SubElement(distinfo, 'disliab').text = self.science_base.liability
         
     def _set_meta_info(self):
         """
         set the metadata info section
         """
-        metainfo = ET.SubElement(self.metadata, 'metainfo')
+        meta_info = ET.SubElement(self.metadata, 'metainfo')
         
-        ET.SubElement(metainfo, 'metd').text = datetime.datetime.now().strftime('%Y%m%d')
-        meta_center = ET.SubElement(metainfo, 'metc')
+        ET.SubElement(meta_info, 'metd').text = datetime.datetime.now().strftime('%Y%m%d')
+        meta_center = ET.SubElement(meta_info, 'metc')
         
         ### contact information
         meta_contact = ET.SubElement(meta_center, 'cntinfo')
@@ -513,11 +544,11 @@ class SurveyMetadata(object):
         ET.SubElement(meta_contact, 'cntvoice').text = self.submitter.phone
         ET.SubElement(meta_contact, 'cntemail').text = self.submitter.email
         
-        ET.SubElement(meta_contact, 'metastdn').text = 'Content Standard for Digital '+\
+        ET.SubElement(meta_info, 'metastdn').text = 'Content Standard for Digital '+\
                                                         'Geospatial Metadata'
-        ET.SubElement(meta_contact, 'metastdv').text = 'FGDC-STD-001-1998'
+        ET.SubElement(meta_info, 'metastdv').text = 'FGDC-STD-001-1998'
 #
-    def write_xml_file(self, xml_fn):
+    def write_xml_file(self, xml_fn, write_station=False):
         """
         write xml file
         """
@@ -526,7 +557,8 @@ class SurveyMetadata(object):
         self._set_id_info()
         self._set_data_quality()
         self._set_spational_info()
-        self._set_extra_info()
+        self._set_extra_info(write_station)
+        self._set_distribution_info()
         self._set_meta_info()
         
         # write the xml in a readable format
@@ -540,7 +572,22 @@ class SurveyMetadata(object):
 # =============================================================================
 cfg_fn = r"C:\Users\jpeacock\Documents\imush\xml_config_test.txt"
 
-m = SurveyMetadata()
+m = XMLMetadata()
 m.read_config_file(cfg_fn)
 m.write_xml_file(r"c:\Users\jpeacock\Documents\imush\test.xml")
+
+m = XMLMetadata()
+m.read_config_file(cfg_fn)
+m.survey.east = -121.34
+m.survey.west = -121.34
+m.survey.north = 38.75
+m.survey.south = 38.75
+
+m.title += ' station006'
+m.supplement_info += 'file list: file1, file2, file3'
+m.survey.begin_date = '20170101'
+m.survey.end_date = '20170103'
+
+m.write_xml_file("c:\Users\jpeacock\Documents\imush\station_test.xml",
+                 write_station=True)
 
