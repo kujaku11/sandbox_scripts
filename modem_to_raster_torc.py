@@ -24,9 +24,9 @@ modem_raster = a2r.ModEM_to_Raster()
 modem_raster.model_fn = model_fn
 modem_raster.pad_east = 4
 modem_raster.pad_north = 4
-modem_raster.lower_left_corner = (model_center[0]-.244,
-                                  model_center[1]-.17)
+modem_raster.lower_left_corner = (model_center[0]-.234,
+                                  model_center[1]-.175)
 modem_raster.save_path = save_path
 modem_raster.projection = 'WGS84'
-modem_raster.rotation_angle = -10.0
+modem_raster.rotation_angle = -8
 modem_raster.write_raster_files()
