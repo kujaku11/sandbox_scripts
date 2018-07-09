@@ -62,9 +62,11 @@ dataset.creator_url = r"https://crustal.usgs.gov/"
 dataset.creator_email = "pbedrosian@usgs.gov"
 dataset.institution = "U.S. Geological Survey"
 dataset.acknowledgment = "Supported by NSF EAR1144353"
-dataset.references = "Bedrosian et al. (2018), Crustal inheritance and top-down control on arc magmatism a focus on Mount St. Helens, Nature Geoscience, In Print"
-dataset.history = "Model 2018"
-dataset.comment  = "model converted to netCDF by IRIS DMC"
+dataset.references = "Bedrosian, P. A, Peacock, J. R., Bowles-Martinez, E., Schultz, A., Hill, G. J. \n"+\
+                     "(2018), Crustal inheritance and top-down control on arc magmatism a focus on Mount St. Helens, \n"+\
+                     "Nature Geoscience, In Print"
+dataset.history = "U.S. Geological Survey Model 2018"
+dataset.comment  = "Model converted to netCDF by IRIS DMC"
 ### -> metadata lat
 dataset.geospatial_lat_min = '{0:.2f}'.format(lat.min())
 dataset.geospatial_lat_max = '{0:.2f}'.format(lat.max())
