@@ -50,7 +50,8 @@ dataset.title = "Electrical Resistivity Model"
 dataset.id = "Model ID"
 dataset.summary = "Electrical resistivity developed from magnetotelluric data "+\
                   "part of the iMUSH project. \n"+\
-                  "For more information see Bedrosian et al. (2018)\n"
+                  "For more information see Bedrosian et al. (2018)\n"+\
+                  "Lat and Lon are from the south western corner of each model cell.\n"
 dataset.keywords = "electrical resistivity, magnetotellurics, iMUSH" 
 dataset.Metadata_Conventions = "Unidata Dataset Discovery v1.0"
 dataset.Conventions = "CF-1.0"
@@ -64,7 +65,7 @@ dataset.institution = "U.S. Geological Survey"
 dataset.acknowledgment = "Supported by NSF EAR1144353"
 dataset.references = "Bedrosian, P. A, Peacock, J. R., Bowles-Martinez, E., Schultz, A., Hill, G. J. \n"+\
                      "(2018), Crustal inheritance and top-down control on arc magmatism a focus on Mount St. Helens, \n"+\
-                     "Nature Geoscience, In Print"
+                     "Nature Geoscience, In Print\n"
 dataset.history = "U.S. Geological Survey Model 2018"
 dataset.comment  = "Model converted to netCDF by IRIS DMC"
 ### -> metadata lat
