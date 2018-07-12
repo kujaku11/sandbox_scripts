@@ -31,34 +31,34 @@ depth = m_obj.grid_z[:-1]
 
 
 for ii, north in enumerate(m_obj.grid_north[:-1]):
-    m_lon, m_lat, m_elev = gis_tools.transform_utm_to_ll(utm_center[0], 
-                                                         utm_center[1]+north,
-                                                         utm_center[2])
+    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0], 
+                                                  utm_center[1]+north/2.,
+                                                  utm_center[2])
     lat[ii] = m_lat
     
 for ii, east in enumerate(m_obj.grid_east[:-1]):
-    m_lon, m_lat, m_elev = gis_tools.transform_utm_to_ll(utm_center[0]+east, 
-                                                         utm_center[1],
-                                                         utm_center[2])
+    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0]+east/2., 
+                                                  utm_center[1],
+                                                  utm_center[2])
     lon[ii] = m_lon
 # =============================================================================
 # Create NetCDF4 dataset compliant with IRIS format
 # =============================================================================
-dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\iMush\imush.nc", 'w',
+dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\iMush\bedrosian_imush_mt_2018.nc", 'w',
                          format='NETCDF4')
 dataset.title = "Electrical Resistivity Model"
-dataset.id = "Model ID"
+dataset.id = "iMUSH_MT_2018"
 dataset.summary = "Electrical resistivity developed from magnetotelluric data "+\
                   "part of the iMUSH project. \n"+\
                   "For more information see Bedrosian et al. (2018)\n"+\
-                  "Lat and Lon are from the south western corner of each model cell.\n"
+                  "Lat and Lon are from the center of each model cell.\n"
 dataset.keywords = "electrical resistivity, magnetotellurics, iMUSH" 
 dataset.Metadata_Conventions = "Unidata Dataset Discovery v1.0"
 dataset.Conventions = "CF-1.0"
 
 #### --> set the metadata
 # creator information
-dataset.creator_name = "Paul Bedrosian"
+dataset.creator_name = "Paul A. Bedrosian"
 dataset.creator_url = r"https://crustal.usgs.gov/"
 dataset.creator_email = "pbedrosian@usgs.gov"
 dataset.institution = "U.S. Geological Survey"
@@ -77,7 +77,7 @@ dataset.geospatial_lat_resolution = .01
 dataset.geospatial_lon_min = '{0:.2f}'.format(lon.min())
 dataset.geospatial_lon_max = '{0:.2f}'.format(lon.max())
 dataset.geospatial_lon_units = "degrees_north"
-dataset.geospatial_lon_resolution = ".01"
+dataset.geospatial_lon_resolution = .01
 dataset.geospatial_vertical_min = '{0:.2f}'.format(depth.min())
 dataset.geospatial_vertical_max = '{0:.2f}'.format(depth.max())
 ### -> metadata depth
@@ -111,19 +111,19 @@ attr_lon[:] = lon
 attr_depth = dataset.createVariable("depth", "f8", ("depth", ))
 attr_depth.units = "kilometer"
 attr_depth.positive = "down"
-attr_depth.long_name = "depth below Earth surface"
+attr_depth.long_name = "Depth below Earth surface"
 attr_depth[:] = depth
 
 # resistivity
 attr_res = dataset.createVariable("resistivity", "f8", 
-                                  ("latitude", "longitude", "depth"))
+                                  ("longitude", "latitude", "depth"))
 attr_res.long_name = "Electrical resistivity in Ohm-m"
 attr_res.units = "Ohm-m"
-attr_res.valid_range = (.01, 10000.)
+attr_res.valid_range = (.001, 1000000.)
 #attr_res.valid_range_min = "0.01"
 #attr_res.valid_range_max = "10000."
 attr_res.missing_value = 99999.
-attr_res.FillValue = 99999.
-attr_res[:] = m_obj.res_model
+attr_res.fill_value = 99999.
+attr_res[:] = np.swapaxes(m_obj.res_model, 0, 1)
 
 dataset.close()
