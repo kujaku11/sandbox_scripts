@@ -10,7 +10,7 @@ import os
 import numpy as np
 
 edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Rotated_W34N\Interpolated\Edited"
-save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_02"
+save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_03"
 topo_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\GIS\etopo1.asc"
 
 fn_stem = 'sa'
@@ -68,10 +68,10 @@ mod_obj.z_mesh_method = 'original'
 mod_obj.pad_stretch_h = 1.2
 mod_obj.ew_ext = 300000.
 mod_obj.ns_ext = 300000.
-mod_obj.pad_z = 4
+mod_obj.pad_z = 6
 mod_obj.n_layers = 50
 mod_obj.z1_layer = 10
-mod_obj.z_target_depth = 50000.
+mod_obj.z_target_depth = 90000.
 mod_obj.z_bottom = 300000.
 
 #--> here is where you can rotate the mesh
