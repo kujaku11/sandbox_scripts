@@ -16,6 +16,7 @@ import mtpy.utils.gis_tools as gis_tools
 # =============================================================================
 model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul_final_model\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
 model_center = (-122.080378, 46.387827, )
+clip = 9
 # =============================================================================
 # Read in model file
 # =============================================================================
@@ -25,26 +26,26 @@ m_obj.read_model_file(model_fn)
 ### --> need to convert model coordinates into lat and lon
 utm_center = gis_tools.project_point_ll2utm(model_center[1], model_center[0])
  
-lat = np.zeros_like(m_obj.grid_north[:-1])
-lon = np.zeros_like(m_obj.grid_east[:-1])
-depth = m_obj.grid_z[:-1]
+lat = np.zeros_like(m_obj.grid_north[clip:-(clip+1)])
+lon = np.zeros_like(m_obj.grid_east[clip:-(clip+1)])
+depth = m_obj.grid_z[:-1]/1000.
 
 
-for ii, north in enumerate(m_obj.grid_north[:-1]):
-    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0], 
-                                                  utm_center[1]+north/2.,
+for ii, north in enumerate(m_obj.grid_north[clip:-(clip+1)]):
+    m_lat, m_lon = gis_tools.project_point_utm2ll(utm_center[0], 
+                                                  utm_center[1]+north,
                                                   utm_center[2])
     lat[ii] = m_lat
     
-for ii, east in enumerate(m_obj.grid_east[:-1]):
-    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0]+east/2., 
+for ii, east in enumerate(m_obj.grid_east[clip:-(clip+1)]):
+    m_lat, m_lon = gis_tools.project_point_utm2ll(utm_center[0]+east, 
                                                   utm_center[1],
                                                   utm_center[2])
     lon[ii] = m_lon
 # =============================================================================
 # Create NetCDF4 dataset compliant with IRIS format
 # =============================================================================
-dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\iMush\bedrosian_imush_mt_2018.nc", 'w',
+dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\iMush\bedrosian_imush_mt_2018_log10_clip.nc", 'w',
                          format='NETCDF4')
 dataset.title = "Electrical Resistivity Model"
 dataset.id = "iMUSH_MT_2018"
@@ -124,6 +125,7 @@ attr_res.valid_range = (.001, 1000000.)
 #attr_res.valid_range_max = "10000."
 attr_res.missing_value = 99999.
 attr_res.fill_value = 99999.
-attr_res[:] = np.swapaxes(m_obj.res_model, 0, 1)
+attr_res[:] = np.swapaxes(np.log10(m_obj.res_model[clip:-clip, clip:-clip, :]),
+                          0, 1)
 
 dataset.close()
