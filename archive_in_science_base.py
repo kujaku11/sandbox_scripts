@@ -6,6 +6,7 @@ Created on Thu Jul 12 12:55:59 2018
 """
 import os
 import mtpy.usgs.usgs_archive as archive
+import datetime
 
 # =============================================================================
 # Inputs
@@ -23,7 +24,8 @@ if not os.path.exists(save_dir):
 survey_xml = archive.XMLMetadata()
 survey_xml.read_config_file(survey_cfg)
 
-for station in os.listdir(survey_dir)[2:]:
+st = datetime.datetime.now()
+for station in os.listdir(survey_dir):
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, station)
     
@@ -49,8 +51,8 @@ for station in os.listdir(survey_dir)[2:]:
             zm.SurveyID = survey
             zm.write_asc_file(save_dir=station_save_dir,
                               full=False, compress=True)
-            asc_fn_list.append(zm._make_file_name(save_path=station_save_dir, 
-                                                  compression=True))
+            asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
+                                                  compression=True)))
             zm.write_station_info_metadata(save_dir=station_save_dir)
             
         # make a station database
@@ -60,6 +62,7 @@ for station in os.listdir(survey_dir)[2:]:
         # make xml file
         s_xml = archive.XMLMetadata()
         s_xml.read_config_file(survey_cfg)
+        s_xml.supplement_info = s_xml.supplement_info.replace('\\n', '\n\t\t\t')
         
         # location
         s_xml.survey.east = s_db.lon.median()
@@ -85,6 +88,7 @@ for station in os.listdir(survey_dir)[2:]:
 # adjust survey information to align with data        
 survey_cfg = archive.USGScfg()
 survey_db, csv_fn = survey_cfg.combine_all_station_info(save_dir)
+survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
 
 # location
 survey_xml.survey.east = survey_db.lon.min()
@@ -98,4 +102,8 @@ survey_xml.survey.end_date = survey_db.stop_date.max()
 
 survey_xml.write_xml_file(os.path.join(save_dir, 
                                        '{0}.xml'.format(survey)))
+
+et = datetime.datetime.now()
+t_diff = et-st
+print('--> Archiving tool: {0} seconds'.format(t_diff.total_seconds()))
         
