@@ -104,18 +104,20 @@ def interpolate_model_grid(old_model_fn, new_model_fn, save_path=None,
     print 'Start Time = {0}'.format(time.ctime())
 
     # make a grid of old model
-    old_north, old_east = np.broadcast_arrays(old_mod.grid_north[:, None], 
-                                              old_mod.grid_east[None, :])
+    old_north, old_east = np.broadcast_arrays(old_mod.grid_north[:-1, None], 
+                                              old_mod.grid_east[None, :-1])
                                       
     #2) do a 2D interpolation for each layer, much faster
     # make a new array of zeros to put values with shape of new model
-    new_res = np.zeros((new_mod.grid_north.shape[0],
-                        new_mod.grid_east.shape[0],
-                        new_mod.grid_z.shape[0]))
+    new_res = np.zeros((new_mod.nodes_north.shape[0],
+                        new_mod.nodes_east.shape[0],
+                        new_mod.nodes_z.shape[0]))
                         
-    for zz in range(new_mod.grid_z.shape[0]):
+    for zz in range(new_mod.nodes_z.shape[0]):
         try:
             old_zz = np.where(old_mod.grid_z >= new_mod.grid_z[zz])[0][0]
+            if old_zz >= old_mod.nodes_z.size - 1:
+                old_zz = old_mod.nodes_z.size - 1
         except IndexError:
             old_zz = -1
                           
@@ -124,8 +126,8 @@ def interpolate_model_grid(old_model_fn, new_model_fn, save_path=None,
                           
         new_res[:, :, zz] = spi.griddata((old_north.ravel(), old_east.ravel()),
                                          old_mod.res_model[:, :, old_zz].ravel(),
-                                         (new_mod.grid_north[:, None]+shift_north, 
-                                          new_mod.grid_east[None, :]+shift_east),
+                                         (new_mod.grid_north[:-1, None]+shift_north, 
+                                          new_mod.grid_east[None, :-1]+shift_east),
                                          method='linear')
                                          
         new_res[0:pad, pad:-pad, zz] = new_res[pad, pad:-pad, zz]    
@@ -203,9 +205,9 @@ def interpolate_model_grid(old_model_fn, new_model_fn, save_path=None,
 #interpolate_model_grid(ws_fn, modem_fn, pad=5, new_fn_basename='lv_ws_sm.rho',
 #                       shift_east = 4500, shift_north = 1700)
 
-mod_fn_big = r"c:\Users\jpeacock\Documents\folsom\inversions\inv_01_dr\sev_tip03_NLCG_031.rho"
-mod_fn_small = r"c:\Users\jpeacock\Documents\folsom\inversions\inv_01_dr\sev_modem_small.rho"
-interpolate_model_grid(mod_fn_big,
-                       mod_fn_small, 
-                       new_fn_basename='sev_modem_model.rho',
+mod_fn_old = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_02\sa_t02_049.rho"
+mod_fn_new = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_03\sa_sm02.rho"
+interpolate_model_grid(mod_fn_old,
+                       mod_fn_new, 
+                       new_fn_basename='sa_sm_zt.rho',
                        pad=3)
