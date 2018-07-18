@@ -14,8 +14,8 @@ import mtpy.utils.gis_tools as gis_tools
 # =============================================================================
 # Inputs
 # =============================================================================
-model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul_final_model\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
-model_center = (-122.080378, 46.387827, )
+model_fn = r"c:\Users\jpeacock\Documents\TorC\tc_z03_t02_c02_NLCG_041.rho"
+model_center = (-107.347830, 33.228427)
 # =============================================================================
 # Read in model file
 # =============================================================================
@@ -31,20 +31,20 @@ depth = m_obj.grid_z[:-1]
 
 
 for ii, north in enumerate(m_obj.grid_north[:-1]):
-    m_lon, m_lat, m_elev = gis_tools.transform_utm_to_ll(utm_center[0], 
-                                                         utm_center[1]+north,
-                                                         utm_center[2])
+    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0], 
+                                                  utm_center[1]+north/2.,
+                                                  utm_center[2])
     lat[ii] = m_lat
     
 for ii, east in enumerate(m_obj.grid_east[:-1]):
-    m_lon, m_lat, m_elev = gis_tools.transform_utm_to_ll(utm_center[0]+east, 
-                                                         utm_center[1],
-                                                         utm_center[2])
+    m_lon, m_lat = gis_tools.project_point_utm2ll(utm_center[0]+east/2., 
+                                                  utm_center[1],
+                                                  utm_center[2])
     lon[ii] = m_lon
 # =============================================================================
 # Create NetCDF4 dataset compliant with IRIS format
 # =============================================================================
-dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\iMush\imush.nc", 'w',
+dataset = netcdf.Dataset(r"c:\Users\jpeacock\Documents\test.nc", 'w',
                          format='NETCDF4')
 dataset.title = "Electrical Resistivity Model"
 dataset.id = "Model ID"
