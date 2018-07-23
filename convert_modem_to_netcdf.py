@@ -32,7 +32,6 @@ lat = np.zeros_like(m_obj.grid_north[clip:-(clip+1)])
 lon = np.zeros_like(m_obj.grid_east[clip:-(clip+1)])
 depth = m_obj.grid_z[:-1]/1000.
 
-
 for ii, north in enumerate(m_obj.grid_north[clip:-(clip+1)]):
     m_lat, m_lon = gis_tools.project_point_utm2ll(utm_center[0], 
                                                   utm_center[1]+north,

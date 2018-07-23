@@ -16,6 +16,7 @@ import datetime
 survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive.cfg"
 survey = 'iMUSH'
+stem = 'msh'
 
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
@@ -42,7 +43,7 @@ survey_xml.read_config_file(survey_cfg)
 st = datetime.datetime.now()
 for station in os.listdir(survey_dir):
     station_path = os.path.join(survey_dir, station)
-    station_save_dir = os.path.join(save_dir, station)
+    station_save_dir = os.path.join(save_dir, stem+station)
     
     if os.path.isdir(station_path):
         zc = archive.Z3DCollection()
@@ -57,8 +58,8 @@ for station in os.listdir(survey_dir):
             os.mkdir(station_save_dir)
         
         zm = archive.USGSasc()
-        asc_fn_list = ['{0}{1}'.format(station.upper(), ext) for ext in 
-                       ['_meta.xml', '.edi', '.png']]
+        asc_fn_list = ['{0}{1}'.format(stem+station, ext) for ext in 
+                       ['.edi', '.png']]
         print('--> Archiving station {0}'.format(station))
         # capture the output to put into a log file for each station, just to
         # be sure and capture what happened.
@@ -68,6 +69,7 @@ for station in os.listdir(survey_dir):
                 mtft_find = zm.read_mtft24_cfg()
                 zm.CoordinateSystem = 'Geomagnetic North'
                 zm.SurveyID = survey
+                zm.SiteID = stem+zm.SiteID
                 zm.write_asc_file(save_dir=station_save_dir,
                                   full=False, compress=True)
                 asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
@@ -83,6 +85,9 @@ for station in os.listdir(survey_dir):
             s_xml = archive.XMLMetadata()
             s_xml.read_config_file(survey_cfg)
             s_xml.supplement_info = s_xml.supplement_info.replace('\\n', '\n\t\t\t')
+            
+            # add station name to title
+            s_xml.title += ', station {0}'.format(station)
             
             # location
             s_xml.survey.east = s_db.lon.median()
@@ -104,11 +109,11 @@ for station in os.listdir(survey_dir):
             
             # write station xml
             s_xml.write_xml_file(os.path.join(station_save_dir, 
-                                              '{0}_meta.xml'.format(station.upper())))
+                                              '{0}_meta.xml'.format(stem+station)))
         
         #--> write log file
         log_fid = open(os.path.join(station_save_dir, 
-                                    '{0}_Archive.log'.format(station)), 'w')
+                                    '{0}_Archive.log'.format(stem+station)), 'w')
         log_fid.write('\n'.join(output))
         log_fid.close()
 
@@ -133,7 +138,7 @@ survey_xml.survey.end_date = survey_db.stop_date.max()
 
 ### --> write survey xml file
 survey_xml.write_xml_file(os.path.join(save_dir, 
-                                       '{0}.xml'.format(survey)))
+                                       '{0}.xml'.format(stem+survey)))
 
 # print timing
 et = datetime.datetime.now()
