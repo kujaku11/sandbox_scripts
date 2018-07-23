@@ -14,7 +14,7 @@ import datetime
 # Inputs
 # =============================================================================
 survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
-survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive.cfg"
+survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
 survey = 'iMUSH'
 stem = 'msh'
 
@@ -60,7 +60,8 @@ for station in os.listdir(survey_dir):
         zm = archive.USGSasc()
         asc_fn_list = ['{0}{1}'.format(stem+station, ext) for ext in 
                        ['.edi', '.png']]
-        print('--> Archiving station {0}'.format(station))
+        
+        s_st = datetime.datetime.now()
         # capture the output to put into a log file for each station, just to
         # be sure and capture what happened.
         with Capturing() as output:
@@ -87,7 +88,7 @@ for station in os.listdir(survey_dir):
             s_xml.supplement_info = s_xml.supplement_info.replace('\\n', '\n\t\t\t')
             
             # add station name to title
-            s_xml.title += ', station {0}'.format(station)
+            s_xml.title += ', station {0}'.format(stem+station)
             
             # location
             s_xml.survey.east = s_db.lon.median()
@@ -116,10 +117,16 @@ for station in os.listdir(survey_dir):
                                     '{0}_Archive.log'.format(stem+station)), 'w')
         log_fid.write('\n'.join(output))
         log_fid.close()
+        
+        s_et = datetime.datetime.now()
+        station_diff = s_et - s_st
+        
+        print('--> Archived station {0}, took {1} seconds'.format(station, 
+                                              station_diff.total_seconds()))
 
 # adjust survey information to align with data        
 survey_cfg = archive.USGScfg()
-survey_db, csv_fn = survey_cfg.combine_all_station_info(save_dir)
+survey_db, csv_fn, location_fn = survey_cfg.combine_all_station_info(save_dir)
 survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
 
 # location
