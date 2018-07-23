@@ -118,12 +118,17 @@ for station in os.listdir(survey_dir):
         s_time = s_et-s_st
         print('\t\t * Took {0} seconds'.format(s_time.total_seconds()))
         print('-'*40)
-
+# =============================================================================
+#  Write survey xml and shape file
+# =============================================================================
 # adjust survey information to align with data        
 survey_cfg = archive.USGScfg()
 survey_db, survey_csv_fn = survey_cfg.combine_all_station_info(save_dir)
+
 # write shape file
 shp_fn = survey_cfg.write_shp_file(survey_csv_fn)
+
+# make sure everything has the right spacing.
 survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
 
 # location
