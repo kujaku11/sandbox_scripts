@@ -58,10 +58,10 @@ for station in os.listdir(survey_dir):
         
         zm = archive.USGSasc()
         asc_fn_list = ['{0}{1}'.format(station.upper(), ext) for ext in 
-                       ['_meta.xml', '.edi', '.png']]
+                       ['.edi', '.png']]
         
         s_st = datetime.datetime.now()
-        print('--> Archiving station {0}'.format(station))
+
         # capture the output to put into a log file for each station, just to
         # be sure and capture what happened.
         with Capturing() as output:
@@ -106,7 +106,7 @@ for station in os.listdir(survey_dir):
             
             # write station xml
             s_xml.write_xml_file(os.path.join(station_save_dir, 
-                                              '{0}_meta.xml'.format(station.upper())))
+                                              '{0}_meta.xml'.format(station)))
         
         #--> write log file
         log_fid = open(os.path.join(station_save_dir, 
@@ -116,14 +116,15 @@ for station in os.listdir(survey_dir):
         
         s_et = datetime.datetime.now()
         s_time = s_et-s_st
-        print('\t\t * Took {0} seconds'.format(s_time.total_seconds()))
+        print('--> Archiving {0}. Took {1} seconds'.format(station, 
+                                                     s_time.total_seconds()))
         print('-'*40)
 # =============================================================================
 #  Write survey xml and shape file
 # =============================================================================
 # adjust survey information to align with data        
 survey_cfg = archive.USGScfg()
-survey_db, survey_csv_fn = survey_cfg.combine_all_station_info(save_dir)
+survey_db, survey_csv_fn, location_csv = survey_cfg.combine_all_station_info(save_dir)
 
 # write shape file
 shp_fn = survey_cfg.write_shp_file(survey_csv_fn)
