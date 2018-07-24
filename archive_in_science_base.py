@@ -17,6 +17,7 @@ survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
 survey = 'iMUSH'
 stem = 'msh'
+declination = 15.5
 
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
@@ -58,6 +59,8 @@ for station in os.listdir(survey_dir):
             os.mkdir(station_save_dir)
         
         zm = archive.USGSasc()
+        zm.CoordinateSystem = 'Geographic North'
+        zm.declination = declination
         asc_fn_list = ['{0}{1}'.format(stem+station, ext) for ext in 
                        ['.edi', '.png']]
         
@@ -68,9 +71,11 @@ for station in os.listdir(survey_dir):
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
                 mtft_find = zm.read_mtft24_cfg()
-                zm.CoordinateSystem = 'Geomagnetic North'
+                
                 zm.SurveyID = survey
                 zm.SiteID = stem+zm.SiteID
+                for key in zm.channel_dict.keys():
+                    zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
                 zm.write_asc_file(save_dir=station_save_dir,
                                   full=False, compress=True)
                 asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
