@@ -13,10 +13,16 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
-survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
+#survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
+#survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
+
+survey_dir = r"c:\Users\jpeacock\Documents\imush"
+survey_cfg = r"c:\Users\jpeacock\Documents\imush\imush_archive_PAB.cfg"
+survey_csv = r"c:\Users\jpeacock\Documents\imush\Archive\survey_summary_edit.csv"
+
 survey = 'iMUSH'
 stem = 'msh'
+#declination = 15.5
 declination = 15.5
 
 save_dir = os.path.join(survey_dir, 'Archive')
@@ -42,7 +48,7 @@ survey_xml = archive.XMLMetadata()
 survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
-for station in os.listdir(survey_dir):
+for station in [os.listdir(survey_dir)[5]]:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
     
@@ -70,10 +76,13 @@ for station in os.listdir(survey_dir):
         with Capturing() as output:
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
-                mtft_find = zm.read_mtft24_cfg()
+                #mtft_find = zm.get_metadata_from_mtft24_cfg()
                 
                 zm.SurveyID = survey
                 zm.SiteID = stem+zm.SiteID
+                # get metadata from survey summary file
+                mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
+                
                 for key in zm.channel_dict.keys():
                     zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
                 zm.write_asc_file(save_dir=station_save_dir,
@@ -133,6 +142,7 @@ for station in os.listdir(survey_dir):
 survey_cfg = archive.USGScfg()
 survey_db, csv_fn, location_fn = survey_cfg.combine_all_station_info(save_dir)
 survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
+survey_cfg.write_shp_file(csv_fn, save_path=save_dir)
 
 # location
 survey_xml.survey.east = survey_db.lon.min()
