@@ -22,8 +22,10 @@ survey_cfg = r"d:\iMUSH\imush_archive_PAB.cfg"
 
 survey = 'iMUSH'
 stem = 'msh'
-#declination = 15.5
 declination = 15.5
+
+skip_list = ['F012']
+### F012 looks like all channels are hx for a parallel coil test
 
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
@@ -48,9 +50,14 @@ survey_xml = archive.XMLMetadata()
 survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
-for station in os.listdir(survey_dir):
+#for station in os.listdir(survey_dir)[132:]:
+for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
+                'J013', 'J016', 'K012', 'K017', 'M011', 'M012']:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
+    
+    if station in skip_list:
+        continue
     
     if os.path.isdir(station_path) and len(station) == 4:
         zc = archive.Z3DCollection()
