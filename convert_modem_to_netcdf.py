@@ -14,10 +14,10 @@ import mtpy.utils.gis_tools as gis_tools
 # =============================================================================
 # Inputs
 # =============================================================================
-model_fn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\paul_final_model\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
-save_fn = r"c:\Users\jpeacock\Documents\iMush\bedrosian_imush_mt_2018_log10_clip_iris.nc"
+model_fn = r"c:\Users\jpeacock\Documents\imush\Z4T3_cov0p2x2_L1E2_NLCG_061.rho"
+save_fn = r"c:\Users\jpeacock\Documents\imush\bedrosian_imush_mt_2018_log10_clip_iris.nc"
 model_center = (-122.080378, 46.387827, )
-clip = 9
+clip = 14
 iris_submit = True
 # =============================================================================
 # Read in model file

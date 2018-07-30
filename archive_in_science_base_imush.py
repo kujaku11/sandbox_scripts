@@ -13,12 +13,19 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
-survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
-survey_csv = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush/survey_summary_edit.csv"
+#survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
+#survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
+
+survey_dir = r"d:\iMUSH"
+survey_cfg = r"d:\iMUSH\imush_archive_PAB.cfg"
+#survey_csv = r"c:\Users\jpeacock\Documents\imush\Archive\survey_summary_edit.csv"
+
 survey = 'iMUSH'
 stem = 'msh'
-declination = 0
+declination = 15.5
+
+skip_list = ['F012']
+### F012 looks like all channels are hx for a parallel coil test
 
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
@@ -43,11 +50,16 @@ survey_xml = archive.XMLMetadata()
 survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
-for station in [os.listdir(survey_dir)[5]]:
+#for station in os.listdir(survey_dir)[132:]:
+for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
+                'J013', 'J016', 'K012', 'K017', 'M011', 'M012']:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
     
-    if os.path.isdir(station_path):
+    if station in skip_list:
+        continue
+    
+    if os.path.isdir(station_path) and len(station) == 4:
         zc = archive.Z3DCollection()
         # check to see if there are .z3d files in the folder, if not continue
         try:
@@ -55,6 +67,7 @@ for station in [os.listdir(survey_dir)[5]]:
         except IndexError:
             print('*** Skipping folder {0} ***'.format(station))
             continue
+        
         # make station folder
         if not os.path.exists(station_save_dir):
             os.mkdir(station_save_dir)
@@ -71,20 +84,19 @@ for station in [os.listdir(survey_dir)[5]]:
         with Capturing() as output:
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
-                #mtft_find = zm.get_metadata_from_mtft24_cfg()
+                mtft_find = zm.get_metadata_from_mtft24_cfg()
                 
                 zm.SurveyID = survey
                 zm.SiteID = stem+zm.SiteID
-
                 # get metadata from survey summary file
-                mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
-
+                #mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
+                
                 for key in zm.channel_dict.keys():
                     zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
-                zm.write_asc_file(save_dir=station_save_dir,
-                                  full=False, compress=True)
-                asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
-                                                      compression=True)))
+#                zm.write_asc_file(save_dir=station_save_dir,
+#                                  full=False, compress=True)
+#                asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
+#                                                      compression=True)))
                 zm.write_station_info_metadata(save_dir=station_save_dir,
                                                mtft_bool=mtft_find)
                 
