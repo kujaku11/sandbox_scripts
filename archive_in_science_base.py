@@ -15,9 +15,11 @@ import datetime
 # =============================================================================
 survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
+survey_csv = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush/survey_summary_edit.csv"
 survey = 'iMUSH'
 stem = 'msh'
-declination = 15.5
+declination = 0
+
 
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
@@ -70,10 +72,11 @@ for station in os.listdir(survey_dir):
         with Capturing() as output:
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
-                mtft_find = zm.read_mtft24_cfg()
+                #mtft_find = zm.get_metadata_from_mtft24_cfg()
                 
                 zm.SurveyID = survey
                 zm.SiteID = stem+zm.SiteID
+                zm.get_metadata_from_survey_csv(survey_csv)
                 for key in zm.channel_dict.keys():
                     zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
                 zm.write_asc_file(save_dir=station_save_dir,

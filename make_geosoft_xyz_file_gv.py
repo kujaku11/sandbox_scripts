@@ -25,14 +25,14 @@ mod_obj.read_model_file(mfn)
 
 #--> get center position
 #model_center = (40.227213, -118.927443)
-model_center = (38.774109, -118.151242)
+model_center = (38.772697, -118.149196)
 c_east, c_north, c_zone = gis_tools.project_point_ll2utm(model_center[0],
                                                          model_center[1], 
                                                          'WGS84')
 
 #--> set padding
-east_pad = mod_obj.pad_east+4
-north_pad = mod_obj.pad_north+4
+east_pad = mod_obj.pad_east-4
+north_pad = mod_obj.pad_north-4
 z_pad = np.where(mod_obj.grid_z > 30000)[0][0]
 
 cos_ang = np.cos(np.deg2rad(rot_angle))
@@ -41,7 +41,15 @@ rot_matrix = np.matrix(np.array([[cos_ang, sin_ang],
                                  [-sin_ang, cos_ang]]))
 
 #--> write model xyz file
-lines = ['# north (m) east(m) depth(m) resistivity (Ohm-m)']
+lines = ['# model_type = electrical resistivity',
+         '# model_location = Gabbs Valley, NV',
+         '# model_author = J Peacock',
+         '# model_organization = U.S. Geological Survey',
+         '# model_date = 2017-11-29',
+         '# model_datum = WGS84',
+         '# model_program = ModEM',
+         '# model_rms = 1.6']
+lines.append('# north (m) east(m) depth(m) resistivity (Ohm-m)')
 for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
     for jj, yy in enumerate(mod_obj.grid_east[east_pad:-east_pad]):
         for ii, xx in enumerate(mod_obj.grid_north[north_pad:-north_pad]):
@@ -52,7 +60,7 @@ for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
             # rotate data
             n_coords = np.array([n_east, n_north])
             new_coords = np.array(np.dot(rot_matrix, n_coords))
-            
+
             lines.append('{0:>12.1f}{1:12.1f}{2:12.1f}{3:12.2f}'.format(
                           new_coords[0, 1], 
                           new_coords[0, 0], 

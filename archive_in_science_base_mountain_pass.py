@@ -67,7 +67,7 @@ for station in os.listdir(survey_dir):
         with Capturing() as output:
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
-                mtft_find = zm.read_mtft24_cfg()
+                mtft_find = zm.get_metadata_from_mtft24_cfg()
                 zm.CoordinateSystem = 'Geomagnetic North'
                 zm.SurveyID = survey
                 zm.write_asc_file(save_dir=station_save_dir,
