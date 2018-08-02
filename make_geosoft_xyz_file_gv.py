@@ -54,11 +54,11 @@ lines = ['# model_type = electrical resistivity',
          '# model_rms = 1.6']
 lines.append('# north (m) east(m) depth(m) resistivity (Ohm-m)')
              
-utm_east = mod_obj.grid_east[east_pad:-east_pad] #+ c_east-200.-2500
-utm_north = mod_obj.grid_north[north_pad:-north_pad]# + c_north+200.-2500
+utm_east = mod_obj.grid_east[east_pad:-east_pad] + c_east-200.
+utm_north = mod_obj.grid_north[north_pad:-north_pad] + c_north+200.
 for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
-    for jj, yy in enumerate(utm_east):
-        for ii, xx in enumerate(utm_north):
+    for jj, yy in enumerate(utm_east, east_pad):
+        for ii, xx in enumerate(utm_north, north_pad):
             
             n_east = yy
             n_north = xx
@@ -73,7 +73,7 @@ for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
                           zz, 
                           mod_obj.res_model[ii, jj, kk]))
 
-save_fn = os.path.join(os.path.dirname(mfn), '{0}_resistivity_relative_coord.xyz'.format(save_root))
+save_fn = os.path.join(os.path.dirname(mfn), '{0}_resistivity_utm.xyz'.format(save_root))
 with open(save_fn, 'w') as fid:
     fid.write('\n'.join(lines))
     
@@ -86,12 +86,12 @@ d_obj = modem.Data()
 d_obj.read_data_file(dfn)
 
 # write data coordinates in model coordinates
-d_list = ['station,rel_east, rel_north']
+d_list = ['station,east, north']
 for d_arr in d_obj.data_array:
     d_list.append('{0},{1:.2f},{2:.2f}'.format(d_arr['station'],
-                                               d_arr['rel_east'],
-                                               d_arr['rel_north']))
-with open(save_fn[:-4]+'stations_.csv', 'w') as fid:
+                                               d_arr['east'],
+                                               d_arr['north']))
+with open(save_fn[:-4]+'_stations.csv', 'w') as fid:
     fid.write('\n'.join(d_list))
 
 
@@ -108,7 +108,7 @@ im = ax.pcolormesh(plot_x, plot_y,
                     vmax=2.5)
 cb = plt.colorbar(im, ax=ax)
 
-ax.scatter(d_obj.station_locations.rel_east, d_obj.station_locations.rel_north, 
+ax.scatter(d_obj.station_locations.east, d_obj.station_locations.north, 
            marker='v', c='k', s=25)
 ax.set_xlabel('Easting (m)')
 ax.set_ylabel('Northing (m)')

@@ -11,7 +11,7 @@ import os
 dir_path = r"c:\Users\jpeacock\Documents\ClearLake\Figures"
 
 for fn in [os.path.join(dir_path, ff) for ff in os.listdir(dir_path) if ff.endswith('.pdf')]:
-    if os.path.getctime(fn) > 1530000000.0:
+    if os.path.getctime(fn) > 1533170000.:
         std_out = subprocess.check_call(['magick',
                                          '-density','300',
                                          fn,
