@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import mtpy.modeling.modem as modem
 import mtpy.utils.gis_tools as gis_tools
 from matplotlib.ticker import MultipleLocator
+import mtpy.imaging.mtcolors as mtcolors
 
 # =============================================================================
 # Parameters
@@ -100,7 +101,7 @@ ax_gh = fig.add_subplot(2, 1, 1, aspect='equal')
 im_gh = ax_gh.pcolormesh(gh_x_grid, 
                          gh_y_grid,
                          np.log10(gh_res), 
-                         cmap='jet_r',
+                         cmap=mtcolors.mt_rd2gr2bl,
                          vmin=-1, 
                          vmax=4)
 
@@ -112,7 +113,7 @@ ax_pb = fig.add_subplot(2, 1, 2, aspect='equal')
 im_pb = ax_pb.pcolormesh(pb_x_grid, 
                          pb_y_grid,
                          np.log10(pb_res), 
-                         cmap='jet_r',
+                         cmap=mtcolors.mt_rd2gr2bl,
                          vmin=-1, 
                          vmax=4)
 
@@ -143,13 +144,13 @@ for ax in [ax_gh, ax_pb]:
 ax_pb.set_xlabel('distance (km)', fontdict=font_dict)
 
 ## make colorbar
-#cb_ax = fig.add_axes([.83, .30, .03, .5])
-#cb = plt.colorbar(im_gh, cax=cb_ax)
-#cb.set_label('resistivity (Ohm-m)', fontdict=font_dict)
-#cb.set_ticks([-1, 0, 1, 2, 3, 4])
-#cb.set_ticklabels(['$10^{-1}$', '$10^{0}$', '$10^{1}$', '$10^{2}$', 
-#                   '$10^{3}$', '$10^{4}$'])
-#cb.update_ticks()
+cb_ax = fig.add_axes([.83, .30, .03, .5])
+cb = plt.colorbar(im_gh, cax=cb_ax)
+cb.set_label('resistivity (Ohm-m)', fontdict=font_dict)
+cb.set_ticks([-1, 0, 1, 2, 3, 4])
+cb.set_ticklabels(['$10^{-1}$', '$10^{0}$', '$10^{1}$', '$10^{2}$', 
+                   '$10^{3}$', '$10^{4}$'])
+cb.update_ticks()
 plt.show()
 
 fig.savefig(r"c:\Users\jpeacock\Documents\iMush\Figures\msh_compare_gh_no_labels.png",

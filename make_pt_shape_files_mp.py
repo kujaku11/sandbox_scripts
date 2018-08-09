@@ -9,7 +9,7 @@ import mtpy.utils.shapefiles as shapefiles
 import os
 
 dfn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_07\mp_modem_data_z03_topo_edit.dat"
-rfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_err03_cov02_NLCG_057.dat"
+rfn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_07\mp_z03_c03_NLCG_009.dat"
 
 save_path = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_07"
 map_projection = 'WGS84'
@@ -26,17 +26,17 @@ pts = shapefiles.PTShapeFile()
 pts.projection = map_projection
 pts.ellipse_size = 900
 
-#save files for data
-pts.save_path = os.path.join(save_path, 'mp_pt_data_gn')
-check_dir(pts.save_path)
-pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
-
-#save files for model response
-#pts.save_path = os.path.join(save_path, 'gz_pt_model_gn')
+#### save files for data
+#pts.save_path = os.path.join(save_path, 'mp_pt_data_gn')
 #check_dir(pts.save_path)
-#pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
-#
-##save files for data-model
+#pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
+
+#### save files for model response
+pts.save_path = os.path.join(save_path, 'gz_pt_model_z03_c03_gn')
+check_dir(pts.save_path)
+pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
+
+#save files for data-model
 #pts.save_path = os.path.join(save_path, 'gz_pt_residual_gn')
 #check_dir(pts.save_path)
 #pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
