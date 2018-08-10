@@ -69,7 +69,7 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list:
+for station in station_list[14:]:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
     
@@ -113,9 +113,9 @@ for station in station_list:
                 else:
                     mtft_find = zm.get_metadata_from_mtft24_cfg()
                 
-                # need to add ZEN to instrument id
-                for key in zm.channel_dict.keys():
-                    zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
+#                # need to add ZEN to instrument id
+#                for key in zm.channel_dict.keys():
+#                    zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
                     
                 # write out the ascii file if desired
                 if write_asc:

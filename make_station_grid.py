@@ -54,16 +54,25 @@ import mtpy.utils.gis_tools as gis_tools
 #          'easting_max':402800.,
 #          'northing_min':4287500.,
 #          'northing_max':4296000.}
+### Gabbs valley
+#ll_utm = {'zone':'11N', 
+#          'easting_min':400800.,
+#          'easting_max':645000.,
+#          'northing_min':3612500.,
+#          'northing_max':4004000.}
+#
+#spacing_east = 30000.
+#spacing_north = 30000.
+
 ## Gabbs valley
 ll_utm = {'zone':'11N', 
-          'easting_min':400800.,
-          'easting_max':645000.,
-          'northing_min':3612500.,
-          'northing_max':4004000.}
+          'easting_min':373200,
+          'easting_max':382500,
+          'northing_min':5053300.,
+          'northing_max':5059700.}
 
-spacing_east = 30000.
-spacing_north = 30000.
-
+spacing_east = 1000.
+spacing_north = 1000.
 
  
 
@@ -75,10 +84,10 @@ north_arr = np.arange(ll_utm['northing_min'],
                      ll_utm['northing_max']+spacing_east,
                      spacing_east)
                      
-kml_fn = r"c:\Users\jpeacock\Documents\MountainPass\mojave_{0:.0f}m.kml".format(spacing_east)
+kml_fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\um_phase_02_mt_stations_{0:.0f}m.kml".format(spacing_east)
 
 kml_obj = skml.Kml()
-count = 0
+count = 200
 for ii, east in enumerate(east_arr):
     print '-'*30
     for jj, north in enumerate(north_arr):
@@ -88,7 +97,7 @@ for ii, east in enumerate(east_arr):
                                                         north, 
                                                         ll_utm['zone'])
 
-        kml_obj.newpoint(name='MJ{0:02}'.format(count),
+        kml_obj.newpoint(name='um{0:03}'.format(count),
                          coords=[(lon_jj, lat_ii)])
                          
         count += 1
