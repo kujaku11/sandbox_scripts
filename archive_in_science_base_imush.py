@@ -13,20 +13,37 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-#survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
-#survey_cfg = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_PAB.cfg"
+#survey_dir = r"d:\iMUSH"
+#survey_cfg = r"d:\iMUSH\imush_archive_PAB.cfg"
+survey_dir = r"/media/jpeacock/My Passport/iMUSH"
+survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
+survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
 
-survey_dir = r"d:\iMUSH"
-survey_cfg = r"d:\iMUSH\imush_archive_PAB.cfg"
-#survey_csv = r"c:\Users\jpeacock\Documents\imush\Archive\survey_summary_edit.csv"
-
+# survey name and abbreviation
 survey = 'iMUSH'
 stem = 'msh'
+
+# declination, set to 0 if declination is already included in the measurements
 declination = 15.5
 
-skip_list = ['F012']
-### F012 looks like all channels are hx for a parallel coil test
+# srite survey xml, csv
+write_survey_info = False
 
+# write ascii files
+write_asc = True
+
+# any stations to skip for some reason
+skip_list = ['F012']
+#### F012 looks like all channels are hx for a parallel coil test
+# =============================================================================
+# Get station list from csv file
+# =============================================================================
+scfg = archive.USGScfg()
+survey_db = scfg.read_survey_csv(survey_csv)
+station_list = [s[3:] for s in survey_db.siteID[0:33]]
+# =============================================================================
+# Make an archive folder to put everything
+# =============================================================================
 save_dir = os.path.join(survey_dir, 'Archive')
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
@@ -43,16 +60,16 @@ class Capturing(list):
     def __exit__(self, *args):
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
+        
 # =============================================================================
-# make the survey xml file
+# make the files
 # =============================================================================
 survey_xml = archive.XMLMetadata()
 survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
-                'J013', 'J016', 'K012', 'K017', 'M011', 'M012']:
+for station in station_list:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
     
@@ -84,19 +101,29 @@ for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
         with Capturing() as output:
             for fn_block in fn_list:
                 zm.get_z3d_db(fn_block)
-                mtft_find = zm.get_metadata_from_mtft24_cfg()
                 
+                # put in survey name and rename the station with the stem
                 zm.SurveyID = survey
                 zm.SiteID = stem+zm.SiteID
-                # get metadata from survey summary file
-                #mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
                 
+                # look information in configuration files
+                # Note need to do this after renaming the station
+                if survey_csv is not None:
+                    mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
+                else:
+                    mtft_find = zm.get_metadata_from_mtft24_cfg()
+                
+                # need to add ZEN to instrument id
                 for key in zm.channel_dict.keys():
                     zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
-#                zm.write_asc_file(save_dir=station_save_dir,
-#                                  full=False, compress=True)
-#                asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
-#                                                      compression=True)))
+                    
+                # write out the ascii file if desired
+                if write_asc:
+                    zm.write_asc_file(save_dir=station_save_dir,
+                                      full=False, compress=True)
+                    asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
+                                                          compression=True)))
+                # write out metadata
                 zm.write_station_info_metadata(save_dir=station_save_dir,
                                                mtft_bool=mtft_find)
                 
@@ -119,7 +146,8 @@ for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
             s_xml.survey.south = s_db.lat.median()
             
             # get elevation from national map
-            s_elev = archive.get_nm_elev(s_db.lat.median(), s_db.lon.median()) 
+            s_elev = archive.get_nm_elev(s_db.lat.median(), 
+                                         s_db.lon.median()) 
             s_xml.survey.elev_min = s_elev
             s_xml.survey.elev_max = s_elev
             
@@ -146,29 +174,30 @@ for station in ['H012', 'H013', 'H014', 'H021', 'I015', 'I017', 'I021', 'J010',
         print('--> Archived station {0}, took {1} seconds'.format(station, 
                                               station_diff.total_seconds()))
 
-# adjust survey information to align with data        
-survey_cfg = archive.USGScfg()
-survey_db, csv_fn, location_fn = survey_cfg.combine_all_station_info(save_dir)
-survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
-survey_cfg.write_shp_file(csv_fn, save_path=save_dir)
-
-# location
-survey_xml.survey.east = survey_db.lon.min()
-survey_xml.survey.west = survey_db.lon.max()
-survey_xml.survey.south = survey_db.lat.min()
-survey_xml.survey.north = survey_db.lat.max()
-
-# get elevation min and max from station locations, not sure if this is correct
-survey_xml.survey.elev_min = survey_db.nm_elev.min()
-survey_xml.survey.elev_max = survey_db.nm_elev.max()
-
-# dates
-survey_xml.survey.begin_date = survey_db.start_date.min()
-survey_xml.survey.end_date = survey_db.stop_date.max()
-
-### --> write survey xml file
-survey_xml.write_xml_file(os.path.join(save_dir, 
-                                       '{0}.xml'.format(stem+survey)))
+# adjust survey information to align with data
+if write_survey_info:        
+    survey_cfg = archive.USGScfg()
+    survey_db, csv_fn, location_fn = survey_cfg.combine_all_station_info(save_dir)
+    survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
+    survey_cfg.write_shp_file(csv_fn, save_path=save_dir)
+    
+    # location
+    survey_xml.survey.east = survey_db.lon.min()
+    survey_xml.survey.west = survey_db.lon.max()
+    survey_xml.survey.south = survey_db.lat.min()
+    survey_xml.survey.north = survey_db.lat.max()
+    
+    # get elevation min and max from station locations, not sure if this is correct
+    survey_xml.survey.elev_min = survey_db.nm_elev.min()
+    survey_xml.survey.elev_max = survey_db.nm_elev.max()
+    
+    # dates
+    survey_xml.survey.begin_date = survey_db.start_date.min()
+    survey_xml.survey.end_date = survey_db.stop_date.max()
+    
+    ### --> write survey xml file
+    survey_xml.write_xml_file(os.path.join(save_dir, 
+                                           '{0}.xml'.format(stem+survey)))
 
 # print timing
 et = datetime.datetime.now()

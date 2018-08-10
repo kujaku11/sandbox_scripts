@@ -29,7 +29,7 @@ if d_obj.inv_mode == '2':
                                           d_obj.error_value_z),
                           fill=False,
                           compute_error=True,
-                          elevation=False)
+                          elevation=True)
 elif d_obj.inv_mode == '5':
     d_obj.write_data_file(save_path=os.path.dirname(dfn),
                           fn_basename='{0}_modem_data_tip{1:02.0f}.dat'.format(
@@ -37,7 +37,7 @@ elif d_obj.inv_mode == '5':
                                           d_obj.error_value_tipper*100),
                           fill=False,
                           compute_error=True,
-                          elevation=False)
+                          elevation=True)
 else:
     d_obj.write_data_file(save_path=os.path.dirname(dfn),
                           fn_basename='{0}_modem_data_ef{1:02.0f}_tip{2:02.0f}.dat'.format(
