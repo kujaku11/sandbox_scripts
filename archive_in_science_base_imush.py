@@ -9,14 +9,14 @@ import sys
 from cStringIO import StringIO
 import mtpy.usgs.usgs_archive as archive
 import datetime
+import zipfile
 
 # =============================================================================
 # Inputs
 # =============================================================================
-#survey_dir = r"d:\iMUSH"
-#survey_cfg = r"d:\iMUSH\imush_archive_PAB.cfg"
-survey_dir = r"/media/jpeacock/My Passport/iMUSH"
-survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
+survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
+survey_csv = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_summary_edited.csv"
+#survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
 survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
 
 # survey name and abbreviation
@@ -27,20 +27,20 @@ stem = 'msh'
 declination = 15.5
 
 # srite survey xml, csv
-write_survey_info = False
+write_survey_info = True
 
 # write ascii files
 write_asc = True
 
-# any stations to skip for some reason
-skip_list = ['F012']
-#### F012 looks like all channels are hx for a parallel coil test
+# write the full ascii file or not
+write_full = True
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
 scfg = archive.USGScfg()
 survey_db = scfg.read_survey_csv(survey_csv)
-station_list = [s[3:] for s in survey_db.siteID[0:33]]
+#station_list = [s[3:] for s in survey_db.siteID[0:33]]
+station_list = ['G016', 'G017', 'H020', 'O015']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -69,13 +69,10 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list[14:]:
+for station in station_list:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
-    
-    if station in skip_list:
-        continue
-    
+
     if os.path.isdir(station_path) and len(station) == 4:
         zc = archive.Z3DCollection()
         # check to see if there are .z3d files in the folder, if not continue
@@ -120,9 +117,22 @@ for station in station_list[14:]:
                 # write out the ascii file if desired
                 if write_asc:
                     zm.write_asc_file(save_dir=station_save_dir,
-                                      full=False, compress=True)
-                    asc_fn_list.append(os.path.basename(zm._make_file_name(save_path=station_save_dir, 
-                                                          compression=True)))
+                                      full=write_full, 
+                                      compress=False,
+                                      compress_type='zip')
+                    # get file name
+                    asc_fn = zm._make_file_name(save_path=station_save_dir, 
+                                                compression=False)
+                    # need to zip the files outside of making them for some
+                    # reason can't do it in the function.
+                    with zipfile.ZipFile(asc_fn+'.zip', 'w') as zip_fid:
+                        zip_fid.write(asc_fn, 
+                                      os.path.basename(asc_fn),
+                                      zipfile.ZIP_DEFLATED)
+                        os.remove(asc_fn)
+                    # append file name to the list that goes in the xml    
+                    asc_fn_list.append(os.path.basename(asc_fn))
+                
                 # write out metadata
                 zm.write_station_info_metadata(save_dir=station_save_dir,
                                                mtft_bool=mtft_find)
@@ -160,7 +170,8 @@ for station in station_list[14:]:
             
             # write station xml
             s_xml.write_xml_file(os.path.join(station_save_dir, 
-                                              '{0}_meta.xml'.format(stem+station)))
+                                              '{0}_meta.xml'.format(stem+station)), 
+                                write_station=True)
         
         #--> write log file
         log_fid = open(os.path.join(station_save_dir, 
