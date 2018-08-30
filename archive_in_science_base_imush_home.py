@@ -16,6 +16,7 @@ import zipfile
 # =============================================================================
 survey_dir = r"c:\Users\jpeacock\Documents\imush"
 survey_csv = r"c:\Users\jpeacock\Documents\imush\imush_archive_summary_edited.csv"
+#survey_csv = None
 #survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
 survey_cfg = r"c:\Users\jpeacock\Documents\imush\imush_archive_PAB.cfg"
 
@@ -27,20 +28,20 @@ stem = 'msh'
 declination = 15.5
 
 # srite survey xml, csv
-write_survey_info = True
+write_survey_info = False
 
 # write ascii files
 write_asc = True
 
 # write the full ascii file or not
-write_full = False
+write_full = True
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
-scfg = archive.USGScfg()
-survey_db = scfg.read_survey_csv(survey_csv)
+#scfg = archive.USGScfg()
+#survey_db = scfg.read_survey_csv(survey_csv)
 #station_list = [s[3:] for s in survey_db.siteID[0:33]]
-station_list = ['G016', 'G017', 'H020', 'O015']
+station_list = ['G016', 'G017', 'H020', 'O015', 'G016-5']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -69,11 +70,11 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list[0:1]:
+for station in [station_list[-1]]:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
 
-    if os.path.isdir(station_path) and len(station) == 4:
+    if os.path.isdir(station_path):
         zc = archive.Z3DCollection()
         # check to see if there are .z3d files in the folder, if not continue
         try:
@@ -109,6 +110,12 @@ for station in station_list[0:1]:
                     mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
                 else:
                     mtft_find = zm.get_metadata_from_mtft24_cfg()
+                    
+                # flip Zen18 channel Hx
+                if 'ZEN18' in [zm.channel_dict[chn]['InstrumentID'] for chn 
+                               in zm.channel_dict.keys()]:
+                    zm.ts.hx *= -1
+                    print('   --> ZEN 18: flipped HX')
                 
 #                # need to add ZEN to instrument id
 #                for key in zm.channel_dict.keys():
@@ -125,11 +132,11 @@ for station in station_list[0:1]:
                                                 compression=False)
                     # need to zip the files outside of making them for some
                     # reason can't do it in the function.
-#                    with zipfile.ZipFile(asc_fn+'.zip', 'w') as zip_fid:
-#                        zip_fid.write(asc_fn, 
-#                                      os.path.basename(asc_fn),
-#                                      zipfile.ZIP_DEFLATED)
-#                        os.remove(asc_fn)
+                    with zipfile.ZipFile(asc_fn+'.zip', 'w') as zip_fid:
+                        zip_fid.write(asc_fn, 
+                                      os.path.basename(asc_fn),
+                                      zipfile.ZIP_DEFLATED)
+                        os.remove(asc_fn)
                     # append file name to the list that goes in the xml    
                     asc_fn_list.append(os.path.basename(asc_fn))
                 
@@ -182,15 +189,16 @@ for station in station_list[0:1]:
         s_et = datetime.datetime.now()
         station_diff = s_et - s_st
         
-        print('--> Archived station {0}, took {1} seconds'.format(station, 
-                                              station_diff.total_seconds()))
+        print('--> Archived station {0}, took {1} seconds, finished at {2}'.format(station, 
+                                              station_diff.total_seconds(),
+                                              datetime.datetime.ctime(datetime.datetime.now())))
 
 # adjust survey information to align with data
 if write_survey_info:        
     survey_cfg = archive.USGScfg()
     survey_db, csv_fn, location_fn = survey_cfg.combine_all_station_info(save_dir)
     survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
-    survey_cfg.write_shp_file(csv_fn, save_path=save_dir)
+    survey_cfg.write_shp_file(csv_fn)
     
     # location
     survey_xml.survey.east = survey_db.lon.min()
