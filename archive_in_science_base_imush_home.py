@@ -28,7 +28,7 @@ stem = 'msh'
 declination = 15.5
 
 # srite survey xml, csv
-write_survey_info = False
+write_survey_info = True
 
 # write ascii files
 write_asc = True
@@ -70,7 +70,7 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in [station_list[-1]]:
+for station in station_list[3:]:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
 
@@ -189,8 +189,9 @@ for station in [station_list[-1]]:
         s_et = datetime.datetime.now()
         station_diff = s_et - s_st
         
-        print('--> Archived station {0}, took {1} seconds, finished at {2}'.format(station, 
-                                              station_diff.total_seconds(),
+        print('--> Archived station {0}, took {1}:{2}, finished at {3}'.format(station, 
+                                              station_diff.total_seconds()//60,
+                                              station_diff.total_seconds()%60,
                                               datetime.datetime.ctime(datetime.datetime.now())))
 
 # adjust survey information to align with data
