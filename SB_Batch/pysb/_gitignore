@@ -1,7 +1,0 @@
-.idea/
-pysb.iml
-build/
-*.pyc
-pysb/*.pyc
-tmp/
-.DS_Store
