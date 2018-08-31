@@ -9,12 +9,12 @@ import os
 import shutil
 import mtpy.usgs.zen as zen
 
-main_dir = r"d:\iMUSH"
+main_dir = r"/media/jpeacock/My Passport/iMUSH"
 
 #notes = ['# Notes for stations']
          
-station = 'M012'
-station_dir = r"d:\iMUSH\OSU_2015\M012_phase_issue"
+station = 'F014-5'
+station_dir = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/F0145"
 
 # make a folder in the main directory to save to
 sv_path = os.path.join(main_dir, station)
@@ -27,7 +27,7 @@ for root, folders, files in os.walk(station_dir):
         if fn.lower().endswith('.z3d'):
             fn_path = os.path.join(root, fn)
             # skip the small files
-            if os.stat(fn_path).st_size < 350000L:
+            if os.stat(fn_path).st_size < 300000L:
                 print('---> Skipping {0} too small {1}'.format(fn, os.stat(fn_path).st_size))
                 continue
             if fn.count('_') == 4:

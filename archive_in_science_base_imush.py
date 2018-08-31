@@ -10,16 +10,22 @@ from cStringIO import StringIO
 import mtpy.usgs.usgs_archive as archive
 import datetime
 import zipfile
+import sciencebasepy as sb
+import time
 
 # =============================================================================
 # Inputs
 # =============================================================================
-#survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
 survey_dir = r"/media/jpeacock/My Passport/iMUSH"
 survey_csv = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_summary_edited.csv"
-#survey_csv = None
-#survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
 survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
+
+# =============================================================================
+# Upload Parameters
+# =============================================================================
+page_id = '5ad77f06e4b0e2c2dd25e798'
+username = 'jpeacock@usgs.gov'
+password = '8HK@j10Kam1*76#'
 
 # survey name and abbreviation
 survey = 'iMUSH'
@@ -32,17 +38,19 @@ declination = 15.5
 write_survey_info = True
 
 # write ascii files
-write_asc = False
+write_asc = True
 
 # write the full ascii file or not
 write_full = False
+
+# upload data to science base
+upload_data = True
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
 scfg = archive.USGScfg()
 survey_db = scfg.read_survey_csv(survey_csv)
 station_list = [s[3:] for s in survey_db.siteID]
-survey_csv = None
 #station_list = ['G016', 'G017', 'H020', 'O015', 'G016-5']
 # =============================================================================
 # Make an archive folder to put everything
@@ -64,6 +72,40 @@ class Capturing(list):
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
         
+# =============================================================================
+# Upload data
+# =============================================================================
+def upload_data_to_sb(sb_page_id, archive_station_dir, sb_username, sb_password=None):
+    ### initialize a session
+    session = sb.SbSession()
+    
+    ### login to session, note if you run this in a console your password will
+    ### be visible, otherwise run from a command line > python sciencebase_upload.py
+    if sb_password is None:
+        session.loginc(username)
+    else:
+        session.login(username, password)
+    # need to wait a few seconds to connect otherwise bad things happen
+    time.sleep(5)
+    
+    station = os.path.basename(archive_station_dir)
+    ### loop over stations and make a child item for each 
+    new_child_dict = {'title':'station {0}'.format(station),
+                     'parentId':page_id,
+                     'summary': 'Magnetotelluric data'}
+    new_child = session.create_item(new_child_dict)
+    
+    # upload files
+    fn_list = [os.path.join(archive_station_dir, fn) for fn in os.listdir(archive_station_dir)
+               if fn.endswith('.zip') or fn.endswith('.xml')]
+    
+    item = session.upload_files_and_update_item(new_child, fn_list)
+    
+    print('==> Created child for {0}'.format(station))
+    
+    session.logout()
+    
+    return item
 # =============================================================================
 # make the files
 # =============================================================================
@@ -102,7 +144,7 @@ for station in station_list[:]:
             with Capturing() as output:
                 for fn_block in fn_list:
                     zm.get_z3d_db(fn_block)
-
+    
                     # put in survey name and rename the station with the stem
                     zm.SurveyID = survey
                     zm.SiteID = stem+zm.SiteID
@@ -178,6 +220,12 @@ for station in station_list[:]:
                 s_xml.write_xml_file(os.path.join(station_save_dir, 
                                                   '{0}_meta.xml'.format(stem+station)), 
                                     write_station=True)
+                
+            if upload_data:
+                sb_item = upload_data_to_sb(page_id, 
+                                            station_save_dir, 
+                                            username,
+                                            password)
             
             #--> write log file
             log_fid = open(os.path.join(station_save_dir, 
