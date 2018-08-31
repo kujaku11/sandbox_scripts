@@ -14,9 +14,10 @@ import zipfile
 # =============================================================================
 # Inputs
 # =============================================================================
-survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
-#survey_dir = r"/media/jpeacock/My Passport/iMUSH"
+#survey_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush"
+survey_dir = r"/media/jpeacock/My Passport/iMUSH"
 survey_csv = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush_archive_summary_edited.csv"
+#survey_csv = None
 #survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
 survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
 
@@ -31,17 +32,18 @@ declination = 15.5
 write_survey_info = True
 
 # write ascii files
-write_asc = True
+write_asc = False
 
 # write the full ascii file or not
-write_full = True
+write_full = False
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
 scfg = archive.USGScfg()
 survey_db = scfg.read_survey_csv(survey_csv)
-#station_list = [s[3:] for s in survey_db.siteID[0:33]]
-station_list = ['G016', 'G017', 'H020', 'O015']
+station_list = [s[3:] for s in survey_db.siteID]
+survey_csv = None
+#station_list = ['G016', 'G017', 'H020', 'O015', 'G016-5']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -70,12 +72,12 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list[1:3]:
+for station in station_list[:]:
     try:
         station_path = os.path.join(survey_dir, station)
         station_save_dir = os.path.join(save_dir, stem+station)
     
-        if os.path.isdir(station_path) and len(station) == 4:
+        if os.path.isdir(station_path):
             zc = archive.Z3DCollection()
             # check to see if there are .z3d files in the folder, if not continue
             try:
@@ -100,10 +102,7 @@ for station in station_list[1:3]:
             with Capturing() as output:
                 for fn_block in fn_list:
                     zm.get_z3d_db(fn_block)
-                    
-#                    if 'ZEN18' in zm.channel_dict['InstrumentID']:
-#                        
-                    
+
                     # put in survey name and rename the station with the stem
                     zm.SurveyID = survey
                     zm.SiteID = stem+zm.SiteID
@@ -114,11 +113,13 @@ for station in station_list[1:3]:
                         mtft_find = zm.get_metadata_from_survey_csv(survey_csv)
                     else:
                         mtft_find = zm.get_metadata_from_mtft24_cfg()
-                    
-    #                # need to add ZEN to instrument id
-    #                for key in zm.channel_dict.keys():
-    #                    zm.channel_dict[key]['InstrumentID'] = 'ZEN'+zm.channel_dict[key]['InstrumentID']
-                        
+                
+                    # flip Zen18 channel Hx
+                    if 'ZEN18' in [zm.channel_dict[chn]['InstrumentID'] for chn 
+                                   in zm.channel_dict.keys()]:
+                        zm.ts.hx *= -1
+                        print('   --> ZEN 18: flipped HX')
+        
                     # write out the ascii file if desired
                     if write_asc:
                         zm.write_asc_file(save_dir=station_save_dir,
@@ -187,8 +188,10 @@ for station in station_list[1:3]:
             s_et = datetime.datetime.now()
             station_diff = s_et - s_st
             
-            print('--> Archived station {0}, took {1} seconds'.format(station, 
-                                                  station_diff.total_seconds()))
+            print('--> Archived station {0}, took {1}:{2:02.2f}, finished at {3}'.format(station, 
+                                              int(station_diff.total_seconds()//60),
+                                              station_diff.total_seconds()%60,
+                                              datetime.datetime.ctime(datetime.datetime.now())))
     except:
         print('xxx --> skipping {0} <---xxx'.format(station))
 
@@ -220,5 +223,7 @@ if write_survey_info:
 # print timing
 et = datetime.datetime.now()
 t_diff = et-st
-print('--> Archiving took: {0} seconds'.format(t_diff.total_seconds()))
+print('--> Archiving took: {0}:{1:02.2f}, finished at {2}'.format(int(t_diff.total_seconds()//60),
+                                              t_diff.total_seconds()%60,
+                                              datetime.datetime.ctime(datetime.datetime.now())))
         
