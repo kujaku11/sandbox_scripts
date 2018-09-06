@@ -13,8 +13,8 @@ main_dir = r"/media/jpeacock/My Passport/iMUSH"
 
 #notes = ['# Notes for stations']
          
-station = 'F014-5'
-station_dir = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/F0145"
+station = 'H021'
+station_dir = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/H021_revisit"
 
 # make a folder in the main directory to save to
 sv_path = os.path.join(main_dir, station)
