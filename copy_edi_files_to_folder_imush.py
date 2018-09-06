@@ -15,7 +15,7 @@ png_dir = r"g:\imush_png"
 page_id = '5ad77f06e4b0e2c2dd25e798'
 
 session = sb.SbSession()
-session.login('jpeacock@usgs.gov','8HK@j10Kam1*76#')
+session.loginc('jpeacock@usgs.gov')
               
 child_ids = session.get_child_ids(page_id)
 c_dict = {}

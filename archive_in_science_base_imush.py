@@ -25,7 +25,7 @@ survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
 # =============================================================================
 page_id = '5ad77f06e4b0e2c2dd25e798'
 username = 'jpeacock@usgs.gov'
-password = '8HK@j10Kam1*76#'
+#password = 
 
 # survey name and abbreviation
 survey = 'iMUSH'
