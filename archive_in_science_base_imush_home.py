@@ -14,11 +14,14 @@ import zipfile
 # =============================================================================
 # Inputs
 # =============================================================================
-survey_dir = r"c:\Users\jpeacock\Documents\imush"
-survey_csv = r"c:\Users\jpeacock\Documents\imush\imush_archive_summary_edited.csv"
-#survey_csv = None
+#survey_dir = r"c:\Users\jpeacock\Documents\imush"
+#survey_csv = r"c:\Users\jpeacock\Documents\imush\imush_archive_summary_edited.csv"
+survey_csv = None
 #survey_csv = r"/mnt/hgfs/jpeacock/Documents/iMush/imush_archive_summary_edited.csv"
-survey_cfg = r"c:\Users\jpeacock\Documents\imush\imush_archive_PAB.cfg"
+survey_dir = r"d:\Peacock\MTData\iMUSH_Zen_samples\imush"
+survey_cfg = r"d:\Peacock\MTData\iMUSH_Zen_samples\imush_archive_PAB.cfg"
+
+#survey_cfg = r"c:\Users\jpeacock\Documents\imush\imush_archive_PAB.cfg"
 
 # survey name and abbreviation
 survey = 'iMUSH'
@@ -31,17 +34,17 @@ declination = 15.5
 write_survey_info = True
 
 # write ascii files
-write_asc = True
+write_asc = False
 
 # write the full ascii file or not
-write_full = True
+write_full = False
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
 #scfg = archive.USGScfg()
 #survey_db = scfg.read_survey_csv(survey_csv)
 #station_list = [s[3:] for s in survey_db.siteID[0:33]]
-station_list = ['G016', 'G017', 'H020', 'O015', 'G016-5']
+station_list = ['O010', 'Q010']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -70,7 +73,7 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list[3:]:
+for station in station_list:
     station_path = os.path.join(survey_dir, station)
     station_save_dir = os.path.join(save_dir, stem+station)
 

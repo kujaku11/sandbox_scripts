@@ -9,13 +9,13 @@ import mtpy.utils.shapefiles as shapefiles
 import os
 
 #edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\GeographicNorth\Interpolated"
-edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\Kyhbar_EDI_Files"
+edi_path = r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp"
 edi_list = [os.path.join(edi_path, edi_fn) for edi_fn in os.listdir(edi_path)
             if edi_fn.endswith('.edi')]
 
-save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\GIS"
+save_path = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\GIS"
 map_projection = 'WGS84'
-theta_r = 0
+theta_r = -11.5
 
 def check_dir(directory_path):
     if os.path.isdir(directory_path) is False:
@@ -26,20 +26,22 @@ def check_dir(directory_path):
 #--> write phase tensor shape files
 pts = shapefiles.PTShapeFile(edi_list=edi_list)
 pts.projection = map_projection
-pts.ellipse_size = 2800
-pts.save_path = os.path.join(save_path, 'KB_PT_GN')
+pts.ellipse_size = 2000.
+pts.rotation_angle = theta_r
+pts.save_path = os.path.join(save_path, 'MV_PT_GN')
 check_dir(pts.save_path)
 pts.write_shape_files()
 
 #----------------------------------------------------------------
 #--> write tipper information
 tps = shapefiles.TipperShapeFile(edi_list=edi_list)
-tps.arrow_size = 20000
+tps.arrow_size = 2000.
 tps.arrow_head_height = 350
 tps.arrow_head_width = 200
 tps.arrow_lw = 100
 tps.projection = map_projection
-tps.save_path = os.path.join(save_path, 'KB_TIP_GN')
+tps.rotation_angle = theta_r
+tps.save_path = os.path.join(save_path, 'MV_TIP_GN')
 check_dir(tps.save_path)
 tps.write_imag_shape_files()
 tps.write_real_shape_files()
