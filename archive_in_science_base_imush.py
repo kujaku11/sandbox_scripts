@@ -158,7 +158,7 @@ survey_xml.read_config_file(survey_cfg)
 
 st = datetime.datetime.now()
 #for station in os.listdir(survey_dir)[132:]:
-for station in station_list[:]:
+for station in station_list[5:]:
     try:
         station_path = os.path.join(survey_dir, station)
         station_save_dir = os.path.join(save_dir, stem+station)
