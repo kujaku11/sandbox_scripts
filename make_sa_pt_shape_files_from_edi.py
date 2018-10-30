@@ -24,18 +24,18 @@ def check_dir(directory_path):
         
 #-----------------------------------------------------------
 #--> write phase tensor shape files
-pts = shapefiles.PTShapeFile(edi_list=edi_list)
-pts.projection = map_projection
-pts.ellipse_size = 2000.
-pts.rotation_angle = theta_r
-pts.save_path = os.path.join(save_path, 'MV_PT_GN')
-check_dir(pts.save_path)
-pts.write_shape_files()
+#pts = shapefiles.PTShapeFile(edi_list=edi_list)
+#pts.projection = map_projection
+#pts.ellipse_size = 1800.
+#pts.rotation_angle = theta_r
+#pts.save_path = os.path.join(save_path, 'MV_PT_GN')
+#check_dir(pts.save_path)
+#pts.write_shape_files()
 
 #----------------------------------------------------------------
 #--> write tipper information
 tps = shapefiles.TipperShapeFile(edi_list=edi_list)
-tps.arrow_size = 2000.
+tps.arrow_size = 6000.
 tps.arrow_head_height = 350
 tps.arrow_head_width = 200
 tps.arrow_lw = 100
