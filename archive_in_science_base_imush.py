@@ -10,8 +10,6 @@ from cStringIO import StringIO
 import mtpy.usgs.usgs_archive as archive
 import datetime
 import zipfile
-import sciencebasepy as sb
-import time
 import getpass
 
 # =============================================================================
@@ -52,7 +50,7 @@ upload_data = True
 scfg = archive.USGScfg()
 survey_db = scfg.read_survey_csv(survey_csv)
 station_list = [s[3:] for s in survey_db.siteID]
-station_list = ['F011']
+station_list = ['H014', 'I015', 'I017', 'J010', 'J013', 'J016', 'K012', 'K017']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -143,7 +141,7 @@ for station in station_list[:]:
                                                     compression=False)
                         # need to zip the files outside of making them for some
                         # reason can't do it in the function.
-                        with zipfile.ZipFile(asc_fn+'.zip', 'w') as zip_fid:
+                        with zipfile.ZipFile(asc_fn+'.zip', 'w', allowZip64=True) as zip_fid:
                             zip_fid.write(asc_fn, 
                                           os.path.basename(asc_fn),
                                           zipfile.ZIP_DEFLATED)

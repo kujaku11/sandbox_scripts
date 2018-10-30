@@ -9,12 +9,14 @@ import os
 import shutil
 import mtpy.usgs.zen as zen
 
-main_dir = r"/media/jpeacock/My Passport/iMUSH"
+#main_dir = r"/media/jpeacock/My Passport/iMUSH"
+main_dir = r"d:\Peacock\MTData\iMUSH_Zen_samples\imush"
 
 #notes = ['# Notes for stations']
          
-station = 'H021'
-station_dir = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/H021_revisit"
+station = 'F013-5'
+#station_dir = r"/media/jpeacock/My Passport/iMUSH/OSU_2015/H021_revisit"
+station_dir = r"d:\Peacock\MTData\iMUSH_Zen_samples\F0135_Zen18"
 
 # make a folder in the main directory to save to
 sv_path = os.path.join(main_dir, station)
