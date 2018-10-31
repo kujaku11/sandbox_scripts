@@ -50,7 +50,7 @@ upload_data = True
 scfg = archive.USGScfg()
 survey_db = scfg.read_survey_csv(survey_csv)
 station_list = [s[3:] for s in survey_db.siteID]
-station_list = ['H014', 'I015', 'I017', 'J010', 'J013', 'J016', 'K012', 'K017']
+station_list = ['I014']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
