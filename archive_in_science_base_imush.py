@@ -16,15 +16,16 @@ import getpass
 # Inputs
 # =============================================================================
 survey_dir = r"/media/jpeacock/My Passport/iMUSH"
-survey_csv = r"/media/jpeacock/My Passport/iMUSH/imush_archive_summary_edited_final.csv"
+#survey_csv = r"/media/jpeacock/My Passport/iMUSH/imush_archive_summary_edited_final.csv"
 survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
-
+survey_csv = None
 # =============================================================================
 # Upload Parameters
 # =============================================================================
 page_id = '5ad77f06e4b0e2c2dd25e798'
 username = 'jpeacock@usgs.gov'
-password = getpass.getpass()
+password = None
+
 
 # survey name and abbreviation
 survey = 'iMUSH'
@@ -37,20 +38,22 @@ declination = 15.5
 write_survey_info = False
 
 # write ascii files
-write_asc = True
+write_asc = False
 
 # write the full ascii file or not
-write_full = True
+write_full = False
 
 # upload data to science base
-upload_data = True
+upload_data = False
+if upload_data:
+    password = getpass.getpass()
 # =============================================================================
 # Get station list from csv file
 # =============================================================================
-scfg = archive.USGScfg()
-survey_db = scfg.read_survey_csv(survey_csv)
-station_list = [s[3:] for s in survey_db.siteID]
-station_list = ['I014']
+#scfg = archive.USGScfg()
+#survey_db = scfg.read_survey_csv(survey_csv)
+#station_list = [s[3:] for s in survey_db.siteID]
+station_list = ['L016']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
@@ -251,7 +254,7 @@ if write_survey_info:
 # print timing
 et = datetime.datetime.now()
 t_diff = et-st
-print('--> Archiving took: {0}:{1:02.2f}, finished at {2}'.format(int(t_diff.total_seconds()//60),
+print('--> Archiving took: {0}:{1:05.2f}, finished at {2}'.format(int(t_diff.total_seconds()//60),
                                               t_diff.total_seconds()%60,
                                               datetime.datetime.ctime(datetime.datetime.now())))
         
