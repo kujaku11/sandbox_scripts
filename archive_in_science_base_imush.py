@@ -16,9 +16,9 @@ import getpass
 # Inputs
 # =============================================================================
 survey_dir = r"/media/jpeacock/My Passport/iMUSH"
-#survey_csv = r"/media/jpeacock/My Passport/iMUSH/imush_archive_summary_edited_final.csv"
+survey_csv = r"/media/jpeacock/My Passport/iMUSH/imush_archive_summary_edited_final.csv"
 survey_cfg = r"/media/jpeacock/My Passport/iMUSH/imush_archive_PAB.cfg"
-survey_csv = None
+#survey_csv = None
 # =============================================================================
 # Upload Parameters
 # =============================================================================
@@ -38,13 +38,13 @@ declination = 15.5
 write_survey_info = False
 
 # write ascii files
-write_asc = False
+write_asc = True
 
 # write the full ascii file or not
-write_full = False
+write_full = True
 
 # upload data to science base
-upload_data = False
+upload_data = True
 if upload_data:
     password = getpass.getpass()
 # =============================================================================
