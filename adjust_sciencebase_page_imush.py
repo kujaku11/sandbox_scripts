@@ -17,14 +17,19 @@ import getpass
 # =============================================================================
 # Parameters
 # =============================================================================
-page_url = '5ad77f06e4b0e2c2dd25e798'
+page_id = '5ad77f06e4b0e2c2dd25e798'
 username = 'jpeacock@usgs.gov'
 password = getpass.getpass()
 
 ng_citation = 'Bedrosian, P. A., Peacock, J. R., Bowles-Martinez, E., '+\
               'Schultz, A., Hill, G. J. (2018) Crustal inheritance '+\
               'and a top-down control on arc magmatism at Mount St. Helens,'+\
-              ' Nature Geoscience, 11, p. 865-870.' 
+              ' Nature Geoscience, 11, p. 865-870.'
+              
+page_citation = 'Paul A. Bedrosian, Jared R. Peacock, Esteban Bowles-Martinez, '+\
+                'and Adam Schultz, 2018, Magnetotelluric data from the '+\
+                'imaging Magma Under St. Helens (iMUSH) project, U.S. '+\
+                'Geological Survey, https://doi.org/10.5066/P9NLXXB3.'
 
 # =============================================================================
 # login and get child ids
@@ -32,7 +37,7 @@ ng_citation = 'Bedrosian, P. A., Peacock, J. R., Bowles-Martinez, E., '+\
 sb_session = sb.SbSession()
 sb_session.login(username, password)
 
-child_ids = sb_session.get_child_ids(page_url)
+child_ids = sb_session.get_child_ids(page_id)
 # =============================================================================
 # Change json
 # =============================================================================
@@ -49,7 +54,7 @@ for child_id in child_ids:
 #    
 #    child_json['citation'] = child_json['citation'][0:https_find_01]+\
 #                             child_json['citation'][https_find_02:]
-#    
+    child_json['citation'] = page_citation
 #    ### sort order of files
 #    fn_dict = {'zip':[]}
 #    for f_dict in child_json['files']:
@@ -73,8 +78,9 @@ for child_id in child_ids:
 #    child_json['files'] = fn_list + zip_fn_list
     
     ### change web links
-    child_json['webLinks'][0]['type'] = 'Publication that references this resource'
-    child_json['webLinks'][0]['title'] = ng_citation
+    child_json['webLinks'] = [child_json['webLinks'][0]]
+#    child_json['webLinks'][0]['type'] = 'Publication that references this resource'
+#    child_json['webLinks'][0]['title'] = ng_citation
     
     ### update the child item, sometimes you need to try twice
     try:

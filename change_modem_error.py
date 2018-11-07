@@ -9,7 +9,7 @@ import mtpy.modeling.modem as modem
 import os
 
 #dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
-dfn = r"c:\Users\jpeacock\Documents\MountainPass\MusicValley\modem_inv\inv_03\mv_modem_data_ef06.dat"
+dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_kh\kh_modem_data_z03_t02_edit.dat"
 sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
 
 d_obj = modem.Data()
