@@ -9,20 +9,24 @@ import mtpy.modeling.modem as modem
 import os
 import numpy as np
 
-edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\Khybar_EDIs\Rotated_m34_deg"
-save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_kh"
+edi_path_01 = r"c:\Users\jpeacock\Documents\SaudiArabia\Khybar_EDIs\Rotated_m34_deg"
+edi_path_02 = r"c:\Users\jpeacock\Documents\SaudiArabia\Rotated_W34N"
+save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_all"
 #topo_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\GIS\etopo1.asc"
 
-fn_stem = 'kh'
+fn_stem = 'rh'
 
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 # =============================================================================
 # Get edi files
 # =============================================================================
-s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
-              if ss.endswith('.edi')]
+edi_list_01 = [os.path.join(edi_path_01, ss) for ss in os.listdir(edi_path_01)
+               if ss.endswith('.edi')]
 
+edi_list_02 = [os.path.join(edi_path_02, ss) for ss in os.listdir(edi_path_02)
+               if ss.endswith('.edi')]
+s_edi_list = edi_list_01 + edi_list_02
 #==============================================================================
 # Make the data file
 #==============================================================================
@@ -59,8 +63,8 @@ data_obj.write_data_file(save_path=save_path,
 #==============================================================================
 mod_obj = modem.Model(stations_object=data_obj.station_locations)
 #mod_obj.station_locations.rotate_stations(30)
-mod_obj.cell_size_east = 2500.
-mod_obj.cell_size_north = 2500.
+mod_obj.cell_size_east = 3000.
+mod_obj.cell_size_north = 3000.
 mod_obj.pad_east = 6
 mod_obj.pad_north = 6
 mod_obj.pad_method = 'extent1'
