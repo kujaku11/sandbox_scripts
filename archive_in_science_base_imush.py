@@ -53,7 +53,7 @@ if upload_data:
 #scfg = archive.USGScfg()
 #survey_db = scfg.read_survey_csv(survey_csv)
 #station_list = [s[3:] for s in survey_db.siteID]
-station_list = ['L016']
+station_list = ['J013']
 # =============================================================================
 # Make an archive folder to put everything
 # =============================================================================
