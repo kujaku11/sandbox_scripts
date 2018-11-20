@@ -33,6 +33,7 @@ stem = 'msh'
 
 # declination, set to 0 if declination is already included in the measurements
 declination = 15.5
+coordinate_system = 'Geomagnetic North'
 
 # srite survey xml, csv
 write_survey_info = False
@@ -100,9 +101,6 @@ for station in station_list[:]:
             if not os.path.exists(station_save_dir):
                 os.mkdir(station_save_dir)
             
-            zm = archive.USGSasc()
-            zm.CoordinateSystem = 'Geographic North'
-            zm.declination = declination
             asc_fn_list = ['{0}{1}'.format(stem+station, ext) for ext in 
                            ['.edi', '.png']]
             
