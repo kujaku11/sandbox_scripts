@@ -12,14 +12,14 @@ import os
 import datetime
 
 st = datetime.datetime.now()
-z3d_path = r"C:\Users\jpeacock\Documents\imush\G016"
+z3d_path = r"d:\Peacock\MTData\GabbsValley\gv01"
 
 
 zc = archive.Z3DCollection()
 fn_list = zc.get_time_blocks(z3d_path)
 
 
-h5_fn = r"c:\Users\jpeacock\Documents\imush\h5_test.hdf5"
+h5_fn = r"d:\Peacock\MTData\GabbsValley\gv01\h5_test.hdf5"
 
 if os.path.exists(h5_fn):
     os.remove(h5_fn)
@@ -34,7 +34,7 @@ for ii, fn_block in enumerate(fn_list, 1):
     h5_obj.attrs['longitude'] = meta_arr['lon'].mean()
     h5_obj.attrs['elevation'] = archive.get_nm_elev(meta_arr['lat'].mean(),
                                                     meta_arr['lon'].mean())
-    h5_obj.attrs['station'] = 'mshG016'
+    h5_obj.attrs['station'] = 'gv01'
     # fill channel attributes
     for m_arr in meta_arr:
         for c_attr, h_attr in zip(['ch_num', 'ch_length', 'ch_azm'],
@@ -44,9 +44,9 @@ for ii, fn_block in enumerate(fn_list, 1):
     # create group for schedule action
     schedule = h5_obj.create_group('schedule_{0:02}'.format(ii))
     # add metadata
-    schedule.attrs['start_time'] = meta_arr['start'].mean()
-    schedule.attrs['stop_time'] = meta_arr['stop'].mean()
-    schedule.attrs['n_samples'] = meta_arr['n_samples'].mean()
+    schedule.attrs['start_time'] = meta_arr['start'].max()
+    schedule.attrs['stop_time'] = meta_arr['stop'].min()
+    schedule.attrs['n_samples'] = meta_arr['n_samples'].min()
     schedule.attrs['n_channels'] = meta_arr.size
     schedule.attrs['sampling_rate'] = meta_arr['df'].mean()
     

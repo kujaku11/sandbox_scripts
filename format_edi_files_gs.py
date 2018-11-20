@@ -7,43 +7,17 @@ Created on Wed Dec 06 15:50:19 2017
 import os
 import mtpy.core.mt as mt
 import mtpy.imaging.plot_mt_response as pr
-import pickle
+import mtpy.usgs.usgs_archive as archive
+import numpy as np
 
 # =============================================================================
 # Inputs
 # =============================================================================
-dir_path = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg"
-cfg_fn = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\camas_birrp.cfg"
-edi_path = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg"
-sv_path = os.path.join(dir_path, r"Camas_EDI_Files_new")
-plot_sv_path = os.path.join(dir_path, 'camas_plots')
-
-with open(r"d:\Peacock\MTData\Camas\elevation.pkl", 'r') as fid:
-    info_dict = pickle.load(fid)
-
-# keys to remove from file
-rm_keys = ['b_instrument_amplification', 
-           'b_instrument_type',
-           'b_logger_gain',
-           'b_logger_type',
-           'b_xaxis_azimuth',
-           'b_yaxis_azimuth',
-           'box',
-           'e_instrument_amplification',
-           'e_instrument_type',
-           'e_logger_gain',
-           'e_logger_type',
-           'e_xaxis_azimuth',
-           'e_xaxis_length',
-           'e_yaxis_azimuth',
-           'e_yaxis_length',
-           'edifile_generated_with',
-           'hx',
-           'hy',
-           'hz',
-           'save_path',
-           'sampling_interval',
-           'notes']
+dir_path = r"d:\Peacock\MTData\GraniteSprings\EDI_Files_birrp\Rotated_m13_deg"
+cfg_fn = r"D:\Peacock\MTData\GraniteSprings\EDI_Files_birrp\granite_springs_birrp.cfg"
+edi_path = r"d:\Peacock\MTData\GraniteSprings\EDI_Files_birrp\Rotated_m13_deg\Edited"
+sv_path = os.path.join(dir_path, r"granite_springs_edi")
+plot_sv_path = os.path.join(dir_path, 'granite_springs_plots')
 
 # =============================================================================
 # Make any directories needed
@@ -65,13 +39,10 @@ for edi in edi_list:
 
     mt_obj = mt.MT(edi)
     mt_obj.read_cfg_file(cfg_fn)
-    mt_obj.elev = info_dict[mt_obj.station.lower()]['elev']
-    mt_obj.FieldNotes.DataLogger.id = info_dict[mt_obj.station.lower()]['zen_id']
-    for rm_key in rm_keys:
-        try:
-            mt_obj.Notes.info_dict.pop(rm_key)
-        except KeyError:
-            pass
+    mt_obj.elev = archive.get_nm_elev(mt_obj.lat, mt_obj.lon)
+    new_freq = np.logspace(np.log10(0.00097752), np.log10(767.99), num=40)[::-1]
+    mt_obj.Z, mt_obj.Tipper = mt_obj.interpolate(new_freq)
+
     p1 = mt_obj.plot_mt_response(plot_num=1, phase_limits=(0, 89))
     p1.save_plot(os.path.join(plot_sv_path, mt_obj.station+'.png'),
                  fig_dpi=600)
