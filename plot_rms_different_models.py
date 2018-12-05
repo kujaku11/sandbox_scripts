@@ -13,8 +13,8 @@ import numpy as np
 from matplotlib.ticker import MultipleLocator
 
 res_fn_01 = r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\modem_inv\inv_03\tc_z03_t02_c02_NLCG_097.res"
-res_fn_02 = r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\modem_inv\inv_03\tc_test_no_conductor.res"
-station_list = ['TC{0:03}'.format(ii) for ii in [20, 27, 28, 29, 30, 31, 32]]
+res_fn_02 = r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\modem_inv\inv_03\torc_sc_test.res"
+station_list = ['TC{0:03}'.format(ii) for ii in [17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28]]
 ns = len(station_list)
 fs = 12
 
@@ -64,17 +64,17 @@ for ii, station in enumerate(station_list):
     
     s_rms = np.nanmean(delta_rms[station_find][11:]) 
     print('{0} - {1:.2f}'.format(station, s_rms))
-    c = s_rms/1.4
+    c = s_rms/7
     if c < 0:
         line_color = (1-abs(c), 1, 1)
-        print line_color
+
     else:
         line_color = (1, 1-c, 1-c)
     m1 = ax2.scatter(r1.residual_array[station_find]['lon'],
-                 r1.residual_array[station_find]['lat'],
-                 marker='o',
-                 s=105,
-                 c=line_color)
+                     r1.residual_array[station_find]['lat'],
+                     marker='o',
+                     s=105,
+                     c=line_color)
 #        m1, = ax2.plot([None, None], color=line_color)
     
     m_list.append(m1)
@@ -85,7 +85,7 @@ for ii, station in enumerate(station_list):
              horizontalalignment='center',
              verticalalignment='top')
 
-ax2.legend(m_list, m_label, loc='upper left')
+ax2.legend(m_list, m_label, loc='lower left', ncol=2)
 ax2.set_xlabel('longitude (deg)', fontdict={'size':fs, 'weight':'bold'})
 ax2.set_ylabel('latitude (deg)', fontdict={'size':fs, 'weight':'bold'})
 ax2.grid(which='both', color=(.5, .5, .5), ls='--')
@@ -93,12 +93,12 @@ ax2.set_axisbelow(True)
 ax2.xaxis.set_major_locator(MultipleLocator(.025))
 ax2.yaxis.set_major_locator(MultipleLocator(.025))
 
-ax2.set_xlim((-107.225, -107.325))
-ax2.set_ylim((33.10, 33.25))
+#ax2.set_xlim((-107.225, -107.325))
+#ax2.set_ylim((33.10, 33.25))
 
-fig.savefig(r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\rms_conductor_test.png",
+fig.savefig(r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\torc_rms_sc_test.png",
                dpi=600)
-fig_02.savefig(r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\rms_map_conductor_test.png",
+fig_02.savefig(r"c:\Users\jpeacock\Documents\ShanesBugs\TorC_2018\torc_rms_map_sc_test.png",
                dpi=600)
 
 plt.show()

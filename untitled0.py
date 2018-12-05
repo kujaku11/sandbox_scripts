@@ -1,25 +1,44 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov 13 14:19:44 2018
+Created on Tue Dec  4 12:36:05 2018
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import os
-import xml
+import glob
+import numpy as np
+import geopandas as gpd
+import mtpy.core.mt as mt
 
-archive_dir = r"h:\iMUSH\Archive"
 
-for station in os.path.listdir(archive_dir):
-    if station[0:3] == 'msh':
-        station_dir = os.path.join(archive_dir, station)
-        xml_fn = os.path.join(station_dir, '{0}.xml'.format(station))
-        if os.path.isfile(xml_fn):
-            with open(xml_fn, 'r') as fid:
-                xml_str = fid.read()
-                
-            ### replace 146 with 147
-            xml_str = xml_str.replace('146', '147')
-            xml_str = xml_str.replace('In Press', '11')
-            
-            
+# =============================================================================
+# Inputs
+# =============================================================================
+edi_dir = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg"
+save_dir = None
+save_fn = r"camas_mt_station_2018.shp"
+
+# =============================================================================
+# make a shape file from edi files
+# =============================================================================
+edi_list = glob.glob(os.path.join(edi_dir, '*.edi'))
+
+data_array = np.zeros(len(edi_list), 
+                      dtype=[('stationID', 'S12'),
+                             ('latitude', np.float),
+                             ('longitude', np.float),
+                             ('elevation', np.float),
+                             ('ex_len', np.float),
+                             ('ey_len', np.float),
+                             ('hx_sensor', 'S12'),
+                             ('hy_sensor', 'S12'),
+                             ('hz_sensor', 'S12'),
+                             ('instrumentID', 'S12'),
+                             ('date_collected', np.datetime64)]
+
+for edi in :
+    mt_obj = mt.MT(edi)
+    
