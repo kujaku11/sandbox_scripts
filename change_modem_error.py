@@ -14,6 +14,7 @@ import numpy as np
 # =============================================================================
 # Inputs
 # =============================================================================
+<<<<<<< HEAD
 dfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\2018_N30W_shifted_Z3T2resp_cull.dat"
 
 remove_stations = []
@@ -25,6 +26,20 @@ inv_modes = ['1']
 z_err_value = 7.0
 t_err_value = .06
 z_err_type = 'egbert_floor'
+=======
+#dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
+dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\med_modem_data_z03_t02_edit.dat"
+
+remove_stations = None
+shady_stations = ['med133', 'med312']
+add_err = 5
+elevation_bool = True
+
+inv_modes = ['2']
+z_err_value = 5.0
+t_err_value = .03
+z_err_type = 'eigen_floor'
+>>>>>>> f085f3b338638fdcb308af35e593b385ba528e58
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
@@ -41,12 +56,13 @@ for e_station in shady_stations:
     d_obj.data_array[s_find]['z_err'] *= add_err 
     
 ### remove a bad station
-for b_station in remove_stations:
-    s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
-    d_obj.data_array[s_find]['z'][:] = 0 
-    d_obj.data_array[s_find]['z_err'][:] = 0 
-    d_obj.data_array[s_find]['tip'][:] = 0 
-    d_obj.data_array[s_find]['tip_err'][:] = 0 
+if remove_stations is not None:
+    for b_station in remove_stations:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:] = 0 
+        d_obj.data_array[s_find]['z_err'][:] = 0 
+        d_obj.data_array[s_find]['tip'][:] = 0 
+        d_obj.data_array[s_find]['tip_err'][:] = 0 
     
 
 for inv_mode in inv_modes:
