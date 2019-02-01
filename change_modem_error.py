@@ -14,21 +14,21 @@ import numpy as np
 # =============================================================================
 # Inputs
 # =============================================================================
-#dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
-dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_n30w_topo\med_modem_data_z03_t02_topo_edit.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\2018_N30W_shifted_Z3T2resp_cull.dat"
 
-remove_stations = ['med510']
-shady_stations = ['med133', 'med312']
+remove_stations = []
+shady_stations = []
 add_err = 10
 elevation_bool = True
 
-inv_modes = ['1', '2', '5']
-z_err_value = 8.0
-t_err_value = .03
-z_err_type = 'eigen_floor'
+inv_modes = ['1']
+z_err_value = 7.0
+t_err_value = .06
+z_err_type = 'egbert_floor'
 t_err_type = 'abs_floor'
 
-sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
+#sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
+sv_fn = 'med'
 # =============================================================================
 # change data file
 # =============================================================================
@@ -60,7 +60,7 @@ for inv_mode in inv_modes:
     
     if d_obj.inv_mode == '2':
         d_obj.write_data_file(save_path=os.path.dirname(dfn),
-                              fn_basename='{0}_modem_data_ef{1:02.0f}.dat'.format(
+                              fn_basename='{0}_modem_data_z{1:02.0f}.dat'.format(
                                               sv_fn, 
                                               d_obj.error_value_z),
                               fill=False,
@@ -68,7 +68,7 @@ for inv_mode in inv_modes:
                               elevation=elevation_bool)
     elif d_obj.inv_mode == '5':
         d_obj.write_data_file(save_path=os.path.dirname(dfn),
-                              fn_basename='{0}_modem_data_tip{1:02.0f}.dat'.format(
+                              fn_basename='{0}_modem_data_t{1:02.0f}.dat'.format(
                                               sv_fn, 
                                               d_obj.error_value_tipper*100),
                               fill=False,
@@ -76,7 +76,7 @@ for inv_mode in inv_modes:
                               elevation=elevation_bool)
     else:
         d_obj.write_data_file(save_path=os.path.dirname(dfn),
-                              fn_basename='{0}_modem_data_ef{1:02.0f}_tip{2:02.0f}.dat'.format(
+                              fn_basename='{0}_modem_data_z{1:02.0f}_t{2:02.0f}.dat'.format(
                                               sv_fn, 
                                               d_obj.error_value_z,
                                               d_obj.error_value_tipper*100),

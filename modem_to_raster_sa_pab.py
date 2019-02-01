@@ -9,9 +9,9 @@ import mtpy.utils.array2raster as a2r
 import os
 
 
-model_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_n30w\med_z03_t02_c03_164.rho"
+model_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_n30w\Med_SS_Z3T2_NLCG_168.rho"
 
-save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_n30w\med_raster"
+save_path = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\inv_n30w\med_raster_final"
 #model_center = (39.756403, 24.342190)
 model_center = (39.759, 24.338)
 
@@ -28,8 +28,8 @@ check_dir(save_path)
 modem_raster = a2r.ModEM_to_Raster()
 modem_raster.model_fn = model_fn
 ll_cc = modem_raster.get_model_lower_left_coord(model_center=model_center,
-                                                pad_east=5, pad_north=5)
-modem_raster.lower_left_corner = (ll_cc[0]+.375, ll_cc[1]-.08)
+                                                pad_east=6, pad_north=7)
+modem_raster.lower_left_corner = (ll_cc[0]+.45, ll_cc[1]-.035)
 modem_raster.save_path = save_path
 modem_raster.projection = 'WGS84'
 modem_raster.rotation_angle = 30.0
