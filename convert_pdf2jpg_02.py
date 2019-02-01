@@ -9,7 +9,7 @@ import subprocess
 import os
 import time
 
-dir_path = r"c:\Users\jpeacock\Documents\Geothermal\Camas\Report"
+dir_path = r"c:\Users\jpeacock\OneDrive - DOI\med_report"
 
 fn_list = [os.path.join(dir_path, fn) for fn in os.listdir(dir_path)
            if fn.endswith('.pdf')] 
@@ -26,7 +26,7 @@ def convert_pdt_to_jpg(fn):
                                             os.path.basename(fn[:-4]+'.jpg')))
     return std_out
 
-num_files = 2
+num_files = 1
 
 for ii, fn in enumerate(fn_list):
     if num_files is not None and ii < num_files:

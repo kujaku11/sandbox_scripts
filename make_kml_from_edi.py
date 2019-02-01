@@ -9,7 +9,7 @@ import simplekml as skml
 import mtpy.core.mt as mt
 import os
 
-edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\Kyhbar_EDI_Files"
+edi_path = r"h:\MB_2018\USGS_MB_EDI_Files"
 
 edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
             if edi.find('.edi')>0]
@@ -27,7 +27,7 @@ for edi in edi_list:
     pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/dir_60.png'
     pnt.style.iconstyle.scale = .8
 
-kml_obj.save(os.path.join(edi_path, "kyhbar_mt_stations_2018.kml"))
+kml_obj.save(os.path.join(edi_path, "mb_mt_stations_all.kml"))
     
             
             
