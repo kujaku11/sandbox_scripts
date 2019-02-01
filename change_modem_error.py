@@ -14,6 +14,19 @@ import numpy as np
 # =============================================================================
 # Inputs
 # =============================================================================
+<<<<<<< HEAD
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\2018_N30W_shifted_Z3T2resp_cull.dat"
+
+remove_stations = []
+shady_stations = []
+add_err = 10
+elevation_bool = True
+
+inv_modes = ['1']
+z_err_value = 7.0
+t_err_value = .06
+z_err_type = 'egbert_floor'
+=======
 #dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
 dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\med_modem_data_z03_t02_edit.dat"
 
@@ -26,9 +39,11 @@ inv_modes = ['2']
 z_err_value = 5.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
+>>>>>>> f085f3b338638fdcb308af35e593b385ba528e58
 t_err_type = 'abs_floor'
 
-sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
+#sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
+sv_fn = 'med'
 # =============================================================================
 # change data file
 # =============================================================================

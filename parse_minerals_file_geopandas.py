@@ -22,8 +22,8 @@ exempt_list = ['ash', 'cement rock', 'clay', 'construction', 'crushed/broken',
 crs = {'init':'epsg:4326'}
 
 df = pd.read_csv(csv_fn, usecols=cols, keep_default_na=False)
-df = df[(df.latitude < 36) & (df.latitude > 33) & 
-        (df.longitude < -114.) & (df.longitude > -118)]
+df = df[(df.latitude < 39.2) & (df.latitude > 38.5) & 
+        (df.longitude < -122.5) & (df.longitude > -123.0)]
 df = df.reset_index()
 
 # get a list of the ore types
@@ -50,7 +50,7 @@ for ii in range(df.shape[0]):
         if ore in site_ores:
             df.at[ii, ore] = 1
 
-df.to_csv(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\mojave_all_ores.csv", 
+df.to_csv(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\geysers_ores.csv", 
           index=False)
 
 #points = [Point(x, y) for x, y in zip(df.longitude, df.latitude)]
@@ -67,6 +67,6 @@ for ore in ore_list:
     if ore_df.shape[0] == 0:
         continue
     gdf = gpd.GeoDataFrame(ore_df, crs=crs, geometry=points)
-    gdf.to_file(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\mojave_{0}.shp".format(ore))
+    gdf.to_file(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\geysers_{0}.shp".format(ore))
     
 
