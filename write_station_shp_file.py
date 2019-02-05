@@ -17,9 +17,9 @@ import mtpy.core.mt as mt
 # =============================================================================
 # Inputs
 # =============================================================================
-edi_dir = r"h:\MB_2018\USGS_MB_EDI_Files"
+edi_dir = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg\camas_edi"
 save_dir = None
-save_fn = r"mb_mt_stations_all.shp"
+save_fn = r"cm_mt_stations_2018.shp"
 datum = {'init':'epsg:4326'}
 
 # =============================================================================
