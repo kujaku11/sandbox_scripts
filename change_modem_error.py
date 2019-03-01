@@ -15,21 +15,25 @@ import numpy as np
 # Inputs
 # =============================================================================
 #dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
-dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\med_modem_data_z03_t02_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\ml_modem_data_z07.dat"
 
-remove_stations = None
-shady_stations = ['med133', 'med312']
+remove_stations = ['MB132', 'MB107']
+shady_stations = None
+remove_x = ['MB510']
+remove_y = ['MB021', 'MB121', 'MB151', 'MB152', 'MB159']
+flip_phase_x = ['B8']
+flip_phase_y = ['B8']
 add_err = 5
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 5.0
+z_err_value = 7.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'med'
+sv_fn = 'ml'
 # =============================================================================
 # change data file
 # =============================================================================
@@ -37,9 +41,10 @@ d_obj = modem.Data()
 d_obj.read_data_file(dfn)
 
 ### add error to certain stations
-for e_station in shady_stations:
-    s_find = np.where(d_obj.data_array['station'] == e_station)[0][0]
-    d_obj.data_array[s_find]['z_err'] *= add_err 
+if shady_stations is not None:
+    for e_station in shady_stations:
+        s_find = np.where(d_obj.data_array['station'] == e_station)[0][0]
+        d_obj.data_array[s_find]['z_err'] *= add_err 
     
 ### remove a bad station
 if remove_stations is not None:
@@ -49,6 +54,32 @@ if remove_stations is not None:
         d_obj.data_array[s_find]['z_err'][:] = 0 
         d_obj.data_array[s_find]['tip'][:] = 0 
         d_obj.data_array[s_find]['tip_err'][:] = 0 
+
+### remove x component
+if remove_x is not None:
+    for b_station in remove_x:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 0, :] = 0 
+        d_obj.data_array[s_find]['z_err'][:, 0, :] = 0
+        
+### remove y component
+if remove_y is not None:
+    for b_station in remove_y:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 1, :] = 0 
+        d_obj.data_array[s_find]['z_err'][:, 1, :] = 0
+
+### flip x phase
+if flip_phase_x is not None:
+    for b_station in flip_phase_x:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 0, :] *= -1 
+        
+### flip x phase
+if flip_phase_y is not None:
+    for b_station in flip_phase_y:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 1, :] *= -1 
     
 
 for inv_mode in inv_modes:
