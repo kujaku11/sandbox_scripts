@@ -9,8 +9,8 @@ import mtpy.modeling.modem_new as modem
 import os
 import numpy as np
 
-edi_path = r"c:\Users\jpeacock\Google Drive\Mono_Basin\INV_EDI_FILES"
-sv_path = r"c:\Users\jpeacock\Documents\LV\Inversions"
+edi_path = r"c:\Users\jpeacock\Documents\MonoBasin\INV_EDI_FILES"
+sv_path = r"c:\Users\jpeacock\Documents\MonoBasin\modem_inv\inv_01"
 
 if not os.path.isdir(sv_path):
     os.mkdir(sv_path) 

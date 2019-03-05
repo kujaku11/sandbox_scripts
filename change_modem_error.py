@@ -15,21 +15,21 @@ import numpy as np
 # Inputs
 # =============================================================================
 #dfn = r"c:\Users\jpeacock\Documents\iMush\modem_inv\shz_inv_01\shz_modem_data_err03_tip02.dat"
-dfn = r"c:\Users\jpeacock\Documents\SaudiArabia\modem_inv\med_modem_data_z03_t02_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\MonoBasin\modem_inv\inv_02\ml_modem_data_z03_t02_edit.dat"
 
 remove_stations = None
-shady_stations = ['med133', 'med312']
-add_err = 5
+shady_stations = ['MB510', 'C6', 'F1']
+add_err = 10
 elevation_bool = True
 
-inv_modes = ['2']
-z_err_value = 5.0
-t_err_value = .03
+inv_modes = ['2', '5']
+z_err_value = 7.0
+t_err_value = .04
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'med'
+sv_fn = 'ml'
 # =============================================================================
 # change data file
 # =============================================================================
@@ -40,6 +40,7 @@ d_obj.read_data_file(dfn)
 for e_station in shady_stations:
     s_find = np.where(d_obj.data_array['station'] == e_station)[0][0]
     d_obj.data_array[s_find]['z_err'] *= add_err 
+    d_obj.data_array[s_find]['tip_err'] *= add_err 
     
 ### remove a bad station
 if remove_stations is not None:
