@@ -19,22 +19,36 @@ import getpass
 # =============================================================================
 # Inputs
 # =============================================================================
-#station_dir = r"/mnt/hgfs/MTData/MountainPass"
+### path to station data
 station_dir = r"/mnt/hgfs/MTData/MountainPass"
+
+### path to survey parameter spread sheet
 csv_fn = r"/mnt/hgfs/MTData/MountainPass/mp_survey_summary_2017.csv"
+
+### path to mth5 configuration file
 cfg_fn = r"/mnt/hgfs/MTData/MountainPass/mp_mth5.cfg"
+
+### path to xml configuration file
 xml_cfg_fn = r"/mnt/hgfs/MTData/MountainPass/mp_archive.cfg"
+
+### path to calibration files
 calibration_dir = r"/mnt/hgfs/MTData/Ant_calibrations"
 
+### paths to edi and png files if not already copied over
 edi_path = r"/mnt/hgfs/MTData/MountainPass/final_edi"
 png_path = r"/mnt/hgfs/MTData/MountainPass/final_png"
 
+### SCIENCE BASE 
+### page id number
 page_id = '5b4008bfe4b060350a10c69e'
 username = 'jpeacock@usgs.gov'
 password = None
+
+### summarize all runs [ True | False ]
 summarize = False
 
-upload_data = True
+### upload data [ True | False]
+upload_data = True 
 if upload_data:
     password = getpass.getpass()
 
@@ -49,7 +63,7 @@ if not os.path.exists(save_dir):
 # =============================================================================
 station_list = [station for station in os.listdir(station_dir) if 
                 os.path.isdir(os.path.join(station_dir, station))]
-
+station_list = ['mp321', 'mp322', 'mp331', 'mp205']
 # =============================================================================
 # Loop over stations
 # =============================================================================
@@ -57,7 +71,7 @@ st = datetime.datetime.now()
 for station in station_list:
     z3d_dir = os.path.join(station_dir, station)
     if os.path.isdir(z3d_dir):
-        ### get the file names for each block of z3d files
+        ### get the file names for each block of z3d files if none skip
         zc = archive.Z3DCollection()
         try:
             fn_list = zc.get_time_blocks(z3d_dir)
@@ -70,6 +84,8 @@ for station in station_list:
         if not os.path.exists(station_save_dir):
                 os.mkdir(station_save_dir)
         print('--> Archiving Station {0} ...'.format(station))
+        
+        ### capture output to put into a log file
         with archive.Capturing() as output:
             station_st = datetime.datetime.now()
             ### copy edi and png into archive director
@@ -125,7 +141,6 @@ for station in station_list:
                     m.add_calibration(cal_hx)
                 
             m.close_mth5()
-            
             ####------------------------------------------------------------------
             #### Make xml file for science base
             ####------------------------------------------------------------------
@@ -171,11 +186,18 @@ for station in station_list:
             t_diff = station_et-station_st
             print('Took --> {0:.2f} seconds'.format(t_diff.total_seconds()))
             
+        ####------------------------------------------------------------------
+        #### Upload data to science base
+        #### -----------------------------------------------------------------
         if upload_data:
-            archive.sb_upload_data(page_id, 
-                                   station_save_dir, 
-                                   username,
-                                   password)
+            try:
+                archive.sb_upload_data(page_id, 
+                                       station_save_dir, 
+                                       username,
+                                       password)
+            except Exception as error:
+                print('xxx FAILED TO UPLOAD {0} xxx'.format(station))
+                
             
         log_fn = os.path.join(station_save_dir,
                               'archive_{0}.log'.format(station))
@@ -186,28 +208,30 @@ for station in station_list:
             print('\tCould not write log file for {0}'.format(station))
             print(error)
             
-#### Combine all information into a database
+# =============================================================================
+# Combine all information into a database
+# =============================================================================
 if summarize:
     survey_df, survey_csv = archive.combine_survey_csv(save_dir)
     
     ### write shape file
-    shp_fn = archive.write_shp_file(survey_csv)
+    #shp_fn = archive.write_shp_file(survey_csv)
     
     ### write survey xml
     # adjust survey information to align with data 
-    survey_xml = archive.XMLMetadata()
+    survey_xml = sb_xml.XMLMetadata()
     survey_xml.read_config_file(xml_cfg_fn)       
     survey_xml.supplement_info = survey_xml.supplement_info.replace('\\n', '\n\t\t\t')
     
     # location
-    survey_xml.survey.east = survey_df.lon.min()
-    survey_xml.survey.west = survey_df.lon.max()
-    survey_xml.survey.south = survey_df.lat.min()
-    survey_xml.survey.north = survey_df.lat.max()
+    survey_xml.survey.east = survey_df.longitude.min()
+    survey_xml.survey.west = survey_df.longitude.max()
+    survey_xml.survey.south = survey_df.latitude.min()
+    survey_xml.survey.north = survey_df.latitude.max()
     
     # get elevation min and max from station locations, not sure if this is correct
-    survey_xml.survey.elev_min = survey_df.nm_elev.min()
-    survey_xml.survey.elev_max = survey_df.nm_elev.max()
+    survey_xml.survey.elev_min = survey_df.elevation.min()
+    survey_xml.survey.elev_max = survey_df.elevation.max()
     
     # dates
     survey_xml.survey.begin_date = survey_df.start_date.min()

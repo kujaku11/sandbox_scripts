@@ -7,7 +7,7 @@ Created on Wed Sep 23 13:51:54 2015
 
 import mtpy.modeling.occam2d as occam
 
-s_edi_path = r"c:\Users\jpeacock\Documents\MountainPass\EDI_Files_birrp\Edited\geomag_north"
+s_edi_path = r"c:\Users\jpeacock\Documents\MountainPass\EDI_Files_birrp\Edited\geographic_north\final_edi"
 s_list = ['mp1{0:02}'.format(ii) for ii in range(1, 20)] 
 
 ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
@@ -15,13 +15,13 @@ ocd.model_mode = 'log_tm'
 ocd.phase_tm_err = 1.4
 ocd.res_tm_err = 30
 ocd.save_path = r"c:\MinGW32-xy\Peacock\occam\MountainPass\inv06_tm_rot"
-ocd.geoelectric_strike = 70.0 
+#ocd.geoelectric_strike = 70.0 
 ocd._rotate_to_strike = True
 ocd.write_data_file()
 
 ocm = occam.Regularization(station_locations=ocd.station_locations)
-ocm.cell_width = 250
-ocm.n_layers = 100
+ocm.cell_width = 150
+ocm.n_layers = 80
 ocm.z1_layer = 10
 ocm.z_target_depth = 40000
 ocm.x_pad_multiplier = 1.5
