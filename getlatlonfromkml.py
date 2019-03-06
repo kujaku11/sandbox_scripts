@@ -5,46 +5,41 @@ Created on Sat Jun 22 15:27:16 2013
 @author: jpeacock-pr
 """
 
-import simplekml as kml
 import geopandas as gpd
 import pandas as pd
 from shapely.geometry import Point
 import fiona
 
 fiona.supported_drivers['KML'] = 'rw'
-#kml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSitesNoNames.kml"
-#txt_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSites.txt"
-#nkml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\ProposedMTSitesShortNames.kml"
+# =============================================================================
+# Inputs
+# =============================================================================
+kml_file = r"c:\Users\jpeacock\Documents\kml_files\mnp_10km_proposed_mt_no_wilderness_2019.kml"
+datum = {'init':'epsg:4326'}
+stem = 'mnp'
+counter = 100
 
-#kml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\MTProposedSitesJune2014.kml"
-#txt_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\MB_ProposedSites_May2014.txt"
-#nkml_file = r"c:\Users\jpeacock-pr\Documents\MonoBasin\MTProposedSitesMay2014ShortNames.kml"
-
-kml_file = r"c:\Users\jpeacock\Documents\kml_files\mnp_10km_propose_mt.kml"
-#kml_file = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\WFZ_Hite_MT_Preliminary.kml"
+### new file names
 txt_file = '{0}.txt'.format(kml_file[:-4])
 csv_file = '{0}.csv'.format(kml_file[:-4])
 shp_file = '{0}.shp'.format(kml_file[:-4])
-nkml_file = '{0}_no_name.kml'.format(kml_file[:-4])
-datum = {'init':'epsg:4326'}
+nkml_file = '{0}_2019.kml'.format(kml_file[:-4])
 #==============================================================================
 # read in information from kml file
 #==============================================================================
-
 with open(kml_file, 'r') as kfid:
     klines = kfid.readlines()
 
 df_dict = {'station':[], 'lat':[], 'lon':[]} 
 
-
-ii = 100
+ii = counter
 for kline in klines:
     if kline.find('coordinates') > 0:
         klist = kline.strip().split(',')
         try:
             df_dict['lon'].append(float(klist[0].split('>')[1]))
             df_dict['lat'].append(float(klist[1].split('<')[0]))
-            df_dict['station'].append('mnp{0:03}'.format(ii))
+            df_dict['station'].append('{0}{1:03}'.format(stem, ii))
             ii += 1
         except ValueError:
             pass
@@ -63,17 +58,3 @@ gdf.to_file(shp_file)
 gdf = gdf.drop(['lat', 'lon'], axis=1)
 gdf = gdf.rename(columns={'station':'name'})
 gdf.to_file(nkml_file, driver='KML')
-#==============================================================================
-# write a kml file 
-#==============================================================================
-#nkml = kml.Kml()
-#
-#for station,lat,lon in zip(station_list, lat_list, lon_list):
-#    pnt = nkml.newpoint(name='', coords=[(lon,lat)])
-#    pnt.style.labelstyle.color = kml.Color.white
-#    pnt.style.labelstyle.scale = .8
-##    pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/dir_60.png'
-#    pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/road_shield3.png'
-#    pnt.style.iconstyle.scale = .8
-#
-#nkml.save(nkml_file)

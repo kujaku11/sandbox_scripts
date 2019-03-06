@@ -161,9 +161,9 @@ log_obj = ModEMLog(log_fn)
 log_obj.read_log_file()
 log_obj.plot()
 
-log_line = "START: f=5.182165E+02 m2=5.127418E+00 rms=   2.339822 lambda=1.000000E+02 alpha=2.000000E+01"       
-p = log_obj._read_line(log_line)
-print(p)
+#log_line = "START: f=5.182165E+02 m2=5.127418E+00 rms=   2.339822 lambda=1.000000E+02 alpha=2.000000E+01"       
+#p = log_obj._read_line(log_line)
+#print(p)
         
                 
             
