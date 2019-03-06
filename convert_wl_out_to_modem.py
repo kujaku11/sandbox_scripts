@@ -12,12 +12,10 @@ this works for now.
 # =============================================================================
 import numpy as np
 from mtpy.modeling import modem
-#from evtk.hl import gridToVTK
 
 # =============================================================================
 # Parameters
 # =============================================================================
-#fn = r"c:\Users\jpeacock\Documents\Geothermal\Fallon\04_MS_130728_3dmod_it100.out"
 fn = r"c:\Users\jpeacock\Downloads\04_MS_130728_3dmod_it100.out"
 
 # =============================================================================
@@ -45,12 +43,13 @@ with open(fn, 'r') as fid:
         count += 1
         index_00 += m
         index_01 += m
-        
+       
+    # make nodes
     x = dim[0:nx]
     y = dim[nx:nx+ny]
     z = dim[nx+ny:]
     
-    ### read in x, y, z, res values
+    ### read in res values
     line_len = 10
     index_00 = 0
     index_01 = 1
@@ -106,16 +105,4 @@ model_obj.grid_center = (model_obj.nodes_north.sum()/2.,
 
 # if you want to write the modem file uncomment the line putting your directory
 # model_obj.write_model_file(save_path=r"save_dir", model_fn_basename='filename')
-
-###        
-# now make a vtk grid file
-#x_grid = np.array([-x.sum()/2+x[0:ii].sum()for ii in range(x.size)] +[x.sum()/2])
-#y_grid = np.array([-y.sum()/2+y[0:ii].sum()for ii in range(y.size)] + [y.sum()/2])
-#z_grid = np.array([z[0:ii].sum() for ii in range(z.size)]+[z.sum()]) - max_elev
-
-#gridToVTK(r"c:\Users\jpeacock\Documents\Geothermal\Fallon\wl_04_model",
-#          x_grid/1000., 
-#          y_grid/1000.,
-#          z_grid/1000.,
-#          cellData={'resistivity':res})
           
