@@ -45,10 +45,10 @@ username = 'jpeacock@usgs.gov'
 password = None
 
 ### summarize all runs [ True | False ]
-summarize = False
+summarize = True
 
 ### upload data [ True | False]
-upload_data = True 
+upload_data = False 
 if upload_data:
     password = getpass.getpass()
 
@@ -63,7 +63,6 @@ if not os.path.exists(save_dir):
 # =============================================================================
 station_list = [station for station in os.listdir(station_dir) if 
                 os.path.isdir(os.path.join(station_dir, station))]
-station_list = ['mp321', 'mp322', 'mp331', 'mp205']
 # =============================================================================
 # Loop over stations
 # =============================================================================
@@ -75,8 +74,8 @@ for station in station_list:
         zc = archive.Z3DCollection()
         try:
             fn_list = zc.get_time_blocks(z3d_dir)
-        except IndexError:
-            print('*** Skipping folder {0} ***'.format(station))
+        except archive.ArchiveError as error:
+            print('*** Skipping folder {0} because ***'.format(station, error))
             continue
         
         ### make a folder in the archive folder
