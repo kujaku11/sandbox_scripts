@@ -26,8 +26,8 @@ class EMTFStats(object):
     def __init__(self, *args, **kwargs):
         self.tf_dir = None
         self.stat_limits = {'std':{5: (0, 5), 
-                                   4: (5, 20),
-                                   3: (20, 40),
+                                   4: (5, 15),
+                                   3: (15, 40),
                                    2: (40, 80),
                                    1: (80, 200),
                                    0: (200, 1E36)},
@@ -43,10 +43,10 @@ class EMTFStats(object):
                                     2: (50., 200.),
                                     1: (200., 1000.),
                                     0: (1000., 1E36)},
-                            'fit':{5: (0, 20), 
-                                   4: (20, 40),
-                                   3: (40, 70),
-                                   2: (70, 100),
+                            'fit':{5: (0, 10), 
+                                   4: (10, 20),
+                                   3: (20, 50),
+                                   2: (50, 100),
                                    1: (100, 200),
                                    0: (200, 1E36)}}
                             
@@ -163,7 +163,7 @@ class EMTFStats(object):
             
         ### make a copy of the data fram to put quality factors in
         qual_df = pd.DataFrame(np.zeros(stat_df.shape[0],
-                               dtype=[(key, np.int) 
+                               dtype=[(key, np.float) 
                                       for key in sorted(self.types)]),
                               index=stat_df.index)
         for col in qual_df.columns:
@@ -208,9 +208,9 @@ class EMTFStats(object):
 # =============================================================================
 edi_dir = r"c:\Users\jpeacock\Documents\edi_folders\imush_edi"
 q = EMTFStats()
-sdf = q.compute_statistics(edi_dir) 
-qdf = q.estimate_data_quality(stat_fn=r"c:\Users\jpeacock\Documents\edi_folders\imush_edi\data_quality_statistics.csv")         
-sdf = q.summarize_data_quality(qdf)    
+stat_df = q.compute_statistics(edi_dir) 
+q_df = q.estimate_data_quality(stat_df=stat_df)         
+s_df = q.summarize_data_quality(q_df)    
         
         
         
