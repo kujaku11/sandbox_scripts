@@ -14,7 +14,7 @@ import numpy as np
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\MonoBasin\modem_inv\inv_02\ml_modem_data_z05_t02_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_08\mp_modem_data_z03_edit.dat"
 
 #remove_stations = ['MB132', 'MB107']
 #shady_stations = None
@@ -23,22 +23,22 @@ dfn = r"c:\Users\jpeacock\Documents\MonoBasin\modem_inv\inv_02\ml_modem_data_z05
 #flip_phase_x = ['B8']
 #flip_phase_y = ['B8']
 remove_stations = None
-shady_stations = None
-remove_x = ['MB133']
+shady_stations = ['mp2{0:02}'.format(ii) for ii in range(1, 9)]
+remove_x = None
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
-add_err = 5
+add_err = 7
 elevation_bool = True
 
-inv_modes = ['1']
-z_err_value = 5.0
+inv_modes = ['2']
+z_err_value = 10.0
 t_err_value = .02
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'ml'
+sv_fn = 'mp'
 # =============================================================================
 # change data file
 # =============================================================================

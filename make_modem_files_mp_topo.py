@@ -13,8 +13,8 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-save_path = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_07"
-edi_path = r"c:\Users\jpeacock\Documents\MountainPass\EDI_Files_birrp\Edited\geomag_north"
+save_path = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_08"
+edi_path = r"c:\Users\jpeacock\Documents\MountainPass\EDI_Files_birrp\Edited\geographic_north"
 topo_fn = r"c:\Users\jpeacock\Documents\MountainPass\mp_topo_03.txt"
 
 fn_stem = 'mp'
@@ -38,6 +38,7 @@ data_obj.error_value_z = 3.0
 data_obj.inv_mode = '2'
 data_obj.model_epsg = 32611
 
+
 #--> here is where you can rotate the data
 data_obj.write_data_file(save_path=save_path, 
                          fn_basename="{0}_modem_data_z{1:02.0f}_t{2:02.0f}.dat".format(
@@ -49,18 +50,21 @@ data_obj.write_data_file(save_path=save_path,
 # First make the mesh
 #==============================================================================
 mod_obj = modem.Model(stations_object=data_obj.station_locations)
-mod_obj.cell_size_east = 250
-mod_obj.cell_size_north = 250
+mod_obj.cell_size_east = 350
+mod_obj.cell_size_north = 350
 mod_obj.pad_east = 9
 mod_obj.pad_north = 9
+mod_obj.pad_num = 7
 mod_obj.pad_method = 'extent1'
-mod_obj.z_mesh_method = 'original'
+mod_obj.ew_ext = 300000
+mod_obj.ns_ext = 200000
+mod_obj.z_mesh_method = 'new'
 mod_obj.pad_stretch_h = 1.7
-mod_obj.pad_z = 5
+mod_obj.pad_z = 7
 mod_obj.n_layers = 40
 mod_obj.z1_layer = 20
-mod_obj.z_target_depth = 40000.
-mod_obj.z_bottom = 180000.
+mod_obj.z_target_depth = 60000.
+mod_obj.z_bottom = 250000.
 mod_obj.n_air_layers = 20
 
 #--> here is where you can rotate the mesh
@@ -74,13 +78,14 @@ mod_obj.write_model_file()
 # =============================================================================
 # Add topography
 # =============================================================================
-mod_obj.add_topography_to_model2(topo_fn, add_topo_type='log')
+mod_obj.add_topography_to_model2(topo_fn, airlayer_type='log_increasing_down')
 mod_obj.write_model_file(model_fn_basename='mp_sm02_topo.rho')
+
+data_obj.center_stations(mod_obj.model_fn)
+data_obj.project_stations_on_topography(mod_obj)
 
 mod_obj.plot_mesh(fig_num=3)
 mod_obj.plot_topography()
-
-data_obj.project_stations_on_topography(mod_obj)
 
 #==============================================================================
 # make the covariance file
