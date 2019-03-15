@@ -48,7 +48,7 @@ password = None
 summarize = True
 
 ### upload data [ True | False]
-upload_data = False 
+upload_data = True 
 if upload_data:
     password = getpass.getpass()
 
@@ -67,15 +67,15 @@ station_list = [station for station in os.listdir(station_dir) if
 # Loop over stations
 # =============================================================================
 st = datetime.datetime.now()
-for station in station_list:
+for station in station_list[25:]:
     z3d_dir = os.path.join(station_dir, station)
     if os.path.isdir(z3d_dir):
         ### get the file names for each block of z3d files if none skip
         zc = archive.Z3DCollection()
         try:
             fn_list = zc.get_time_blocks(z3d_dir)
-        except archive.ArchiveError as error:
-            print('*** Skipping folder {0} because ***'.format(station, error))
+        except archive.ArchiveError:
+            print('*** Skipping folder {0} because no Z3D files***'.format(station))
             continue
         
         ### make a folder in the archive folder
