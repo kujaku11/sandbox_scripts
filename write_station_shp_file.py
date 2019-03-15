@@ -13,14 +13,21 @@ import numpy as np
 import geopandas as gpd
 from shapely.geometry import Point
 import mtpy.core.mt as mt
+import fiona
 
+fiona.supported_drivers['KML'] = 'rw'
 # =============================================================================
 # Inputs
 # =============================================================================
-edi_dir = r"d:\Peacock\MTData\Camas\EDI_Files_birrp\Edited\Rotated_13_deg\camas_edi"
+edi_dir = r"c:\Users\jpeacock\Documents\edi_folders\mono_basin"
 save_dir = None
-save_fn = r"cm_mt_stations_2018.shp"
+save_fn = r"mb_mt_stations_all"
 datum = {'init':'epsg:4326'}
+
+if save_dir is None:
+    save_dir = edi_dir
+shp_fn = os.path.join(save_dir, save_fn+'.shp')
+kml_fn = os.path.join(save_dir,save_fn+'.kml')
 
 # =============================================================================
 # make a shape file from edi files
@@ -76,11 +83,15 @@ for ii, edi in enumerate(edi_list):
     data_arr['acq_by'][ii] = 'USGS'
 
 ### make geopandas data frame with points    
-
 gdf = gpd.GeoDataFrame(data_arr, crs=datum, )
 gdf['geometry'] = [Point(x['longitude'], x['latitude']) for x in data_arr]
 
-gdf.to_file(os.path.join(edi_dir, save_fn))
+gdf.to_file(os.path.join(edi_dir, shp_fn))
+
+# write kml file
+#gdf = gdf.drop(['lat', 'lon'], axis=1)
+gdf = gdf.rename(columns={'station':'name'})
+gdf.to_file(kml_fn, driver='KML')
 
 
     
