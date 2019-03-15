@@ -2,21 +2,24 @@
 """
 Created on Wed Mar  6 09:43:07 2019
 
+Estimate Quality Factors for Transfer Functions 
+
+    * based on simple statistics
+
 @author: jpeacock
 """
+# =============================================================================
+# Imports
+# =============================================================================
 import os
 import glob
 import numpy as np
 import pandas as pd
 from scipy import interpolate
 from mtpy.core import mt
-import matplotlib.pyplot as plt
-
 # =============================================================================
 # Inputs
 # =============================================================================
-
-
 class EMTFStats(object):
     """
     Class to estimate data quality of EM transfer functions
