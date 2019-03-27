@@ -10,40 +10,36 @@ Created on Thu Feb 23 18:47:08 2017
 import mtpy.modeling.modem as modem
 import os
 import numpy as np
+import datetime
 
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_08\mp_modem_data_z03_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_r50_z05_topo_edit.dat"
 
-#remove_stations = ['MB132', 'MB107']
-#shady_stations = None
-#remove_x = ['MB510']
-#remove_y = ['MB021', 'MB121', 'MB151', 'MB152', 'MB159']
-#flip_phase_x = ['B8']
-#flip_phase_y = ['B8']
-remove_stations = None
-shady_stations = ['mp2{0:02}'.format(ii) for ii in range(1, 9)]
-remove_x = None
+remove_stations = ['GZ05']
+shady_stations = ['GZ31']
+remove_x = ['GZ31']
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
-add_err = 7
+add_err = 10
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 10.0
+z_err_value = 5.0
 t_err_value = .02
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'mp'
+sv_fn = 'gz'
+log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv_fn))
 # =============================================================================
 # change data file
 # =============================================================================
 d_obj = modem.Data()
-d_obj.read_data_file(dfn)
+d_obj.read_data_file(dfn)cd 
 
 ### add error to certain stations   
 if shady_stations is not None:
@@ -122,3 +118,29 @@ for inv_mode in inv_modes:
                               fill=False,
                               compute_error=True,
                               elevation=elevation_bool)
+                              
+# =============================================================================
+# write a log file
+# =============================================================================
+
+lines = []
+lines.append("-"*70)
+lines.append("Change Date = {0}".format(datetime.datetime.now().isoformat()))
+lines.append("dfn = {0}".format(dfn))
+lines.append("remove_stations = {0}".format(remove_stations))
+lines.append("shady_stations = {0}".format(shady_stations))
+lines.append("remove_x = {0}".format(remove_x))
+lines.append("remove_y = {0}".format(remove_y))
+lines.append("flip_phase_x = {0}".format(flip_phase_x))
+lines.append("flip_phase_y = {0}".format(flip_phase_y))
+lines.append("add_err = {0}".format(add_err))
+lines.append("elevation_bool = {0}".format(elevation_bool))
+
+lines.append("inv_modes = {0}".format(inv_modes))
+lines.append("z_err_value = {0}".format(z_err_value))
+lines.append("t_err_value = {0}".format(t_err_value))
+lines.append("z_err_type = {0}".format(z_err_type))
+lines.append("t_err_type = {0}".format(t_err_type))
+
+with open(log_fn, 'w+') as log_fid:
+    log_fid.write('\n'.join(lines))
