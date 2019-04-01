@@ -15,7 +15,7 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_r50_z05_topo_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_r50_z03_topo_edit.dat"
 
 remove_stations = ['GZ05']
 shady_stations = ['GZ31']
@@ -23,11 +23,11 @@ remove_x = ['GZ31']
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
-add_err = 10
+add_err = 5
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 5.0
+z_err_value = 3.0
 t_err_value = .02
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
@@ -39,7 +39,7 @@ log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv
 # change data file
 # =============================================================================
 d_obj = modem.Data()
-d_obj.read_data_file(dfn)cd 
+d_obj.read_data_file(dfn)
 
 ### add error to certain stations   
 if shady_stations is not None:
