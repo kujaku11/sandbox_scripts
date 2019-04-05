@@ -79,7 +79,12 @@ m1_obj.read_model_file(mfn)
 m2_obj = modem.Model()
 m2_obj.read_model_file(mfn)
 
-m2_obj.res_model = interp_grid(m1_obj, m2_obj, shift_east=-600)
+m2_obj.res_model = interp_grid(m1_obj, m2_obj, shift_east=600)
+m2_obj.res_model[np.where(m1_obj.res_model < 49)] = m1_obj.res_model[np.where(m1_obj.res_model < 49)]
 m2_obj.write_model_file(model_fn_basename=r"gz_sm50_topo_ocean_shifted.rho")
 m2_obj.write_vtk_file(vtk_fn_basename='gz_sm_shifted_res')
+
+### write new covariance file
+cov = modem.Covariance(grid_dimensions=m2_obj.res_model.shape)
+cov.write_covariance_file(save_path=m2_obj.save_path, model_fn=m2_obj.model_fn)
  
