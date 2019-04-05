@@ -7,7 +7,7 @@ Created on Tue Mar 26 15:06:46 2019
 
 import numpy as np
 
-fn = r"c:\Users\jpeacock\Documents\ClearLake\dem\geysers_dem.txt"
+fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\gis\gv_topo.txt"
 resample = 6
 
 with open(fn, 'r') as fid:
