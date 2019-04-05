@@ -8,7 +8,7 @@ Created on Tue Feb 17 17:37:19 2015
 import mtpy.utils.array2raster as a2r
 import os
 
-model_fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_01\gv_tip02_cov03_NLCG_031.rho"
+model_fn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_02\gv_z03_t03_c02__NLCG_118.rho"
 save_path = os.path.join(os.path.dirname(model_fn), "depth_slices")
 
 model_center = (-118.151242, 38.774109)

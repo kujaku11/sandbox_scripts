@@ -15,20 +15,27 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
+<<<<<<< HEAD
 dfn = r"c:\Users\jpeacock\Documents\Geysers\gz_modem_data_r50_z05_topo_edit.dat"
 
 remove_stations = []
 shady_stations = ['GZ27']
+=======
+dfn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_03\gv_modem_data_z03_t02_edit.dat"
+
+remove_stations = []
+shady_stations = []
+>>>>>>> a8930bc2f567e092d525fa3af9b6e20f061d0378
 remove_x = []
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
-add_err = 10
+add_err = 5
 elevation_bool = True
 
-inv_modes = ['2']
-z_err_value = 5.0
-t_err_value = .02
+inv_modes = ['1', '2', '5']
+z_err_value = 7.0
+t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
