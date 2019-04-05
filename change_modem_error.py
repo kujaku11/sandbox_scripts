@@ -15,20 +15,20 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_r50_z03_topo_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\Geothermal\GabbsValley\modem_inv\inv_03\gv_modem_data_z03_t02_edit.dat"
 
-remove_stations = ['GZ05']
-shady_stations = ['GZ31']
-remove_x = ['GZ31']
+remove_stations = []
+shady_stations = []
+remove_x = []
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
 add_err = 5
 elevation_bool = True
 
-inv_modes = ['2']
-z_err_value = 3.0
-t_err_value = .02
+inv_modes = ['1', '2', '5']
+z_err_value = 7.0
+t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
