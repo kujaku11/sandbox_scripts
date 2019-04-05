@@ -15,11 +15,11 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_r50_z05_topo_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\Geysers\gz_modem_data_r50_z05_topo_edit.dat"
 
-remove_stations = ['GZ05']
-shady_stations = ['GZ31']
-remove_x = ['GZ31']
+remove_stations = []
+shady_stations = ['GZ27']
+remove_x = []
 remove_y = None
 flip_phase_x = None
 flip_phase_y = None
@@ -39,7 +39,7 @@ log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv
 # change data file
 # =============================================================================
 d_obj = modem.Data()
-d_obj.read_data_file(dfn)cd 
+d_obj.read_data_file(dfn)
 
 ### add error to certain stations   
 if shady_stations is not None:
