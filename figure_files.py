@@ -7,7 +7,7 @@ Created on Tue Jul 14 13:54:55 2015
 import os
 import subprocess
 
-def pdf_file_reduce_size(input_fn, output_fn=None, crop=True):
+def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe='gs'):
     current_dir = os.getcwd()
     dir_path = os.path.abspath(os.path.dirname(input_fn))
     os.chdir(dir_path)
@@ -38,18 +38,13 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True):
         os.chdir(current_dir)
         return output_fn
         
-#fn = r"/mnt/hgfs/Google Drive/Mono_Basin/Proposed_LV_MT_2016_Wilderness.pdf"
-#fn = r"/mnt/hgfs/TexDocs/Presentations/VH_2015/Peacock_Geothermal_Meeting_2015.pdf"
-#fn = r"/mnt/hgfs/TexDocs/Figures/mb_paper_joint_interp_figure_darcy.pdf"
-#fn = r"/mnt/hgfs/Google Drive-2/Mono_Lake_2015/mono_lake_proposal.pdf"
-#fn = r"/mnt/hgfs/Google Drive-2/JVG/Peacock_etal_2015_revision_2_diff.pdf"
-#fn = r"/mnt/hgfs/Google Drive/Antarctica/figures/figure_07.pdf"
-#fn = r"/mnt/hgfs/jpeacock/Documents/LV/figures/mt_vs_foulger2003.pdf"
-#fn = r"/mnt/hgfs/jpeacock/Documents/LV/Figures/lv_hill_slice_annotated.pdf"
-#fn = r"/mnt/hgfs/jpeacock/Documents/TexDocs/Figures/lv_earthquake_map.pdf"
-#new_fn = pdf_file_reduce_size(fn, crop=True)
-#fn = r"/media/jpeacock/Elements/Peacock/PHD/TexDocs/Dissertation/MainDissertation.pdf"
-#fn = r"/mnt/hgfs/jpeacock/Google Drive/Posters/MP_models.pdf"
-#fn = r"/mnt/hgfs/jpeacock/Documents/Forms/DefensiveDriving2015.pdf"
-fn = r"/mnt/hgfs/jpeacock/Documents/ClearLake/geysers_usgs_mt_sites_proposed.pdf"
-new_fn = pdf_file_reduce_size(fn, crop=True)
+for fn in [r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_c1_summary.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_c1_summary_grav.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_depth_slices_pt.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_fence_summary.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_mt_stations_temp.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_profiles_map.pdf",
+           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_r1_summary.pdf"]:
+
+    new_fn = pdf_file_reduce_size(fn, crop=True, 
+                                  gs_exe=r"c:\Program Files\gs\gs9.23\bin\gswin64c.exe")

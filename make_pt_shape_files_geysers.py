@@ -24,7 +24,7 @@ def check_dir(directory_path):
 #--> write phase tensor shape files
 pts = shapefiles.PTShapeFile()
 pts.projection = map_projection
-pts.ellipse_size = 700
+pts.ellipse_size = 500
 
 #save files for data
 pts.save_path = os.path.join(save_path, 'gz_pt_data_gn')
