@@ -26,7 +26,7 @@ def convert_pdt_to_jpg(fn):
                                             os.path.basename(fn[:-4]+'.jpg')))
     return std_out
 
-num_files = 20
+num_files = 1
 
 for ii, fn in enumerate(fn_list):
     if num_files is not None and ii < num_files:
@@ -34,6 +34,6 @@ for ii, fn in enumerate(fn_list):
     elif num_files is not None and ii >= num_files:
         break
     elif num_files is None:        
-        if os.path.getctime(fn) > round(time.time() - 15*60, -3):
+        if os.path.getctime(fn) > round(time.time() - 5*60, -3):
             std_out = convert_pdt_to_jpg(fn)
         
