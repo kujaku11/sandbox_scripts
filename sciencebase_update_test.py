@@ -12,10 +12,11 @@ import time
 # =============================================================================
 # Parameters
 # =============================================================================
-page_id = '5ad77f06e4b0e2c2dd25e798'
+page_id = '5ca7db54e4b0c3b0064e2f8b'
 username = 'jpeacock@usgs.gov'
 
-archive_dir = r"/mnt/hgfs/MTData/iMUSH_Zen_samples/imush/Archive"
+edi_dir = r"d:\Peacock\MTData\GraniteSprings\granite_springs_edi"
+png_dir = r"d:\Peacock\MTData\GraniteSprings\granite_springs_plots"
 # =============================================================================
 # 
 # =============================================================================
@@ -29,19 +30,35 @@ session.loginc(username)
 # need to wait a few seconds to connect otherwise bad things happen
 time.sleep(5)
 
-### update file
-#item_to_change = session.get_item(item_id)
-#session.upload_files_and_upsert_item(item_to_change, [file_list])
 
-
-#### loop over stations and make a child item for each 
-#for station in os.listdir(archive_dir):
-#    station_path = os.path.join(archive_dir, station)
-#    if os.path.isdir(station_path):
-#        new_child_dict = {'title':'station {0}'.format(station),
-#                         'parentId':page_id,
-#                         'summary': 'Magnetotelluric data'}
-#        new_child = session.create_item(new_child_dict)
+### loop over stations and make a child item for each 
+for child in session.get_child_ids(page_id):
+    item_json = session.get_item(child)
+    station = item_json['title'].split()[1].strip()
+    fn_list = [os.path.join(edi_dir, '{0}.edi'.format(station)),
+               os.path.join(png_dir, '{0}.png'.format(station))]
+    item = session.upload_files_and_upsert_item(item_json, 
+                                                fn_list, 
+                                                scrape_file=False)
+    fn_sort = [None, None, None, None]
+    for f_dict in item['files']:
+        if f_dict['name'].endswith('.xml'):
+            fn_sort[0] = f_dict
+        elif f_dict['name'].endswith('.edi'):
+            fn_sort[1] = f_dict
+        elif f_dict['name'].endswith('.png'):
+            fn_sort[2] = f_dict
+        elif f_dict['name'].endswith('.mth5'):
+            fn_sort[3] = f_dict
+            
+    fn_sort = [ff for ff in fn_sort if ff is not None]
+    item['files'] = fn_sort
+    
+    session.update_item(item)
+            
+    print('='*40)
+    print('    {0}'.format(station))
+    print('Uploaded {0}'.format(fn_list))
 #        
 #        # upload files
 #        fn_list = [os.path.join(station_path, fn) for fn in os.listdir(station_path)
