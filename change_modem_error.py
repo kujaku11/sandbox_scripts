@@ -18,12 +18,15 @@ import datetime
 dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_rm50_z03_edit.dat"
 
 remove_stations = []
-shady_stations = ['GZ05', 'GZ27', 'GZ31']
-remove_x = []
+shady_stations = ['GZ05','GZ27', 'GZ31']
+remove_x = ['GZ31']
 remove_y = []
 flip_phase_x = ['GZ05']
 flip_phase_y = ['GZ31']
-add_err = 30
+static_shift_x = [('GZ05', 5)]
+static_shift_y = []
+swap_channel = [('GZ31', ((1, 0),(1, 1)))]
+add_err = 10
 elevation_bool = True
 
 inv_modes = ['2']
@@ -82,7 +85,26 @@ if flip_phase_y is not None:
     for b_station in flip_phase_y:
         s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
         d_obj.data_array[s_find]['z'][:, 1, :] *= -1 
+        
+### static shift x
+if static_shift_x is not None:
+    for b_station, ss in static_shift_x:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 0, :] *= ss 
     
+### static shift y
+if static_shift_y is not None:
+    for b_station, ss in static_shift_y:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        d_obj.data_array[s_find]['z'][:, 1, :] *= ss 
+        
+if swap_channel is not None:
+    for b_station, ss in swap_channel:
+        s_find = np.where(d_obj.data_array['station'] == b_station)[0][0]
+        z1 = d_obj.data_array[s_find]['z'][:, ss[0][0], ss[0][1]].copy()
+        z2 = d_obj.data_array[s_find]['z'][:, ss[1][0], ss[1][1]].copy()
+        d_obj.data_array[s_find]['z'][:, ss[0][0], ss[0][1]] = z2
+        d_obj.data_array[s_find]['z'][:, ss[1][0], ss[1][1]] = z1
 
 for inv_mode in inv_modes:
     d_obj.error_type_z = z_err_type
@@ -124,7 +146,7 @@ for inv_mode in inv_modes:
 # =============================================================================
 
 lines = []
-lines.append("-"*70)
+lines.append("\n"+"="*70)
 lines.append("Change Date = {0}".format(datetime.datetime.now().isoformat()))
 lines.append("dfn = {0}".format(dfn))
 lines.append("remove_stations = {0}".format(remove_stations))
@@ -133,6 +155,9 @@ lines.append("remove_x = {0}".format(remove_x))
 lines.append("remove_y = {0}".format(remove_y))
 lines.append("flip_phase_x = {0}".format(flip_phase_x))
 lines.append("flip_phase_y = {0}".format(flip_phase_y))
+lines.append("static_shift_x = {0}".format(flip_phase_x))
+lines.append("static_shift_y = {0}".format(flip_phase_y))
+lines.append("swap_channel = {0}".format(swap_channel))
 lines.append("add_err = {0}".format(add_err))
 lines.append("elevation_bool = {0}".format(elevation_bool))
 
@@ -142,5 +167,9 @@ lines.append("t_err_value = {0}".format(t_err_value))
 lines.append("z_err_type = {0}".format(z_err_type))
 lines.append("t_err_type = {0}".format(t_err_type))
 
-with open(log_fn, 'w+') as log_fid:
-    log_fid.write('\n'.join(lines))
+if os.path.exists(log_fn):
+    with open(log_fn, 'a') as log_fid:
+        log_fid.write('\n'.join(lines))
+else:
+    with open(log_fn, 'w+') as log_fid:
+        log_fid.write('\n'.join(lines))

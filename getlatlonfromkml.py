@@ -14,16 +14,16 @@ fiona.supported_drivers['KML'] = 'rw'
 # =============================================================================
 # Inputs
 # =============================================================================
-kml_file = r"c:\Users\jpeacock\Documents\kml_files\mnp_10km_proposed_mt_no_wilderness_2019.kml"
+kml_file = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\mnp_proposed_lp_mt_no_wilderness_2019.kml"
 datum = {'init':'epsg:4326'}
 stem = 'mnp'
-counter = 100
+counter = 300
 
 ### new file names
 txt_file = '{0}.txt'.format(kml_file[:-4])
 csv_file = '{0}.csv'.format(kml_file[:-4])
 shp_file = '{0}.shp'.format(kml_file[:-4])
-nkml_file = '{0}_2019.kml'.format(kml_file[:-4])
+nkml_file = '{0}.kml'.format(kml_file[:-4])
 #==============================================================================
 # read in information from kml file
 #==============================================================================
