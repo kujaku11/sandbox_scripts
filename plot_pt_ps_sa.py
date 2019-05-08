@@ -19,6 +19,7 @@ for line in line_list:
     
     ps = mtplot.plot_pt_pseudosection(fn_list=edi_list, plot_tipper='yri', fig_num=2)
     ps.ellipse_size = 10
+    ps.ellipse_colorby = 'skew_seg'
     ps.ellipse_cmap = 'mt_seg_bl2wh2rd'
     ps.ellipse_range = (-6, 6, 3)
     ps.arrow_size = 80
@@ -31,5 +32,7 @@ for line in line_list:
     ps.xstretch = 475
     
     ps.plot()
-    ps.save_figure(r"c:\Users\jpeacock\OneDrive - DOI\med_report\med_pt_ps_line{0}00.png".format(line),
-                   fig_dpi=600, close_plot='n')
+    ps.save_figure(r"c:\Users\jpeacock\OneDrive - DOI\med_report\report\figures\med_pt_ps_line{0}00.svg".format(line),
+                   file_format='svg',
+                   fig_dpi=600,
+                   close_plot='n')

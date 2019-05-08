@@ -10,11 +10,12 @@ import os
 
 #model_fn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MB\modem_inv\mb_rot_tip02_cov03_NLCG_083.rho"
 #model_fn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_02\mp_rr10_cov03_NLCG_106.rho"
-model_fn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_03\mp_sm02_pr142_err05_cov02_NLCG_119.rho"
-save_path = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_03\depth_slices"
+model_fn = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_08\mp_z10_c04_NLCG_105.rho"
+save_path = r"c:\Users\jpeacock\Documents\MountainPass\modem_inv\inv_08\depth_slices_z10_c04_105"
 
 #model_center = (-115.503979, 35.481154)
-model_center = (-115.494148, 35.488658)
+#model_center = (-115.503989, 35.481191)
+model_center = (-115.504000, 35.481000)
  
 
 def check_dir(directory_path):
@@ -27,8 +28,8 @@ check_dir(save_path)
 modem_raster = a2r.ModEM_to_Raster()
 modem_raster.model_fn = model_fn
 ll_cc = modem_raster.get_model_lower_left_coord(model_center=model_center,
-                                                pad_east=7, pad_north=7)
-modem_raster.lower_left_corner = (ll_cc[0]+.026, ll_cc[1]+.099)
+                                                pad_east=6, pad_north=6)
+modem_raster.lower_left_corner = (ll_cc[0]+.0165, ll_cc[1]+.358)
 modem_raster.save_path = save_path
 modem_raster.projection = 'WGS84'
 modem_raster.rotation_angle = 0.0
