@@ -15,22 +15,23 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_rm50_z03_edit.dat"
+dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_modem_data_rm50_z03.dat"
 
 remove_stations = []
-shady_stations = ['GZ05','GZ27', 'GZ31']
+shady_stations = ['GZ27', 'GZ31']
 remove_x = ['GZ31']
 remove_y = []
-flip_phase_x = ['GZ05']
+flip_phase_x = []
 flip_phase_y = ['GZ31']
-static_shift_x = [('GZ05', 5)]
+static_shift_x = []
 static_shift_y = []
-swap_channel = [('GZ31', ((1, 0),(1, 1)))]
-add_err = 10
+swap_channel = [('GZ31', ((1, 0), (1, 1)))]
+add_err = 7
+add_err_period_range = None
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 3.0
+z_err_value = 5.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
@@ -105,6 +106,11 @@ if swap_channel is not None:
         z2 = d_obj.data_array[s_find]['z'][:, ss[1][0], ss[1][1]].copy()
         d_obj.data_array[s_find]['z'][:, ss[0][0], ss[0][1]] = z2
         d_obj.data_array[s_find]['z'][:, ss[1][0], ss[1][1]] = z1
+    
+if add_err_period_range is not None:
+        err_periods = np.where((d_obj.period_list >= add_err_period_range[0]) &
+                               (d_obj.period_list <= add_err_period_range[1]))
+        d_obj.data_array['z_err'][:, err_periods, :, :] *= add_err
 
 for inv_mode in inv_modes:
     d_obj.error_type_z = z_err_type
@@ -140,6 +146,7 @@ for inv_mode in inv_modes:
                               fill=False,
                               compute_error=True,
                               elevation=elevation_bool)
+        
                               
 # =============================================================================
 # write a log file
@@ -155,8 +162,8 @@ lines.append("remove_x = {0}".format(remove_x))
 lines.append("remove_y = {0}".format(remove_y))
 lines.append("flip_phase_x = {0}".format(flip_phase_x))
 lines.append("flip_phase_y = {0}".format(flip_phase_y))
-lines.append("static_shift_x = {0}".format(flip_phase_x))
-lines.append("static_shift_y = {0}".format(flip_phase_y))
+lines.append("static_shift_x = {0}".format(static_shift_x))
+lines.append("static_shift_y = {0}".format(static_shift_y))
 lines.append("swap_channel = {0}".format(swap_channel))
 lines.append("add_err = {0}".format(add_err))
 lines.append("elevation_bool = {0}".format(elevation_bool))

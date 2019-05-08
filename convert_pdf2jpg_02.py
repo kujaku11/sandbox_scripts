@@ -9,7 +9,7 @@ import subprocess
 import os
 import time
 
-dir_path = r"c:\Users\jpeacock\OneDrive - DOI\Geysers"
+dir_path = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\MRP_2019"
 
 fn_list = [os.path.join(dir_path, fn) for fn in os.listdir(dir_path)
            if fn.endswith('.pdf')] 

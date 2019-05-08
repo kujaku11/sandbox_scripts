@@ -7,8 +7,8 @@ Created on Wed Mar 13 16:02:19 2019
 
 import os, glob
 
-root_dir = r"c:\Users\jpeacock\Documents"
-fn_basename = r'*how_to*'
+root_dir = r"c:\\"
+fn_basename = r'*inkscape*'
 
 result = []
 for root, dirs, files in os.walk(root_dir):

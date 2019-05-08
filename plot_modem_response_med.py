@@ -10,39 +10,41 @@ import os
 
 dfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\med_modem_data_z07_t06.dat"
 rfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\Med_SS_Z3T2_NLCG_168.dat"
-sv_path = r"c:\Users\jpeacock\OneDrive - DOI\med_report"
+sv_path = r"c:\Users\jpeacock\OneDrive - DOI\med_report\report\figures"
 
 data_obj = modem.Data()
 data_obj.read_data_file(dfn)
 
 station_list = data_obj.station_locations.station.copy()
 
-#pm = modem.PlotRMSMaps(rfn[:-4]+'.res',
-#                         marker='o',
-#                         marker_size=6,
-#                         save_path=sv_path,
-#                         fig_size=[6.95, 5.5],
-#                         subplot_right=.875)
-#pm.plot_loop(fig_format='png')
+pm = modem.PlotRMSMaps(rfn[:-4]+'.res',
+                         marker='o',
+                         marker_size=6,
+                         save_path=sv_path,
+                         fig_size=[6.95, 5.5],
+                         subplot_right=.875)
+pm.plot_loop(fig_format='svg')
 
-pr = modem.PlotResponse(data_fn=dfn, resp_fn=rfn, 
-                        plot_type=station_list[0],
-                        fig_size=[6, 3.25],
-                        ms=2, 
-                        subplot_bottom=.12,
-                        subplot_left=.07,
-                        font_size=5.7,
-                        plot_z = False,
-                        plot_yn='n')
+#pr = modem.PlotResponse(data_fn=dfn, resp_fn=rfn, 
+#                        plot_type=station_list[0],
+#                        fig_size=[6, 3.25],
+#                        ms=2, 
+#                        subplot_bottom=.12,
+#                        subplot_left=.07,
+#                        font_size=5.7,
+#                        plot_z = False,
+#                        plot_yn='n')
+
 
                
-for ss in station_list:
-    pr.plot_type = ss
-    pr.redraw_plot()
-    
-    pr.save_figure(save_fn=os.path.join(sv_path, 
-                    'Supp_{0}_resp.png'.format(ss)),
-                    fig_dpi=300)
+#for ss in station_list:
+#    pr.plot_type = ss
+#    pr.redraw_plot()
+#    pr.save_figure(save_fn=os.path.join(sv_path,
+#                    'Supplemental_figure_{0}.svg'.format(ss)),
+#                    file_format='svg',
+#                    fig_dpi=300, close_fig='y')
+
                     
 #lines = []
 #for ii in range(0, data_obj.station_locations.station.size-2, 3):
