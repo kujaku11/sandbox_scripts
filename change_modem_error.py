@@ -15,15 +15,15 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_modem_data_rm50_z03.dat"
+dfn = r"c:\Users\jpeacock\Documents\Geysers\modem_inv\inv05\gz_modem_data_z03_edit.dat"
 
 remove_stations = []
-shady_stations = ['GZ27', 'GZ31']
+shady_stations = ['GZ05', 'GZ27', 'GZ31']
 remove_x = ['GZ31']
 remove_y = []
-flip_phase_x = []
+flip_phase_x = ['GZ05']
 flip_phase_y = ['GZ31']
-static_shift_x = []
+static_shift_x = [('GZ05', 5)]
 static_shift_y = []
 swap_channel = [('GZ31', ((1, 0), (1, 1)))]
 add_err = 7
@@ -31,7 +31,7 @@ add_err_period_range = None
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 5.0
+z_err_value = 4.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
