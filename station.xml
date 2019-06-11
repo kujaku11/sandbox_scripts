@@ -3,7 +3,7 @@
   <Source>MT Test</Source>
   <Module>ObsPy 1.1.1</Module>
   <ModuleURI>https://www.obspy.org</ModuleURI>
-  <Created>2019-06-11T02:29:46.556721Z</Created>
+  <Created>2019-06-11T02:51:40.827547Z</Created>
   <Network code="MT" startDate="2016-01-02T00:00:00.000000Z">
     <Description>Test stations.</Description>
     <Station code="mshG016">
@@ -22,7 +22,6 @@
         <Azimuth unit="DEGREES">25.5</Azimuth>
         <Dip unit="DEGREES">0.0</Dip>
         <SampleRate>4096.0</SampleRate>
-		<DipoleLength>100</DipoleLength>
       </Channel>
       <Channel code="EY" locationCode="">
         <Latitude unit="DEGREES">46.72222</Latitude>
