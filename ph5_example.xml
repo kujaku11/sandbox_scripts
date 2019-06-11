@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.0">
+  <Source/>
+  <Module>Nexus.2018.142.beta</Module>
+  <ModuleURI>www.passcal.nmt.edu</ModuleURI>
+  <Created>2019-03-14T17:17:10.202178Z</Created>
+  <Network code="XX" endDate="2019-03-14T23:59:00.000000Z" startDate="2019-03-14T00:00:00.000000Z">
+    <Station code="12345" endDate="2019-03-14T23:59:00.000000Z" startDate="2019-03-14T00:00:00.000000Z">
+      <Latitude unit="DEGREES">0.0</Latitude>
+      <Longitude unit="DEGREES">0.0</Longitude>
+      <Elevation unit="METERS">0.0</Elevation>
+      <Site>
+        <Name></Name>
+      </Site>
+      <CreationDate>2019-03-14T17:17:48.633005Z</CreationDate>
+      <Channel code="DPZ" endDate="2019-03-14T05:01:00.000000Z" locationCode="01" startDate="2019-03-14T05:00:00.000000Z">
+        <Comment>
+          <Value></Value>
+        </Comment>
+        <Latitude unit="DEGREES">34.054673</Latitude>
+        <Longitude unit="DEGREES">-106.906169</Longitude>
+        <Elevation unit="METERS">1400.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">90.0</Dip>
+        <SampleRate>250.0</SampleRate>
+        <Sensor>
+          <Description></Description>
+        </Sensor>
+        <DataLogger>
+          <SerialNumber>11111</SerialNumber>
+        </DataLogger>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>
