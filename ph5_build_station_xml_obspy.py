@@ -7,8 +7,7 @@ Created on Mon Jun 10 14:43:36 2019
 
 import obspy
 from obspy.core.inventory import Inventory, Network, Station, Channel, Site
-from obspy.core.inventory.util import Equipment, Comment
-from obspy.core.util import AttribDict
+from obspy.core.inventory.util import Equipment
 import pandas as pd
 
 survey_csv = r"c:\Users\jpeacock\Documents\imush\Archive\survey_summary.csv"

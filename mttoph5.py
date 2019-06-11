@@ -422,7 +422,7 @@ obs = MTtoPH5(ph5_object, ph5_fn, 1, 1)
 obs.verbose = True
 # we give it a our trace and should get a message
 # back saying done as well as an index table to be loaded
-message, index_t = obs.toph5(ts_fn)
+message, index_t = obs.to_ph5(ts_fn)
 
 # now load are index table
 for entry in index_t:
