@@ -16,7 +16,7 @@ from mtpy.imaging import mtplottools as mtpl
 from mtpy.imaging import mtcolors
 import glob
 
-edi_dir = r"c:\Users\jpeacock\Documents\edi_folders\geysers"
+edi_dir = r"c:\Users\jpeacock\Documents\SaudiArabia\Rotated_W34N"
 
 class PlotPTShapes(mtpl.PlotSettings):
     """

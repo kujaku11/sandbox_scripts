@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns:somepage_ns="http://some-page.de/xmlns/1.0" xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.0">
+  <Source>XX</Source>
+  <Module>ObsPy 1.1.1</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2019-06-11T02:31:06.582605Z</Created>
+  <Network code="XX">
+    <somepage_ns:Channel>
+      <somepage_ns:my_nested_tag1>12300000000.0</somepage_ns:my_nested_tag1>
+      <somepage_ns:my_nested_tag2>True</somepage_ns:my_nested_tag2>
+    </somepage_ns:Channel>
+  </Network>
+</FDSNStationXML>
