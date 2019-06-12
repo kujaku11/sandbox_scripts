@@ -1,0 +1,325 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.0">
+  <Source>MT Test</Source>
+  <Module>ObsPy 1.1.1</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2019-06-11T02:51:40.827547Z</Created>
+  <Network code="MT" startDate="2016-01-02T00:00:00.000000Z">
+    <Description>Test stations.</Description>
+    <Station code="mshG016">
+      <Latitude unit="DEGREES">46.72222</Latitude>
+      <Longitude unit="DEGREES">-121.81889</Longitude>
+      <Elevation unit="METERS">918.38</Elevation>
+      <Site>
+        <Name>mshG016</Name>
+      </Site>
+      <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
+      <Channel code="EX" locationCode="">
+        <Latitude unit="DEGREES">46.72222</Latitude>
+        <Longitude unit="DEGREES">-121.81889</Longitude>
+        <Elevation unit="METERS">918.38</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">25.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+      </Channel>
+      <Channel code="EY" locationCode="">
+        <Latitude unit="DEGREES">46.72222</Latitude>
+        <Longitude unit="DEGREES">-121.81889</Longitude>
+        <Elevation unit="METERS">918.38</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">115.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+      </Channel>
+      <Channel code="HX" locationCode="">
+        <Latitude unit="DEGREES">46.72222</Latitude>
+        <Longitude unit="DEGREES">-121.81889</Longitude>
+        <Elevation unit="METERS">918.38</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2434.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HY" locationCode="">
+        <Latitude unit="DEGREES">46.72222</Latitude>
+        <Longitude unit="DEGREES">-121.81889</Longitude>
+        <Elevation unit="METERS">918.38</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2444.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HZ" locationCode="">
+        <Latitude unit="DEGREES">46.72222</Latitude>
+        <Longitude unit="DEGREES">-121.81889</Longitude>
+        <Elevation unit="METERS">918.38</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2394.0</SerialNumber>
+        </Sensor>
+      </Channel>
+    </Station>
+    <Station code="mshG016-5">
+      <Latitude unit="DEGREES">46.70462799999999</Latitude>
+      <Longitude unit="DEGREES">-121.812556</Longitude>
+      <Elevation unit="METERS">777.44</Elevation>
+      <Site>
+        <Name>mshG016-5</Name>
+      </Site>
+      <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
+      <Channel code="EX" locationCode="">
+        <Latitude unit="DEGREES">46.70462799999999</Latitude>
+        <Longitude unit="DEGREES">-121.812556</Longitude>
+        <Elevation unit="METERS">777.44</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+      </Channel>
+      <Channel code="EY" locationCode="">
+        <Latitude unit="DEGREES">46.70462799999999</Latitude>
+        <Longitude unit="DEGREES">-121.812556</Longitude>
+        <Elevation unit="METERS">777.44</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+      </Channel>
+      <Channel code="HX" locationCode="">
+        <Latitude unit="DEGREES">46.70462799999999</Latitude>
+        <Longitude unit="DEGREES">-121.812556</Longitude>
+        <Elevation unit="METERS">777.44</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2294.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HY" locationCode="">
+        <Latitude unit="DEGREES">46.70462799999999</Latitude>
+        <Longitude unit="DEGREES">-121.812556</Longitude>
+        <Elevation unit="METERS">777.44</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2264.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HZ" locationCode="">
+        <Latitude unit="DEGREES">46.70462799999999</Latitude>
+        <Longitude unit="DEGREES">-121.812556</Longitude>
+        <Elevation unit="METERS">777.44</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2844.0</SerialNumber>
+        </Sensor>
+      </Channel>
+    </Station>
+    <Station code="mshG017">
+      <Latitude unit="DEGREES">46.71389</Latitude>
+      <Longitude unit="DEGREES">-121.73333</Longitude>
+      <Elevation unit="METERS">1241.36</Elevation>
+      <Site>
+        <Name>mshG017</Name>
+      </Site>
+      <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
+      <Channel code="EX" locationCode="">
+        <Latitude unit="DEGREES">46.71389</Latitude>
+        <Longitude unit="DEGREES">-121.73333</Longitude>
+        <Elevation unit="METERS">1241.36</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+      </Channel>
+      <Channel code="EY" locationCode="">
+        <Latitude unit="DEGREES">46.71389</Latitude>
+        <Longitude unit="DEGREES">-121.73333</Longitude>
+        <Elevation unit="METERS">1241.36</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+      </Channel>
+      <Channel code="HX" locationCode="">
+        <Latitude unit="DEGREES">46.71389</Latitude>
+        <Longitude unit="DEGREES">-121.73333</Longitude>
+        <Elevation unit="METERS">1241.36</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2344.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HY" locationCode="">
+        <Latitude unit="DEGREES">46.71389</Latitude>
+        <Longitude unit="DEGREES">-121.73333</Longitude>
+        <Elevation unit="METERS">1241.36</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2284.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HZ" locationCode="">
+        <Latitude unit="DEGREES">46.71389</Latitude>
+        <Longitude unit="DEGREES">-121.73333</Longitude>
+        <Elevation unit="METERS">1241.36</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>1024.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2254.0</SerialNumber>
+        </Sensor>
+      </Channel>
+    </Station>
+    <Station code="mshH020">
+      <Latitude unit="DEGREES">46.655559999999994</Latitude>
+      <Longitude unit="DEGREES">-121.48472</Longitude>
+      <Elevation unit="METERS">1111.72</Elevation>
+      <Site>
+        <Name>mshH020</Name>
+      </Site>
+      <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
+      <Channel code="EX" locationCode="">
+        <Latitude unit="DEGREES">46.655559999999994</Latitude>
+        <Longitude unit="DEGREES">-121.48472</Longitude>
+        <Elevation unit="METERS">1111.72</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+      </Channel>
+      <Channel code="EY" locationCode="">
+        <Latitude unit="DEGREES">46.655559999999994</Latitude>
+        <Longitude unit="DEGREES">-121.48472</Longitude>
+        <Elevation unit="METERS">1111.72</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+      </Channel>
+      <Channel code="HX" locationCode="">
+        <Latitude unit="DEGREES">46.655559999999994</Latitude>
+        <Longitude unit="DEGREES">-121.48472</Longitude>
+        <Elevation unit="METERS">1111.72</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2374.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HY" locationCode="">
+        <Latitude unit="DEGREES">46.655559999999994</Latitude>
+        <Longitude unit="DEGREES">-121.48472</Longitude>
+        <Elevation unit="METERS">1111.72</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2384.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HZ" locationCode="">
+        <Latitude unit="DEGREES">46.655559999999994</Latitude>
+        <Longitude unit="DEGREES">-121.48472</Longitude>
+        <Elevation unit="METERS">1111.72</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>4096.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2514.0</SerialNumber>
+        </Sensor>
+      </Channel>
+    </Station>
+    <Station code="mshO015">
+      <Latitude unit="DEGREES">46.17056000000001</Latitude>
+      <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+      <Elevation unit="METERS">1883.42</Elevation>
+      <Site>
+        <Name>mshO015</Name>
+      </Site>
+      <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
+      <Channel code="EX" locationCode="">
+        <Latitude unit="DEGREES">46.17056000000001</Latitude>
+        <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+        <Elevation unit="METERS">1883.42</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>256.0</SampleRate>
+      </Channel>
+      <Channel code="EY" locationCode="">
+        <Latitude unit="DEGREES">46.17056000000001</Latitude>
+        <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+        <Elevation unit="METERS">1883.42</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>256.0</SampleRate>
+      </Channel>
+      <Channel code="HX" locationCode="">
+        <Latitude unit="DEGREES">46.17056000000001</Latitude>
+        <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+        <Elevation unit="METERS">1883.42</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">15.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>256.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2294.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HY" locationCode="">
+        <Latitude unit="DEGREES">46.17056000000001</Latitude>
+        <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+        <Elevation unit="METERS">1883.42</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">105.5</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>256.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2344.0</SerialNumber>
+        </Sensor>
+      </Channel>
+      <Channel code="HZ" locationCode="">
+        <Latitude unit="DEGREES">46.17056000000001</Latitude>
+        <Longitude unit="DEGREES">-121.54333000000001</Longitude>
+        <Elevation unit="METERS">1883.42</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <SampleRate>256.0</SampleRate>
+        <Sensor>
+          <SerialNumber>2264.0</SerialNumber>
+        </Sensor>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>
