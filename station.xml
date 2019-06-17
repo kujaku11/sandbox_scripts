@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.0">
+<FDSNStationXML xmlns:MT_ns="MT" xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.0">
   <Source>MT Test</Source>
   <Module>ObsPy 1.1.1</Module>
   <ModuleURI>https://www.obspy.org</ModuleURI>
-  <Created>2019-06-11T02:51:40.827547Z</Created>
+  <Created>2019-06-17T20:19:15.135228Z</Created>
   <Network code="MT" startDate="2016-01-02T00:00:00.000000Z">
     <Description>Test stations.</Description>
     <Station code="mshG016">
@@ -15,6 +15,7 @@
       </Site>
       <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
       <Channel code="EX" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.72222</Latitude>
         <Longitude unit="DEGREES">-121.81889</Longitude>
         <Elevation unit="METERS">918.38</Elevation>
@@ -24,6 +25,7 @@
         <SampleRate>4096.0</SampleRate>
       </Channel>
       <Channel code="EY" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.72222</Latitude>
         <Longitude unit="DEGREES">-121.81889</Longitude>
         <Elevation unit="METERS">918.38</Elevation>
@@ -78,6 +80,7 @@
       </Site>
       <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
       <Channel code="EX" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.70462799999999</Latitude>
         <Longitude unit="DEGREES">-121.812556</Longitude>
         <Elevation unit="METERS">777.44</Elevation>
@@ -87,6 +90,7 @@
         <SampleRate>1024.0</SampleRate>
       </Channel>
       <Channel code="EY" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.70462799999999</Latitude>
         <Longitude unit="DEGREES">-121.812556</Longitude>
         <Elevation unit="METERS">777.44</Elevation>
@@ -141,6 +145,7 @@
       </Site>
       <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
       <Channel code="EX" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.71389</Latitude>
         <Longitude unit="DEGREES">-121.73333</Longitude>
         <Elevation unit="METERS">1241.36</Elevation>
@@ -150,6 +155,7 @@
         <SampleRate>1024.0</SampleRate>
       </Channel>
       <Channel code="EY" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.71389</Latitude>
         <Longitude unit="DEGREES">-121.73333</Longitude>
         <Elevation unit="METERS">1241.36</Elevation>
@@ -204,6 +210,7 @@
       </Site>
       <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
       <Channel code="EX" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.655559999999994</Latitude>
         <Longitude unit="DEGREES">-121.48472</Longitude>
         <Elevation unit="METERS">1111.72</Elevation>
@@ -213,6 +220,7 @@
         <SampleRate>4096.0</SampleRate>
       </Channel>
       <Channel code="EY" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.655559999999994</Latitude>
         <Longitude unit="DEGREES">-121.48472</Longitude>
         <Elevation unit="METERS">1111.72</Elevation>
@@ -267,6 +275,7 @@
       </Site>
       <CreationDate>2016-01-02T00:00:00.000000Z</CreationDate>
       <Channel code="EX" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.17056000000001</Latitude>
         <Longitude unit="DEGREES">-121.54333000000001</Longitude>
         <Elevation unit="METERS">1883.42</Elevation>
@@ -276,6 +285,7 @@
         <SampleRate>256.0</SampleRate>
       </Channel>
       <Channel code="EY" locationCode="">
+        <MT_ns:dipole_length>10</MT_ns:dipole_length>
         <Latitude unit="DEGREES">46.17056000000001</Latitude>
         <Longitude unit="DEGREES">-121.54333000000001</Longitude>
         <Elevation unit="METERS">1883.42</Elevation>
