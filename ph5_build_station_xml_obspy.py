@@ -59,6 +59,8 @@ for row, station_df in survey_df.iterrows():
                               azimuth=station_df['{0}_azm'.format(comp)],
                               dip=0,
                               sample_rate=station_df['sampling_rate'])
+                cha.extra = {'dipole_length':{'value':10,
+                                              'namespace':'MT'}}
 #                cha.comments = Comment(['Dipole Length (m) = {0:.1f}'.format(station_df['{0}_len'.format(comp)])])
 
             sta.channels.append(cha)
@@ -72,4 +74,5 @@ for row, station_df in survey_df.iterrows():
 #
 # Note that it is also possible to serialize to any of the other inventory
 # output formats ObsPy supports.
-inv.write("station.xml", format="STATIONXML", validate=True)
+inv.write("station.xml", format="STATIONXML", validate=True, 
+          nsmap={'MT_ns':'MT'})
