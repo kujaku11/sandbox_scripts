@@ -18,30 +18,40 @@ data_obj.read_data_file(dfn)
 station_list = data_obj.station_locations.station.copy()
 
 pm = modem.PlotRMSMaps(rfn[:-4]+'.res',
-                         marker='o',
-                         marker_size=6,
-                         save_path=sv_path,
-                         fig_size=[6.95, 5.5],
-                         subplot_right=.875)
+                       marker='o',
+                       marker_size=5,
+                       save_path=sv_path,
+                       fig_size=[4.75, 6],
+                       subplot_right=.875,
+                       tick_locator=.5,
+                       text_pad=.09,
+                       subplot_vspace=.1,
+                       subplot_left=.15)
+
 pm.plot_loop(fig_format='svg')
 
 #pr = modem.PlotResponse(data_fn=dfn, resp_fn=rfn, 
-#                        plot_type=station_list[0],
-#                        fig_size=[6, 3.25],
+#                        plot_type=station_list[16],
+#                        fig_size=[9, 3.25],
 #                        ms=2, 
 #                        subplot_bottom=.12,
-#                        subplot_left=.07,
+#                        subplot_left=.05,
 #                        font_size=5.7,
 #                        plot_z = False,
-#                        plot_yn='n')
-
-
-               
+#                        cted=(0, 0, 0),
+#                        ctmd=(0, 0, 0),
+#                        ctem=(0.75, .0, 0.0),
+#                        ctmm=(0.75, .0, .0),
+#                        mted='o',
+#                        mtem='x',
+#                        mtmm='x',
+#                        subplot_wspace=.20)
+#               
 #for ss in station_list:
 #    pr.plot_type = ss
 #    pr.redraw_plot()
 #    pr.save_figure(save_fn=os.path.join(sv_path,
-#                    'Supplemental_figure_{0}.svg'.format(ss)),
+#                    'Appendix_03_{0}.svg'.format(ss)),
 #                    file_format='svg',
 #                    fig_dpi=300, close_fig='y')
 
