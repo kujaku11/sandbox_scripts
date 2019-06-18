@@ -1,24 +1,20 @@
 """
-leverages obspy to read in streams/traces
-and convert them to PH5
+Put MT time series into PH5 format following the example from Obspy written
+by Derick Hess
 
-Derick Hess
+Using mtpy package to read in MT time series in Z3D format, but could extend
+that to any type of time series later.
+
+J. Peacock
+June-2019
 """
 import logging
-#import argparse
 import os
-#import sys
 import re
-from ph5 import LOGGING_FORMAT
-from ph5.utilities import initialize_ph5
-from ph5.core import experiment #, timedoy
-from ph5.utilities import metadatatoph5
+import glob
+from ph5.core import experiment
 from mtpy.core import ts as mtts
-#from obspy.io.mseed.core import _is_mseed
-#from obspy.io.mseed.util import get_flags
-#from obspy import read as reader
-#from obspy import UTCDateTime, Stream, Trace
-import numpy as np
+from mtpy.usgs import zen
 
 PROG_VERSION = '2019.65'
 LOGGER = logging.getLogger(__name__)
@@ -33,16 +29,83 @@ class MTtoPH5Error(Exception):
     def __init__(self, message):
         self.message = message
 
-
 class MTtoPH5(object):
+    """
+    Load in MT time series to PH5 format.  
+    
+    Currently can read in Z3D or ascii files and gets metadata from those files  
+    
+    :param ph5_object: Main PH5 object to add files to
+    :type ph5_object: PH5.core.experiment
+    
+    :param ph5_path: full path to PH5 file minus the extension
+    :type ph5_path: string
+    
+    :param num_mini: number of mini files to make
+    :type num_mini: int
+    
+    :param first_mini: number of first mini file
+    :type first_mini: int
+    
+    .. note:: For now the organization is:
+              * Experiment
+                  - MT station 01 
+                      * Schedule or Run 01
+                          - EX, EY, HX, HY, HZ
+                      * Schedule or Run 02
+                          - EX, EY, HX, HY, HZ
+                  - MT station 01 
+                      * Schedule or Run 01
+                          - EX, EY, HX, HY, HZ
+                      * Schedule or Run 02
+                          - EX, EY, HX, HY, HZ
+                          
+    :Example: ::
+        
+        >>> ph5_fn = r"./test_ph5.ph5"
+        >>> fn_list = glob.glob(r"/home/mt_files/*.Z3D")
+        >>> ### initialize a PH5 object
+        >>> ph5_obj = experiment.ExperimentGroup(nickname='test_ph5',
+        >>> ...                           currentpath=os.path.dirname(ph5_fn))
+        >>> ph5_obj.ph5open(True)
+        >>> ph5_obj.initgroup()
+        >>> ### initialize mt_to_ph5 object want only 1 mini file starting at 1
+        >>> mt_obj = MTtoPH5(ph5_obj, os.path.dirname(ph5_fn), 1, 1)
+        >>> # turn on verbose logging so we can see more info
+        >>> mt_obj.verbose = True
+        >>> # only do the first 5 files because that is one schedule or run
+        >>> message, index_t = mt_obj.to_ph5(fn_list[0:5])
+        >>> # now load are index table
+        >>> for entry in index_t:
+        >>>     ph5_obj.ph5_g_receivers.populateIndex_t(entry)
+        >>> 
+        >>> # the last thing we need ot do ater loading
+        >>> # all our data is to update external refeerences
+        >>> # this takes all the mini files and adds their
+        >>> # references to the master so we can find the data
+        >>> mt_obj.update_external_references(index_t)
+        >>>  
+        >>> # be nice and close the file
+        >>> ph5_obj.ph5close()                   
+    """
+    
 
     def __init__(self, ph5_object,
                  ph5_path,
                  num_mini=None,
                  first_mini=None):
         """
-        :type class: ph5.core.experiment
-        :param ph5_object:
+        :param ph5_object: Main PH5 object to add files to
+        :type ph5_object: PH5.core.experiment
+        
+        :param ph5_path: full path to PH5 file minus the extension
+        :type ph5_path: string
+        
+        :param num_mini: number of mini files to make
+        :type num_mini: int
+        
+        :param first_mini: number of first mini file
+        :type first_mini: int
         """
         self.ph5 = ph5_object
         self.ph5_path = ph5_path
@@ -68,14 +131,15 @@ class MTtoPH5(object):
 
         mini_num = str(mini_num).zfill(5)
         filename = "miniPH5_{0}.ph5".format(mini_num)
-        exrec = experiment.ExperimentGroup(
-            nickname=filename,
-            currentpath=self.ph5_path)
+        print('--- mini filename = {0}'.format(filename))
+        print('    {0}'.format(self.ph5_path))
+        exrec = experiment.ExperimentGroup(nickname=filename,
+                                           currentpath=self.ph5_path)
         exrec.ph5open(True)
         exrec.initgroup()
         return exrec, filename
 
-    def get_minis(self, dir):
+    def get_minis(self, directory):
         """
         takes a directory and returns a list of all mini files
         in the current directory
@@ -86,20 +150,24 @@ class MTtoPH5(object):
         """
         miniPH5RE = re.compile(r".*miniPH5_(\d+)\.ph5")
         minis = list()
-        for entry in os.listdir(dir):
-            # Create full path
-            fullPath = os.path.join(dir, entry)
-            if miniPH5RE.match(entry):
-                minis.append(fullPath)
-        return minis
-
+        try:
+            for entry in os.listdir(directory):
+                # Create full path
+                fullPath = os.path.join(directory, entry)
+                if miniPH5RE.match(entry):
+                    minis.append(fullPath)
+            return minis
+        except NotADirectoryError:
+            print('Found no minis files in PH5 file')
+            return None
+        
     def get_size_mini(self, mini_num):
         """
         :param mini_num: str
         :return: size of mini file in bytes
         """
-        mini_num = str(mini_num).zfill(5)
-        filename = "miniPH5_{0}.ph5".format(mini_num)
+        
+        filename = "miniPH5_{0:05}.ph5".format(mini_num)
         return os.path.getsize(filename)
 
     def get_das_station_map(self):
@@ -136,6 +204,8 @@ class MTtoPH5(object):
         :return:  list of tuples containing
         what mini file contains what serial #s
         """
+        if existing_minis is None:
+            return None
         mini_map = list()
         for mini in existing_minis:
             mini_num = int(mini.split('.')[-2].split('_')[-1])
@@ -160,34 +230,48 @@ class MTtoPH5(object):
         """
         index_t_entry = {}
         # start time
-        index_t_entry['start_time/ascii_s'] = \
-                            (ts_obj.start_time_utc)
-        index_t_entry['start_time/epoch_l'] = \
-                            (ts_obj.start_time_epoch_sec)
-        index_t_entry['start_time/micro_seconds_i'] = \
-                            (ts_obj._start_time_struct.microsecond)
+        index_t_entry['start_time/ascii_s'] = (ts_obj.start_time_utc)
+        index_t_entry['start_time/epoch_l'] = (ts_obj.start_time_epoch_sec)
+        index_t_entry['start_time/micro_seconds_i'] = (ts_obj._start_time_struct.microsecond)
         index_t_entry['start_time/type_s'] = 'BOTH'
         
         # end time
         index_t_entry['end_time/ascii_s'] = (ts_obj.stop_time_utc)
-        index_t_entry['end_time/epoch_l'] = \
-                                (ts_obj.stop_time_epoch_sec)
-        index_t_entry['end_time/micro_seconds_i'] = \
-                                (ts_obj.ts.index[-1].microsecond)
+        index_t_entry['end_time/epoch_l'] = (ts_obj.stop_time_epoch_sec)
+        index_t_entry['end_time/micro_seconds_i'] = (ts_obj.ts.index[-1].microsecond)
         index_t_entry['end_time/type_s'] = 'BOTH'
         
         # time stamp -- when data was entered?
         time_stamp_utc = mtts.datetime.datetime.utcnow()
-        index_t_entry['time_stamp/ascii_s'] = \
-                                    (time_stamp_utc.isoformat())
-        index_t_entry['time_stamp/epoch_l'] = \
-                        (ts_obj._convert_dt_to_sec(time_stamp_utc))
-        index_t_entry['time_stamp/micro_seconds_i'] = \
-                                    (time_stamp_utc.microsecond)
+        index_t_entry['time_stamp/ascii_s'] = (time_stamp_utc.isoformat())
+        index_t_entry['time_stamp/epoch_l'] = (ts_obj._convert_dt_to_sec(time_stamp_utc))
+        index_t_entry['time_stamp/micro_seconds_i'] = (time_stamp_utc.microsecond)
         index_t_entry['time_stamp/type_s'] = 'BOTH'
+        
+        index_t_entry['serial_number_s'] = ts_obj.station
+        index_t_entry['external_file_name_s'] = ''
+#        index_t_entry['component_s'] = ts_obj.component.upper()
+#        index_t_entry['dipole_length_f'] = ts_obj.dipole_length
+#        index_t_entry['dipole_length_units_s'] = 'meters'
+#        index_t_entry['sensor_id_s'] = ts_obj.chn_num
         
         return index_t_entry
     
+    def make_receiver_t_entry(self, ts_obj):
+        """
+        make receiver table entry
+        """
+        
+        receiver_t_entry = {}
+        receiver_t_entry['orientation/azimuth/value_f'] = ts_obj.azimuth
+        receiver_t_entry['orientation/azimuth/units_s'] = 'degrees'
+        receiver_t_entry['orientation/dip/value_f'] = 0
+        receiver_t_entry['orientation/dip/units_s'] = 'degrees'
+        receiver_t_entry['orientation/description_s'] = ts_obj.component
+        receiver_t_entry['orientation/channel_number_i'] = ts_obj.chn_num
+        
+        return receiver_t_entry
+        
     def make_das_entry(self, ts_obj):
         """
         Make a metadata array for a given mtts object
@@ -198,18 +282,76 @@ class MTtoPH5(object):
         das = {}
         # start time information
         das['time/ascii_s'] = ts_obj.start_time_utc
-        das['time/epoch_l'] = ts_obj.start_time_epoch_seconds
+        das['time/epoch_l'] = ts_obj.start_time_epoch_sec
         das['time/micro_seconds_i'] = ts_obj._start_time_struct.microsecond
         das['time/type_s'] = 'BOTH'
         
         das['sample_rate_i'] = ts_obj.sampling_rate
         das['sample_rate_multiplier_i'] = 1
         
-        das['channel_number_i'] = ts_obj.chn_num
+        das['channel_number_i'] = ts_obj.component
         das['sample_count_i'] = ts_obj.n_samples
         das['raw_file_name_s'] = ts_obj.fn
+#        das['component_s'] = ts_obj.component.upper()
+#        das['dipole_length_f'] = ts_obj.dipole_length
+#        das['dipole_length_units_s'] = 'meters'
+#        das['sensor_id_s'] = ts_obj.chn_num
+#        das['array_name_data_a'] = '{0}_{1}_{2}'.format('Data',
+#                                                        ts_obj.component,
+#                                                        '1')
         
         return das
+    
+    def load_ts_obj(self, ts_fn):
+        """
+        load an MT file
+        """
+        if isinstance(ts_fn, str):
+            if ts_fn.lower().endswith('.z3d'):
+                z3d_obj = zen.Zen3D(ts_fn)
+                z3d_obj.read_z3d()
+                ts_obj = z3d_obj.ts_obj
+            elif ts_fn[-2:].lower() in ['ex', 'ey', 'hx', 'hy', 'hz']:
+                ts_obj = mtts.MTTS()
+                ts_obj.read_file(ts_fn)
+        elif isinstance(ts_fn, mtts.MTTS):
+            ts_obj = ts_fn
+        else:
+            raise mtts.MTTSError("Do not understand {0}".format(type(ts_fn)))
+            
+        return ts_obj
+    
+    def get_current_mini(self, ts_obj):
+        """
+        get the current mini file
+        """
+        ### check for existing files in PH5 file
+        existing_minis = self.get_minis(self.ph5_path)
+
+        # gets mapping of whats dases each minifile contains
+        minis = self.mini_map(existing_minis)
+        
+        if not existing_minis:
+            current_mini = self.first_mini
+        else:
+            current_mini = None
+            for mini in minis:
+                if ts_obj.station in mini[1]:
+                    current_mini = mini[0]
+                    break
+            ### get the largest file?
+            if not current_mini:
+                largest = 0
+                for x in minis:
+                    if x[0] >= largest:
+                        largest = x[0]
+                if (self.get_size_mini(largest) <
+                        self.mini_size_max):
+                    current_mini = largest
+                else:
+                    current_mini = largest + 1
+                        
+        return current_mini
 
     def to_ph5(self, ts_list):
         """
@@ -220,120 +362,57 @@ class MTtoPH5(object):
         :returns: success message
         """
         index_t = list()
-#        time_corrected = False
-#        correction = False
-        current_mini = None
-#        in_type = None
-        
-        ### read in metadata from an XML file
-        das_station_map = self.get_das_station_map()
-        if not das_station_map:
-            err = "Array metadata must exist before loading data"
-            LOGGER.error(err)
-            return "stop", index_t
-        
-        ### check for existing files in PH5 file
-        existing_minis = self.get_minis(self.ph5_path)
-
-        # gets mapping of whats dases each minifile contains
-        minis = self.mini_map(existing_minis)
 
         # check if we are opening a file or mt ts object
         for count, fn in enumerate(ts_list, 1):
-            if isinstance(fn, str):
-                ts_obj = mtts.MTTS()
-                ts_obj.read_file(fn)
-            elif isinstance(fn, mtts.MTTS):
-                ts_obj = fn
-            else:
-                raise mtts.MTTSError("Do not understand {0}".format(type(fn)))
+            ts_obj = self.load_ts_obj(fn)
             
-            LOGGER.info('Loading {0}'.format(ts_obj.fn))
-                
-            if self.verbose:
-                LOGGER.info('Processing time-series {0} in {1}'.format(
-                            ts_obj.component, ts_obj.station))
-                
-            if not existing_minis:
-                current_mini = self.first_mini
-            else:
-                current_mini = None
-                for mini in minis:
-                    for entry in das_station_map:
-                        if (entry['serial'] in mini[1] and
-                            entry['station'] == ts_obj.station):
-                            current_mini = mini[0]
-                    ### get the largest file?
-                    if not current_mini:
-                        largest = 0
-                        for x in minis:
-                            if x[0] >= largest:
-                                largest = x[0]
-                        if (self.get_size_mini(largest) <
-                                self.mini_size_max):
-                            current_mini = largest
-                        else:
-                            current_mini = largest + 1
-                            
-            # iterate through das_station_map
-            for entry in das_station_map:                
-                # only load data if it matches what is in the metadata XML
-                if ts_obj.station == entry['station']:
-                    # open mini file
-                    mini_handle, mini_name = self.open_mini(current_mini)
-                    
-                    # get node reference or create new node
-                    d = mini_handle.ph5_g_receivers.getdas_g(entry['serial'])
-                    if not d:
-                        d, t, r, ti = mini_handle.ph5_g_receivers.newdas(
-                                                            entry['serial'])
+            ### start populating das table and data arrays
+            index_t_entry = self.make_index_t_entry(ts_obj)
+            das_t_entry = self.make_das_entry(ts_obj)
+            receiver_t_entry = self.make_receiver_t_entry(ts_obj)
+            
+            ### get the current mini file
+            current_mini = self.get_current_mini(ts_obj)
+            mini_handle, mini_name = self.open_mini(current_mini)
+            
+            # get node reference or create new node
+            d = mini_handle.ph5_g_receivers.getdas_g(ts_obj.station)
+            if not d:
+                d, t, r, ti = mini_handle.ph5_g_receivers.newdas(ts_obj.station)
+            
+            ### make name for array data going into mini file
+            while True:
+                next_ = '{0:05}'.format(count)
+                das_t_entry['array_name_data_a'] = "Data_a_{0}".format(next_)
+                node = mini_handle.ph5_g_receivers.find_trace_ref(das_t_entry['array_name_data_a'])
+                if not node:
+                    break
+                count = count + 1
+                continue
+            
+            ### make a new array
+            mini_handle.ph5_g_receivers.setcurrent(d)
+            mini_handle.ph5_g_receivers.newarray(das_t_entry['array_name_data_a'],
+                                                 ts_obj.ts.data,
+                                                 dtype=ts_obj.ts.data.dtype,
+                                                 description=None)
+            
+            ### create external file names
+            index_t_entry['external_file_name_s'] = "./{}".format(mini_name)
+            das_path = "/Experiment_g/Receivers_g/Das_g_{0}".format(ts_obj.station)
+            index_t_entry['hdf5_path_s'] = das_path
+            
+            ### populate metadata tables
+            mini_handle.ph5_g_receivers.populateDas_t(das_t_entry)
+            mini_handle.ph5_g_receivers.populateIndex_t(index_t_entry)
+            mini_handle.ph5_g_receivers.populateReceiver_t(receiver_t_entry)
+            #mini_handle.ph5_g_receivers.populateTime_t_()
 
-                    ### start populating das table and data arrays
-                    index_t_entry = self.make_index_t_entry(ts_obj)
-                    das = self.make_das_entry(ts_obj)
-
-                    # figure out receiver and response n_i
-                    for array_entry in self.arrays:
-                        if (array_entry['sample_rate_i'] ==
-                                ts_obj.sampling_rate and
-                                array_entry['channel_number_i'] ==
-                                das['channel_number_i'] and
-                                array_entry['id_s'] == ts_obj.station):
-                            das['receiver_table_n_i'] =\
-                                array_entry['receiver_table_n_i']
-                            das['response_table_n_i'] =\
-                                array_entry['response_table_n_i']
-
-                    # Make sure we aren't overwriting a data array
-                    while True:
-                        next_ = str(count).zfill(5)
-                        das['array_name_data_a'] = "Data_a_{0}".format(
-                            next_)
-                        node = mini_handle.ph5_g_receivers.find_trace_ref(
-                            das['array_name_data_a'])
-                        if not node:
-                            break
-                        count = count + 1
-                        continue
-
-                    mini_handle.ph5_g_receivers.setcurrent(d)
-                    mini_handle.ph5_g_receivers.newarray(das['array_name_data_a'],
-                                                         ts_obj.ts.data,
-                                                         dtype='float64',
-                                                         description=None)
-                    mini_handle.ph5_g_receivers.populateDas_t(das)
-
-                    index_t_entry['external_file_name_s'] = "./{}".format(
-                        mini_name)
-                    das_path = "/Experiment_g/Receivers_g/" \
-                               "Das_g_{0}".format(entry['serial'])
-                    index_t_entry['hdf5_path_s'] = das_path
-                    index_t_entry['serial_number_s'] = entry['serial']
-
-                    index_t.append(index_t_entry)
-                    # Don't forget to close minifile
-                    mini_handle.ph5close()
-        LOGGER.info('Finished processing {0}'.format(ts_obj.fn))
+            index_t.append(index_t_entry)
+            # Don't forget to close minifile
+            mini_handle.ph5close()
+        #LOGGER.info('Finished processing {0}'.format(ts_obj.fn))
 
         # last thing is to return the index table so far.
         # index_t will be populated in main() after all
@@ -349,7 +428,7 @@ class MTtoPH5(object):
         :return:
         """
         n = 0
-        LOGGER.info("updating external references")
+        #LOGGER.info("updating external references")
         for i in index_t:
             external_file = i['external_file_name_s'][2:]
             external_path = i['hdf5_path_s']
@@ -361,6 +440,7 @@ class MTtoPH5(object):
                 group_node.remove()
 
             except Exception as e:
+                print(e)
                 pass
 
             #   Re-create node
@@ -370,256 +450,42 @@ class MTtoPH5(object):
                 n += 1
             except Exception as e:
                 # pass
-                LOGGER.error(e.message)
+                print(e)
+                #LOGGER.error(e.message)
 
         return
 
 # =============================================================================
 # Test
 # =============================================================================
-ts_fn = r"c:\Users\jpeacock\Documents\GitHub\sandbox\ts_test.EX"
+#ts_fn = r"c:\Users\jpeacock\Documents\GitHub\sandbox\ts_test.EX"
 ph5_fn = r"c:\Users\jpeacock\Documents\GitHub\sandbox\test_ph5.ph5"
 
-if not os.path.isfile(ts_fn):
-    ts_obj = mtts.MTTS()
-    ts_obj.station = 'mt001'
-    ts_obj.azimuth = 0
-    ts_obj.component = 'EX'
-    ts_obj.coordinate_system = 'geomagnetic north'
-    ts_obj.data_logger = 'IRIS001'
-    ts_obj.datum = 'WGS84'
-    ts_obj.declination = 11.5
-    ts_obj.dipole_length = 97.5
-    ts_obj.gain = 1
-    ts_obj.instrument_id = 'electrode01'
-    ts_obj.lat = 40.0
-    ts_obj.lon = -115.00
-    ts_obj.elev = 1000
-    ts_obj.start_time_utc = '2019-05-29T01:00:00'
-    ts_obj.sampling_rate = 256.0
-    ts_obj.ts = np.random.ranf(256*3600*4)
-    ts_obj.write_ascii_file(ts_fn)
+fn_list = glob.glob(r"c:\Users\jpeacock\Documents\imush\O015\*.Z3D")
 
-### make ph5 if not exists
-#ex = experiment.ExperimentGroup(nickname='test_ph5',
-#                                currentpath=os.path.dirname(ph5_fn))
-#ex.ph5open(True)  # Open ph5 file for editing
-#ex.initgroup()
-## Update /Experiment_g/Receivers_g/Receiver_t
-#default_receiver_t = initialize_ph5.create_default_receiver_t()
-#initialize_ph5.set_receiver_t(default_receiver_t)
-#LOGGER.info("Removing temporary {0} kef file.".format(default_receiver_t))
-#os.remove(default_receiver_t)
-#ex.ph5close()
-#LOGGER.info("Done... Created new PH5 file {0}.".format(ph5_fn)) 
+### initialize a PH5 object
+ph5_obj = experiment.ExperimentGroup(nickname='test_ph5',
+                                     currentpath=os.path.dirname(ph5_fn))
+ph5_obj.ph5open(True)
+ph5_obj.initgroup()
 
-ph5_object = experiment.ExperimentGroup(nickname='test_ph5',
-                                        currentpath=os.path.dirname(ph5_fn))
-ph5_object.ph5open(True)
-ph5_object.initgroup()
-obs = MTtoPH5(ph5_object, ph5_fn, 1, 1)
+### initialize mt2ph5 object
+mt_obj = MTtoPH5(ph5_obj, os.path.dirname(ph5_fn), 1, 1)
 # turn on verbose logging so we can see more info
-obs.verbose = True
+mt_obj.verbose = True
 # we give it a our trace and should get a message
 # back saying done as well as an index table to be loaded
-message, index_t = obs.to_ph5(ts_fn)
+message, index_t = mt_obj.to_ph5(fn_list[0:5])
 
 # now load are index table
 for entry in index_t:
-    ph5_object.ph5_g_receivers.populateIndex_t(entry)
+    ph5_obj.ph5_g_receivers.populateIndex_t(entry)
 
 # the last thing we need ot do ater loading
 # all our data is to update external refeerences
 # this takes all the mini files and adds their
 # references to the master so we can find the data
-obs.update_external_references(index_t)
+mt_obj.update_external_references(index_t)
 
 # be nice and close the file
-ph5_object.ph5close()
-
-
-#def getListOfFiles(dirName):
-#    # create a list of file and sub directories
-#    # names in the given directory
-#    listOfFile = os.listdir(dirName)
-#    allFiles = list()
-#    # Iterate over all the entries
-#    for entry in listOfFile:
-#        # Create full path
-#        fullPath = os.path.join(dirName, entry)
-#        # If entry is a directory then get the list of files in this directory
-#        if os.path.isdir(fullPath):
-#            allFiles = allFiles + getListOfFiles(fullPath)
-#        else:
-#            allFiles.append(fullPath)
-#
-#    return allFiles
-#
-#
-#def get_args(args):
-#    """
-#    :return: class: argparse
-#    """
-#    parser = argparse.ArgumentParser(
-#            description='Takes data files and converts to PH5',
-#            usage=('Version: {0} mstoph5 --nickname="Master_PH5_file" '
-#                   '[options]'.format(PROG_VERSION))
-#            )
-#    parser.add_argument(
-#        "-n", "--nickname", action="store",
-#        type=str, metavar="nickname", default="master.ph5", required=True)
-#
-#    parser.add_argument(
-#        "-p", "--ph5path", action="store", default=".",
-#        type=str, metavar="ph5_path")
-#
-#    parser.add_argument(
-#        "-f", "--file", dest="infile",
-#        default=None,
-#        help="Data file...minissed file",
-#        metavar="file_file")
-#
-#    parser.add_argument(
-#        "-l", "--list", dest="inlist",
-#        default=None,
-#        help="list of data files with full path",
-#        metavar="file_list_file")
-#
-#    parser.add_argument(
-#        "-d", "--dir", dest="indir",
-#        default=None,
-#        help="Directory to traverse looking for data",
-#        metavar="directory")
-#
-#    parser.add_argument(
-#        "-M", "--num_mini", dest="num_mini",
-#        help="Create a given number of miniPH5  files.",
-#        metavar="num_mini", type=int, default=None)
-#
-#    parser.add_argument(
-#        "-S", "--first_mini", dest="first_mini",
-#        help="The index of the first miniPH5_xxxxx.ph5 file.",
-#        metavar="first_mini", type=int, default=1)
-#
-#    parser.add_argument(
-#        "-V", "--verbose", dest="verbose",
-#        help="Verbose logging ",
-#        action='store_true')
-#
-#    return parser.parse_args(args)
-
-
-#def main():
-#    args = get_args(sys.argv[1:])
-#
-#    if args.nickname[-3:] == 'ph5':
-#        ph5file = os.path.join(args.ph5path, args.nickname)
-#    else:
-#        ph5file = os.path.join(args.ph5path, args.nickname + '.ph5')
-#        args.nickname += '.ph5'
-#
-#    PATH = os.path.dirname(args.ph5path) or '.'
-#    # Debugging
-#    os.chdir(PATH)
-#    # Write log to file
-#    ch = logging.FileHandler(os.path.join(".", "datatoph5.log"))
-#    ch.setLevel(logging.INFO)
-#    # Add formatter
-#    formatter = logging.Formatter(LOGGING_FORMAT)
-#    ch.setFormatter(formatter)
-#    LOGGER.addHandler(ch)
-#
-#    if not os.path.exists(ph5file):
-#        LOGGER.warning("{0} not found. Creating...".format(ph5file))
-#        # Create ph5 file
-#        ex = experiment.ExperimentGroup(nickname=ph5file)
-#        ex.ph5open(True)  # Open ph5 file for editing
-#        ex.initgroup()
-#        # Update /Experiment_g/Receivers_g/Receiver_t
-#        default_receiver_t = initialize_ph5.create_default_receiver_t()
-#        initialize_ph5.set_receiver_t(default_receiver_t)
-#        LOGGER.info("Removing temporary {0} kef file."
-#                    .format(default_receiver_t))
-#        os.remove(default_receiver_t)
-#        ex.ph5close()
-#        LOGGER.info("Done... Created new PH5 file {0}."
-#                    .format(ph5file))
-#    # Produce list of valid files from file, list, and dirs
-#    valid_files = list()
-#    if args.infile:
-#        if _is_mseed(args.infile):
-#            LOGGER.info("{0} is a valid miniSEED file. "
-#                        "Adding to process list.".format(args.infile))
-#            valid_files.append((args.infile, 'MSEED'))
-#        else:
-#            LOGGER.info("{0} is a  NOT valid miniSEED file.".format(
-#                args.infile))
-#
-#    if args.inlist:
-#        LOGGER.info("Checking list...")
-#        with open(args.inlist) as f:
-#            content = f.readlines()
-#        for line in content:
-#            if os.path.isfile(line.rstrip()):
-#                if _is_mseed(line.rstrip()):
-#                    LOGGER.info("{0} is a valid miniSEED file. "
-#                                "Adding to"
-#                                "process list.".format(line.rstrip()))
-#                    valid_files.append((line.rstrip(), 'MSEED'))
-#                else:
-#                    LOGGER.info("{0} is NOT a valid miniSEED "
-#                                "file.".format(line.rstrip()))
-#            else:
-#                LOGGER.info("{0} does not exist".format(line.rstrip()))
-#
-#    if args.indir:
-#        LOGGER.info("Scanning directory {0} and sub directories...".format(
-#            args.indir))
-#        found_files = getListOfFiles(args.indir)
-#        found_files.sort()
-#        for f in found_files:
-#            if _is_mseed(f):
-#                LOGGER.info("{0} is a valid miniSEED file. "
-#                            "Adding to process list.".format(f))
-#                valid_files.append((f, 'MSEED'))
-#            else:
-#                LOGGER.info("{0} is NOT a valid miniSEED file.".format(f))
-#
-#    # take list of valid files and load them into PH5
-#    ph5_object = experiment.ExperimentGroup(nickname=args.nickname,
-#                                            currentpath=args.ph5path)
-#    ph5_object.ph5open(True)
-#    ph5_object.initgroup()
-#    obs = ObspytoPH5(ph5_object, args.ph5path,
-#                     args.num_mini, args.first_mini)
-#    if args.verbose:
-#        obs.verbose = True
-#    obs.get_minis(args.ph5path)
-#    if args.num_mini:
-#        total = 0
-#        for entry in valid_files:
-#            total = total + os.path.getsize(entry[0])
-#        obs.mini_size_max = (total*.60)/args.num_mini
-#    index_t_full = list()
-#
-#    for entry in valid_files:
-#        message, index_t = obs.toph5(entry)
-#        for e in index_t:
-#            index_t_full.append(e)
-#        if message == "stop":
-#            LOGGER.error("Stopping program...")
-#            break
-#    if len(obs.time_t) > 0:
-#        LOGGER.info('Populating Time table')
-#        for entry in obs.time_t:
-#            ph5_object.ph5_g_receivers.populateTime_t_(entry)
-#    LOGGER.info("Populating Index table")
-#    for entry in index_t_full:
-#        ph5_object.ph5_g_receivers.populateIndex_t(entry)
-#
-#    obs.update_external_references(index_t_full)
-#    ph5_object.ph5close()
-#
-#
-#if __name__ == '__main__':
-#    main()
+ph5_obj.ph5close()
