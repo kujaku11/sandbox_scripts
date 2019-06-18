@@ -2,36 +2,49 @@
 PF: Gravity: Inversion Linear
 =============================
 
-Create a synthetic block model and invert
-with a compact norm
+Create a synthetic block model and calculate forward model
 
 """
+
+# =============================================================================
+# Imports
+# =============================================================================
 import numpy as np
 import matplotlib.pyplot as plt
 
 from SimPEG import Mesh
 from SimPEG import Utils
 from SimPEG import Maps
-from SimPEG import Regularization
-from SimPEG import DataMisfit
-from SimPEG import Optimization
-from SimPEG import InvProblem
-from SimPEG import Directives
-from SimPEG import Inversion
 from SimPEG import PF
 
-
-#def run(plotIt=True):
-
-### Create a mesh
+# =============================================================================
+# Inputs
+# =============================================================================
 ### cell width in kilometers?
-dx = 5.
+dx = 2.
+dy = 2
+dz = 2
 
+nx = 30
+ny = 30
+nz = 10
+
+pad_x = 5
+pad_y = 5
+pad_z = 5
+
+pad_x_factor = 1.3
+pad_y_factor = 1.3
+pad_z_factor = 1.3
+
+# =============================================================================
+# 
+# =============================================================================
 ### ( initial width, number of cells, increase by factor)
 ### (pad, center, pad)
-hx_ind = [(dx, 5, -1.3), (dx, 15), (dx, 5, 1.3)]
-hy_ind = [(dx, 5, -1.3), (dx, 15), (dx, 5, 1.3)]
-hz_ind = [(dx, 5, -1.3), (dx, 7), (3.5, 1), (2, 5)]
+hx_ind = [(dx, pad_x, -pad_x_factor), (dx, nx), (dx, pad_x, pad_x_factor)]
+hy_ind = [(dy, pad_y, -pad_y_factor), (dy, ny), (dy, pad_y, pad_y_factor)]
+hz_ind = [(dz, pad_z, -pad_z_factor), (dz, nz), (3.5, 1), (2, 5)]
 
 ### make a mesh
 mesh = Mesh.TensorMesh([hx_ind, hy_ind, hz_ind], 'CCC')
@@ -74,12 +87,12 @@ grav_survey = PF.BaseGrav.LinearSurvey(grav_src_field)
 # We can now create a density model and generate data
 # Here a simple block in half-space
 model = np.zeros((mesh.nCx, mesh.nCy, mesh.nCz))
-model[(mid_x-5):(mid_x-1), (mid_y-2):(mid_y+2), -10:-6] = 5.75
-model[(mid_x+1):(mid_x+5), (mid_y-2):(mid_y+2), -10:-6] = -0.75
-model = Utils.mkvc(model)
-model = model[active_cells]
+model[(mid_x-5):(mid_x-1), (mid_y-2):(mid_y+2), -10:-6] = 2.75
+model[(mid_x+1):(mid_x+5), (mid_y-2):(mid_y+2), -10:-6] = -1.75
+model_vec = Utils.mkvc(model)
+model_vec = model_vec[active_cells]
 
-# Create active map to go from reduce set to full
+# Mape the active cells from the mesh
 active_map = Maps.InjectActiveCells(mesh, active_cells, -100)
 
 # Create reduced identity map
@@ -90,24 +103,35 @@ grav_fwd = PF.Gravity.GravityIntegral(mesh,
                                       rhoMap=identity_map, 
                                       actInd=active_cells)
 
-# Pair the survey and problem
+## Pair the survey and problem
 grav_survey.pair(grav_fwd)
 
 # Compute linear forward operator and compute some data
-d = grav_fwd.fields(model)
+data = grav_fwd.fields(model_vec)
 
-# Add noise and uncertainties
-# We add some random Gaussian noise (1nT)
-data = d + np.random.randn(len(d))*1e-3
-wd = np.ones(len(data))*1e-3  # Assign flat uncertainties
+## Add noise and uncertainties
+## We add some random Gaussian noise (1nT)
+#data = d + np.random.randn(len(d))*1e-3
+#wd = np.ones(len(data))*1e-3  # Assign flat uncertainties
+#
 
-grav_survey.dobs = data
-grav_survey.std = wd
-grav_survey.mtrue = model
+#grav_survey.dobs = data
+#grav_survey.std = wd
+#grav_survey.mtrue = model
 
 im_cb, ax = Utils.PlotUtils.plot2Ddata(rx_loc.locs, data)
 plt.colorbar(im_cb)
 plt.scatter(X_r, Y_r, marker='o', s=1)
+
+fig = plt.figure()
+ax1 = fig.add_subplot(1, 2, 1, aspect='equal')
+l = mesh.plotSlice(active_map*model_vec, ind=11,
+                   ax=ax1, normal='Z', grid=True, clim=(-2, 2))
+ax2 = fig.add_subplot(1, 2, 2, aspect='equal', sharex=ax1)
+l = mesh.plotSlice(active_map*model_vec, ax=ax2, normal='Y',
+                   grid=True, clim=(-2, 2), ind=mid_x)
+plt.colorbar(l[0])
+plt.show()
 
 ## Create sensitivity weights from our linear forward operator
 #rxLoc = survey.srcField.rxList[0].locs
