@@ -14,9 +14,9 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = r"c:\Users\jpeacock\Documents\Geysers\EDI_Files\Rotated_m50_deg"
-save_path = r"c:\Users\jpeacock\Documents\Geysers\modem_inv\inv05"
-topo_fn = r"c:\Users\jpeacock\Documents\Geysers\geysers_dem_150m.txt"
+edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited"
+save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv05"
+topo_fn = r"c:\Users\jpeacock\Documents\ClearLake\dem\geysers_dem_150m.txt"
 
 fn_stem = 'gz'
 s_edi_list = [os.path.join(edi_path, ss) for ss in os.listdir(edi_path)
@@ -97,6 +97,7 @@ mod_obj.ns_ext = 350000
 mod_obj.z_bottom = 250000
 mod_obj.z_target_depth = 20000
 mod_obj.pad_stretch_v = 2.5
+mod_obj.res_initial_value = 50.0
 mod_obj.z_mesh_method = 'new'
 
 # number of layers
@@ -132,10 +133,10 @@ mod_obj.plot_topography()
 # make the covariance file
 #==============================================================================
 cov = modem.Covariance(grid_dimensions=mod_obj.res_model.shape)
-cov.smoothing_east = 0.3
-cov.smoothing_north = 0.3
-cov.smoothing_z = 0.3
-cov.smoothing_num = 2
+cov.smoothing_east = 0.5
+cov.smoothing_north = 0.5
+cov.smoothing_z = 0.5
+cov.smoothing_num = 1
 
 cov.write_covariance_file(os.path.join(save_path, 'covariance.cov'),
                           model_fn=mod_obj.model_fn)
