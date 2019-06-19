@@ -8,12 +8,12 @@ Created on Fri Nov 07 09:15:17 2014
 import mtpy.utils.shapefiles as shapefiles
 import os
 
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_data_err03_tec_edit.dat"
-rfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_err03_cov02_NLCG_057.dat"
+dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_rm50_z03.dat"
+rfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_rm50_z03_c02_104.dat"
 
-save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03"
+save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04"
 map_projection = 'WGS84'
-theta_r = -13.7
+theta_r = 0
 
 def check_dir(directory_path):
     if os.path.isdir(directory_path) is False:
@@ -31,15 +31,15 @@ pts.save_path = os.path.join(save_path, 'gz_pt_data_gn')
 check_dir(pts.save_path)
 pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
 
-#save files for model response
-pts.save_path = os.path.join(save_path, 'gz_pt_model_gn')
-check_dir(pts.save_path)
-pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
-
-#save files for data-model
-pts.save_path = os.path.join(save_path, 'gz_pt_residual_gn')
-check_dir(pts.save_path)
-pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
+##save files for model response
+#pts.save_path = os.path.join(save_path, 'gz_pt_model_gn')
+#check_dir(pts.save_path)
+#pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
+#
+##save files for data-model
+#pts.save_path = os.path.join(save_path, 'gz_pt_residual_gn')
+#check_dir(pts.save_path)
+#pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
 
 #----------------------------------------------------------------
 ##--> write tipper information
