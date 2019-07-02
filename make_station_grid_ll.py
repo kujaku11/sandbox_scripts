@@ -70,14 +70,20 @@ import mtpy.utils.gis_tools as gis_tools
 #          'lat_min':38.75,
 #          'lat_max':39.2}
 
-### Mojave
-ll_utm = {'lon_min':-116.2,
-          'lon_max':-114.96,
-          'lat_min':34.73,
-          'lat_max':35.5}
+#### Mojave
+#ll_utm = {'lon_min':-116.2,
+#          'lon_max':-114.96,
+#          'lat_min':34.73,
+#          'lat_max':35.5}
 
-spacing_east = 10./111.34
-spacing_north = 10./111.34
+### Shark Tank
+ll_utm = {'lon_min':-118.5,
+          'lon_max':-117.9,
+          'lat_min':38.6,
+          'lat_max':39.10}
+dx = 5
+spacing_east = dx/111.34
+spacing_north = dx/111.34
 
 lat_arr = np.arange(ll_utm['lat_min'], 
                      ll_utm['lat_max']+spacing_north,
@@ -87,14 +93,14 @@ lon_arr = np.arange(ll_utm['lon_min'],
                      ll_utm['lon_max']+spacing_east,
                      spacing_east)
                      
-kml_fn = r"c:\Users\jpeacock\Documents\kml_files\mnp_{0:.0f}km.kml".format(10)
+kml_fn = r"c:\Users\jpeacock\Documents\kml_files\st_{0:.0f}km.kml".format(dx)
 
 kml_obj = skml.Kml()
 count = 100
 for ii, lat_ii in enumerate(lat_arr):
     for jj, lon_jj in enumerate(lon_arr):
 
-        kml_obj.newpoint(name='MNP{0:03}'.format(count),
+        kml_obj.newpoint(name='GV{0:03}'.format(count),
                          coords=[(lon_jj, lat_ii)])
                          
         count += 1
