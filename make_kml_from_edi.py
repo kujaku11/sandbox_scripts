@@ -5,29 +5,37 @@ Created on Wed Dec 03 10:40:47 2014
 @author: jpeacock-pr
 """
 
-import simplekml as skml
+import geopandas as gpd
+from shapely.geometry import Point
+import fiona
 import mtpy.core.mt as mt
-import os
+import glob
 
-edi_path = r"h:\MB_2018\USGS_MB_EDI_Files"
+fiona.supported_drivers['kml'] = 'rw'
+crs = {'init':'epsg:4326'}
 
-edi_list = [os.path.join(edi_path, edi) for edi in os.listdir(edi_path)
-            if edi.find('.edi')>0]
+edi_path = r"/mnt/hgfs/MTData/SAGE_2019/EDI_Files_birrp/*.edi"
+
+edi_list = glob.glob(edi_path)[6:]
                     
-
-kml_obj = skml.Kml()
-
+geometry = []
+stations = {'ID':[],
+            'elev':[],
+            'lat':[],
+            'lon':[]}
 
 for edi in edi_list:
     mt_obj = mt.MT(edi)
-    pnt = kml_obj.newpoint(name=mt_obj.station, 
-                           coords=[(mt_obj.lon, mt_obj.lat, mt_obj.elev)])
-    pnt.style.labelstyle.color = skml.Color.white
-    pnt.style.labelstyle.scale = .8
-    pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/dir_60.png'
-    pnt.style.iconstyle.scale = .8
-
-kml_obj.save(os.path.join(edi_path, "mb_mt_stations_all.kml"))
+    geometry.append(Point(mt_obj.lon, mt_obj.lat))
+    stations['ID'].append(mt_obj.station)
+    stations['elev'].append(mt_obj.elev)
+    stations['lat'].append(mt_obj.lat)
+    stations['lon'].append(mt_obj.lon)
+    
+gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
+gdf.to_file(r"/mnt/hgfs/MTData/SAGE_2019/EDI_Files_birrp/SAGE_2019_mt_stations.kml",
+            driver='kml')
+#kml_obj.save(os.path.join(edi_path, "SAGE_2019_mt_stations.kml"))
     
             
             
