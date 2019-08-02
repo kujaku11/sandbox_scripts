@@ -54,7 +54,7 @@ class MTtoPH5(object):
                           - EX, EY, HX, HY, HZ
                       * Schedule or Run 02
                           - EX, EY, HX, HY, HZ
-                  - MT station 01 
+                  - MT station 02 
                       * Schedule or Run 01
                           - EX, EY, HX, HY, HZ
                       * Schedule or Run 02
