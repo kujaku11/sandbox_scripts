@@ -7,6 +7,7 @@ Created on Tue Nov 20 13:55:06 2018
 
 import pandas as pd
 import geopandas as gpd
+import numpy as np
 from shapely.geometry import Point
 
 csv_fn = r"c:\Users\jpeacock\Documents\ArcGIS\minerals\mrds.csv"
@@ -22,8 +23,17 @@ exempt_list = ['ash', 'cement rock', 'clay', 'construction', 'crushed/broken',
 crs = {'init':'epsg:4326'}
 
 df = pd.read_csv(csv_fn, usecols=cols, keep_default_na=False)
-df = df[(df.latitude < 39.2) & (df.latitude > 38.5) & 
-        (df.longitude < -122.5) & (df.longitude > -123.0)]
+df.latitude.replace('', np.nan, inplace=True)
+df.longitude.replace('', np.nan, inplace=True)
+
+df.dropna(subset=['latitude', 'longitude'], inplace=True)
+df.latitude = df.latitude.astype(np.float)
+df.longitude = df.longitude.astype(np.float)
+
+#df = df[(df.latitude < 39.1) & (df.latitude > 38.5) & 
+#        (df.longitude < -117.75) & (df.longitude > -118.5)]
+df = df[(df.latitude < 49.1) & (df.latitude > 31) & 
+        (df.longitude < -67) & (df.longitude > -124)]
 df = df.reset_index()
 
 # get a list of the ore types
@@ -49,16 +59,17 @@ for ii in range(df.shape[0]):
     for ore in ore_list:
         if ore in site_ores:
             df.at[ii, ore] = 1
+df = df.reset_index()
+#df.to_csv(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\ores.csv", 
+#          index=False)
 
-df.to_csv(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\geysers_ores.csv", 
-          index=False)
-
+#df = pd.read_csv(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\gabbs_ores.csv")
 #points = [Point(x, y) for x, y in zip(df.longitude, df.latitude)]
 #df = df.drop(['commod1', 'commod2', 'commod3', 'latitude', 'longitude'], axis=1)
 df = df.rename(columns={'site_name':'site'})
 df.site = df.site.astype(str)
 
-for ore in ore_list:
+for ore in ['gold', 'silver', 'mercury']:
     ore_df = df[['site', 'latitude', 'longitude', 'dep_id', 'dev_stat', ore]]
     ore_df = ore_df[ore_df[ore] == 1]
     ore_df = ore_df.reset_index()
@@ -67,6 +78,6 @@ for ore in ore_list:
     if ore_df.shape[0] == 0:
         continue
     gdf = gpd.GeoDataFrame(ore_df, crs=crs, geometry=points)
-    gdf.to_file(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\geysers_{0}.shp".format(ore))
+    gdf.to_file(r"c:\Users\jpeacock\Documents\ArcGIS\minerals\world {0}.shp".format(ore))
     
 
