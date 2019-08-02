@@ -14,9 +14,9 @@ import glob
 fiona.supported_drivers['kml'] = 'rw'
 crs = {'init':'epsg:4326'}
 
-edi_path = r"/mnt/hgfs/MTData/SAGE_2019/EDI_Files_birrp/*.edi"
+edi_path = r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\*.edi"
 
-edi_list = glob.glob(edi_path)[6:]
+edi_list = glob.glob(edi_path)
                     
 geometry = []
 stations = {'ID':[],
@@ -33,7 +33,7 @@ for edi in edi_list:
     stations['lon'].append(mt_obj.lon)
     
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
-gdf.to_file(r"/mnt/hgfs/MTData/SAGE_2019/EDI_Files_birrp/SAGE_2019_mt_stations.kml",
+gdf.to_file(r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\mv_mt_stations_all.kml",
             driver='kml')
 #kml_obj.save(os.path.join(edi_path, "SAGE_2019_mt_stations.kml"))
     

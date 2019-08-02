@@ -7,6 +7,12 @@ Created on Mon Mar 02 11:58:23 2015
 
 import mtpy.modeling.modem as modem
 import os
+import matplotlib.pyplot as plt
+
+plt.rcParams['svg.fonttype'] = 'none'
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['font.family'] = 'Tahoma'
+
 
 dfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\med_modem_data_z07_t06.dat"
 rfn = r"c:\Users\jpeacock\OneDrive - DOI\med_report\data\Med_SS_Z3T2_NLCG_168.dat"
@@ -16,44 +22,48 @@ data_obj = modem.Data()
 data_obj.read_data_file(dfn)
 
 station_list = data_obj.station_locations.station.copy()
+plot_type = 'response'
+file_fmt = 'pdf'
 
-pm = modem.PlotRMSMaps(rfn[:-4]+'.res',
-                       marker='o',
-                       marker_size=5,
-                       save_path=sv_path,
-                       fig_size=[4.75, 6],
-                       subplot_right=.875,
-                       tick_locator=.5,
-                       text_pad=.09,
-                       subplot_vspace=.1,
-                       subplot_left=.15)
+if plot_type == 'maps':
+    pm = modem.PlotRMSMaps(rfn[:-4]+'.res',
+                           marker='o',
+                           marker_size=5,
+                           save_path=sv_path,
+                           fig_size=[4.75, 6],
+                           subplot_right=.875,
+                           tick_locator=.5,
+                           text_pad=.09,
+                           subplot_vspace=.1,
+                           subplot_left=.15)
+#    pm.plot()
+    pm.plot_loop(fig_format=file_fmt)
 
-pm.plot_loop(fig_format='svg')
-
-#pr = modem.PlotResponse(data_fn=dfn, resp_fn=rfn, 
-#                        plot_type=station_list[16],
-#                        fig_size=[9, 3.25],
-#                        ms=2, 
-#                        subplot_bottom=.12,
-#                        subplot_left=.05,
-#                        font_size=5.7,
-#                        plot_z = False,
-#                        cted=(0, 0, 0),
-#                        ctmd=(0, 0, 0),
-#                        ctem=(0.75, .0, 0.0),
-#                        ctmm=(0.75, .0, .0),
-#                        mted='o',
-#                        mtem='x',
-#                        mtmm='x',
-#                        subplot_wspace=.20)
-#               
-#for ss in station_list:
-#    pr.plot_type = ss
-#    pr.redraw_plot()
-#    pr.save_figure(save_fn=os.path.join(sv_path,
-#                    'Appendix_03_{0}.svg'.format(ss)),
-#                    file_format='svg',
-#                    fig_dpi=300, close_fig='y')
+if plot_type == 'response':
+    pr = modem.PlotResponse(data_fn=dfn, resp_fn=rfn, 
+                            plot_type=station_list[0],
+                            fig_size=[9, 3.25],
+                            ms=2, 
+                            subplot_bottom=.12,
+                            subplot_left=.05,
+                            font_size=5.7,
+                            plot_z = False,
+                            cted=(0, 0, 0),
+                            ctmd=(0, 0, 0),
+                            ctem=(0.75, .0, 0.0),
+                            ctmm=(0.75, .0, .0),
+                            mted='o',
+                            mtem='x',
+                            mtmm='x',
+                            subplot_wspace=.20)
+                   
+    for ss in station_list:
+        pr.plot_type = ss
+        pr.redraw_plot()
+        pr.save_figure(save_fn=os.path.join(sv_path,
+                        'Appendix_03_{0}.{1}'.format(ss, file_fmt)),
+                        file_format=file_fmt,
+                        fig_dpi=300, close_fig='y')
 
                     
 #lines = []

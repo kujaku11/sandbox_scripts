@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 """
+<<<<<<< HEAD
 Created on Wed Jul 17 17:05:20 2019
+=======
+Created on Wed Jul 31 17:11:39 2019
+>>>>>>> 94498863e710fa56fd323473e2c7b019fc1b0edf
 
 @author: jpeacock
 """
 
+<<<<<<< HEAD
 # =============================================================================
 # Imports
 # =============================================================================
@@ -57,3 +62,8 @@ ph5_test_path = initialize_ph5_file(r"c:\Users\jpeacock\Documents\GitHub\PH5\ph5
 
 
     
+=======
+import numpy as np
+import pymc3 as pm
+
+>>>>>>> 94498863e710fa56fd323473e2c7b019fc1b0edf
