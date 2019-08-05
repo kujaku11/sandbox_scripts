@@ -33,7 +33,7 @@ fig.clf()
 
 ax = fig.add_subplot(1, 1, 1, aspect='equal')
 im = ax.pcolormesh(x_plot/1000, y_plot/1000, np.log10(c_map), cmap='CMRmap',
-                   vmin=1.6, vmax=2.5)
+                   vmin=1.75, vmax=2.15)
 ax.set_xlabel('Easting (m)')
 ax.set_ylabel('Northing (m)')
 
