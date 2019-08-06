@@ -13,32 +13,38 @@ from scipy import stats
 # =============================================================================
 # Inputs
 # =============================================================================
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\resistivity_sampling_points.csv"
+fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\resistivity_sampling_points_inv06.csv"
 cmap = 'Blues'
 
 f_bins = np.logspace(0, 3, num=200)
 
 rock_dict = {'fsp':'fsp - Franciscan Serpentinite',
-             'fgw':'fgw - Franciscan Greywacke',
-             'Qtb':'Qtb - Caldwell Pines',
-             'fmgw':'fmgw - Franciscan Metagreywacke', 
-             'fsrgw': 'fsrgw - Franciscan Greywackey',
-             'Qls': 'Qls', 
+             'fgw':'fgw - Franciscan graywacke',
+             'Qtb':'Qtb - basalt Caldwell Pines',
+             'fmgw':'fmgw - Franciscan Metagraywacke', 
+             'fsrgw': 'fsrgw - Franciscan graywacke Melange',
+             'Qls': 'Qls - landslide deposits', 
              'fgs': 'fgs - Franciscan Greenstone',
              'fsch': 'fsch - Franciscan Schist',
-             'Qt': 'Qt', 
+             'Qt': 'Qt - terrace deposits', 
              'fch': 'fch - Franciscan Chert',
-             'KJgv': 'KJgv - Great Valley', 
-             'Qal': 'Qal',
-             'abm': 'abm',
-             'KJf':'KJf', 
-             'Qc': 'Qc',
-             'Qdcf': 'Qdcf',
-             'Qraf': 'Qraf',
-             'mum':'metamorphic ultra-mafics', 
-             'Qf': 'Qf - Felsite', 
-             'Jos': 'Jos - Ophiolite',
-             'Qsc': 'Qsc'}
+             'KJgv': 'KJgv - Great Valley Sequence', 
+             'Qal': 'Qal - alluvium',
+             'abm': 'Qabm - andesite Bogg Mountain',
+             'KJf':'KJf - Franciscan Assemblage', 
+             'Qc': 'Qc - Coalluvium',
+             'Qdcf': 'Qdcf - rhyodacite Cobb Mountain',
+             'Qraf': 'Qraf - rhyolite flows Alder Creek',
+             'mum':'fmum - metamorphic ultra-mafics', 
+             'Qf': 'Qf - Fill Deposits', 
+             'Jos': 'Jos - Coast Range Ophiolite',
+             'Qsc': 'Qsc - silica carbonate',
+             'Qdcv':'Qdcv - dacite Cobb Valley',
+             'Qvc':'Qvc - rhyodacite flows and domes Cobb Mountain',
+             'Qmt':'Qmt - mine tailings'}
+
+depth_dict = {'fgw':(None, 700),
+              'Qf':(0, 3000)}
 # =============================================================================
 #  define fit a log normal distribution to data
 # =============================================================================
@@ -58,6 +64,40 @@ def fit_lognorm(x_data, y_data):
            
     return pdf, shape*fwhm
 
+def get_layer_depth(layer_name):
+    """
+    get the layer depth from given name
+    """
+    find_01 = layer_name.find('_') + 1
+    if layer_name.count('m') > 1:
+        find_02 = layer_name.find('m', 4)
+        find_01 += 1
+        scale = -1
+    else:
+        find_02 = layer_name.find('m')
+        scale = 1
+    depth = int(layer_name[find_01:find_02]) * scale
+    return depth
+
+def get_layers(layer_list, depth):
+    """
+    get only the layers for the given geology
+    """
+    
+    layer_dict = dict([(layer, get_layer_depth(layer)) for layer in layer_list])
+    return_list = []
+    if depth[0] is None:
+        for layer, l_depth in layer_dict.items():
+            if l_depth <= depth[1]:
+                return_list.append(layer)
+    else:
+        for layer, l_depth in layer_dict.items():
+            if l_depth >= depth[0] and l_depth <= depth[1]:
+                return_list.append(layer)
+                
+    return return_list
+        
+        
 # =============================================================================
 # Start script
 # =============================================================================
@@ -74,7 +114,12 @@ res_dict = {'rock_type':[],
 
 for rock_type in rock_types[1:]:
     rock_df = df[df.Code == rock_type]
-    res_df = rock_df[layers]
+    try:
+        depth_range = depth_dict[rock_type]
+    except KeyError:
+        depth_range = depth_dict['fgw']
+    rock_layers = get_layers(layers, depth_range)
+    res_df = rock_df[rock_layers]
     res_df = res_df.where(res_df < 10)
     res = 10**res_df.stack().values
     
@@ -111,6 +156,7 @@ for rock_type in rock_types[1:]:
     except IndexError:
         print('Something wrong with min in {0}'.format(rock_type))
         pass
+    
     ax.plot(res_bins[:-1], res_lognorm, color=(.96, .6, 0), lw=2)
     
     ax.set_xlim(1, 1000)
@@ -120,14 +166,17 @@ for rock_type in rock_types[1:]:
     
     fig.suptitle(rock_dict[rock_type])
     
-    ax.legend([res_lk, res_min], 
-              ['mode = {0:<5.4g} $\Omega \cdot m$'.format(res_mlk),
-               'std = {0:<5.4g} $\Omega \cdot m$'.format(res_sigma)],
-               loc='upper right')
+    l2, = ax.plot([None, None], [None, None], 'b', ls='none')
+    res_mlk_data = res_bins[np.where(n_values == n_values.max())][0]
+    ax.legend([res_lk, res_min, l2], 
+              ['fit mode = {0:<5.4g} $\Omega \cdot m$'.format(res_mlk),
+               'fit std = {0:<5.4g} $\Omega \cdot m$'.format(res_sigma),
+               'data mode = {0:<5.4g} $\Omega \cdot m$'.format(res_mlk_data)],
+               loc='upper left')
 
     
     plt.show()
-    fig.savefig(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\{0}_res.png".format(rock_type),
+    fig.savefig(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\inv_06_{0}_res.png".format(rock_type),
                 dpi=1200)
     
     res_dict['rock_type'].append(rock_type)

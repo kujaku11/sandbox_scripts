@@ -8,9 +8,10 @@ Created on Fri Aug  2 15:25:48 2019
 from mtpy.modeling import modem
 import numpy as np
 import matplotlib.pyplot as plt
+from mtpy.utils import array2raster
 
-mfn = r"c:\Users\jpeacock\Documents\Geysers\modem_inv\inv06\gz_steam_field_inv06.rho"
-dfn =r"c:\Users\jpeacock\Documents\Geysers\modem_inv\inv06\gz_modem_data_z03_topo.dat"
+mfn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_steam_field_inv06.rho"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_modem_data_z03_topo.dat"
 
 d_obj = modem.Data()
 d_obj.read_data_file(dfn)
@@ -49,3 +50,9 @@ ax.set_ylim((-8, 8))
 plt.colorbar(im, ax=ax)
 
 plt.show()
+array2raster.array2raster(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\steam_map.tif",
+                          (-122.96702 + .026, 38.732042 + .023),
+                          200, 
+                          200,
+                          np.log10(c_map))   
+                          

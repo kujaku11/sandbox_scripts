@@ -53,7 +53,7 @@ rastExtent = arcpy.sa.Raster(studyAreaRaster).extent
 arcpy.env.extent = rastExtent
 arcpy.env.snapRaster = studyAreaRaster
 arcpy.env.mask = studyAreaRaster
-pdCellSize = int(float(str(arcpy.GetRasterProperties_management(studyAreaRaster, "CELLSIZEX"))))
+pdCellSize = int(round(float(str(arcpy.GetRasterProperties_management(studyAreaRaster, "CELLSIZEX")))))
 print('Cell Size = ' + str(pdCellSize))
 
 '''
