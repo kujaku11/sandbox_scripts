@@ -10,7 +10,7 @@ import numpy as np
 from mtpy.modeling import modem
 from scipy import interpolate
 
-m_fn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv03\gz_err03_cov02_NLCG_057.rho"
+m_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_z03_c02_074.rho"
 fn_steam = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\tos_points_mc.csv"
 fn_felsite = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\Top_Felsite_Points_WGS84_mc.csv"
 
