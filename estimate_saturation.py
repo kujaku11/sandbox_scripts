@@ -8,6 +8,7 @@ import numpy as np
 #from mtpy.modeling import modem
 #from scipy import interpolate
 import matplotlib.pyplot as plt
+import pandas as pd
 
 fn = r"c:\Users\jpeacock\Documents\Geysers\modem_inv\inv04\gz_rm50_z03_c05_107.rho"
 
@@ -83,7 +84,25 @@ class Glover(object):
             phase = getattr(self, 'phase_{0:02}'.format(ii+1))
             res += phase.calculate_phase()
             
-        return res
+        return 1./res
+    
+    @property
+    def x(self):
+        """
+        get the x axis 
+        """
+        x = self.phase_01.phi
+        if type(x) is float:
+            x = np.array([x])
+        for ii in range(self.num_phases):
+            phase = getattr(self, 'phase_{0:02}'.format(ii+1))
+            try:
+                if len(phase.phi) > len(x):
+                    x = phase.phi
+            except TypeError:
+                pass
+                    
+        return x
     
     def plot(self):
         """
@@ -93,35 +112,82 @@ class Glover(object):
         fig = plt.figure()
         fig.clf()
         
-        ax = fig.add_subplot(1, 1, 1)
-        
+        ax_01 = fig.add_subplot(2, 1, 1)
+        ax_02 = fig.add_subplot(2, 1, 2, sharex=ax_01)
         line_list = []
         label_list = []
         for ii in range(self.num_phases):
             phase = getattr(self, 'phase_{0:02}'.format(ii+1))
-            res = phase.calculate_phase()
-            line, = ax.plot(1./res)
+            line, = ax_01.plot(phase.phi, 1./phase.calculate_phase())
             line_list.append(line)
             label_list.append(phase.label)
             
-        line, = ax.plot(1./self.estimate_resistivity())
-        line_list.append(line)
-        label_list.append('Total')
-        ax.legend(line_list, label_list)
+        ax_01.legend(line_list, label_list)
+        line, = ax_02.plot(self.x[::-1], self.estimate_resistivity(), 'r')
         
-        ax.set_ylabel('Resistivity ($\Omega \cdot m$)')
-        ax.set_yscale('log')
+        for ax in [ax_01, ax_02]:
+            ax.set_ylabel('Resistivity ($\Omega \cdot m$)')
+            ax.set_xlabel('Percent Contribution')
+            ax.set_yscale('log')
         
         plt.show()
             
 s = np.linspace(0, .95)
 g = Glover()
-g.phase_01.from_dict({'sigma':1./10000, 'phi':1-s, 'm':.5, 'label':'rock'})
-g.phase_02.from_dict({'sigma':1./10000, 'phi':s, 'm':1.5, 'label':'steam'})
-g.phase_03.from_dict({'sigma':1./.001, 'phi':.05, 'm':3.5,
+g.phase_01.from_dict({'sigma':1./10000, 'phi':.88, 'm':.05, 'label':'rock'})
+g.phase_02.from_dict({'sigma':1./.5, 'phi':.08, 'm':2., 'label':'EDL'})
+g.phase_03.from_dict({'sigma':1./.01, 'phi':.04, 'm':3.5,
                       'label':'pyrite'})
-print('resistivity = {0}'.format(g.estimate_resistivity()))
-g.plot()
+g.phase_04.from_dict({'sigma':1./1000, 'phi':.04, 'm':2,
+                      'label':'steam'})
+#g.phase_01.from_dict({'sigma':1./100, 'phi':1-s, 'm':.5, 'label':'rock'})
+#g.phase_02.from_dict({'sigma':1./1000, 'phi':s, 'm':1.5, 'label':'steam'})
+#g.phase_03.from_dict({'sigma':1./.01, 'phi':.05, 'm':3.5,
+#                      'label':'pyrite'})
+    
+#res_min, res_max = (20, 50)
+#r_dict = {'res':[], 'phi_r':[], 'phi_f':[], 'phi_p':[]}
+#for phi_r in np.linspace(.85, .99, num=400):
+#    for phi_f in np.linspace(0, .15, num=400):
+#        for phi_p in np.linspace(0, .05, num=400):
+#            if phi_r + phi_f + phi_p == 1:
+#                g.phase_01.phi = phi_r
+#                g.phase_02.phi = phi_f
+#                g.phase_03.phi = phi_p
+#                res = g.estimate_resistivity()
+#                if res >= res_min and res <= res_max: 
+#                    r_dict['res'].append(res)
+#                    r_dict['phi_r'].append(phi_r)
+#                    r_dict['phi_f'].append(phi_f)
+#                    r_dict['phi_p'].append(phi_p)
+#                    
+#df = pd.DataFrame(r_dict)
+#df.hist(bins=50)
+                
+res_min, res_max = (60, 340)
+r_dict = {'res':[], 'phi_r':[], 'phi_f':[], 'phi_p':[], 'phi_s':[]}
+for phi_r in np.linspace(.87, .99, num=100):
+    for phi_f in np.linspace(.0, .13, num=100):
+        for phi_p in np.linspace(.0, .05, num=100):
+            for phi_s in np.linspace(0, .1, num=400):
+                if phi_r + phi_f + phi_p + phi_s == 1:
+                    g.phase_01.phi = phi_r
+                    g.phase_02.phi = phi_f
+                    g.phase_03.phi = phi_p
+                    g.phase_04.phi = phi_s
+                    res = g.estimate_resistivity()
+                    if res >= res_min and res <= res_max: 
+                        r_dict['res'].append(res)
+                        r_dict['phi_r'].append(phi_r)
+                        r_dict['phi_f'].append(phi_f)
+                        r_dict['phi_p'].append(phi_p)
+                        r_dict['phi_s'].append(phi_s)
+                    
+df = pd.DataFrame(r_dict)
+df.hist(bins=50)    
+    
+#print('resistivity = {0}'.format(g.estimate_resistivity()))
+#g.plot()
 
 
 

@@ -31,9 +31,11 @@ x_plot, y_plot = np.meshgrid(m_obj.plot_east-1150, m_obj.plot_north-2300)
 fig = plt.figure(2)
 fig.clf()
 
+plot_map = np.log10(c_map)/np.nanmax(np.log10(c_map))
+
 ax = fig.add_subplot(1, 1, 1, aspect='equal')
-im = ax.pcolormesh(x_plot/1000, y_plot/1000, np.log10(c_map), cmap='CMRmap',
-                   vmin=1.75, vmax=2.15)
+im = ax.pcolormesh(x_plot/1000, y_plot/1000, plot_map, cmap='CMRmap',
+                   vmin=.6, vmax=.95)
 ax.set_xlabel('Easting (m)')
 ax.set_ylabel('Northing (m)')
 
