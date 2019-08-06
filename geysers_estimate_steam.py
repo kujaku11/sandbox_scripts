@@ -64,7 +64,8 @@ for x_index, xx in enumerate(m_obj.grid_north):
 steam[np.where(m_obj.res_model > 1E11)] = 1E12
 
 m_obj.res_model = steam
-m_obj.write_vtk_file(vtk_fn_basename='geysers_steam_res')
+m_obj.write_vtk_file(vtk_fn_basename='geysers_steam_res_inv06')
+m_obj.write_model_file(model_fn_basename='gz_steam_field_inv06.rho')
 
 
     
