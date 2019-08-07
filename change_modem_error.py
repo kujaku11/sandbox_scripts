@@ -15,18 +15,7 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv05\gz_modem_data_z03_edit.dat"
-
-#remove_stations = []
-#shady_stations = ['GZ05', 'GZ27', 'GZ31']
-#remove_x = []
-#remove_y = []
-#flip_phase_x = ['GZ05']
-#flip_phase_y = []
-#static_shift_x = [('GZ05', 2), ('GZ27', 2)]
-#static_shift_y = [('GZ05', 2)]
-#swap_channel = [('GZ31', ((1, 0), (1, 1))), 
-#                ('GZ05', ((0, 0), (0, 1)))]
+dfn = r"c:\Users\jpeacock\Documents\ShanesBugs\QHGH-MT-EDI\inv_01\qh_modem_data_03_edited.dat"
 
 remove_stations = []
 shady_stations = []
@@ -49,7 +38,7 @@ z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'gz'
+sv_fn = 'qh'
 log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv_fn))
 # =============================================================================
 # change data file
