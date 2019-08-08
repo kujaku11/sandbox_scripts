@@ -1,69 +1,74 @@
 # -*- coding: utf-8 -*-
 """
-<<<<<<< HEAD
-Created on Wed Jul 17 17:05:20 2019
-=======
-Created on Wed Jul 31 17:11:39 2019
->>>>>>> 94498863e710fa56fd323473e2c7b019fc1b0edf
+Created on Thu Aug  8 10:42:51 2019
 
 @author: jpeacock
 """
 
-<<<<<<< HEAD
-# =============================================================================
-# Imports
-# =============================================================================
-import logging
-import os
-import re
-import glob
-from pathlib import Path
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
-from ph5.core import experiment
+csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\rock_resistivity_summary.csv"
 
-# =============================================================================
-# Begin tools
-# =============================================================================
-
-### Initialize a PH5 file
-def initialize_ph5_file(ph5_fn):
-    """Initialize a PH5 file given a file name.  This will build the 
-    appropriate groups needed in a PH5 file.
-    
-    :param ph5_fn: full path to ph5 file to be created
-    :type ph5_fn: string or Path
-    
-    :return: opened message
-    :rtype: bool [True | False]
-    
-    :return: ph5_fn
-    :rtype: string
+def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
     """
-    
-    ph5_path = Path(ph5_fn)
-    
-    ph5_obj = experiment.ExperimentGroup(nickname=ph5_path.name,
-                                         currentpath=ph5_path.parent)
-    ph5_obj.ph5open(True)
-    ph5_obj.initgroup()
-    ph5_obj.ph5close()
-    
-    print("Made PH5 File {0}".format(ph5_path))
-    
-    return str(ph5_path) 
- 
-### Add an array to a PH5 file
-    
+    Draw a gradient image based on a colormap.
+
+    Parameters
+    ----------
+    ax : Axes
+        The axes to draw on.
+    extent
+        The extent of the image as (xmin, xmax, ymin, ymax).
+        By default, this is in Axes coordinates but may be
+        changed using the *transform* kwarg.
+    direction : float
+        The direction of the gradient. This is a number in
+        range 0 (=vertical) to 1 (=horizontal).
+    cmap_range : float, float
+        The fraction (cmin, cmax) of the colormap that should be
+        used for the gradient, where the complete colormap is (0, 1).
+    **kwargs
+        Other parameters are passed on to `.Axes.imshow()`.
+        In particular useful is *cmap*.
+    """
+    phi = direction * np.pi / 2
+    v = np.array([np.cos(phi), np.sin(phi)])
+    X = np.array([[v @ [1, 0], v @ [1, 1]],
+                  [v @ [0, 0], v @ [0, 1]]])
+    a, b = cmap_range
+    X = a + (b - a) / X.max() * X
+    im = ax.imshow(X, extent=extent, interpolation='bicubic',
+                   vmin=0, vmax=1, **kwargs)
+    return im
+
+
+def gradient_bar(ax, x, y, width=0.5, bottom=0):
+    for left, top in zip(x, y):
+        right = left + width
+        gradient_image(ax, extent=(left, right, bottom, top),
+                       cmap=plt.cm.Blues_r, cmap_range=(0, 0.8))
+
 # =============================================================================
-# Tests    
+# plot bars on color scale
 # =============================================================================
-ph5_test_path = initialize_ph5_file(r"c:\Users\jpeacock\Documents\GitHub\PH5\ph5\test_data\test.ph5")
+df = pd.read_csv(csv_fn)
+        
+#xmin, xmax = xlim = 0, 10
+#ymin, ymax = ylim = 0, 1
 
+fig, ax = plt.subplots()
 
-    
-=======
-import numpy as np
-import pymc3 as pm
+#ax.set(xlim=xlim, ylim=ylim, autoscale_on=False)
 
->>>>>>> 94498863e710fa56fd323473e2c7b019fc1b0edf
+# background image
+#gradient_image(ax, direction=0, extent=(0, 1, 0, 1), transform=ax.transAxes,
+#               cmap=plt.cm.Oranges, cmap_range=(0.1, 0.6))
+
+for row in df.iterrows():
+    bar_extent = (row.pdf_50_min, row.pdf_50_max, row.index, row.index*1.5)
+    gradient_image(ax, extent=bar_extent, cmap=plt.cm.jet_r, 
+                   cmap_range(1, 500))
+ax.set_aspect('auto')
+plt.show()
