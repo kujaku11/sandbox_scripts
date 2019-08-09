@@ -36,10 +36,11 @@ rock_dict = {'fsp':'fsp - Franciscan Serpentinite',
              'Qdcv':'Qdcv - dacite Cobb Valley',
              'Qvc':'Qvc - rhyodacite flows and domes Cobb Mountain',
              'Qmt':'Qmt - mine tailings',
-             'felsite':'felsite'}
+             'felsite':'felsite',
+             'steam':'steam field'}
 
-def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1),
-                   data_range=None, **kwargs):
+def gradient_image(ax, extent, cmap_range=(0, 1), data_range=(0, 1),
+                   cmap=plt.jet):
     """
     Draw a gradient image based on a colormap.
 
@@ -61,23 +62,12 @@ def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1),
         Other parameters are passed on to `.Axes.imshow()`.
         In particular useful is *cmap*.
     """
-    phi = direction * np.pi / 2
-    v = np.array([np.cos(phi), np.sin(phi)])
-    X = np.array([[v @ [1, 0], v @ [1, 1]],
-                  [v @ [0, 0], v @ [0, 1]]])
     a, b = cmap_range
+    c, d = data_range
     
-    if data_range is not None:
-        c, d = data_range
-        X[0, 0] = c
-        X[0, 1] = d
-        X[1, 0] = c
-        X[1, 1] = d
-#        X = a + ((d - b) - (c - a)) / X.max() * X
-    else:  
-        X = (b - a) / X.max() * X
-    im = ax.imshow(X, extent=extent, interpolation='bicubic',
-                   vmin=a, vmax=b, alpha=1, **kwargs)
+    grad = np.atleast_2d(np.linspace(c, d, 256))
+    im = ax.imshow(grad, extent=extent, interpolation='bicubic',
+                   alpha=1, vmin=a, vmax=b, cmap=cmap)
     return im
 
 # =============================================================================
@@ -87,19 +77,19 @@ def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1),
 ptcmapdict4 = {'red':  ((0.0, 0.0, 0.65),
                         (0.25, 1.0, 1.0),
                         (0.5, 1.0, 1.00),
-                        (0.75,0.0, 0.0),
+                        (0.68,0.0, 0.0),
                         (1.0, 0.0, 0.0)),
 
                'green': ((0.0, 0.0, 0.0),
                          (0.25, 0.95, 0.95),
                          (0.5, 1.0, 1.0),
-                         (0.75, .85, 0.85),
+                         (0.68, .85, 0.85),
                          (1.0, 0.0, 0.0)),
 
               'blue':  ((0.0, 0.0, 0.0),
                         (0.25, 0.0, 0.0),
                         (0.5, 1.0, 1.0),
-                        (0.75,1.0, 1.0),
+                        (0.68,1.0, 1.0),
                         (1.0, 0.45, 1.0))}
 mt_rd2gr2bl = colors.LinearSegmentedColormap('mt_rd2gr2bl', ptcmapdict4, 256)
 # =============================================================================
@@ -116,7 +106,7 @@ fig.tight_layout()
 
 ax = fig.add_subplot(1, 1, 1, aspect=.05)
 ax.set(xlim=(np.log10(10), np.log10(300)), 
-       ylim=(-2, 52))
+       ylim=(-2, 55))
 ax.yaxis.set_visible(False)
 ax.set_xlabel('Resistivity ($\Omega \cdot m$)', fontdict={'size':14})
 ax.grid(which='major', color=(.25, .25, .25), lw=.75, ls=':')
@@ -127,11 +117,13 @@ for row in df.itertuples():
                   2*(row.Index + 1),
                   2*(row.Index + 1) + 1.85)
     gradient_image(ax, 
-                   bar_extent, 
-                   direction=1, 
+                   bar_extent,  
                    cmap=mt_rd2gr2bl, 
                    cmap_range=(np.log10(1), np.log10(500)), 
                    data_range=(np.log10(max([1, row.pdf_50_min])), np.log10(row.pdf_50_max)))
+    ax.plot([np.log10(row.mode), np.log10(row.mode)], 
+            [2 * (row.Index + 1), 2 * (row.Index + 1)+1.85],
+            'k', lw=2)
     ax.text(np.log10(row.pdf_50_max)+.005,
             2*(row.Index + 1)+1,
             rock_dict[row.rock_type],
@@ -140,7 +132,6 @@ for row in df.itertuples():
 
 gradient_image(ax, 
                (np.log10(1), np.log10(500), -2, 0 ), 
-               direction=1, 
                cmap=mt_rd2gr2bl, 
                cmap_range=(np.log10(1), np.log10(500)), 
                data_range=(np.log10(1), np.log10(500)))

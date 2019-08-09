@@ -36,7 +36,7 @@ for x_index, xx in enumerate(m_obj.grid_north):
         f_depth = f_map[y_index, x_index]
         if np.isnan(f_depth):
             continue
-#            f_depth = np.nanmax(f_map)
+            #f_depth = np.nanmax(f_map)
         z_index = np.where(m_obj.grid_z <= f_depth)
         try:
             felsite[x_index, y_index, z_index] = 1E12
