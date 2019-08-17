@@ -143,33 +143,36 @@ ax.set_xscale('log')
 ax.set_yscale('log')
 ax.set_ylabel('Resistivity ($\Omega \cdot m$)')
 ax.set_xlabel('Temperature ($^{\circ}C$)')
-ax.grid(which='major', lw=1, color=(1, 1, 1), ls=':')
+ax.grid(which='major', lw=.75, color=(1, 1, 1), ls=':')
 ax.grid(which='minor', lw=.5, color=(.85, .85, .85), ls=':')
 
-ax.axvspan(600, 1000, color=(.2, .2, .2))
-ax.axvspan(300, 450, color=(.3, .3, .3))
-ax.axvspan(150, 300, color=(.45, .45, .45))
-ax.axhspan(75, 145, xmin=.38, xmax=.655, color=(0, .65, .85))
-ax.axhspan(55, 105, xmin=.655, xmax=.75, color=(0, .75, .9))
-ax.axhspan(20, 40, xmin=.805, xmax=.95, color=(.9, .9, 0))
+ax.axvspan(600, 1000, color=(.2, .2, .2)) # partial melt
+ax.axvspan(300, 450, color=(.3, .3, .3)) # HTR
+ax.axvspan(188, 300, color=(.45, .45, .45)) # NTR
+ax.axhspan(75, 145, xmin=.54, xmax=.655, color=(0, .65, .85)) # NTR felsite
+ax.axhspan(55, 105, xmin=.655, xmax=.75, color=(0, .75, .9)) # HTR felsite
+ax.axhspan(20, 40, xmin=.805, xmax=.95, color=(.95, .9, 0)) # Partial melt
 
 ### labels
 ax.text(200, 10.2**8, 'Dry Granite', va='center', ha='left', color=(1, 1, 1),
         rotation=-35, fontdict={'weight':'bold'})
-ax.text(60, 1.5, 'Wet Granite (0.1 M NaCl)', va='baseline', ha='left', color=(1, 1, 1),
-        rotation=-3, fontdict={'weight':'bold'})
+ax.text(60, 1.5, 'Wet Granite (0.1 M NaCl)', va='baseline', ha='left',
+        color=(1, 1, 1),rotation=-3, fontdict={'weight':'bold'})
 
-ax.text(25, 10.5**4, 'Inada Granite (0.001 M KCl)', va='baseline', ha='left', color=(1, 1, 1),
-        rotation=0, fontdict={'weight':'bold'})
+ax.text(25, 10.5**4, 'Inada Granite (0.001 M KCl)', va='baseline', ha='left',
+        color=(1, 1, 1), rotation=0, fontdict={'weight':'bold'})
 
-ax.text(100, 165, 'Felsite', va='baseline', ha='left', color=(1, 1, 1),
+ax.text(300, 170, 'Felsite', va='baseline', ha='center', color=(1, 1, 1),
         rotation=0, fontdict={'weight':'bold'})
-ax.text(330, 10**5, 'HDR', va='center', ha='left', color=(1, 1, 1),
+ax.text(330, 10**5, 'HTR', va='center', ha='left', color=(1, 1, 1),
         rotation=90, fontdict={'weight':'bold'})
 ax.text(200, 10**5, 'NTR', va='center', ha='left', color=(1, 1, 1),
         rotation=90, fontdict={'weight':'bold'})
 ax.text(750, 10**6, 'Partial Melt', va='center', ha='left', color=(1, 1, 1),
         rotation=90, fontdict={'weight':'bold'})
+ax.text(500, 45, 'Heat Source', va='baseline', ha='left', color=(1, 1, 1),
+        rotation=0, fontdict={'weight':'bold'})
 ax.set_aspect('auto')
+fig.tight_layout()
 
 plt.show()
