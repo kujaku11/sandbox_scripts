@@ -113,11 +113,12 @@ m3_obj = modem.Model()
 m3_obj.read_model_file(m3_fn)
 
 m3_res = interp_grid(m3_obj, m_obj)
-felsite = np.sqrt(felsite * m3_res)
+#felsite = np.sqrt(felsite * m3_res)
+avg_res = np.sqrt(m3_res * m_obj.res_model)
 
-m3_obj.res_model = m3_res
-m3_obj.write_model_file(model_fn_basename=r"gz_inv03_interp.rho")
-m3_obj.write_vtk_file(vtk_fn_basename=r"gz_inv03_interp")
+#m3_obj.res_model = avg_res
+#m3_obj.write_model_file(model_fn_basename=r"gz_avg.rho")
+#m3_obj.write_vtk_file(vtk_fn_basename=r"gz_avg")
 #### add in the extensions
 #n_limits = (-500, 6000)
 #e_limits = (-6000, 6000)
@@ -133,9 +134,13 @@ m3_obj.write_vtk_file(vtk_fn_basename=r"gz_inv03_interp")
 #felsite[n1[0]:n1[-1], e1[0]:e1[-1], z1[0]:z1[-1]] = m3_res[n1[0]:n1[-1], 
 #        e1[0]:e1[-1], z1[0]:z1[-1]] + 15
 
-m_obj.res_model = felsite
-m_obj.write_vtk_file(vtk_fn_basename='geysers_felsite_mixed')
-m_obj.write_model_file(model_fn_basename='gz_felsite_mixed.rho')
+#m_obj.res_model = felsite
+#m_obj.write_vtk_file(vtk_fn_basename='geysers_felsite_mixed')
+#m_obj.write_model_file(model_fn_basename='gz_felsite_mixed.rho')
+
+m_obj.res_model = avg_res
+m_obj.write_vtk_file(vtk_fn_basename='geysers_avg')
+m_obj.write_model_file(model_fn_basename='gz_avg.rho')
 
 
     
