@@ -90,16 +90,16 @@ shift_north = (mt_north-v_north)/1000.
 # =============================================================================
 vtk_x = np.linspace(x.min()-dx, x.max()+dx, len(x)+1)-shift_east    
 vtk_y = np.linspace(y.min()-dy, y.max()+dy, len(y)+1)-shift_north
-vtk_z = np.append(z, z[-1])-z[0]    
+vtk_z = np.append(z, z[-1])    
 
-#gridToVTK(os.path.join(v_dir, 'roland_vp'), 
-#          vtk_y, vtk_x, vtk_z,
-#          cellData={'Vp':vp_arr})
-#
-#gridToVTK(os.path.join(v_dir, 'roland_vs'), 
-#          vtk_y, vtk_x, vtk_z,
-#          cellData={'Vs':vs_arr})
-#
-#gridToVTK(os.path.join(v_dir, 'roland_vpvs'), 
-#          vtk_y, vtk_x, vtk_z,
-#          cellData={'VpVs':vpvs_arr})
+gridToVTK(os.path.join(v_dir, 'roland_vp'), 
+          vtk_y, vtk_x, vtk_z,
+          cellData={'Vp':vp_arr})
+
+gridToVTK(os.path.join(v_dir, 'roland_vs'), 
+          vtk_y, vtk_x, vtk_z,
+          cellData={'Vs':vs_arr})
+
+gridToVTK(os.path.join(v_dir, 'roland_vpvs'), 
+          vtk_y, vtk_x, vtk_z,
+          cellData={'VpVs':vpvs_arr})
