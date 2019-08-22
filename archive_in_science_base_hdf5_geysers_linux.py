@@ -23,8 +23,8 @@ import getpass
 station_dir = r"/mnt/hgfs/MTData/Geysers"
 
 ### path to survey parameter spread sheet
-csv_fn = None
-#csv_fn = r"/mnt/hgfs/MTData/GraniteSprings/Archive/gsv_survey_summary.csv"
+#csv_fn = 
+csv_fn = r"/mnt/hgfs/MTData/Geysers/Archive/survey_summary.csv"
 
 ### path to mth5 configuration file
 cfg_fn = r"/mnt/hgfs/MTData/Geysers/gz_mth5.cfg"
@@ -36,8 +36,8 @@ xml_cfg_fn = r"/mnt/hgfs/MTData/Geysers/gz_archive.cfg"
 calibration_dir = r"/mnt/hgfs/MTData/Ant_calibrations"
 
 ### paths to edi and png files if not already copied over
-edi_path = r"/mnt/hgfs/MTData/GraniteSprings/granite_springs_edi"
-png_path = r"/mnt/hgfs/MTData/GraniteSprings/granite_springs_plots"
+edi_path = r"/mnt/hgfs/MTData/Geysers/final_edi"
+png_path = r"/mnt/hgfs/MTData/Geysers/final_png"
 
 ### SCIENCE BASE 
 ### page id number
@@ -49,7 +49,7 @@ password = None
 summarize = True
 
 ### upload data [ True | False]
-upload_data = False 
+upload_data = True 
 upload_files = ['.zip', '.edi', '.png', '.xml', '.mth5']
 #upload_files = ['.xml']
 if upload_data:
@@ -91,13 +91,13 @@ for station in station_list:
         ### capture output to put into a log file
         with archive.Capturing() as output:
             station_st = datetime.datetime.now()
-#            ### copy edi and png into archive director
-#            if not os.path.isfile(os.path.join(station_save_dir, '{0}.edi'.format(station))):
-#                shutil.copy(os.path.join(edi_path, '{0}.edi'.format(station)),
-#                            os.path.join(station_save_dir, '{0}.edi'.format(station)))
-#            if not os.path.isfile(os.path.join(station_save_dir, '{0}.png'.format(station))):
-#                shutil.copy(os.path.join(png_path, '{0}.png'.format(station)),
-#                            os.path.join(station_save_dir, '{0}.png'.format(station)))
+            ### copy edi and png into archive director
+            if not os.path.isfile(os.path.join(station_save_dir, '{0}.edi'.format(station))):
+                shutil.copy(os.path.join(edi_path, '{0}.edi'.format(station)),
+                            os.path.join(station_save_dir, '{0}.edi'.format(station)))
+            if not os.path.isfile(os.path.join(station_save_dir, '{0}.png'.format(station))):
+                shutil.copy(os.path.join(png_path, '{0}.png'.format(station)),
+                            os.path.join(station_save_dir, '{0}.png'.format(station)))
                 
             ### Make MTH5 File
             m = mth5.MTH5()
