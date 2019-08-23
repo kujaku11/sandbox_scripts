@@ -7,7 +7,7 @@ Created on Tue Mar 27 14:36:27 2018
 
 import os
 import numpy as np
-from evtk.hl import gridToVTK
+from pyevtk.hl import gridToVTK
 import mtpy.utils.gis_tools as gis_tools
 import mtpy.utils.array2raster as a2r
 
@@ -53,28 +53,28 @@ for ii, v_fn in enumerate(v_fn_list):
     vpvs_arr[:, :, ii] = v['vpvs'].reshape(grid_x.shape)
     
     ###--> make shape files
-    a2r.array2raster(os.path.join(v_dir, 
-                                  'vp_depth_slices',
-                                  '{0:02}_vp.tif'.format(ii, z[ii])),
-                    (v['lon'].min(), v['lat'].min()),
-                    dx*1000,
-                    dy*1000,
-                    vp_arr[:, :, ii])
-
-    a2r.array2raster(os.path.join(v_dir, 
-                                  'vs_depth_slices',
-                                  '{0:02}_vs.tif'.format(ii, z[ii])),
-                    (v['lon'].min(), v['lat'].min()),
-                    dx*1000,
-                    dy*1000,
-                    vs_arr[:, :, ii])
-    a2r.array2raster(os.path.join(v_dir, 
-                                  'vpvs_depth_slices',
-                                  '{0:02}_vpvs.tif'.format(ii, z[ii])),
-                    (v['lon'].min(), v['lat'].min()),
-                    dx*1000,
-                    dy*1000,
-                    vpvs_arr[:, :, ii])
+#    a2r.array2raster(os.path.join(v_dir, 
+#                                  'vp_depth_slices',
+#                                  '{0:02}_vp.tif'.format(ii, z[ii])),
+#                    (v['lon'].min(), v['lat'].min()),
+#                    dx*1000,
+#                    dy*1000,
+#                    vp_arr[:, :, ii])
+#
+#    a2r.array2raster(os.path.join(v_dir, 
+#                                  'vs_depth_slices',
+#                                  '{0:02}_vs.tif'.format(ii, z[ii])),
+#                    (v['lon'].min(), v['lat'].min()),
+#                    dx*1000,
+#                    dy*1000,
+#                    vs_arr[:, :, ii])
+#    a2r.array2raster(os.path.join(v_dir, 
+#                                  'vpvs_depth_slices',
+#                                  '{0:02}_vpvs.tif'.format(ii, z[ii])),
+#                    (v['lon'].min(), v['lat'].min()),
+#                    dx*1000,
+#                    dy*1000,
+#                    vpvs_arr[:, :, ii])
 
 # get shifts
 mt_east, mt_north, mt_zone = gis_tools.project_point_ll2utm(mt_center[0],
@@ -90,7 +90,7 @@ shift_north = (mt_north-v_north)/1000.
 # =============================================================================
 vtk_x = np.linspace(x.min()-dx, x.max()+dx, len(x)+1)-shift_east    
 vtk_y = np.linspace(y.min()-dy, y.max()+dy, len(y)+1)-shift_north
-vtk_z = np.append(z, z[-1])-z[0]    
+vtk_z = np.append(z, z[-1])    
 
 gridToVTK(os.path.join(v_dir, 'roland_vp'), 
           vtk_y, vtk_x, vtk_z,

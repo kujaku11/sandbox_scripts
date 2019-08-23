@@ -15,15 +15,16 @@ label_dict = {'phi_r':{'title':'Rock', 'x_label':'Percent'},
               'sigma_f':{'title':'Fluid Resistivity', 'x_label':'Resistivity ($\Omega \cdot m$)'}}
 
 g = rp.Glover()
-g.phase_01.from_dict({'sigma':1./1E9, 'phi':.88, 'm':.05, 'label':'rock'})
+g.phase_01.from_dict({'sigma':1./1E4, 'phi':.88, 'm':.05, 'label':'rock'})
 #g.phase_02.from_dict({'sigma':1./.5, 'phi':.08, 'm':3., 'label':'EDL'})
-g.phase_02.from_dict({'sigma':1./1, 'phi':.04, 'm':1.5, 'label':'fluids'})
+#g.phase_02.from_dict({'sigma':1./1, 'phi':.04, 'm':1.5, 'label':'fluids'})
+g.phase_02.from_dict({'sigma':1./5, 'phi':.05, 'm':1.05, 'label':'fluids'})
 
-res_min, res_max = (60, 190)
+res_min, res_max = (28, 40)
 n = int(1E4)
 res_dict = {'res':[], 'phi_r':[], 'phi_f':[], 'sigma_f':[]}
 for phi_r, sigma_f in zip(np.random.normal(.85, .15, n), 
-                          np.random.lognormal(.025, .25, n)):
+                          np.random.lognormal(.015, .4, n)):
     if phi_r > 1:
         continue
     g.phase_01.phi = phi_r
