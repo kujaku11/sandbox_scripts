@@ -15,14 +15,14 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ShanesBugs\QHGH-MT-EDI\inv_01\qh_modem_data_03_edited.dat"
+dfn = r"c:\Users\jpeacock\Documents\ShanesBugs\QHGH-MT-EDI\inv_01\qh_modem_data_03_edited_topo.dat"
 
 remove_stations = []
 shady_stations = []
 remove_x = []
 remove_y = []
-flip_phase_x = []
-flip_phase_y = []
+flip_phase_x = ['MT1108--3']
+flip_phase_y = ['MT1108--3']
 static_shift_x = []
 static_shift_y = []
 swap_channel = []
@@ -32,7 +32,7 @@ add_err_period_range = None
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 7.0
+z_err_value = 12.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
