@@ -32,7 +32,7 @@ add_err_period_range = None
 elevation_bool = True
 
 inv_modes = ['2']
-z_err_value = 12.0
+z_err_value = 5.0
 t_err_value = .03
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
