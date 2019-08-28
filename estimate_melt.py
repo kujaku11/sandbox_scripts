@@ -21,7 +21,7 @@ g.phase_01.from_dict({'sigma':1./1E4, 'phi':.88, 'm':.05, 'label':'rock'})
 g.phase_02.from_dict({'sigma':1./5, 'phi':.05, 'm':1.05, 'label':'fluids'})
 
 res_min, res_max = (28, 40)
-n = int(1E4)
+n = int(1E6)
 res_dict = {'res':[], 'phi_r':[], 'phi_f':[], 'sigma_f':[]}
 for phi_r, sigma_f in zip(np.random.normal(.85, .15, n), 
                           np.random.lognormal(.015, .4, n)):
