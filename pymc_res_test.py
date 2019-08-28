@@ -10,7 +10,7 @@ import pymc3 as pm
 
 n= 5000
 c1 = np.random.lognormal(np.log(1E-4), .15, n)
-c2 = np.random.lognormal(np.log(1./5), .15, n)
+c2 = np.random.lognormal(np.log(1.), .15, n)
 
 expected_s1 = .85
 expected_s2 = 1 - expected_s1
@@ -34,7 +34,7 @@ with glover:
     c_measured = pm.Normal('c_measured', mu=expected_mu, 
                               observed=c_obs)
     
-    trace = pm.sample(draws=5000, tune=1000, chains=1)
+    trace = pm.sample(draws=5000, tune=4000, chains=1)
  
 a = pm.plot_trace(trace)
 print(pm.summary(trace[1000:]))
