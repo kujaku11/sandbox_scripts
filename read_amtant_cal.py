@@ -25,11 +25,11 @@ for line in lines:
     else:
         line_list = line.strip().split()
         ant = line_list[0]
-        amp = float(line_list[1])/10
-        phase = float(line_list[2])/1000
+        amp = float(line_list[1]) / 1000 ### to mV/nT
+        phase = float(line_list[2]) / 1000
         
-        z_real = amp*np.cos(phase)
-        z_imag = amp*np.sin(phase)
+        z_real = amp * np.cos(phase) / (np.pi / 2) # scaling factor in birrp
+        z_imag = amp * np.sin(phase) / (np.pi / 2) # scaling factor in birrp
         
         try:
             ant_dict[ant]
@@ -42,7 +42,7 @@ for line in lines:
         
 for key in ant_dict.keys():
     df = pd.DataFrame(ant_dict[key])
-    df.to_csv(r"d:\Peacock\MTData\zen_calibrations\{0}.csv".format(key),
+    df.to_csv(r"d:\Peacock\MTData\Ant_calibrations\rsp_cal\{0}.csv".format(key),
               index=False, header=False, float_format='%.5e')
         
     
