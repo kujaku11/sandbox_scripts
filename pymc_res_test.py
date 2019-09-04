@@ -18,7 +18,9 @@ expected_s2 = 1 - expected_s1
 expected_m1 = .15
 expected_m2 = 2
 
-c_obs = (expected_s1 ** expected_m1 * c1) + (expected_s2 ** expected_m2 * c2) 
+#c_obs = (expected_s1 ** expected_m1 * c1) + (expected_s2 ** expected_m2 * c2) 
+
+c_obs = np.random.lognormal(np.log(1./30), .15, n)
 
 glover = pm.Model()
 with glover:
@@ -27,7 +29,7 @@ with glover:
     m1 = pm.Normal('m1', mu=.15, sd=1)
     m2 = pm.Lognormal('m2', mu=0, sd=.6)
     r1 = pm.Normal('r1', mu=1E-4, sd=.02)
-    r2 = pm.Normal('r2', mu=.2, sd=4)
+    r2 = pm.Normal('r2', mu=0, sd=4)
     
     expected_mu = (s1 ** m1 * r1) + ((1 - s1) ** m2 * r2)
     
@@ -37,4 +39,4 @@ with glover:
     trace = pm.sample(draws=5000, tune=4000, chains=1)
  
 a = pm.plot_trace(trace)
-print(pm.summary(trace[1000:]))
+1./print(pm.summary(trace))
