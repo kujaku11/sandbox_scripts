@@ -39,4 +39,4 @@ with glover:
     trace = pm.sample(draws=5000, tune=4000, chains=1)
  
 a = pm.plot_trace(trace)
-1./print(pm.summary(trace))
+print(pm.summary(trace))

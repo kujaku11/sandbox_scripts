@@ -7,8 +7,8 @@ Created on Wed Mar 13 16:02:19 2019
 
 import os, glob
 
-root_dir = r"c:\\Users\\jpeacock"
-fn_basename = r'gcs.csv'
+root_dir = r"d:\\Peacock_Backup"
+fn_basename = r'gabbs*'
 
 result = []
 for root, dirs, files in os.walk(root_dir):
