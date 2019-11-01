@@ -12,9 +12,10 @@ import mtpy.core.mt as mt
 import glob
 
 fiona.supported_drivers['kml'] = 'rw'
+fiona.supported_drivers['KML'] = 'rw'
 crs = {'init':'epsg:4326'}
 
-edi_path = r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\*.edi"
+edi_path = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\*.edi"
 
 edi_list = glob.glob(edi_path)
                     
@@ -33,7 +34,7 @@ for edi in edi_list:
     stations['lon'].append(mt_obj.lon)
     
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
-gdf.to_file(r"d:\Peacock\MTData\MusicValley\EDI_Files_birrp\mv_mt_stations_all.kml",
+gdf.to_file(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\mv_mt_stations_all.kml",
             driver='kml')
 #kml_obj.save(os.path.join(edi_path, "SAGE_2019_mt_stations.kml"))
     
