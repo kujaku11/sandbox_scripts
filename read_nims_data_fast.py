@@ -21,7 +21,12 @@ import pandas as pd
 # =============================================================================
 class GPS(object):
     """
-    class to hold gps stamps
+    class to parse GPS stamp from the NIMS
+    
+    Depending on the type of Stamp there will be different attributes
+    
+    GPRMC has full date and time information and declination
+    GPGGA has elevation data
     """
     
     def __init__(self, gps_string):
@@ -63,11 +68,37 @@ class GPS(object):
             gps_list = [value.decode() for value in gps_list[0:12]]
         else:
             gps_list = self.gps_string.strip().split(',')[0:12]
+            
+        gps_list = self.validate_gps_list(gps_list)
         
-        attr_dict = self.type_dict[gps_list[0].lower()]
+        try:
+            attr_dict = self.type_dict[gps_list[0].lower()]
+        except KeyError:
+            print('xxx GPS string not correct {0}'.format(self.gps_string))
+            return
             
         for index, value in enumerate(gps_list):
             setattr(self, '_'+attr_dict[index], value)
+            
+    def validate_gps_list(self, gps_list):
+        """
+        check to make sure the gps stamp is the correct format
+        """
+        g_type = gps_list[0].lower()
+        if 'gpg' in g_type:
+            if len(g_type) > 5:
+                gps_list = ['GPGGA', g_type[-6:]] + gps_list[1:]
+            elif len(g_type) < 5:
+                gps_list[0] = 'GPGGA'
+        elif 'gpr' in g_type:
+            if len(g_type) > 5:
+                gps_list = ['GPRMC', g_type[-6:]] + gps_list[1:]
+            elif len(g_type) < 5:
+                gps_list[0] = 'GPRMC'
+                
+        return gps_list
+            
+                
             
     @property
     def latitude(self):
@@ -97,7 +128,11 @@ class GPS(object):
         elevation in meters
         """
         if hasattr(self, '_elevation'):
-            return float(self._elevation)
+            try:
+                return float(self._elevation)
+            except ValueError:
+                print('xxx Could not get elevation GPS string not complete ')
+                print('xxx {0}'.format(self.gps_string))
         else:
             return None
         
@@ -106,12 +141,18 @@ class GPS(object):
         """
         return a datetime object of the time stamp
         """
+        if not hasattr(self, '_time'):
+            return None
         if hasattr(self, '_date'):
             return dateutil.parser.parse('{0} {1}'.format(self._date, self._time),
                                          dayfirst=True)
         else:
-            return dateutil.parser.parse('{0} {1}'.format('010180', self._time),
-                                         dayfirst=True) 
+            try:
+                return dateutil.parser.parse('{0} {1}'.format('010180', self._time),
+                                             dayfirst=True)
+            except ValueError:
+                print('xxx bad time string {0}'.format(self.gps_string))
+                return None
         
     @property
     def declination(self):
@@ -274,12 +315,73 @@ class NIMS(NIMSHeader):
                             'logic':81,
                             'end':130}
         self.info_array = None
-        self.data_array = None
+        self.stamps = None
+        self.data_df = None
         
         self.indices = self.make_index_values()
         
         if self.fn is not None:
             self.read_nims()
+            
+    @property
+    def latitude(self):
+        """
+        median latitude value from all the GPS stamps in decimal degrees
+        WGS84
+        
+        Only get from the GPRMC stamp as they should be duplicates
+        """
+        if self.stamps is not None:
+            latitude = np.zeros(len(self.stamps))
+            for ii, stamp in enumerate(self.stamps):
+                latitude[ii] = stamp[1][0].latitude
+            return np.median(latitude[np.nonzero(latitude)])
+        else:
+            return None
+    
+    @property
+    def longitude(self):
+        """
+        median longitude value from all the GPS stamps in decimal degrees
+        WGS84
+        
+        Only get from the GPRMC stamp as they should be duplicates
+        """
+        if self.stamps is not None:
+            longitude = np.zeros(len(self.stamps))
+            for ii, stamp in enumerate(self.stamps):
+                longitude[ii] = stamp[1][0].longitude
+            return np.median(longitude[np.nonzero(longitude)])
+        else:
+            return None
+    
+    @property
+    def elevation(self):
+        """
+        median elevation value from all the GPS stamps in decimal degrees
+        WGS84
+        
+        Only get from the GPGGA stamp as they should be duplicates
+        """
+        if self.stamps is not None:
+            elevation = np.zeros(len(self.stamps))
+            for ii, stamp in enumerate(self.stamps):
+                if stamp[1][1].elevation is None:
+                    continue
+                elevation[ii] = stamp[1][1].elevation 
+            return np.median(elevation[np.nonzero(elevation)])
+        else:
+            return None
+    
+    @property
+    def start_time(self):
+        """
+        start time is the first good GPS time stamp
+        """
+        if self.stamps is not None:
+            return self.data_df.index[0]
+        else:
+            return None
         
     def make_index_values(self):
         """
@@ -307,8 +409,29 @@ class NIMS(NIMSHeader):
                  for ii in range(int(len(nims_string)/self.block_size))]
         gps_str = b''.join(gps_str)
         
-        gps_str_list = gps_str.replace(b'\xd9', b'').replace(b'\xc7', b'').split(b'$')
-        gps_str_list = [stamp[0:stamp.find(b'*')].decode() for stamp in gps_str_list]
+        ### replace all the non gps string bytes with nothing to sort easier
+        for replace_str in [b'\xd9', b'\xc7', b'\xcc']:
+            gps_str = gps_str.replace(replace_str, b'')
+            
+        ### sometimes the end is set with a zero for some reason
+        gps_str = gps_str.replace(b'\x00', b'*')
+        
+        ### split the string by the $ 
+        gps_str_list = gps_str.split(b'$')
+        
+        ### need to make sure there is an end to the gps string otherwise it
+        ### might not be usefult
+        g = []
+        for stamp in gps_str_list:
+            if stamp.find(b'*') < 0:
+                print('   No end to stamp {0}'.format(stamp))
+            else:
+                try:
+                    g.append(stamp[0:stamp.find(b'*')].decode())
+                except UnicodeDecodeError:
+                    print('  stamp not correct format, {0}'.format(stamp))
+        gps_str_list = g
+        
         ### check the first few stamps
         if gps_str_list[0].find('$') == -1:
             gps_str_list = gps_str_list[1:]
@@ -320,18 +443,15 @@ class NIMS(NIMSHeader):
         
         ### match up the GPRMC and GPGGA together
         self.gps_list = []
-        for ii in range(len(gps_list)):
+        for ii in range(0, len(gps_list)-1, 2):
             time_stamp = gps_list[ii].time_stamp
             match_list = [gps_list[ii]]
-            for stamp in gps_list[ii+1:ii+3]:
-                if stamp.time_stamp.time() == time_stamp.time():
-                    match_list.append(stamp)
-                    break
-            if len(match_list) == 2:
-                self.gps_list.append(match_list)
-            else:
-                continue
-        
+            try:
+                if gps_list[ii+1].time_stamp.time() == time_stamp.time():
+                    match_list.append(gps_list[ii+1])
+            except AttributeError:
+                pass
+            self.gps_list.append(match_list)    
         
     def get_gps_stamp_indices(self):
         """
@@ -413,12 +533,12 @@ class NIMS(NIMSHeader):
         self.stamps = self.get_gps_stamps()
          
         ### get data
-        self.data_array = np.zeros(data.shape[0]*self.sampling_rate,
-                                   dtype=[('hx', np.float),
-                                          ('hy', np.float), 
-                                          ('hz', np.float),
-                                          ('ex', np.float),
-                                          ('ey', np.float)])
+        data_array = np.zeros(data.shape[0]*self.sampling_rate,
+                              dtype=[('hx', np.float),
+                                     ('hy', np.float), 
+                                     ('hz', np.float),
+                                     ('ex', np.float),
+                                     ('ey', np.float)])
         
         ### fill the data
         for cc, comp in enumerate(['hx', 'hy', 'hz', 'ex', 'ey']):
@@ -429,37 +549,73 @@ class NIMS(NIMSHeader):
                         data[:, index+2]
                 value[np.where(value > self._int_max)] -= self._int_factor
                 channel_arr[:, kk] = value
-            self.data_array[comp][:] = channel_arr.flatten()
+            data_array[comp][:] = channel_arr.flatten()
             
         ### clean things up
         ### I guess that the E channels are opposite phase?
         for comp in ['ex', 'ey']:
-            self.data_array[comp] *= -1
+            data_array[comp] *= -1
             
-        self.align_data()
+        self.align_data(data_array)           
             
-            
-    def align_data(self):
+    def align_data(self, data_array):
         """
         Need to match up the first good GPS stamp with the data
         
-        Do this by using the first GPS stamp and cutting all data before that.
+        Do this by using the first GPS stamp and assuming that the time from
+        the first time stamp to the start is the index value.
         
         put the data into a pandas data frame that is indexed by time
         """
         
         ### first GPS stamp within the data is at a given index that is 
         ### assumed to be the number of seconds from the start of the run.
-        ### therefore cut out 8 * index values from the data
-        
+        ### therefore make the start time the first GPS stamp time minus
+        ### the index value for that stamp.
         first_index = self.stamps[0][0]
-        bad_data = first_index * self.sampling_rate
-        print('cutting {0} points from the beginning of the time series'.format(bad_data))
+        start_time = self.stamps[0][1][0].time_stamp - \
+                            datetime.timedelta(seconds=int(first_index))
+
+        dt_index = self.make_dt_index(start_time.isoformat(),
+                                      self.sampling_rate,
+                                      n_samples=data_array.shape[0])
         
-        self.data_array = self.data_array[bad_data:]
+        self.data_df = pd.DataFrame(data_array, index=dt_index)
         
-#        self.data_df = pd.Dataframe(self.data_array, index)
-            
+    def make_dt_index(self, start_time, sampling_rate, stop_time=None,
+                      n_samples=None):
+        """
+        make time index array
+
+        .. note:: date-time format should be YYYY-M-DDThh:mm:ss.ms UTC
+
+        :param start_time: start time
+        :type start_time: string
+
+        :param end_time: end time
+        :type end_time: string
+
+        :param sampling_rate: sampling_rate in samples/second
+        :type sampling_rate: float
+        """
+
+        # set the index to be UTC time
+        dt_freq = '{0:.0f}N'.format(1./(sampling_rate)*1E9)
+        if stop_time is not None:
+            dt_index = pd.date_range(start=start_time,
+                                     end=stop_time,
+                                     freq=dt_freq,
+                                     closed='left',
+                                     tz='UTC')
+        elif n_samples is not None:
+            dt_index = pd.date_range(start=start_time,
+                                     periods=n_samples,
+                                     freq=dt_freq,
+                                     tz='UTC')
+        else:
+            raise ValueError('Need to input either stop_time or n_samples')
+
+        return dt_index
         
             
 # =============================================================================
@@ -473,8 +629,8 @@ class NIMSError(Exception):
 # Test
 # =============================================================================
 
-#nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp310a\DATA.BIN"
-nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
+nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp310a\DATA.BIN"
+#nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
 st = datetime.datetime.now()
 nims_obj = NIMS(nims_fn)
 #nims_obj.read_header(nims_fn)
