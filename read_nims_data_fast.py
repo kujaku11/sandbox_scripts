@@ -226,7 +226,15 @@ class NIMSHeader(object):
             header_list = header_str.split(b'\r')
             
         self.header_dict = {}
-        for line in header_list[0:-1]:
+        last_index = len(header_list)
+        last_line = header_list[-1]
+        for ii, line in enumerate(header_list[0:-1]):
+            if ii == last_index:
+                break
+            if b'comments' in line.lower():
+                last_line = header_list[ii+1]
+                last_index = ii + 1
+                
             line = line.decode()
             if line.find('>') == 0:
                 continue
@@ -235,8 +243,8 @@ class NIMSHeader(object):
                 self.header_dict[key.strip().lower()] = value.strip()
             elif line.find('<--') > 0:
                 value, key = line.split('<--')
-                self.header_dict[key.strip().lower()] = value.strip()  
-        data_start_byte = header_list[-1].strip()[0:1]
+                self.header_dict[key.strip().lower()] = value.strip() 
+        data_start_byte = last_line[0:1]
         self.data_start_seek = header_str.find(data_start_byte)
         
         self.parse_header_dict()
@@ -436,9 +444,23 @@ class NIMS(NIMSHeader):
         if gps_str_list[0].find('$') == -1:
             gps_str_list = gps_str_list[1:]
             
-        match = [gps_str_list[ii].split(',')[1] == gps_str_list[ii-1].split(',')[1] 
-                 for ii in range(1, 6)]
-        first_stamp_index = np.where(np.array(match) == True)[0][0]
+        ### see if there are a GPRMC and GPGGA match in the first few stamps
+        match = []
+        for ii in range(1, 6):
+            if len(gps_str_list[ii]) > 12 and len(gps_str_list[ii-1]) > 12:
+                if gps_str_list[ii].count(',') > 10 and gps_str_list[ii-1].count(',') > 10:
+                    if gps_str_list[ii].split(',')[1] == gps_str_list[ii-1].split(',')[1]:
+                        match.append(True)
+                    else:
+                        match.append(False)
+            else:
+                match.append(False)
+        ### find the location of the first pair of stamps
+        try:
+            first_stamp_index = np.where(np.array(match) == True)[0][0]
+        ### if the stamps are bad set the index to 0 and see what happens
+        except IndexError:
+            first_stamp_index = 0
         gps_list = [GPS(stamp_str) for stamp_str in gps_str_list[first_stamp_index:]]
         
         ### match up the GPRMC and GPGGA together
@@ -506,7 +528,7 @@ class NIMS(NIMSHeader):
             data = data.reshape((int(data.size/self.block_size), 
                                  self.block_size))
         else:
-            print('odd number of bytes, not even blocks')
+            raise NIMSError('odd number of bytes, not even blocks')
         
         ### need to parse the data
         ### first get the status information
@@ -582,6 +604,18 @@ class NIMS(NIMSHeader):
         
         self.data_df = pd.DataFrame(data_array, index=dt_index)
         
+    def calibrate_data(self, data_df):
+        """
+        Apply calibrations to data
+        """
+        
+        data_df[['hx', 'hy', 'hz']] *= self.h_conversion_factor
+        data_df[['ex', 'ey']] *= self.e_conversion_factor
+        data_df['ex'] /= self.ex_length/1000.
+        data_df['ey'] /= self.ey_length/1000.
+        
+        return data_df
+        
     def make_dt_index(self, start_time, sampling_rate, stop_time=None,
                       n_samples=None):
         """
@@ -629,7 +663,7 @@ class NIMSError(Exception):
 # Test
 # =============================================================================
 
-nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp310a\DATA.BIN"
+nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
 #nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
 st = datetime.datetime.now()
 nims_obj = NIMS(nims_fn)
