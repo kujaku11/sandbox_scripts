@@ -35,6 +35,12 @@ class GPS(object):
     def __init__(self, gps_string):
         
         self.gps_string = gps_string
+        for key in ['time', 'date', 'latitude', 'longitude', 
+                    'latitude_hemisphere', 'longitude_hemisphere',
+                    'declination', 'declination_hemisphere']:
+            setattr(self, '_'+key, None)
+        self._date = '010180'
+        
         self.type_dict = {'gprmc':{0:'type', 
                                    1:'time', 
                                    2:'fix',
@@ -94,10 +100,14 @@ class GPS(object):
             gps_list = [value.decode() for value in gps_list]
         else:
             gps_list = self.gps_string.strip().split(',')
-            
-        gps_list = self.validate_gps_list(gps_list)
+        
+        ### validate the gps list to make sure it is usable
+        gps_list, error_list = self.validate_gps_list(gps_list)
+        if len(error_list) > 0:
+            print('GPSError:')
+            for error in error_list:
+                print('\t'+error)
         if gps_list is None:
-            print('xxx GPS string not correct {0}'.format(self.gps_string))
             return
 
         attr_dict = self.type_dict[gps_list[0].lower()]
@@ -105,10 +115,13 @@ class GPS(object):
         for index, value in enumerate(gps_list):
             setattr(self, '_'+attr_dict[index], value)
             
+        
+            
     def validate_gps_list(self, gps_list):
         """
         check to make sure the gps stamp is the correct format
         """
+        error_list = []
         g_type = gps_list[0].lower()
         if 'gpg' in g_type:
             if len(g_type) > 5:
@@ -123,21 +136,57 @@ class GPS(object):
         
         g_type = gps_list[0].lower()
         if g_type not in ['gpgga', 'gprmc']:
-            raise GPSError('GPS String type not correct.  '+\
-                           'Expect GPGGA or GPRMC, got {0}'.format(g_type.upper()))
+            error_list.append('GPS String type not correct.  '+\
+                              'Expect GPGGA or GPRMC, got {0}'.format(g_type.upper()))
         
-        self._validate_list_length(gps_list)
-        self._validate_time(gps_list[self.type_dict[g_type]['time']])
-        self._validate_latitude(gps_list[self.type_dict[g_type]['latitude']])
-        self._validate_longitude(gps_list[self.type_dict[g_type]['longitude']])
+        ### first check the length, if it is not the proper length then
+        ### return, cause you never know if everything else is correct
+        try:
+            self._validate_list_length(gps_list)
+        except GPSError as error:
+            error_list.append(error.args[0])    
+            return None, error_list
+        
+        try:
+            gps_list[self.type_dict[g_type]['time']] = \
+                  self._validate_time(gps_list[self.type_dict[g_type]['time']])
+        except GPSError as error:
+            error_list.append(error.args[0])
+            gps_list[self.type_dict[g_type]['time']] = None
+            
+        try:
+            gps_list[self.type_dict[g_type]['latitude']] =\
+                self._validate_latitude(gps_list[self.type_dict[g_type]['latitude']],
+                                        gps_list[self.type_dict[g_type]['latitude_hemisphere']])
+        except GPSError as error:
+            error_list.append(error.args[0])
+            gps_list[self.type_dict[g_type]['latitude']] = None
+        
+        try:
+            gps_list[self.type_dict[g_type]['longitude']] =\
+                self._validate_longitude(gps_list[self.type_dict[g_type]['longitude']],
+                                         gps_list[self.type_dict[g_type]['longitude_hemisphere']])
+        except GPSError as error:
+            error_list.append(error.args[0])
+            gps_list[self.type_dict[g_type]['longitude']] = None
         
         if g_type == 'gprmc':
-            self._validate_date(gps_list[self.type_dict['gprmc']['date']])
+            try:
+                gps_list[self.type_dict['gprmc']['date']] =\
+                    self._validate_date(gps_list[self.type_dict['gprmc']['date']])
+            except GPSError as error:
+                error_list.append(error.args[0])
+                gps_list[self.type_dict[g_type]['date']] = None
             
         elif g_type == 'gpgga':
-            self._validate_latitude_elevation(gps_list[self.type_dict['gpgga']['elevation']])
+            try:
+                gps_list[self.type_dict['gpgga']['elevation']] =\
+                    self._validate_elevation(gps_list[self.type_dict['gpgga']['elevation']])
+            except GPSError as error:
+                error_list.append(error.args[0])
+                gps_list[self.type_dict['gpgga']['elevation']] = None
             
-        return gps_list
+        return gps_list, error_list
     
     def _validate_list_length(self, gps_list):
         """validate gps list length based on type of string"""
@@ -159,55 +208,55 @@ class GPS(object):
         except ValueError:
             raise GPSError('Could not convert time string {0}'.format(time_str))
         
-        return
+        return time_str
     
     def _validate_date(self, date_str):
         """ validate date string, should be 6 characters long and an int """
         if len(date_str) != 6:
-            raise GPSError('Lenght of date string not correct {0}.  '.format(date_str)+\
+            raise GPSError('Length of date string not correct {0}.  '.format(date_str)+\
                            'Expected 6 got {0}'.format(len(date_str)))
         try:
             int(date_str)
         except ValueError:
             raise GPSError('Could not convert date string {0}'.format(date_str))
         
-        return True
+        return date_str
     
     def _validate_latitude(self, latitude_str, hemisphere_str):
         """validate latitude, should have hemisphere string with it"""
         
-        if len(latitude_str) < 7:
+        if len(latitude_str) < 8:
             raise GPSError('Latitude string should be larger than 7 characters.  '+\
                            'Got {0}'.format(len(latitude_str)))
         if len(hemisphere_str) != 1:
-            raise GPSError('Latitude hemispher should be 1 character.  '+\
+            raise GPSError('Latitude hemisphere should be 1 character.  '+\
                            'Got {0}'.format(len(hemisphere_str)))
         if hemisphere_str.lower() not in ['n', 's']:
             raise GPSError('Latitude hemisphere {0} not understood'.format(hemisphere_str.upper()))
         try:
-            int(latitude_str)
+            float(latitude_str)
         except ValueError:
             raise GPSError('Could not convert latitude string {0}'.format(latitude_str))
             
-        return
+        return latitude_str
     
     def _validate_longitude(self, longitude_str, hemisphere_str):
-        """validate latitude, should have hemisphere string with it"""
+        """validate longitude, should have hemisphere string with it"""
         
-        if len(longitude_str) < 7:
+        if len(longitude_str) < 8:
             raise GPSError('Longitude string should be larger than 7 characters.  '+\
                            'Got {0}'.format(len(longitude_str)))
         if len(hemisphere_str) != 1:
-            raise GPSError('Longitude hemispher should be 1 character.  '+\
+            raise GPSError('Longitude hemisphere should be 1 character.  '+\
                            'Got {0}'.format(len(hemisphere_str)))
         if hemisphere_str.lower() not in ['e', 'w']:
             raise GPSError('Longitude hemisphere {0} not understood'.format(hemisphere_str.upper()))
         try:
-            int(longitude_str)
+            float(longitude_str)
         except ValueError:
             raise GPSError('Could not convert longitude string {0}'.format(longitude_str))
             
-        return
+        return longitude_str
     
     def _validate_elevation(self, elevation_str):
         """validate elevation, check for converstion to float"""
@@ -216,6 +265,7 @@ class GPS(object):
         except ValueError:
             raise GPSError('Elevation could not be converted {0}'.format(elevation_str))
             
+        return elevation_str
             
             
     @property
@@ -224,27 +274,33 @@ class GPS(object):
         Latitude in decimal degrees, WGS84
         """
         if hasattr(self, '_latitude') and hasattr(self, '_latitude_hemisphere'):
-            index = len(self._latitude) - 7
-            lat = float(self._latitude[0:index]) + float(self._latitude[index:])/60
-            if 's' in self._latitude_hemisphere.lower():
-                lat *= -1
-            return lat
+            if self._latitude is not None and self._latitude_hemisphere is not None:
+                index = len(self._latitude) - 7
+                lat = float(self._latitude[0:index]) + float(self._latitude[index:])/60
+                if 's' in self._latitude_hemisphere.lower():
+                    lat *= -1
+                return lat
+            else:
+                return 0.0
         else:
-            return None
+            return 0.0
         
     @property
     def longitude(self):
         """
         Latitude in decimal degrees, WGS84
         """
-        if hasattr(self, '_latitude') and hasattr(self, '_latitude_hemisphere'):
-            index = len(self._longitude) - 7
-            lon = float(self._longitude[0:index]) + float(self._longitude[index:])/60
-            if 'w' in self._longitude_hemisphere.lower():
-                lon *= -1
-            return lon
+        if hasattr(self, '_longitude') and hasattr(self, '_longitude_hemisphere'):
+            if self._longitude is not None and self._longitude_hemisphere is not None:
+                index = len(self._longitude) - 7
+                lon = float(self._longitude[0:index]) + float(self._longitude[index:])/60
+                if 'w' in self._longitude_hemisphere.lower():
+                    lon *= -1
+                return lon
+            else:
+                return 0.0
         else:
-            return None
+            return 0.0
         
     @property
     def elevation(self):
@@ -252,22 +308,27 @@ class GPS(object):
         elevation in meters
         """
         if hasattr(self, '_elevation'):
-            try:
-                return float(self._elevation)
-            except ValueError:
-                print('xxx Could not get elevation GPS string not complete ')
-                print('xxx {0}'.format(self.gps_string))
+            if self._elevation is not None:
+                try:
+                    return float(self._elevation)
+                except ValueError:
+                    print('xxx Could not get elevation GPS string not complete ')
+                    print('xxx {0}'.format(self.gps_string))
+            else:
+                return 0.0
         else:
-            return None
+            return 0.0
         
     @property
     def time_stamp(self):
         """
         return a datetime object of the time stamp
         """
-        if not hasattr(self, '_time'):
+        if self._time is None:
             return None
         if hasattr(self, '_date'):
+            if self._date is None:
+                self._date = '010180'
             try:
                 return dateutil.parser.parse('{0} {1}'.format(self._date, self._time),
                                              dayfirst=True)
@@ -503,9 +564,13 @@ class NIMS(NIMSHeader):
         if self.stamps is not None:
             elevation = np.zeros(len(self.stamps))
             for ii, stamp in enumerate(self.stamps):
-                if stamp[1][1].elevation is None:
+                if len(stamp[1]) == 1:
+                    elev = stamp[1][0].elevation
+                if len(stamp[1]) == 2:
+                    elev = stamp[1][1].elevation
+                if elev is None:
                     continue
-                elevation[ii] = stamp[1][1].elevation 
+                elevation[ii] = elev 
             return np.median(elevation[np.nonzero(elevation)])
         else:
             return None
@@ -827,13 +892,13 @@ class NIMSError(Exception):
 # Test
 # =============================================================================
 #
-#nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
-##nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
-#st = datetime.datetime.now()
-#nims_obj = NIMS(nims_fn)
-##nims_obj.read_header(nims_fn)
-#
-#et = datetime.datetime.now()
-#
-#tdiff = et - st
-#print('Took {0} seconds'.format(tdiff.total_seconds()))
+nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
+#nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
+st = datetime.datetime.now()
+nims_obj = NIMS(nims_fn)
+#nims_obj.read_header(nims_fn)
+
+et = datetime.datetime.now()
+
+tdiff = et - st
+print('Took {0} seconds'.format(tdiff.total_seconds()))
