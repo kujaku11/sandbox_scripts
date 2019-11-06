@@ -15,6 +15,13 @@ import datetime
 import dateutil
 
 import pandas as pd
+import logging
+
+### setup logger
+logging.basicConfig(filename='ReadNIMSData.log', 
+                    filemode='w', 
+                    level=logging.DEBUG,
+                    format='%(levelname)s:%(message)s')
 
 # =============================================================================
 # class objects
@@ -32,14 +39,19 @@ class GPS(object):
     GPGGA has elevation data
     """
     
-    def __init__(self, gps_string):
+    def __init__(self, gps_string, index=0):
         
         self.gps_string = gps_string
-        for key in ['time', 'date', 'latitude', 'longitude', 
-                    'latitude_hemisphere', 'longitude_hemisphere',
-                    'declination', 'declination_hemisphere']:
-            setattr(self, '_'+key, None)
+        self.index = index
+        self._time = None
         self._date = '010180'
+        self._latitude = None
+        self._latitude_hemisphere = None
+        self._longitude = None
+        self._longitude_hemisphere = None
+        self._declination = None
+        self._declination_hemisphere = None
+        self.valid = False
         
         self.type_dict = {'gprmc':{0:'type', 
                                    1:'time', 
@@ -89,24 +101,49 @@ class GPS(object):
                                    'elevation_units':10,
                                    'elevation_error':11,
                                    'elevation_error_units':12}}
-        self.parse_gps_string()
+        self.parse_gps_string(self.gps_string)
         
-    def parse_gps_string(self):
+    def validate_gps_string(self, gps_string):
+        """
+        make sure the string is valid, remove any binary numbers and find
+        the end of the string as '*'
+        """
+        for replace_str in [b'\xd9', b'\xc7', b'\xcc']:
+            gps_string = gps_string.replace(replace_str, b'')
+            
+        ### sometimes the end is set with a zero for some reason
+        gps_string = gps_string.replace(b'\x00', b'*')
+        
+        if gps_string.find(b'*') < 0:
+            logging.error('GPSError: No end to stamp {0}'.format(gps_string))
+        else:
+            try:
+                gps_string = gps_string[0:gps_string.find(b'*')].decode()
+                return gps_string
+            except UnicodeDecodeError:
+                logging.error('GPSError: stamp not correct format, {0}'.format(gps_string))
+                return None
+        
+    def parse_gps_string(self, gps_string):
         """
         parse a gps string
         """
-        if isinstance(self.gps_string, bytes):
-            gps_list = self.gps_string.strip().split(b',')
+        gps_string = self.validate_gps_string(gps_string)
+        if gps_string is None:
+            self.valid = False
+            return
+        
+        if isinstance(gps_string, bytes):
+            gps_list = gps_string.strip().split(b',')
             gps_list = [value.decode() for value in gps_list]
         else:
-            gps_list = self.gps_string.strip().split(',')
+            gps_list = gps_string.strip().split(',')
         
         ### validate the gps list to make sure it is usable
         gps_list, error_list = self.validate_gps_list(gps_list)
         if len(error_list) > 0:
-            print('GPSError:')
             for error in error_list:
-                print('\t'+error)
+                logging.error('GPSError:' + error)
         if gps_list is None:
             return
 
@@ -115,29 +152,23 @@ class GPS(object):
         for index, value in enumerate(gps_list):
             setattr(self, '_'+attr_dict[index], value)
             
-        
-            
+        if None not in gps_list:
+            self.valid = True
+            self.gps_string = gps_string
+                  
     def validate_gps_list(self, gps_list):
         """
         check to make sure the gps stamp is the correct format
         """
         error_list = []
-        g_type = gps_list[0].lower()
-        if 'gpg' in g_type:
-            if len(g_type) > 5:
-                gps_list = ['GPGGA', g_type[-6:]] + gps_list[1:]
-            elif len(g_type) < 5:
-                gps_list[0] = 'GPGGA'
-        elif 'gpr' in g_type:
-            if len(g_type) > 5:
-                gps_list = ['GPRMC', g_type[-6:]] + gps_list[1:]
-            elif len(g_type) < 5:
-                gps_list[0] = 'GPRMC'
+        try:
+            gps_list = self._validate_gps_type(gps_list)
+        except GPSError as error:
+            error_list.append(error.args[0])
+            return None, error_list
         
+        ### get the string type
         g_type = gps_list[0].lower()
-        if g_type not in ['gpgga', 'gprmc']:
-            error_list.append('GPS String type not correct.  '+\
-                              'Expect GPGGA or GPRMC, got {0}'.format(g_type.upper()))
         
         ### first check the length, if it is not the proper length then
         ### return, cause you never know if everything else is correct
@@ -187,6 +218,27 @@ class GPS(object):
                 gps_list[self.type_dict['gpgga']['elevation']] = None
             
         return gps_list, error_list
+    
+    def _validate_gps_type(self, gps_list):
+        """Validate gps type should be gpgga or gprmc"""
+        gps_type = gps_list[0].lower()
+        if 'gpg' in gps_type:
+            if len(gps_type) > 5:
+                gps_list = ['GPGGA', gps_type[-6:]] + gps_list[1:]
+            elif len(gps_type) < 5:
+                gps_list[0] = 'GPGGA'
+        elif 'gpr' in gps_type:
+            if len(gps_type) > 5:
+                gps_list = ['GPRMC', gps_type[-6:]] + gps_list[1:]
+            elif len(gps_type) < 5:
+                gps_list[0] = 'GPRMC'
+        
+        gps_type = gps_list[0].lower()
+        if gps_type not in ['gpgga', 'gprmc']:
+            raise GPSError('GPS String type not correct.  '+\
+                              'Expect GPGGA or GPRMC, got {0}'.format(gps_type.upper()))
+            
+        return gps_list
     
     def _validate_list_length(self, gps_list):
         """validate gps list length based on type of string"""
@@ -312,8 +364,8 @@ class GPS(object):
                 try:
                     return float(self._elevation)
                 except ValueError:
-                    print('xxx Could not get elevation GPS string not complete ')
-                    print('xxx {0}'.format(self.gps_string))
+                    logging.error('GPSError: Could not get elevation GPS string'+\
+                                  'not complete {0}'.format(self.gps_string))
             else:
                 return 0.0
         else:
@@ -333,14 +385,14 @@ class GPS(object):
                 return dateutil.parser.parse('{0} {1}'.format(self._date, self._time),
                                              dayfirst=True)
             except ValueError:
-                print('xxx bad date string {0}'.format(self.gps_string))
+                logging.error('GPSError: bad date string {0}'.format(self.gps_string))
                 return None
         else:
             try:
                 return dateutil.parser.parse('{0} {1}'.format('010180', self._time),
                                              dayfirst=True)
             except ValueError:
-                print('xxx bad time string {0}'.format(self.gps_string))
+                logging.error('GPSError: bad time string {0}'.format(self.gps_string))
                 return None
         
     @property
@@ -432,8 +484,17 @@ class NIMSHeader(object):
                 self.header_dict[key.strip().lower()] = value.strip()
             elif line.find('<--') > 0:
                 value, key = line.split('<--')
-                self.header_dict[key.strip().lower()] = value.strip() 
+                self.header_dict[key.strip().lower()] = value.strip()
+        ### sometimes there are some spaces before the data starts
+        if last_line.count(b' ') > 0:
+            if last_line[0:1] == b' ':
+                last_line = last_line.strip()
+            else:
+                last_line = last_line.split()[1].strip()
         data_start_byte = last_line[0:1]
+        ### sometimes there are rogue $ around
+        if data_start_byte in [b'$', b'g']:
+            data_start_byte = last_line[1:2]
         self.data_start_seek = header_str.find(data_start_byte)
         
         self.parse_header_dict()
@@ -599,46 +660,68 @@ class NIMS(NIMSHeader):
             for ii in range(2):
                 indices[kk, 3+ii] = 82 + (kk) * 6 + (ii) * 3
         return indices
+                
+    def get_gps_string_list(self, nims_string):
+        """
+        get the gps strings assuming that there are an even amount of data
+        blocks
+        """
+        ### get index values of $ and gps_strings
+        index_values = []
+        gps_str_list = []
+        for ii in range(int(len(nims_string)/self.block_size)):
+            index = ii*self.block_size+3
+            g_char = struct.unpack('c', 
+                                   nims_string[index:index+1])[0]
+            if g_char == b'$':
+                index_values.append(index)
+            gps_str_list.append(g_char)
+        gps_raw_stamp_list = b''.join(gps_str_list).split(b'$')
+        return index_values, gps_raw_stamp_list
     
     def get_gps_list(self, nims_string):
         """
         get a list of GPS strings from the main string
         """
-            
         ### read in GPS strings into a list to be parsed later
-        gps_str = [struct.unpack('c', 
-                                 nims_string[ii*self.block_size+3:ii*self.block_size+4])[0]
-                 for ii in range(int(len(nims_string)/self.block_size))]
-        gps_str = b''.join(gps_str)
+        index_list, gps_raw_stamp_list = self.get_gps_string_list(nims_string)
         
-        ### replace all the non gps string bytes with nothing to sort easier
-        for replace_str in [b'\xd9', b'\xc7', b'\xcc']:
-            gps_str = gps_str.replace(replace_str, b'')
+        gps_stamp_list = []
+        ### not we are skipping the first entry, it tends to be not 
+        ### complete anyway
+        for index, raw_stamp in enumerate(index_list, gps_raw_stamp_list[1:]):
+            gps_obj = GPS(raw_stamp, index)
+            if gps_obj.valid:
+                gps_stamp_list.append(gps_obj)
+        
+#        ### replace all the non gps string bytes with nothing to sort easier
+#        for replace_str in [b'\xd9', b'\xc7', b'\xcc']:
+#            gps_str = gps_str.replace(replace_str, b'')
+#            
+#        ### sometimes the end is set with a zero for some reason
+#        gps_str = gps_str.replace(b'\x00', b'*')
+#        
+#        ### split the string by the $ 
+#        gps_str_list = gps_str.split(b'$')
+#        
+#        ### need to make sure there is an end to the gps string otherwise it
+#        ### might not be usefult
+#        g = []
+#        for stamp in gps_str_list:
+#            if stamp.find(b'*') < 0:
+#                logging.error('GPSError: No end to stamp {0}'.format(stamp))
+#            else:
+#                try:
+#                    g.append(stamp[0:stamp.find(b'*')].decode())
+#                except UnicodeDecodeError:
+#                    logging.error('GPSError: stamp not correct format, {0}'.format(stamp))
+#        gps_str_list = g
+#        
+#        ### check the first few stamps
+#        if gps_str_list[0].find('$') == -1:
+#            gps_str_list = gps_str_list[1:]
             
-        ### sometimes the end is set with a zero for some reason
-        gps_str = gps_str.replace(b'\x00', b'*')
-        
-        ### split the string by the $ 
-        gps_str_list = gps_str.split(b'$')
-        
-        ### need to make sure there is an end to the gps string otherwise it
-        ### might not be usefult
-        g = []
-        for stamp in gps_str_list:
-            if stamp.find(b'*') < 0:
-                print('   No end to stamp {0}'.format(stamp))
-            else:
-                try:
-                    g.append(stamp[0:stamp.find(b'*')].decode())
-                except UnicodeDecodeError:
-                    print('  stamp not correct format, {0}'.format(stamp))
-        gps_str_list = g
-        
-        ### check the first few stamps
-        if gps_str_list[0].find('$') == -1:
-            gps_str_list = gps_str_list[1:]
-            
-        self.gps_list = self.gps_match_double_string(gps_str_list)
+        return self.gps_match_double_string(gps_stamp_list)
 
             
     def gps_match_double_string(self, gps_string_list):
@@ -750,15 +833,18 @@ class NIMS(NIMSHeader):
         data = data[find_first:]
         
         ### get GPS stamps from the binary string first
-        self.get_gps_list(data_str[find_first:])
+        self.gps_list = self.get_gps_list(data_str[find_first:])
         
         ### check the size of the data, should have an equal amount of blocks
-        if (data.size % self.block_size) == 0:
-            data = data.reshape((int(data.size/self.block_size), 
-                                 self.block_size))
-        else:
-            raise NIMSError('odd number of bytes, not even blocks')
-        
+        if (data.size % self.block_size) != 0:
+            logging.warning('odd number of bytes {0}, not even blocks'.format(data.size)+\
+                            'cutting down the data by {0}'.format(data.size % self.block_size))
+            end_data = (data.size - (data.size % self.block_size))
+            data = data[0:end_data]
+            
+        data = data.reshape((int(data.size/self.block_size), 
+                             self.block_size))
+
         ### need to parse the data
         ### first get the status information
         self.info_array = np.zeros(data.shape[0],
@@ -824,6 +910,7 @@ class NIMS(NIMSHeader):
         ### therefore make the start time the first GPS stamp time minus
         ### the index value for that stamp.
         first_index = self.stamps[0][0]
+        print(self.stamps[0][1][0].gps_string)
         start_time = self.stamps[0][1][0].time_stamp - \
                             datetime.timedelta(seconds=int(first_index))
 
@@ -892,13 +979,13 @@ class NIMSError(Exception):
 # Test
 # =============================================================================
 #
-nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
-#nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
-st = datetime.datetime.now()
-nims_obj = NIMS(nims_fn)
-#nims_obj.read_header(nims_fn)
-
-et = datetime.datetime.now()
-
-tdiff = et - st
-print('Took {0} seconds'.format(tdiff.total_seconds()))
+nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp312a\DATA.BIN"
+##nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
+#st = datetime.datetime.now()
+#nims_obj = NIMS(nims_fn)
+##nims_obj.read_header(nims_fn)
+#
+#et = datetime.datetime.now()
+#
+#tdiff = et - st
+#print('Took {0} seconds'.format(tdiff.total_seconds()))

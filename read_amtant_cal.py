@@ -10,6 +10,8 @@ import pandas as pd
 
 ant_fn = r"d:\Peacock\MTData\Ant_calibrations\antenna_20190411.cal"
 
+birrp = False
+
 with open(ant_fn, 'r') as fid:
     lines = fid.readlines()
     
@@ -24,11 +26,12 @@ for line in lines:
     else:
         line_list = line.strip().split()
         ant = line_list[0]
-        amp = float(line_list[1]) #/1000 ### to mV/nT
+        amp = float(line_list[1])
+        ### Zonge uses milliradians for what ever reason
         phase = float(line_list[2]) / 1000
         
-        z_real = amp * np.cos(phase) #/ (np.pi / 2) # scaling factor in birrp
-        z_imag = amp * np.sin(phase) #/ (np.pi / 2) # scaling factor in birrp
+        z_real = amp * np.cos(phase) #
+        z_imag = amp * np.sin(phase) #
         
         try:
             ant_dict[ant]
@@ -37,7 +40,11 @@ for line in lines:
                                      dtype=([('frequency', np.float),
                                              ('real', np.float),
                                              ('imaginary', np.float)]))
-            ant_dict[ant][0] = (1, 1, 1) ### needed for birrp
+            if birrp:
+                ### BIRRP now expects the first line to be a scaling factor
+                ### need to set this to 1
+                ant_dict[ant][0] = (1, 1, 1) ### needed for birrp
+                
         ant_dict[ant][ff] = (f, z_real, z_imag)
         
 for key in ant_dict.keys():
