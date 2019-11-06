@@ -51,7 +51,9 @@ class GPS(object):
         self._longitude_hemisphere = None
         self._declination = None
         self._declination_hemisphere = None
+        self._elevation = None
         self.valid = False
+        self.elevation_units = 'meters'
         
         self.type_dict = {'gprmc':{0:'type', 
                                    1:'time', 
@@ -65,7 +67,7 @@ class GPS(object):
                                    9:'date',
                                    10:'declination',
                                    11:'declination_hemisphere',
-                                   'length':12,
+                                   'length':[12],
                                    'type':0, 
                                    'time':1, 
                                    'fix':2,
@@ -90,7 +92,7 @@ class GPS(object):
                                    12:'elevation_error_units',
                                    13:'null_01',
                                    14:'null_02',
-                                   'length':15,
+                                   'length':[14,15],
                                    'type':0, 
                                    'time':1, 
                                    'latitude':2,
@@ -245,10 +247,11 @@ class GPS(object):
         
         gps_list_type = gps_list[0].lower()
         expected_len = self.type_dict[gps_list_type]['length']
-        if len(gps_list) != expected_len:
+        if len(gps_list) not in expected_len:
             raise GPSError('GPS string not correct length for {0}.  '.format(gps_list_type.upper())+\
-                           'Expected {0}, got {1}'.format(expected_len, 
-                                                          len(gps_list)))
+                           'Expected {0}, got {1} \n{2}'.format(expected_len, 
+                                                              len(gps_list),
+                                                              ','.join(gps_list)))
             
     def _validate_time(self, time_str):
         """ validate time string, should be 6 characters long and an int """
@@ -318,39 +321,32 @@ class GPS(object):
             raise GPSError('Elevation could not be converted {0}'.format(elevation_str))
             
         return elevation_str
-            
-            
+                      
     @property
     def latitude(self):
         """
         Latitude in decimal degrees, WGS84
         """
-        if hasattr(self, '_latitude') and hasattr(self, '_latitude_hemisphere'):
-            if self._latitude is not None and self._latitude_hemisphere is not None:
-                index = len(self._latitude) - 7
-                lat = float(self._latitude[0:index]) + float(self._latitude[index:])/60
-                if 's' in self._latitude_hemisphere.lower():
-                    lat *= -1
-                return lat
-            else:
-                return 0.0
+        if self._latitude is not None and self._latitude_hemisphere is not None:
+            index = len(self._latitude) - 7
+            lat = float(self._latitude[0:index]) + float(self._latitude[index:])/60
+            if 's' in self._latitude_hemisphere.lower():
+                lat *= -1
+            return lat
         else:
             return 0.0
-        
+    
     @property
     def longitude(self):
         """
         Latitude in decimal degrees, WGS84
         """
-        if hasattr(self, '_longitude') and hasattr(self, '_longitude_hemisphere'):
-            if self._longitude is not None and self._longitude_hemisphere is not None:
-                index = len(self._longitude) - 7
-                lon = float(self._longitude[0:index]) + float(self._longitude[index:])/60
-                if 'w' in self._longitude_hemisphere.lower():
-                    lon *= -1
-                return lon
-            else:
-                return 0.0
+        if self._longitude is not None and self._longitude_hemisphere is not None:
+            index = len(self._longitude) - 7
+            lon = float(self._longitude[0:index]) + float(self._longitude[index:])/60
+            if 'w' in self._longitude_hemisphere.lower():
+                lon *= -1
+            return lon
         else:
             return 0.0
         
@@ -359,15 +355,12 @@ class GPS(object):
         """
         elevation in meters
         """
-        if hasattr(self, '_elevation'):
-            if self._elevation is not None:
-                try:
-                    return float(self._elevation)
-                except ValueError:
-                    logging.error('GPSError: Could not get elevation GPS string'+\
-                                  'not complete {0}'.format(self.gps_string))
-            else:
-                return 0.0
+        if self._elevation is not None:
+            try:
+                return float(self._elevation)
+            except ValueError:
+                logging.error('GPSError: Could not get elevation GPS string'+\
+                              'not complete {0}'.format(self.gps_string))
         else:
             return 0.0
         
@@ -378,35 +371,33 @@ class GPS(object):
         """
         if self._time is None:
             return None
-        if hasattr(self, '_date'):
-            if self._date is None:
-                self._date = '010180'
-            try:
-                return dateutil.parser.parse('{0} {1}'.format(self._date, self._time),
-                                             dayfirst=True)
-            except ValueError:
-                logging.error('GPSError: bad date string {0}'.format(self.gps_string))
-                return None
-        else:
-            try:
-                return dateutil.parser.parse('{0} {1}'.format('010180', self._time),
-                                             dayfirst=True)
-            except ValueError:
-                logging.error('GPSError: bad time string {0}'.format(self.gps_string))
-                return None
+        if self._date is None:
+            self._date = '010180'
+        try:
+            return dateutil.parser.parse('{0} {1}'.format(self._date, self._time),
+                                         dayfirst=True)
+        except ValueError:
+            logging.error('GPSError: bad date string {0}'.format(self.gps_string))
+            return None
         
     @property
     def declination(self):
         """
         geomagnetic declination in degrees from north
         """
-        if hasattr(self, '_declination'):
-            dec = float(self._declination)
-            if 'w' in self._declination_hemisphere.lower():
-                dec *= -1
-            return dec
-        else:
+        if self._declination is None or self._declination_hemisphere is None:
             return None
+        
+        dec = float(self._declination)
+        if 'w' in self._declination_hemisphere.lower():
+            dec *= -1
+        return dec
+
+        
+    @property
+    def gps_type(self):
+        """GPRMC or GPGGA"""
+        return self._type
         
     @property
     def fix(self):
@@ -460,6 +451,10 @@ class NIMSHeader(object):
             
         if not os.path.exists(self.fn):
             raise NIMSError('Could not find file {0}'.format(self.fn))
+            
+        print('Reading NIMS file {0}'.format(self.fn))
+        logging.info('='*72)
+        logging.info('Reading NIMS file {0}'.format(self.fn))
             
         ### load in the entire file, its not too big
         with open(self.fn, 'rb') as fid:
@@ -577,7 +572,7 @@ class NIMS(NIMSHeader):
         self.stamps = None
         self.data_df = None
         
-        self.indices = self.make_index_values()
+        self.indices = self._make_index_values()
         
         if self.fn is not None:
             self.read_nims()
@@ -646,7 +641,7 @@ class NIMS(NIMSHeader):
         else:
             return None
         
-    def make_index_values(self):
+    def _make_index_values(self):
         """
         Index values for the channels recorded
         """
@@ -661,7 +656,7 @@ class NIMS(NIMSHeader):
                 indices[kk, 3+ii] = 82 + (kk) * 6 + (ii) * 3
         return indices
                 
-    def get_gps_string_list(self, nims_string):
+    def _get_gps_string_list(self, nims_string):
         """
         get the gps strings assuming that there are an even amount of data
         blocks
@@ -674,7 +669,7 @@ class NIMS(NIMSHeader):
             g_char = struct.unpack('c', 
                                    nims_string[index:index+1])[0]
             if g_char == b'$':
-                index_values.append(index)
+                index_values.append((index-3)/self.block_size)
             gps_str_list.append(g_char)
         gps_raw_stamp_list = b''.join(gps_str_list).split(b'$')
         return index_values, gps_raw_stamp_list
@@ -684,71 +679,23 @@ class NIMS(NIMSHeader):
         get a list of GPS strings from the main string
         """
         ### read in GPS strings into a list to be parsed later
-        index_list, gps_raw_stamp_list = self.get_gps_string_list(nims_string)
+        index_list, gps_raw_stamp_list = self._get_gps_string_list(nims_string)
         
         gps_stamp_list = []
         ### not we are skipping the first entry, it tends to be not 
         ### complete anyway
-        for index, raw_stamp in enumerate(index_list, gps_raw_stamp_list[1:]):
+        for index, raw_stamp in zip(index_list, gps_raw_stamp_list[1:]):
             gps_obj = GPS(raw_stamp, index)
             if gps_obj.valid:
                 gps_stamp_list.append(gps_obj)
-        
-#        ### replace all the non gps string bytes with nothing to sort easier
-#        for replace_str in [b'\xd9', b'\xc7', b'\xcc']:
-#            gps_str = gps_str.replace(replace_str, b'')
-#            
-#        ### sometimes the end is set with a zero for some reason
-#        gps_str = gps_str.replace(b'\x00', b'*')
-#        
-#        ### split the string by the $ 
-#        gps_str_list = gps_str.split(b'$')
-#        
-#        ### need to make sure there is an end to the gps string otherwise it
-#        ### might not be usefult
-#        g = []
-#        for stamp in gps_str_list:
-#            if stamp.find(b'*') < 0:
-#                logging.error('GPSError: No end to stamp {0}'.format(stamp))
-#            else:
-#                try:
-#                    g.append(stamp[0:stamp.find(b'*')].decode())
-#                except UnicodeDecodeError:
-#                    logging.error('GPSError: stamp not correct format, {0}'.format(stamp))
-#        gps_str_list = g
-#        
-#        ### check the first few stamps
-#        if gps_str_list[0].find('$') == -1:
-#            gps_str_list = gps_str_list[1:]
             
-        return self.gps_match_double_string(gps_stamp_list)
+        return self._gps_match_double_string(gps_stamp_list)
 
             
-    def gps_match_double_string(self, gps_string_list):
+    def _gps_match_double_string(self, gps_obj_list):
         """
         match GPRMC and GPGGA strings together
         """
-        ### see if there are a GPRMC and GPGGA match in the first few stamps
-        match = []
-        for ii in range(1, 6):
-            if len(gps_string_list[ii]) > 12 and len(gps_string_list[ii-1]) > 12:
-                if gps_string_list[ii].count(',') > 10 and gps_string_list[ii-1].count(',') > 10:
-                    if gps_string_list[ii].split(',')[1] == gps_string_list[ii-1].split(',')[1]:
-                        match.append(True)
-                    else:
-                        match.append(False)
-            else:
-                match.append(False)
-                
-        ### find the location of the first pair of stamps
-        try:
-            first_stamp_index = np.where(np.array(match) == True)[0][0]
-        ### if the stamps are bad set the index to 0 and see what happens
-        except IndexError:
-            first_stamp_index = 0
-            
-        gps_obj_list = [GPS(stamp_str) for stamp_str in gps_string_list[first_stamp_index:]]
-        
         ### match up the GPRMC and GPGGA together
         gps_match_list = []
         for ii in range(0, len(gps_obj_list)-1, 2):
@@ -765,30 +712,45 @@ class NIMS(NIMSHeader):
         return gps_match_list
         
         
-    def get_gps_stamp_indices(self):
+    def _get_gps_stamp_indices_from_status(self, status_array):
         """
         get the index location of the stamps
         """
         
-        index_values = np.where(self.info_array['status'] == 0)[0]
-        stamps = np.zeros_like(index_values)
+        index_values = np.where(status_array == 0)[0]
+        status_index = np.zeros_like(index_values)
         for ii in range(index_values.size):
             if index_values[ii] - index_values[ii-1] == 1:
                 continue
             else:
-                stamps[ii] = index_values[ii]
-        stamps = stamps[np.nonzero(stamps)]
+                status_index[ii] = index_values[ii]
+        status_index = status_index[np.nonzero(status_index)]
         
-        return stamps
+        return status_index
     
-    def get_gps_stamps(self):
+    def get_gps_stamps(self, status_array, gps_list):
         """
         make an array of gps stamps with index values
         """
         
-        stamp_indices = self.get_gps_stamp_indices()
-        gps_stamps = [[index, stamps] for index, stamps in zip(stamp_indices,
-                      self.gps_list)]
+        stamp_indices = self._get_gps_stamp_indices_from_status(status_array)
+        gps_stamps = []
+        for index in stamp_indices:
+            stamp_find = False
+            for stamps in gps_list:
+                if stamps[0].gps_type in ['GPRMC', 'gprmc']:
+                    if stamps[0].index - index == 2:
+                        gps_stamps.append((index, stamps))
+                        stamp_find = True
+                        break
+                elif stamps[0].gps_type in ['GPGGA', 'gpgga']:
+                    if stamps[0].index - index == 74:
+                        gps_stamps.append((index, stamps))
+                        stamp_find = True
+                        break
+            if not stamp_find:
+                logging.warning('No good GPS stamp at {0} seconds'.format(index))
+
         return gps_stamps
     
     def find_sequence(self, data_array, block_sequence=None):
@@ -817,7 +779,7 @@ class NIMS(NIMSHeader):
             self.fn = fn
 
         ### read in header information and get the location of end of header
-        self.read_header()
+        self.read_header(self.fn)
         
         ### load in the entire file, its not too big, start from the 
         ### end of the header information.
@@ -859,15 +821,16 @@ class NIMS(NIMSHeader):
                                           ('end', np.int)])    
         
         for key, index in self._block_dict.items():
-                    if 'temp' in key:
-                        value = ((data[:, index[0]] * 256 + data[:, index[1]]) - \
-                                 self.t_offset)/self.t_conversion_factor
-                    else:
-                        value = data[:, index]
-                    self.info_array[key][:] = value
+            if 'temp' in key:
+                value = ((data[:, index[0]] * 256 + data[:, index[1]]) - \
+                         self.t_offset)/self.t_conversion_factor
+            else:
+                value = data[:, index]
+            self.info_array[key][:] = value
                     
         ### get GPS stamps with index values
-        self.stamps = self.get_gps_stamps()
+        self.stamps = self.get_gps_stamps(self.info_array['status'],
+                                          self.gps_list)
          
         ### get data
         data_array = np.zeros(data.shape[0]*self.sampling_rate,
@@ -893,9 +856,52 @@ class NIMS(NIMSHeader):
         for comp in ['ex', 'ey']:
             data_array[comp] *= -1
             
-        self.align_data(data_array)           
-            
-    def align_data(self, data_array):
+        self.data_df = self.align_data(data_array, self.stamps) 
+
+    def _get_first_gps_stamp(self, stamps):
+        """
+        get the first GPRMC stamp
+        """ 
+        for stamp in stamps:
+            if stamp[1][0].gps_type in ['gprmc', 'GPRMC']:
+                return stamp
+        return None
+    
+    def _get_last_gps_stamp(self, stamps):
+        """
+        get the last gprmc stamp
+        """
+        for stamp in stamps[::-1]:
+            if stamp[1][0].gps_type in ['gprmc', 'GPRMC']:
+                return stamp
+        return None
+    
+    def check_timing(self, stamps):
+        """
+        make sure that there are the correct number of seconds in between
+        the first and last GPS GPRMC stamps
+        """
+        timing_valid = False
+        first_stamp = self._get_first_gps_stamp(stamps)[1][0]
+        last_stamp = self._get_last_gps_stamp(stamps)[1][0]
+        
+        time_diff = last_stamp.time_stamp - first_stamp.time_stamp
+        index_diff = last_stamp.index - first_stamp.index
+        
+        if time_diff.total_seconds() != index_diff:
+            difference = time_diff.total_seconds() - index_diff
+            if difference > 0:
+                print('Timing might be off by {0} seconds, '.format(abs(difference))+\
+                      'index of time stamps are greater than time difference.')
+            else:
+                print('Timing might be off by {0} seconds, '.format(abs(difference))+\
+                      'time difference greater than index of time stamps.')
+            return False
+        else:
+            timing_valid = True
+            return timing_valid
+                   
+    def align_data(self, data_array, stamps):
         """
         Need to match up the first good GPS stamp with the data
         
@@ -904,21 +910,26 @@ class NIMS(NIMSHeader):
         
         put the data into a pandas data frame that is indexed by time
         """
-        
+        ### check timing first to make sure there is no drift
+        timing_valid = self.check_timing(stamps)
+        if timing_valid is False:
+            print('Check time series for timing issues')
         ### first GPS stamp within the data is at a given index that is 
         ### assumed to be the number of seconds from the start of the run.
         ### therefore make the start time the first GPS stamp time minus
         ### the index value for that stamp.
-        first_index = self.stamps[0][0]
-        print(self.stamps[0][1][0].gps_string)
-        start_time = self.stamps[0][1][0].time_stamp - \
-                            datetime.timedelta(seconds=int(first_index))
+        ### need to be sure that the first GPS stamp has a date, need GPRMC
+        first_stamp = self._get_first_gps_stamp(stamps)
+        first_index = first_stamp[0]
+        start_time = first_stamp[1][0].time_stamp - \
+                            datetime.timedelta(seconds=int(first_index)+1)
+
 
         dt_index = self.make_dt_index(start_time.isoformat(),
                                       self.sampling_rate,
                                       n_samples=data_array.shape[0])
         
-        self.data_df = pd.DataFrame(data_array, index=dt_index)
+        return pd.DataFrame(data_array, index=dt_index)
         
     def calibrate_data(self, data_df):
         """
@@ -966,20 +977,35 @@ class NIMS(NIMSHeader):
             raise ValueError('Need to input either stop_time or n_samples')
 
         return dt_index
-        
-            
+                   
 # =============================================================================
 # Exceptions
 # =============================================================================
 class NIMSError(Exception):
     pass
     
-#### need to align gps stamps
+#### TOFO: need to align gps stamps
 # =============================================================================
 # Test
 # =============================================================================
 #
-nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp312a\DATA.BIN"
+lp_dir = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data"
+for folder in os.listdir(lp_dir):
+    nims_fn = os.path.join(lp_dir, folder, 'DATA.BIN')
+    st = datetime.datetime.now()
+    nims_obj = NIMS(nims_fn)
+    print(nims_obj.latitude, 
+          nims_obj.longitude,
+          nims_obj.elevation,
+          nims_obj.start_time,
+          nims_obj.run_id,
+          len(nims_obj.stamps))
+
+    et = datetime.datetime.now()
+    tdiff = et - st
+    print('Took {0} seconds'.format(tdiff.total_seconds()))
+    
+#nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
 ##nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
 #st = datetime.datetime.now()
 #nims_obj = NIMS(nims_fn)
