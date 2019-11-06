@@ -1,0 +1,2570 @@
+ERROR:GPSError: No end to stamp b'GPGGA,230405,3517.9193,N,11508.7783,W,1,04,3.3,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP1\r\n'
+ERROR:GPSError: No end to stamp b'GPGGA,152709,3517.9239,N,11'
+ERROR:GPSError: No end to stamp b'GPGGA,160159,3517.9218,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,161923,3517.9201,N,11508.7799,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,163647,3517.9186,N,11508.7774,W,1,03,3'
+ERROR:GPSError: No end to stamp b'GPGGA,165411,3517.9163,N,11508.7733,W,1,03,5.0,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP51\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,231817,3517.9219,N,1150'
+ERROR:GPSError: No end to stamp b'GPGGA,045005,3517.9197,N,11508.7823,W,1,03,2.0,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,063453,3517.9208,N,11508.7822,W,1,03,3.'
+ERROR:GPSError: No end to stamp b'GPGGA,070941,3517.9203,N,11508.7823,W,'
+ERROR:GPSError: No end to stamp b'GPGGA,113135,3517.9201,N,11508.7807,W,1,03,5.2,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,124147,3517.9250,N,11508.7848,W,1,03,3.6,,'
+ERROR:GPSError: No end to stamp b'GPGGA,125911,3517.9291,N,11508'
+ERROR:GPSError: No end to stamp b'GPGGA,151905,3517.9222,N,11508.7813,W,10'
+ERROR:GPSError: No end to stamp b'GPGGA,040117,3517.9175,N'
+ERROR:GPSError: No end to stamp b'GPGGA,041859,3517.9216,N,11508.7816,W,1,03,2'
+ERROR:GPSError: No end to stamp b'GPGGA,110047,3517.9204,N,11508.7797,W,1,04,2.1,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP9\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,111811,3517.9246,N,11508.7759,W,1,03,5'
+ERROR:GPSError: No end to stamp b'GPGGA,154029,3517.9200,N,1'
+ERROR:GPSError: No end to stamp b'GPGGA,185235,3517.9197,N,11508.7800,W,1,03,2.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,200229,3517.9182,N,11508.7830,W,1,'
+ERROR:GPSError: No end to stamp b'GPGGA,030117,3517.9207,N,11508.7794,W,1'
+ERROR:GPSError: No end to stamp b'GPGGA,031841,3517.9196,N,11508.7774,W,1,03,2.6,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,041135,3517.9224,N,11508.7834,W,1,03,3.9,,'
+ERROR:GPSError: No end to stamp b'GPGGA'
+ERROR:GPSError: No end to stamp b'GPGGA,125523,3517.9205,N,11508.778'
+ERROR:GPSError: No end to stamp b'GPGGA,193723,3517.9195,N,11508.77'
+ERROR:GPSError: No end to stamp b'GPGGA,195447,3517.9223,N,11508.7816,W,1,03,3.4,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,221453,3517.9203,N,11508.7833,W,1,03,2.4,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,021917,3517.9208,N,11508.7819,W,1,03,3.5,,M,-26'
+ERROR:GPSError: No end to stamp b'GPGGA,071641,3517.9205,N,11508.7825,W,1,04,1'
+ERROR:GPSError: No end to stamp b'GPGGA,095341,3517.9198,N,11508.7833,W,1,03,1.7,,M,-26.6,,'
+ERROR:GPSError: No end to stamp b'GP5\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,112105,3517.9213,N,11508.7761,W,1,04'
+ERROR:GPSError: No end to stamp b'GPGGA,113847,3517.9198,N,11508.7'
+ERROR:GPSError: No end to stamp b'GPGGA,123129,3517.9186,N,11508.7770,W,1,03,8.2,,M,-26.6,M,,'
+ERROR:GPSError: No end to stamp b'GPGGA,152623,3517.92'
+ERROR:GPSError: No end to stamp b'GPGGA,185553,3517.9207,N,11508.7819,W,1,04,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP55\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,191317,3517.9210,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,021223,3517.9211,N,11508.7871,W,1,0'
+ERROR:GPSError: No end to stamp b'GPGGA,052459,3517.9219,N,11508.7820,W,1,03,1.9,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,054223,3517.9208,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,072735,3517.9201,N,11508.7814,W,1,03,3.9,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,172123,3517.9180,N,11508.7815,W,1,03,5.3,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,183059,'
+ERROR:GPSError: No end to stamp b'GPGGA,184823,3517.9199,N,11508.7807,W,1,03,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,234535,3517.9194,N,11508.7825,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,112459,3517.9213,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,143741,3517.'
+ERROR:GPSError: No end to stamp b'GPGGA,182429,3517.9189,N,11508.7807,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,200917,3517.9196,N,11508.7840,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,213617,3517.9219,N,11508.7827,W,1,04,2.0,,M,-26.6,M,'
+ERROR:GPSError:GPS string not correct length for GPRMC.  Expected 12, got 7
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GGGA
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP7802
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP814
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP95
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP9
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got PGGA
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP08.7811
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.7820
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.3
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP2.3
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP759
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP50
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPD
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPW
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.9199
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP52
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP825
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+P
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError: No end to stamp b'GPGGA,230405,3517.9193,N,11508.7783,W,1,04,3.3,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP1\r\n'
+ERROR:GPSError: No end to stamp b'GPGGA,152709,3517.9239,N,11'
+ERROR:GPSError: No end to stamp b'GPGGA,160159,3517.9218,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,161923,3517.9201,N,11508.7799,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,163647,3517.9186,N,11508.7774,W,1,03,3'
+ERROR:GPSError: No end to stamp b'GPGGA,165411,3517.9163,N,11508.7733,W,1,03,5.0,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP51\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,231817,3517.9219,N,1150'
+ERROR:GPSError: No end to stamp b'GPGGA,045005,3517.9197,N,11508.7823,W,1,03,2.0,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,063453,3517.9208,N,11508.7822,W,1,03,3.'
+ERROR:GPSError: No end to stamp b'GPGGA,070941,3517.9203,N,11508.7823,W,'
+ERROR:GPSError: No end to stamp b'GPGGA,113135,3517.9201,N,11508.7807,W,1,03,5.2,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,124147,3517.9250,N,11508.7848,W,1,03,3.6,,'
+ERROR:GPSError: No end to stamp b'GPGGA,125911,3517.9291,N,11508'
+ERROR:GPSError: No end to stamp b'GPGGA,151905,3517.9222,N,11508.7813,W,10'
+ERROR:GPSError: No end to stamp b'GPGGA,040117,3517.9175,N'
+ERROR:GPSError: No end to stamp b'GPGGA,041859,3517.9216,N,11508.7816,W,1,03,2'
+ERROR:GPSError: No end to stamp b'GPGGA,110047,3517.9204,N,11508.7797,W,1,04,2.1,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP9\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,111811,3517.9246,N,11508.7759,W,1,03,5'
+ERROR:GPSError: No end to stamp b'GPGGA,154029,3517.9200,N,1'
+ERROR:GPSError: No end to stamp b'GPGGA,185235,3517.9197,N,11508.7800,W,1,03,2.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,200229,3517.9182,N,11508.7830,W,1,'
+ERROR:GPSError: No end to stamp b'GPGGA,030117,3517.9207,N,11508.7794,W,1'
+ERROR:GPSError: No end to stamp b'GPGGA,031841,3517.9196,N,11508.7774,W,1,03,2.6,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,041135,3517.9224,N,11508.7834,W,1,03,3.9,,'
+ERROR:GPSError: No end to stamp b'GPGGA'
+ERROR:GPSError: No end to stamp b'GPGGA,125523,3517.9205,N,11508.778'
+ERROR:GPSError: No end to stamp b'GPGGA,193723,3517.9195,N,11508.77'
+ERROR:GPSError: No end to stamp b'GPGGA,195447,3517.9223,N,11508.7816,W,1,03,3.4,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,221453,3517.9203,N,11508.7833,W,1,03,2.4,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,021917,3517.9208,N,11508.7819,W,1,03,3.5,,M,-26'
+ERROR:GPSError: No end to stamp b'GPGGA,071641,3517.9205,N,11508.7825,W,1,04,1'
+ERROR:GPSError: No end to stamp b'GPGGA,095341,3517.9198,N,11508.7833,W,1,03,1.7,,M,-26.6,,'
+ERROR:GPSError: No end to stamp b'GP5\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,112105,3517.9213,N,11508.7761,W,1,04'
+ERROR:GPSError: No end to stamp b'GPGGA,113847,3517.9198,N,11508.7'
+ERROR:GPSError: No end to stamp b'GPGGA,123129,3517.9186,N,11508.7770,W,1,03,8.2,,M,-26.6,M,,'
+ERROR:GPSError: No end to stamp b'GPGGA,152623,3517.92'
+ERROR:GPSError: No end to stamp b'GPGGA,185553,3517.9207,N,11508.7819,W,1,04,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP55\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,191317,3517.9210,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,021223,3517.9211,N,11508.7871,W,1,0'
+ERROR:GPSError: No end to stamp b'GPGGA,052459,3517.9219,N,11508.7820,W,1,03,1.9,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,054223,3517.9208,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,072735,3517.9201,N,11508.7814,W,1,03,3.9,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,172123,3517.9180,N,11508.7815,W,1,03,5.3,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,183059,'
+ERROR:GPSError: No end to stamp b'GPGGA,184823,3517.9199,N,11508.7807,W,1,03,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,234535,3517.9194,N,11508.7825,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,112459,3517.9213,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,143741,3517.'
+ERROR:GPSError: No end to stamp b'GPGGA,182429,3517.9189,N,11508.7807,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,200917,3517.9196,N,11508.7840,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,213617,3517.9219,N,11508.7827,W,1,04,2.0,,M,-26.6,M,'
+ERROR:GPSError:GPS string not correct length for GPRMC.  Expected 12, got 7
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GGGA
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP7802
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP814
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP95
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP9
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got PGGA
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP08.7811
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.7820
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.3
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP2.3
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP759
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP50
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPD
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPW
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.9199
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP52
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP825
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+P
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError: No end to stamp b'GPGGA,230405,3517.9193,N,11508.7783,W,1,04,3.3,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP1\r\n'
+ERROR:GPSError: No end to stamp b'GPGGA,152709,3517.9239,N,11'
+ERROR:GPSError: No end to stamp b'GPGGA,160159,3517.9218,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,161923,3517.9201,N,11508.7799,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,163647,3517.9186,N,11508.7774,W,1,03,3'
+ERROR:GPSError: No end to stamp b'GPGGA,165411,3517.9163,N,11508.7733,W,1,03,5.0,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP51\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,231817,3517.9219,N,1150'
+ERROR:GPSError: No end to stamp b'GPGGA,045005,3517.9197,N,11508.7823,W,1,03,2.0,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,063453,3517.9208,N,11508.7822,W,1,03,3.'
+ERROR:GPSError: No end to stamp b'GPGGA,070941,3517.9203,N,11508.7823,W,'
+ERROR:GPSError: No end to stamp b'GPGGA,113135,3517.9201,N,11508.7807,W,1,03,5.2,,M,-'
+ERROR:GPSError: No end to stamp b'GPGGA,124147,3517.9250,N,11508.7848,W,1,03,3.6,,'
+ERROR:GPSError: No end to stamp b'GPGGA,125911,3517.9291,N,11508'
+ERROR:GPSError: No end to stamp b'GPGGA,151905,3517.9222,N,11508.7813,W,10'
+ERROR:GPSError: No end to stamp b'GPGGA,040117,3517.9175,N'
+ERROR:GPSError: No end to stamp b'GPGGA,041859,3517.9216,N,11508.7816,W,1,03,2'
+ERROR:GPSError: No end to stamp b'GPGGA,110047,3517.9204,N,11508.7797,W,1,04,2.1,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GP9\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,111811,3517.9246,N,11508.7759,W,1,03,5'
+ERROR:GPSError: No end to stamp b'GPGGA,154029,3517.9200,N,1'
+ERROR:GPSError: No end to stamp b'GPGGA,185235,3517.9197,N,11508.7800,W,1,03,2.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,200229,3517.9182,N,11508.7830,W,1,'
+ERROR:GPSError: No end to stamp b'GPGGA,030117,3517.9207,N,11508.7794,W,1'
+ERROR:GPSError: No end to stamp b'GPGGA,031841,3517.9196,N,11508.7774,W,1,03,2.6,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,041135,3517.9224,N,11508.7834,W,1,03,3.9,,'
+ERROR:GPSError: No end to stamp b'GPGGA'
+ERROR:GPSError: No end to stamp b'GPGGA,125523,3517.9205,N,11508.778'
+ERROR:GPSError: No end to stamp b'GPGGA,193723,3517.9195,N,11508.77'
+ERROR:GPSError: No end to stamp b'GPGGA,195447,3517.9223,N,11508.7816,W,1,03,3.4,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,221453,3517.9203,N,11508.7833,W,1,03,2.4,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,021917,3517.9208,N,11508.7819,W,1,03,3.5,,M,-26'
+ERROR:GPSError: No end to stamp b'GPGGA,071641,3517.9205,N,11508.7825,W,1,04,1'
+ERROR:GPSError: No end to stamp b'GPGGA,095341,3517.9198,N,11508.7833,W,1,03,1.7,,M,-26.6,,'
+ERROR:GPSError: No end to stamp b'GP5\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,112105,3517.9213,N,11508.7761,W,1,04'
+ERROR:GPSError: No end to stamp b'GPGGA,113847,3517.9198,N,11508.7'
+ERROR:GPSError: No end to stamp b'GPGGA,123129,3517.9186,N,11508.7770,W,1,03,8.2,,M,-26.6,M,,'
+ERROR:GPSError: No end to stamp b'GPGGA,152623,3517.92'
+ERROR:GPSError: No end to stamp b'GPGGA,185553,3517.9207,N,11508.7819,W,1,04,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GP55\r\n\n'
+ERROR:GPSError: No end to stamp b'GPGGA,191317,3517.9210,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,021223,3517.9211,N,11508.7871,W,1,0'
+ERROR:GPSError: No end to stamp b'GPGGA,052459,3517.9219,N,11508.7820,W,1,03,1.9,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,054223,3517.9208,N,11508.781'
+ERROR:GPSError: No end to stamp b'GPGGA,072735,3517.9201,N,11508.7814,W,1,03,3.9,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,172123,3517.9180,N,11508.7815,W,1,03,5.3,,M,-26.6,M,'
+ERROR:GPSError: No end to stamp b'GPGGA,183059,'
+ERROR:GPSError: No end to stamp b'GPGGA,184823,3517.9199,N,11508.7807,W,1,03,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,234535,3517.9194,N,11508.7825,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,112459,3517.9213,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,143741,3517.'
+ERROR:GPSError: No end to stamp b'GPGGA,182429,3517.9189,N,11508.7807,W,1,04,'
+ERROR:GPSError: No end to stamp b'GPGGA,200917,3517.9196,N,11508.7840,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,213617,3517.9219,N,11508.7827,W,1,04,2.0,,M,-26.6,M,'
+ERROR:GPSError:GPS string not correct length for GPRMC.  Expected 12, got 7
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GGGA
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP7802
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP814
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP95
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP9
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got PGGA
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP08.7811
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.7820
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.3
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP2.3
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6.6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP759
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP50
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPD
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 1
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPM
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GPW
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP6
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP1
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP.9199
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP52
+
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP825
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got GP
+P
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS String type not correct.  Expect GPGGA or GPRMC, got G
+DEBUG:Loaded backend Qt5Agg version unknown.
+DEBUG:findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0.
+DEBUG:findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 1.335
+DEBUG:findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 0.05
+DEBUG:findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 1.05
+DEBUG:findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 0.33499999999999996
+DEBUG:findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Goudy Old Style' (GOUDOSB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Rockwell Condensed' (ROCC____.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Gill Sans MT' (GILB____.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Blackadder ITC' (ITCBLKAD.TTF) normal normal black normal>) = 10.525
+DEBUG:findfont: score(<Font 'Bookshelf Symbol 7' (BSSYM7.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Constantia' (constani.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Lucida Fax' (LFAXD.TTF) normal normal demibold normal>) = 10.24
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_I.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Brush Script MT' (BRUSHSCI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Curlz MT' (CURLZ___.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Palatino Linotype' (palai.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Gadugi' (gadugi.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Ebrima' (ebrima.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Ink Free' (Inkfree.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe MDL2 Assets' (segmdl2.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_BLAR.TTF) normal normal black normal>) = 10.525
+DEBUG:findfont: score(<Font 'Corbel' (corbelb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Palatino Linotype' (palabi.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Centaur' (CENTAUR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'MS Gothic' (msgothic.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Century' (CENTURY.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Verdana' (verdanaz.ttf) italic normal bold normal>) = 4.971363636363637
+DEBUG:findfont: score(<Font 'Snap ITC' (SNAP____.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Courier New' (couri.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Modern No. 20' (MOD20.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Perpetua Titling MT' (PERTIBD.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Microsoft Tai Le' (taile.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (ARIALNB.TTF) normal normal bold condensed>) = 6.8986363636363635
+DEBUG:findfont: score(<Font 'Microsoft Sans Serif' (micross.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Book Antiqua' (ANTQUAB.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'FGDCGeoAge' (FGDCGeoAge.otf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Book' (FRABKIT.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Georgia' (georgiaz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Segoe UI' (seguisli.ttf) italic normal light normal>) = 11.24
+DEBUG:findfont: score(<Font 'Old English Text MT' (OLDENGL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Times New Roman' (times.ttf) normal normal roman normal>) = 10.145
+DEBUG:findfont: score(<Font 'Goudy Old Style' (GOUDOSI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Candara' (Candarai.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Felix Titling' (FELIXTI.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Courier New' (courbi.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Gill Sans MT' (GILBI___.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Calibri' (calibrii.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Baskerville Old Face' (BASKVILL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Handwriting' (LHANDW.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Microsoft Tai Le' (taileb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Berlin Sans FB' (BRLNSR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Myanmar Text' (mmrtextb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'High Tower Text' (HTOWERTI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Bahnschrift' (bahnschrift.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (arialbd.ttf) normal normal bold normal>) = 6.698636363636363
+DEBUG:findfont: score(<Font 'Constantia' (constanz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_CB.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Century Schoolbook' (SCHLBKB.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Goudy Old Style' (GOUDOS.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Ebrima' (ebrimabd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'MingLiU-ExtB' (mingliub.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Calisto MT' (CALISTI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Microsoft Yi Baiti' (msyi.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Bright' (LBRITED.TTF) normal normal demibold normal>) = 10.24
+DEBUG:findfont: score(<Font 'Stencil' (STENCIL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Wingdings 2' (WINGDNG2.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Fax' (LFAXDI.TTF) italic normal demibold normal>) = 11.24
+DEBUG:findfont: score(<Font 'Kristen ITC' (ITCKRIST.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial Rounded MT Bold' (ARLRDBD.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Century Gothic' (GOTHIC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Sitka Small' (SitkaZ.ttc) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Showcard Gothic' (SHOWG.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Georgia' (georgia.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_CI.TTF) italic normal 400 condensed>) = 11.25
+DEBUG:findfont: score(<Font 'Arial' (ariblk.ttf) normal normal black normal>) = 6.888636363636364
+DEBUG:findfont: score(<Font 'Leelawadee UI' (LeelUIsl.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Garamond' (GARAIT.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Lucida Bright' (LBRITEI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Yu Gothic' (YuGothB.ttc) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Imprint MT Shadow' (IMPRISHA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Berlin Sans FB Demi' (BRLNSDB.TTF) normal normal demi normal>) = 10.24
+DEBUG:findfont: score(<Font 'Rockwell' (ROCK.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_BLAI.TTF) italic normal black normal>) = 11.525
+DEBUG:findfont: score(<Font 'French Script MT' (FRSCRIPT.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Tempus Sans ITC' (TEMPSITC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Forte' (FORTE.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Sans Typewriter' (LTYPEO.TTF) oblique normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Times New Roman' (timesbd.ttf) normal normal roman normal>) = 10.145
+DEBUG:findfont: score(<Font 'Lucida Sans' (LSANSI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Gill Sans MT Condensed' (GILC____.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Century Schoolbook' (SCHLBKBI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Palatino Linotype' (pala.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Malgun Gothic' (malgunsl.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Garamond' (GARABD.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Pristina' (PRISTINA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Britannic Bold' (BRITANIC.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe UI' (seguili.ttf) italic normal light normal>) = 11.24
+DEBUG:findfont: score(<Font 'Candara' (Candaraz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Eras Light ITC' (ERASLGHT.TTF) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Dubai' (DUBAI-BOLD.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Lucida Fax' (LFAXI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Agency FB' (AGENCYR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Rockwell Condensed' (ROCCB___.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Trebuchet MS' (trebucit.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Cambria' (cambriab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Tahoma' (tahomabd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Bradley Hand ITC' (BRADHITC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Rockwell' (ROCKBI.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Bookman Old Style' (BOOKOSI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Microsoft JhengHei' (msjh.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Goudy Stout' (GOUDYSTO.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Impact' (impact.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (ARIALNBI.TTF) italic normal bold condensed>) = 7.8986363636363635
+DEBUG:findfont: score(<Font 'Segoe UI' (seguibl.ttf) normal normal black normal>) = 10.525
+DEBUG:findfont: score(<Font 'Sitka Small' (SitkaB.ttc) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Playbill' (PLAYBILL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Consolas' (consolab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Corbel' (corbelz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Consolas' (consolai.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Segoe UI Symbol' (seguisym.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft Himalaya' (himalaya.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gill Sans MT' (GIL_____.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Calibri' (calibri.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Dubai' (DUBAI-MEDIUM.TTF) normal normal medium normal>) = 10.145
+DEBUG:findfont: score(<Font 'Rockwell' (ROCKI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Century Schoolbook' (SCHLBKI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Yu Gothic' (YuGothL.ttc) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Century Schoolbook' (CENSCBK.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Book Antiqua' (ANTQUAI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Candara' (Candara.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gill Sans Ultra Bold' (GILSANUB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Gadugi' (gadugib.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Mongolian Baiti' (monbaiti.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Rockwell' (ROCKB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Sitka Small' (SitkaI.ttc) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Symbol' (symbol.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'MT Extra' (MTEXTRA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Calibri' (calibril.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Verdana' (verdana.ttf) normal normal 400 normal>) = 3.6863636363636365
+DEBUG:findfont: score(<Font 'Gabriola' (Gabriola.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Haettenschweiler' (HATTEN.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Constantia' (constan.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bookman Old Style' (BOOKOSB.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Consolas' (consolaz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Cooper Black' (COOPBL.TTF) normal normal black normal>) = 10.525
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_CR.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Franklin Gothic Medium' (framd.ttf) normal normal medium normal>) = 10.145
+DEBUG:findfont: score(<Font 'Courier New' (cour.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft JhengHei' (msjhbd.ttc) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe Script' (segoescb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Times New Roman' (timesbi.ttf) italic normal roman normal>) = 11.145
+DEBUG:findfont: score(<Font 'Microsoft YaHei' (msyh.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'OCR A Extended' (OCRAEXT.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gill Sans Ultra Bold Condensed' (GILLUBCD.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Comic Sans MS' (comicz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Niagara Solid' (NIAGSOL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Californian FB' (CALIFR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bell MT' (BELL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Magneto' (MAGNETOB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Tw Cen MT Condensed Extra Bold' (TCCEB.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Century Gothic' (GOTHICB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Arial' (ARIALN.TTF) normal normal 400 condensed>) = 6.613636363636363
+DEBUG:findfont: score(<Font 'Algerian' (ALGER.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft YaHei' (msyhl.ttc) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Broadway' (BROADW.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Parchment' (PARCHM.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Palatino Linotype' (palab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeuib.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Matura MT Script Capitals' (MATURASC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Century Gothic' (GOTHICI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Sylfaen' (sylfaen.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Constantia' (constanb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Ravie' (RAVIE.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Jokerman' (JOKERMAN.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Garamond' (GARA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (ariali.ttf) italic normal 400 normal>) = 7.413636363636363
+DEBUG:findfont: score(<Font 'Franklin Gothic Demi' (FRADMIT.TTF) italic normal demi normal>) = 11.24
+DEBUG:findfont: score(<Font 'Lucida Sans' (LSANSDI.TTF) italic normal demibold normal>) = 11.24
+DEBUG:findfont: score(<Font 'Book Antiqua' (BKANT.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Fax' (LFAX.TTF) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'Trebuchet MS' (trebuc.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Century Gothic' (GOTHICBI.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Eras Demi ITC' (ERASDEMI.TTF) normal normal demi normal>) = 10.24
+DEBUG:findfont: score(<Font 'Nirmala UI' (Nirmala.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Medium' (framdit.ttf) italic normal medium normal>) = 11.145
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeuiz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Lucida Bright' (LBRITE.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft JhengHei' (msjhl.ttc) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Eras Bold ITC' (ERASBD.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Harlow Solid Italic' (HARLOWSI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Elephant' (ELEPHNT.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeuil.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Tahoma' (tahoma.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Papyrus' (PAPYRUS.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Sitka Small' (Sitka.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Comic Sans MS' (comic.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Berlin Sans FB' (BRLNSB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Calisto MT' (CALIST.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeuii.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Microsoft PhagsPa' (phagspab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Myanmar Text' (mmrtext.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bell MT' (BELLB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Rockwell Extra Bold' (ROCKEB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Verdana' (verdanai.ttf) italic normal 400 normal>) = 4.6863636363636365
+DEBUG:findfont: score(<Font 'Perpetua' (PERB____.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Gigi' (GIGI.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeuisl.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Calibri' (calibrili.ttf) italic normal light normal>) = 11.24
+DEBUG:findfont: score(<Font 'Tw Cen MT' (TCBI____.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Calisto MT' (CALISTBI.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Times New Roman' (timesi.ttf) italic normal roman normal>) = 11.145
+DEBUG:findfont: score(<Font 'SimSun-ExtB' (simsunb.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft New Tai Lue' (ntailu.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bookman Old Style' (BOOKOS.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (arialbi.ttf) italic normal bold normal>) = 7.698636363636363
+DEBUG:findfont: score(<Font 'Nirmala UI' (NirmalaB.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Californian FB' (CALIFI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Book' (FRABK.TTF) normal normal book normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bell MT' (BELLI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Trebuchet MS' (trebucbi.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Lucida Sans Typewriter' (LTYPEB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe UI' (seguisbi.ttf) italic normal semibold normal>) = 11.24
+DEBUG:findfont: score(<Font 'Footlight MT Light' (FTLTLT.TTF) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Javanese Text' (javatext.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Cambria' (cambriaz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Harrington' (HARNGTON.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Cambria' (cambria.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Georgia' (georgiab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Book Antiqua' (ANTQUABI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Bookman Old Style' (BOOKOSBI.TTF) italic normal book normal>) = 11.05
+DEBUG:findfont: score(<Font 'Candara' (Candarab.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Dubai' (DUBAI-LIGHT.TTF) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Lucida Sans' (LSANSD.TTF) normal normal roman normal>) = 10.145
+DEBUG:findfont: score(<Font 'Leelawadee UI' (LeelawUI.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Yu Gothic' (YuGothM.ttc) normal normal medium normal>) = 10.145
+DEBUG:findfont: score(<Font 'Lucida Sans Unicode' (l_10646.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Vladimir Script' (VLADIMIR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Microsoft New Tai Lue' (ntailub.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Copperplate Gothic Bold' (COPRGTB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Agency FB' (AGENCYB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Courier New' (courbd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Tw Cen MT' (TCB_____.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Trebuchet MS' (trebucbd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Onyx' (ONYX.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gloucester MT Extra Condensed' (GLECB.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Tw Cen MT Condensed' (TCCM____.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Juice ITC' (JUICE___.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Medium Cond' (FRAMDCN.TTF) normal normal medium condensed>) = 10.344999999999999
+DEBUG:findfont: score(<Font 'Calibri' (calibriz.ttf) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_BI.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Chiller' (CHILLER.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe UI' (segoeui.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Rage Italic' (RAGE.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Lucida Sans Typewriter' (LTYPE.TTF) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'Wingdings' (wingding.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'MS Outlook' (OUTLOOK.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Dubai' (DUBAI-REGULAR.TTF) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'Elephant' (ELEPHNTI.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Maiandra GD' (MAIAN.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Webdings' (webdings.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Comic Sans MS' (comici.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Vivaldi' (VIVALDII.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Eras Medium ITC' (ERASMD.TTF) normal normal medium normal>) = 10.145
+DEBUG:findfont: score(<Font 'Segoe UI' (seguibli.ttf) italic normal black normal>) = 11.525
+DEBUG:findfont: score(<Font 'Wide Latin' (LATINWD.TTF) normal normal 400 expanded>) = 10.25
+DEBUG:findfont: score(<Font 'Franklin Gothic Heavy' (FRAHVIT.TTF) italic normal heavy normal>) = 11.43
+DEBUG:findfont: score(<Font 'Niagara Engraved' (NIAGENG.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Informal Roman' (INFROMAN.TTF) normal normal roman normal>) = 10.145
+DEBUG:findfont: score(<Font 'Tw Cen MT' (TCM_____.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Sans' (LSANS.TTF) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'Calibri' (calibrib.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'MS Reference Specialty' (REFSPCL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'High Tower Text' (HTOWERT.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Tw Cen MT' (TCMI____.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'SimSun' (simsun.ttc) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe UI Historic' (seguihis.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Castellar' (CASTELAR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Arial' (arial.ttf) normal normal 400 normal>) = 6.413636363636363
+DEBUG:findfont: score(<Font 'Poor Richard' (POORICH.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Corbel' (corbeli.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Freestyle Script' (FREESCPT.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Demi Cond' (FRADMCN.TTF) normal normal demi condensed>) = 10.44
+DEBUG:findfont: score(<Font 'Edwardian Script ITC' (ITCEDSCR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Viner Hand ITC' (VINERITC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_R.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Console' (lucon.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Corbel' (corbel.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'MS Reference Sans Serif' (REFSAN.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Wingdings 3' (WINGDNG3.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe Print' (segoeprb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe UI Emoji' (seguiemj.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Engravers MT' (ENGR.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Calisto MT' (CALISTB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Script MT Bold' (SCRIPTBL.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Cambria' (cambriai.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Arial' (ARIALNI.TTF) italic normal 400 condensed>) = 7.613636363636363
+DEBUG:findfont: score(<Font 'Bernard MT Condensed' (BERNHC.TTF) normal normal 400 condensed>) = 10.25
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_B.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Malgun Gothic' (malgun.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Verdana' (verdanab.ttf) normal normal bold normal>) = 3.9713636363636367
+DEBUG:findfont: score(<Font 'Microsoft PhagsPa' (phagspa.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Tw Cen MT Condensed' (TCCB____.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Comic Sans MS' (comicbd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Colonna MT' (COLONNA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gill Sans MT Ext Condensed Bold' (GLSNECB.TTF) normal normal bold condensed>) = 10.535
+DEBUG:findfont: score(<Font 'Microsoft YaHei' (msyhbd.ttc) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Californian FB' (CALIFB.TTF) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Monotype Corsiva' (MTCORSVA.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Sans Typewriter' (LTYPEBO.TTF) oblique normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Yu Gothic' (YuGothR.ttc) normal normal regular normal>) = 10.05
+DEBUG:findfont: score(<Font 'Mistral' (MISTRAL.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Georgia' (georgiai.ttf) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Kunstler Script' (KUNSTLER.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Lucida Calligraphy' (LCALLIG.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'HoloLens MDL2 Assets' (holomdl2.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe Script' (segoesc.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Segoe Print' (segoepr.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Copperplate Gothic Light' (COPRGTL.TTF) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Lucida Bright' (LBRITEDI.TTF) italic normal demibold normal>) = 11.24
+DEBUG:findfont: score(<Font 'Malgun Gothic' (malgunbd.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Segoe UI' (seguisb.ttf) normal normal semibold normal>) = 10.24
+DEBUG:findfont: score(<Font 'Marlett' (marlett.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Demi' (FRADM.TTF) normal normal demi normal>) = 10.24
+DEBUG:findfont: score(<Font 'Perpetua' (PER_____.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Gill Sans MT' (GILI____.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Palace Script MT' (PALSCRI.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Perpetua' (PERI____.TTF) italic normal 400 normal>) = 11.05
+DEBUG:findfont: score(<Font 'Franklin Gothic Heavy' (FRAHV.TTF) normal normal heavy normal>) = 10.43
+DEBUG:findfont: score(<Font 'Bauhaus 93' (BAUHS93.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Perpetua' (PERBI___.TTF) italic normal bold normal>) = 11.335
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_CBI.TTF) italic normal bold condensed>) = 11.535
+DEBUG:findfont: score(<Font 'MV Boli' (mvboli.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Leelawadee UI' (LeelaUIb.ttf) normal normal bold normal>) = 10.335
+DEBUG:findfont: score(<Font 'Nirmala UI' (NirmalaS.ttf) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Consolas' (consola.ttf) normal normal 400 normal>) = 10.05
+DEBUG:findfont: score(<Font 'Perpetua Titling MT' (PERTILI.TTF) normal normal light normal>) = 10.24
+DEBUG:findfont: score(<Font 'Bodoni MT' (BOD_PSTC.TTF) normal normal 400 normal>) = 10.05
+DEBUG:findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('C:\\Users\\jpeacock\\AppData\\Local\\Continuum\\anaconda3\\envs\\peacock\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+ERROR:GPSError:GPS string not correct length for GPRMC.  Expected 12, got 7
+ERROR:GPSError:GPS string not correct length for GPRMC.  Expected 12, got 7
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,230405,3517.9193,N,11508.7783,W,1,04,3.3,,M,-26.6,M'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,152709,3517.9239,N,11'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,160159,3517.9218,N,115'
+ERROR:GPSError: No end to stamp b'GPGGA,161923,3517.9201,N,11508.7799,W,1,03'
+ERROR:GPSError: No end to stamp b'GPGGA,163647,3517.9186,N,11508.7774,W,1,03,3'
+ERROR:GPSError: No end to stamp b'GPGGA,165411,3517.9163,N,11508.7733,W,1,03,5.0,,M,-26.6,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,231817,3517.9219,N,1150'
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,045005,3517.9197,N,11508.7823,W,1,03,2.0,,M,-'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,063453,3517.9208,N,11508.7822,W,1,03,3.'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,070941,3517.9203,N,11508.7823,W,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,113135,3517.9201,N,11508.7807,W,1,03,5.2,,M,-'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,124147,3517.9250,N,11508.7848,W,1,03,3.6,,'
+ERROR:GPSError: No end to stamp b'GPGGA,125911,3517.9291,N,11508'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,151905,3517.9222,N,11508.7813,W,10'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,040117,3517.9175,N'
+ERROR:GPSError: No end to stamp b'GPGGA,041859,3517.9216,N,11508.7816,W,1,03,2'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,110047,3517.9204,N,11508.7797,W,1,04,2.1,,M,-26.6,M'
+ERROR:GPSError: No end to stamp b'GPGGA,111811,3517.9246,N,11508.7759,W,1,03,5'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,154029,3517.9200,N,1'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,185235,3517.9197,N,11508.7800,W,1,03,2.6,M'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,200229,3517.9182,N,11508.7830,W,1,'
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,030117,3517.9207,N,11508.7794,W,1'
+ERROR:GPSError: No end to stamp b'GPGGA,031841,3517.9196,N,11508.7774,W,1,03,2.6,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,041135,3517.9224,N,11508.7834,W,1,03,3.9,,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA'
+ERROR:GPSError: No end to stamp b'GPGGA,125523,3517.9205,N,11508.778'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,193723,3517.9195,N,11508.77'
+ERROR:GPSError: No end to stamp b'GPGGA,195447,3517.9223,N,11508.7816,W,1,03,3.4,,M,-26.6,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError: No end to stamp b'GPGGA,221453,3517.9203,N,11508.7833,W,1,03,2.4,,M,-26.6,M'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,021917,3517.9208,N,11508.7819,W,1,03,3.5,,M,-26'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,071641,3517.9205,N,11508.7825,W,1,04,1'
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,095341,3517.9198,N,11508.7833,W,1,03,1.7,,M,-26.6,,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,112105,3517.9213,N,11508.7761,W,1,04'
+ERROR:GPSError: No end to stamp b'GPGGA,113847,3517.9198,N,11508.7'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,123129,3517.9186,N,11508.7770,W,1,03,8.2,,M,-26.6,M,,'
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,152623,3517.92'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,185553,3517.9207,N,11508.7819,W,1,04,1.8,,M,-26.6,'
+ERROR:GPSError: No end to stamp b'GPGGA,191317,3517.9210,N,11508.781'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,021223,3517.9211,N,11508.7871,W,1,0'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,052459,3517.9219,N,11508.7820,W,1,03,1.9,,M,-26.6'
+ERROR:GPSError: No end to stamp b'GPGGA,054223,3517.9208,N,11508.781'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,072735,3517.9201,N,11508.7814,W,1,03,3.9,,M,-26.6,M,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,172123,3517.9180,N,11508.7815,W,1,03,5.3,,M,-26.6,M,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,183059,'
+ERROR:GPSError: No end to stamp b'GPGGA,184823,3517.9199,N,11508.7807,W,1,03,1.8,,M,-26.6,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:GPS string not correct length for GPGGA.  Expected 15, got 14
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,234535,3517.9194,N,11508.7825,W,1,04,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,112459,3517.9213,N,115'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,143741,3517.'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,182429,3517.9189,N,11508.7807,W,1,04,'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,200917,3517.9196,N,11508.7840,W,1,03'
+ERROR:GPSError:Elevation could not be converted 
+ERROR:GPSError: No end to stamp b'GPGGA,213617,3517.9219,N,11508.7827,W,1,04,2.0,,M,-26.6,M,'
+ERROR:GPSError:Elevation could not be converted 
