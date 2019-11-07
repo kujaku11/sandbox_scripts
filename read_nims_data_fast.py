@@ -1054,6 +1054,41 @@ class NIMS(NIMSHeader):
                 return stamp
         return None
     
+    def _locate_timing_gaps(self, stamps):
+        """
+        locate timing gaps in the data by comparing the stamp index with the 
+        GPS time stamp.  The number of points and seconds should be the same
+        
+        :param list stamps: list of GPS stamps [[status_index, [GPRMC, GPGGA]]]
+        
+        :returns: list of gap index values
+        """
+        stamp_01 = self._get_first_gps_stamp(stamps)[1][0]
+        diff_arr = np.zeros(len(stamps))
+        diff_arr[0] = -666
+        for ii, stamp in enumerate(stamps[1:], 1):
+            stamp = stamp[1][0]
+            if stamp._date == '010180':
+                diff_arr[ii] = -666
+                continue
+            time_diff = (stamp.time_stamp - stamp_01.time_stamp).total_seconds()
+            index_diff = stamp.index - stamp_01.index
+            
+            diff_arr[ii] = index_diff - time_diff
+        
+        gap_max = int(diff_arr.max())
+        gap_beginning = []
+        if gap_max > 0:
+            print('    Check times:')
+            for ii in range(1, gap_max+1, 1):
+                step_index = np.where(diff_arr == ii)[0][0]
+                gap_beginning.append(step_index)
+                print('{0}{1} is off by {2} seconds'.format(' '*4, 
+                      stamps[step_index][1][0].time_stamp.isoformat(),
+                      ii))
+
+        return gap_beginning
+           
     def check_timing(self, stamps):
         """
         make sure that there are the correct number of seconds in between
@@ -1062,32 +1097,30 @@ class NIMS(NIMSHeader):
         :param list stamps: list of GPS stamps [[status_index, [GPRMC, GPGGA]]]
         
         :returns: [ True | False ] if data is valid or not.
+        :returns: gap index locations
         
         .. note:: There is currently no solution to fix the gap or to 
                   locate where the gap occurs.  Still trying to figure out if
                   there is an acctual data gap or there is something wrong
                   with location with in the file of the stamps.
         """
-        timing_valid = False
+        gaps = None
         first_stamp = self._get_first_gps_stamp(stamps)[1][0]
         last_stamp = self._get_last_gps_stamp(stamps)[1][0]
         
         time_diff = last_stamp.time_stamp - first_stamp.time_stamp
         index_diff = last_stamp.index - first_stamp.index
         
-        if time_diff.total_seconds() != index_diff:
+        difference = index_diff - time_diff.total_seconds() 
+        if difference != 0:
             print('-'*50)
-            difference = time_diff.total_seconds() - index_diff
-            if difference < 0:
-                print('Timing might be off by {0} seconds, '.format(abs(difference))+\
-                      'index of time stamps are greater than time difference.')
-            else:
-                print('Timing might be off by {0} seconds, '.format(abs(difference))+\
-                      'time difference greater than index of time stamps.')
-            return False
+            print('Timing looks to be off by {0} seconds'.format(difference))
+            gaps = self._locate_timing_gaps(stamps)
+            print('-'*50)
+            
+            return False, gaps
         else:
-            timing_valid = True
-            return timing_valid
+            return True, gaps 
                    
     def align_data(self, data_array, stamps):
         """
@@ -1106,14 +1139,12 @@ class NIMS(NIMSHeader):
                   time initialized by the start time.
         
         .. note:: There is currently no solution to fix the gap or to 
-                  locate where the gap occurs.  Still trying to figure out if
-                  there is an acctual data gap or there is something wrong
-                  with location with in the file of the stamps.
+                  locate where the gap occurs.  Just a message of where the 
+                  gap may occur.
         """
         ### check timing first to make sure there is no drift
-        timing_valid = self.check_timing(stamps)
-        if timing_valid is False:
-            print('-'*50)
+        timing_valid, gaps = self.check_timing(stamps)
+        
         ### first GPS stamp within the data is at a given index that is 
         ### assumed to be the number of seconds from the start of the run.
         ### therefore make the start time the first GPS stamp time minus
@@ -1123,7 +1154,6 @@ class NIMS(NIMSHeader):
         first_index = first_stamp[0]
         start_time = first_stamp[1][0].time_stamp - \
                             datetime.timedelta(seconds=int(first_index)+1)
-
 
         dt_index = self.make_dt_index(start_time.isoformat(),
                                       self.sampling_rate,
@@ -1206,7 +1236,7 @@ for folder in os.listdir(lp_dir):
     et = datetime.datetime.now()
     tdiff = et - st
     print('Took {0} seconds'.format(tdiff.total_seconds()))
-    
+#    
 #nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
 ##nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
 #st = datetime.datetime.now()
