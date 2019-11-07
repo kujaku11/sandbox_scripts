@@ -1210,7 +1210,7 @@ class NIMS(NIMSHeader):
             raise ValueError('Need to input either stop_time or n_samples')
 
         return dt_index
-                   
+                 
 # =============================================================================
 # Exceptions
 # =============================================================================
