@@ -50499,3 +50499,67 @@ WARNING:No good GPS stamp at 837681 seconds
 WARNING:No good GPS stamp at 841881 seconds
 WARNING:No good GPS stamp at 842925 seconds
 WARNING:No good GPS stamp at 844713 seconds
+INFO:========================================================================
+INFO:Reading NIMS file c:\Users\jpeacock\Downloads\data_rgr022c.bnn
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted 1956.7M
+ERROR:GPSError:Elevation could not be converted 1957.5M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted 1957.3M
+ERROR:GPSError:Elevation could not be converted 1960.5M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+WARNING:No good GPS stamp at 5288 seconds
+WARNING:No good GPS stamp at 41990 seconds
+WARNING:No good GPS stamp at 72404 seconds
+WARNING:No good GPS stamp at 97550 seconds
+WARNING:No good GPS stamp at 186654 seconds
+WARNING:No good GPS stamp at 262118 seconds
+WARNING:No good GPS stamp at 353414 seconds
+WARNING:No good GPS stamp at 375446 seconds
+WARNING:No good GPS stamp at 683608 seconds
+INFO:========================================================================
+INFO:Reading NIMS file c:\Users\jpeacock\Downloads\data_rgr022c.bnn
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 0
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted 1956.7M
+ERROR:GPSError:Elevation could not be converted 1957.5M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted 1957.3M
+ERROR:GPSError:Elevation could not be converted 1960.5M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Longitude hemisphere should be 1 character.  Got 2
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+ERROR:GPSError:Elevation could not be converted M
+WARNING:No good GPS stamp at 5288 seconds
+WARNING:No good GPS stamp at 41990 seconds
+WARNING:No good GPS stamp at 72404 seconds
+WARNING:No good GPS stamp at 97550 seconds
+WARNING:No good GPS stamp at 186654 seconds
+WARNING:No good GPS stamp at 262118 seconds
+WARNING:No good GPS stamp at 353414 seconds
+WARNING:No good GPS stamp at 375446 seconds
+WARNING:No good GPS stamp at 683608 seconds

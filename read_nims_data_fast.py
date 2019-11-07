@@ -1083,7 +1083,8 @@ class NIMS(NIMSHeader):
             for ii in range(1, gap_max+1, 1):
                 step_index = np.where(diff_arr == ii)[0][0]
                 gap_beginning.append(step_index)
-                print('{0}{1} is off by {2} seconds'.format(' '*4, 
+                print('{0}{1} is off from start time by {2} seconds'.format(
+                      ' '*4, 
                       stamps[step_index][1][0].time_stamp.isoformat(),
                       ii))
 
@@ -1221,29 +1222,29 @@ class NIMSError(Exception):
 # Test
 # =============================================================================
 #
-lp_dir = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data"
-for folder in os.listdir(lp_dir):
-    nims_fn = os.path.join(lp_dir, folder, 'DATA.BIN')
-    st = datetime.datetime.now()
-    nims_obj = NIMS(nims_fn)
-    print(nims_obj.latitude, 
-          nims_obj.longitude,
-          nims_obj.elevation,
-          nims_obj.start_time,
-          nims_obj.run_id,
-          len(nims_obj.stamps))
-
-    et = datetime.datetime.now()
-    tdiff = et - st
-    print('Took {0} seconds'.format(tdiff.total_seconds()))
+#lp_dir = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data"
+#for folder in os.listdir(lp_dir):
+#    nims_fn = os.path.join(lp_dir, folder, 'DATA.BIN')
+#    st = datetime.datetime.now()
+#    nims_obj = NIMS(nims_fn)
+#    print(nims_obj.latitude, 
+#          nims_obj.longitude,
+#          nims_obj.elevation,
+#          nims_obj.start_time,
+#          nims_obj.run_id,
+#          len(nims_obj.stamps))
+#
+#    et = datetime.datetime.now()
+#    tdiff = et - st
+#    print('Took {0} seconds'.format(tdiff.total_seconds()))
 #    
 #nims_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\Mnp301a\DATA.BIN"
-##nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
-#st = datetime.datetime.now()
-#nims_obj = NIMS(nims_fn)
-##nims_obj.read_header(nims_fn)
-#
-#et = datetime.datetime.now()
-#
-#tdiff = et - st
-#print('Took {0} seconds'.format(tdiff.total_seconds()))
+nims_fn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
+st = datetime.datetime.now()
+nims_obj = NIMS(nims_fn)
+#nims_obj.read_header(nims_fn)
+
+et = datetime.datetime.now()
+
+tdiff = et - st
+print('Took {0} seconds'.format(tdiff.total_seconds()))
