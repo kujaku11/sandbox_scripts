@@ -25,8 +25,8 @@ from mtpy.imaging import penetration_depth3d as pen3d
 # Inputs
 # =============================================================================
 # change the variable below according to your edi files folder
-edidir = r'c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited'  
-savepath = r'c:\Users\jpeacock\Documents\ClearLake'
+edidir = r'c:\Users\jpeacock\OneDrive - DOI\Geysers\EDI_Files_birrp\Edited'  
+savepath = r'c:\Users\jpeacock\OneDrive - DOI\Geysers\jvgr\figures'
 
 
 if not os.path.isdir(edidir):
@@ -51,7 +51,7 @@ edis_obj.select_periods(percentage=5.0)
 per_freq = edis_obj.get_periods_by_stats(percentage=80.0)
 
 for aper in range(-15, 0, -1):
-    pen3d.plot_bar3d_depth(edidir, aper)
-#    pen3d.plot_latlon_depth_profile(edidir, aper, showfig=True, savefig=True,
-#                                    savepath=savepath,
-#                                    fig_dpi=600)
+#    pen3d.plot_bar3d_depth(edidir, aper)
+    pen3d.plot_latlon_depth_profile(edidir, aper, showfig=True, savefig=True,
+                                    savepath=savepath,
+                                    fig_dpi=600)
