@@ -8,18 +8,25 @@ that to any type of time series later.
 J. Peacock
 June-2019
 """
+# =============================================================================
+# Imports
+# =============================================================================
 import logging
 import os
 import re
 import glob
+#import pathlib
 from ph5.core import experiment
 from mtpy.core import ts as mtts
 from mtpy.usgs import zen
+from usgs_archive import nims
 
 PROG_VERSION = '2019.65'
 LOGGER = logging.getLogger(__name__)
 
-
+# =============================================================================
+# Class
+# =============================================================================
 class MTtoPH5Error(Exception):
     """
     Exception raised when there is a problem with the request.
@@ -231,20 +238,20 @@ class MTtoPH5(object):
         index_t_entry = {}
         # start time
         index_t_entry['start_time/ascii_s'] = (ts_obj.start_time_utc)
-        index_t_entry['start_time/epoch_l'] = (ts_obj.start_time_epoch_sec)
-        index_t_entry['start_time/micro_seconds_i'] = (ts_obj._start_time_struct.microsecond)
+        index_t_entry['start_time/epoch_l'] = (int(ts_obj.start_time_epoch_sec))
+        index_t_entry['start_time/micro_seconds_i'] = (ts_obj.ts.index[0].microsecond)
         index_t_entry['start_time/type_s'] = 'BOTH'
         
         # end time
         index_t_entry['end_time/ascii_s'] = (ts_obj.stop_time_utc)
-        index_t_entry['end_time/epoch_l'] = (ts_obj.stop_time_epoch_sec)
+        index_t_entry['end_time/epoch_l'] = (int(ts_obj.stop_time_epoch_sec))
         index_t_entry['end_time/micro_seconds_i'] = (ts_obj.ts.index[-1].microsecond)
         index_t_entry['end_time/type_s'] = 'BOTH'
         
         # time stamp -- when data was entered?
         time_stamp_utc = mtts.datetime.datetime.utcnow()
         index_t_entry['time_stamp/ascii_s'] = (time_stamp_utc.isoformat())
-        index_t_entry['time_stamp/epoch_l'] = (ts_obj._convert_dt_to_sec(time_stamp_utc))
+        index_t_entry['time_stamp/epoch_l'] = (int(time_stamp_utc.timestamp()))
         index_t_entry['time_stamp/micro_seconds_i'] = (time_stamp_utc.microsecond)
         index_t_entry['time_stamp/type_s'] = 'BOTH'
         
@@ -282,14 +289,14 @@ class MTtoPH5(object):
         das = {}
         # start time information
         das['time/ascii_s'] = ts_obj.start_time_utc
-        das['time/epoch_l'] = ts_obj.start_time_epoch_sec
-        das['time/micro_seconds_i'] = ts_obj._start_time_struct.microsecond
+        das['time/epoch_l'] = int(ts_obj.start_time_epoch_sec)
+        das['time/micro_seconds_i'] = ts_obj.ts.index[0].microsecond
         das['time/type_s'] = 'BOTH'
         
         das['sample_rate_i'] = ts_obj.sampling_rate
         das['sample_rate_multiplier_i'] = 1
         
-        das['channel_number_i'] = ts_obj.component
+        das['channel_number_i'] = ts_obj.chn_num
         das['sample_count_i'] = ts_obj.n_samples
         das['raw_file_name_s'] = ts_obj.fn
 #        das['component_s'] = ts_obj.component.upper()
@@ -307,13 +314,19 @@ class MTtoPH5(object):
         load an MT file
         """
         if isinstance(ts_fn, str):
-            if ts_fn.lower().endswith('.z3d'):
+            ext = os.path.splitext(ts_fn)[-1][1:].lower()
+            if ext == 'z3d':
                 z3d_obj = zen.Zen3D(ts_fn)
                 z3d_obj.read_z3d()
                 ts_obj = z3d_obj.ts_obj
-            elif ts_fn[-2:].lower() in ['ex', 'ey', 'hx', 'hy', 'hz']:
+            elif ext in ['ex', 'ey', 'hx', 'hy', 'hz']:
                 ts_obj = mtts.MTTS()
                 ts_obj.read_file(ts_fn)
+            elif ext == 'bnn':
+                nims_obj = nims.NIMS(ts_fn)
+                ts_obj = [nims_obj.hx, nims_obj.hy, nims_obj.hz, nims_obj.ex, 
+                          nims_obj.ey]
+                
         elif isinstance(ts_fn, mtts.MTTS):
             ts_obj = ts_fn
         else:
@@ -352,6 +365,58 @@ class MTtoPH5(object):
                     current_mini = largest + 1
                         
         return current_mini
+    
+    def _load_ts_to_ph5(self, ts_obj, count=1):
+        """
+        load a single time series into ph5
+        """
+        ### start populating das table and data arrays
+        index_t_entry = self.make_index_t_entry(ts_obj)
+        das_t_entry = self.make_das_entry(ts_obj)
+        receiver_t_entry = self.make_receiver_t_entry(ts_obj)
+        
+        ### get the current mini file
+        current_mini = self.get_current_mini(ts_obj)
+        mini_handle, mini_name = self.open_mini(current_mini)
+        
+        # get node reference or create new node
+        d = mini_handle.ph5_g_receivers.getdas_g(ts_obj.station)
+        if not d:
+            d, t, r, ti = mini_handle.ph5_g_receivers.newdas(ts_obj.station)
+        
+        ### make name for array data going into mini file
+        while True:
+            next_ = '{0:05}'.format(count)
+            das_t_entry['array_name_data_a'] = "Data_a_{0}".format(next_)
+            node = mini_handle.ph5_g_receivers.find_trace_ref(das_t_entry['array_name_data_a'])
+            if not node:
+                break
+            count = count + 1
+            continue
+        
+        ### make a new array
+        mini_handle.ph5_g_receivers.setcurrent(d)
+        mini_handle.ph5_g_receivers.newarray(das_t_entry['array_name_data_a'],
+                                             ts_obj.ts.data,
+                                             dtype=ts_obj.ts.data.dtype,
+                                             description=None)
+        
+        ### create external file names
+        index_t_entry['external_file_name_s'] = "./{}".format(mini_name)
+        das_path = "/Experiment_g/Receivers_g/Das_g_{0}".format(ts_obj.station)
+        index_t_entry['hdf5_path_s'] = das_path
+        
+        ### populate metadata tables
+        mini_handle.ph5_g_receivers.populateDas_t(das_t_entry)
+        mini_handle.ph5_g_receivers.populateIndex_t(index_t_entry)
+        mini_handle.ph5_g_receivers.populateReceiver_t(receiver_t_entry)
+        #mini_handle.ph5_g_receivers.populateTime_t_()
+
+        # Don't forget to close minifile
+        mini_handle.ph5close()
+        
+        return index_t_entry, count
+        
 
     def to_ph5(self, ts_list):
         """
@@ -366,57 +431,21 @@ class MTtoPH5(object):
         # check if we are opening a file or mt ts object
         for count, fn in enumerate(ts_list, 1):
             ts_obj = self.load_ts_obj(fn)
-            
-            ### start populating das table and data arrays
-            index_t_entry = self.make_index_t_entry(ts_obj)
-            das_t_entry = self.make_das_entry(ts_obj)
-            receiver_t_entry = self.make_receiver_t_entry(ts_obj)
-            
-            ### get the current mini file
-            current_mini = self.get_current_mini(ts_obj)
-            mini_handle, mini_name = self.open_mini(current_mini)
-            
-            # get node reference or create new node
-            d = mini_handle.ph5_g_receivers.getdas_g(ts_obj.station)
-            if not d:
-                d, t, r, ti = mini_handle.ph5_g_receivers.newdas(ts_obj.station)
-            
-            ### make name for array data going into mini file
-            while True:
-                next_ = '{0:05}'.format(count)
-                das_t_entry['array_name_data_a'] = "Data_a_{0}".format(next_)
-                node = mini_handle.ph5_g_receivers.find_trace_ref(das_t_entry['array_name_data_a'])
-                if not node:
-                    break
-                count = count + 1
-                continue
-            
-            ### make a new array
-            mini_handle.ph5_g_receivers.setcurrent(d)
-            mini_handle.ph5_g_receivers.newarray(das_t_entry['array_name_data_a'],
-                                                 ts_obj.ts.data,
-                                                 dtype=ts_obj.ts.data.dtype,
-                                                 description=None)
-            
-            ### create external file names
-            index_t_entry['external_file_name_s'] = "./{}".format(mini_name)
-            das_path = "/Experiment_g/Receivers_g/Das_g_{0}".format(ts_obj.station)
-            index_t_entry['hdf5_path_s'] = das_path
-            
-            ### populate metadata tables
-            mini_handle.ph5_g_receivers.populateDas_t(das_t_entry)
-            mini_handle.ph5_g_receivers.populateIndex_t(index_t_entry)
-            mini_handle.ph5_g_receivers.populateReceiver_t(receiver_t_entry)
-            #mini_handle.ph5_g_receivers.populateTime_t_()
-
-            index_t.append(index_t_entry)
-            # Don't forget to close minifile
-            mini_handle.ph5close()
+            if isinstance(ts_obj, list):
+                for single_ts_obj in ts_obj:
+                    index_t_entry, count = self._load_ts_to_ph5(single_ts_obj, 
+                                                                count)
+                    index_t.append(index_t_entry)
+            else:
+                index_t_entry, count = self._load_ts_to_ph5(ts_obj, count)
+                index_t.append(index_t_entry)
+                
         #LOGGER.info('Finished processing {0}'.format(ts_obj.fn))
 
         # last thing is to return the index table so far.
         # index_t will be populated in main() after all
         # files are loaded
+        
         return "done", index_t
 
     def update_external_references(self, index_t):
@@ -460,6 +489,7 @@ class MTtoPH5(object):
 # =============================================================================
 #ts_fn = r"c:\Users\jpeacock\Documents\GitHub\sandbox\ts_test.EX"
 ph5_fn = r"c:\Users\jpeacock\Documents\GitHub\sandbox\test_ph5.ph5"
+nfn = r"c:\Users\jpeacock\Downloads\data_rgr022c.bnn"
 
 fn_list = glob.glob(r"c:\Users\jpeacock\Documents\imush\O015\*.Z3D")
 
@@ -475,7 +505,7 @@ mt_obj = MTtoPH5(ph5_obj, os.path.dirname(ph5_fn), 1, 1)
 mt_obj.verbose = True
 # we give it a our trace and should get a message
 # back saying done as well as an index table to be loaded
-message, index_t = mt_obj.to_ph5(fn_list[0:5])
+message, index_t = mt_obj.to_ph5([nfn])
 
 # now load are index table
 for entry in index_t:
