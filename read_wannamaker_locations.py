@@ -54,4 +54,5 @@ for index in range(len(df_dict['station'])):
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
 gdf.to_file(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\wannamaker.kml",
             driver='kml')    
-    
+gdf.to_file(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\wannamaker.shp",
+            driver='ESRI Shapefile')
