@@ -34,9 +34,9 @@ rock_dict = {'fsp':'fsp - Franciscan Serpentinite',
              'Jos': 'Jos - Coast Range Ophiolite',
              'Qsc': 'Qsc - silica carbonate',
              'Qdcv':'Qdcv - dacite Cobb Valley',
-             'Qvc':'Qvc - rhyodacite flows and domes Cobb Mountain',
+             'Qvc':'Qvc - Cobb Mountain rhyodacite',
              'Qmt':'Qmt - mine tailings',
-             'felsite':'felsite',
+             'felsite':'GPC - felsite',
              'steam':'steam field'}
 
 def gradient_image(ax, extent, cmap_range=(0, 1), data_range=(0, 1),
@@ -92,53 +92,65 @@ ptcmapdict4 = {'red':  ((0.0, 0.0, 0.65),
                         (0.68,1.0, 1.0),
                         (1.0, 0.45, 1.0))}
 mt_rd2gr2bl = colors.LinearSegmentedColormap('mt_rd2gr2bl', ptcmapdict4, 256)
+
+def extent_0(index, dx):
+        return (index * dx) + (index - dx) + (2*index)
+        #return (index * dx) + (index - dx) 
+
+def extent_1(index, dx):
+    return extent_0(index, dx) + dx
+
 # =============================================================================
 # plot bars on color scale
 # =============================================================================
 df = pd.read_csv(csv_fn)
         
-#xmin, xmax = xlim = 0, 10
-#ymin, ymax = ylim = 0, 1
+dy = 10
 
-fig = plt.figure(2)
+fig = plt.figure(2, dpi=300)
 fig.clf()
 fig.tight_layout()
 
 ax = fig.add_subplot(1, 1, 1, aspect=.05)
 ax.set(xlim=(np.log10(10), np.log10(300)), 
-       ylim=(-2, 55))
+        ylim=(-(2*dy), extent_1(27, dy)-2))
 ax.yaxis.set_visible(False)
-ax.set_xlabel('Resistivity ($\Omega \cdot m$)', fontdict={'size':14})
+ax.set_xlabel('Resistivity ($\Omega \cdot m$)', fontdict={'size':12})
 ax.grid(which='major', color=(.25, .25, .25), lw=.75, ls=':')
 ax.set_axisbelow(True)
 for row in df.itertuples():
     bar_extent = (np.log10(max([1, row.pdf_50_min])), 
                   np.log10(row.pdf_50_max),
-                  2*(row.Index + 1),
-                  2*(row.Index + 1) + 1.85)
+                  extent_0(row.Index+1, dy),
+                  extent_1(row.Index+1, dy))
     gradient_image(ax, 
                    bar_extent,  
                    cmap=mt_rd2gr2bl, 
                    cmap_range=(np.log10(1), np.log10(500)), 
                    data_range=(np.log10(max([1, row.pdf_50_min])), np.log10(row.pdf_50_max)))
     ax.plot([np.log10(row.mode), np.log10(row.mode)], 
-            [2 * (row.Index + 1), 2 * (row.Index + 1)+1.85],
-            'k', lw=2)
+            [extent_0(row.Index+1, dy), extent_1(row.Index+1, dy)],
+            'k', lw=1)
     ax.text(np.log10(row.pdf_50_max)+.005,
-            2*(row.Index + 1)+1,
+            extent_0(row.Index+1, dy)+ dy/2,
             rock_dict[row.rock_type],
             verticalalignment='center', 
-            horizontalalignment='left')
+            horizontalalignment='left',
+            fontdict={'size':6},
+            bbox={'boxstyle':'square,pad=.01',
+                  'fc':'white',
+                  'ec':'white'})
 
+### bottom full length colorbar
 gradient_image(ax, 
-               (np.log10(1), np.log10(500), -2, 0 ), 
+               (np.log10(1), np.log10(500), -dy-3, -2 ), 
                cmap=mt_rd2gr2bl, 
                cmap_range=(np.log10(1), np.log10(500)), 
                data_range=(np.log10(1), np.log10(500)))
 
 plt.show()
 
-ax.set_aspect(.02)
+ax.set_aspect(.0035)
 xticks = np.log10(np.append(np.arange(10, 100, 10), np.arange(100, 400, 100)))
 ax.set_xticks(xticks)
 xlabels = ['{0:.0f}'.format(xx) for xx in np.round(10**xticks, 0)]

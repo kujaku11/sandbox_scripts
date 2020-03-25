@@ -10,14 +10,16 @@ from shapely.geometry import Point
 import fiona
 import mtpy.core.mt as mt
 import glob
+import os
 
 fiona.supported_drivers['kml'] = 'rw'
 fiona.supported_drivers['KML'] = 'rw'
 crs = {'init':'epsg:4326'}
 
-edi_path = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\*.edi"
+edi_path = r"c:\Users\jpeacock\Downloads\EDI-files"
+kml_fn = os.path.join(edi_path, 'sv_mt_station')
 
-edi_list = glob.glob(edi_path)
+edi_list = glob.glob('{0}\*.edi'.format(edi_path))
                     
 geometry = []
 stations = {'ID':[],
@@ -34,9 +36,9 @@ for edi in edi_list:
     stations['lon'].append(mt_obj.lon)
     
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
-gdf.to_file(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\mv_mt_stations_all.kml",
+gdf.to_file(kml_fn+'.kml',
             driver='kml')
-#kml_obj.save(os.path.join(edi_path, "SAGE_2019_mt_stations.kml"))
+gdf.to_file(kml_fn+'.shp')
     
             
             

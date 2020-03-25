@@ -14,9 +14,12 @@ import scipy.interpolate as interpolate
 
 import matplotlib.pyplot as plt
 
+plt.rcParams['font.size'] = 10
+# dir_path_01 = r"c:\Users\jrpeacock\Documents\Test_Data\Tongario\original"
+# dir_path_02 = r"c:\Users\jrpeacock\Documents\Test_Data\Tongario\repeat"
 
-dir_path_01 = r"c:\Users\jrpeacock\Documents\Test_Data\Tongario\original"
-dir_path_02 = r"c:\Users\jrpeacock\Documents\Test_Data\Tongario\repeat"
+dir_path_01 = r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\original"
+dir_path_02 = r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\repeat"
 
 station_num = [3, 4, 13, 24, 30, 70, 62, 1, 2, 4, 8, 9, 12, 14, 27, 28, 25]
 plot_station_index = [0, 3, 4, 5, 6]
@@ -99,7 +102,7 @@ for ii, r_arr in enumerate(rpt_arr[plot_station_index]):
                        color=u'#1f77b4')
     
     line_list.append(line3)
-    label_list.append(r_arr['station'])
+    label_list.append(str(r_arr['station']))
     ax.set_xscale('log')
     if ii < 4:
         ax.xaxis.set_tick_params(labelbottom='off')
@@ -108,9 +111,9 @@ for ii, r_arr in enumerate(rpt_arr[plot_station_index]):
     
     ax.set_axisbelow(True)
     ax.set_ylim(0, 90)
-    ax.set_yticks(np.arange(0, 90, 10))
-    ax.set_ylabel('Phimax (deg)', fontdict={'size':12, 'weight':'bold'})
-    ax.legend(line3, [r_arr['station']], loc='upper left')
+    ax.set_yticks(np.arange(0, 90, 15))
+    ax.set_ylabel('$\Phi_{max}$ (deg)', fontdict={'size':12, 'weight':'bold'})
+    ax.legend(line3, [r_arr['station'].decode()], loc='upper left')
     
 
 #line_list.append(line)
