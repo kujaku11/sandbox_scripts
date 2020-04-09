@@ -162,7 +162,7 @@ ax.text(60, 1.5, 'Wet Granite (0.1 M NaCl)', va='baseline', ha='left',
 ax.text(25, 10.5**4, 'Inada Granite (0.001 M KCl)', va='baseline', ha='left',
         color=(1, 1, 1), rotation=0, fontdict={'weight':'bold'})
 
-ax.text(300, 170, 'Felsite', va='baseline', ha='center', color=(1, 1, 1),
+ax.text(300, 170, 'GPC', va='baseline', ha='center', color=(1, 1, 1),
         rotation=0, fontdict={'weight':'bold'})
 ax.text(330, 10**5, 'HTR', va='center', ha='left', color=(1, 1, 1),
         rotation=90, fontdict={'weight':'bold'})

@@ -23,7 +23,7 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe='gs'):
     else:
         fn_crop = fn_in
         
-    std_out = subprocess.check_call(['gs', '-sDEVICE=pdfwrite', 
+    std_out = subprocess.check_call([gs_exe, '-sDEVICE=pdfwrite', 
                                      '-dCompatibilityLevel=1.4',
                                      '-dDownsampleColorImages=true',
                                      '-dColorImageResolution=300',
@@ -32,19 +32,14 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe='gs'):
                                      '-dBATCH',
                                      '-sOutputFile={0}'.format(output_fn),
                                      fn_crop])
-    os.remove(fn_crop)
+    if crop:
+        os.remove(fn_crop)
     if std_out == 0:
-        print 'converted {0} to {1}'.format(fn_in, output_fn)
+        print('converted {0} to {1}'.format(fn_in, output_fn))
         os.chdir(current_dir)
         return output_fn
         
-for fn in [r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_c1_summary.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_c1_summary_grav.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_depth_slices_pt.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_fence_summary.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_mt_stations_temp.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_profiles_map.pdf",
-           r"c:\Users\jpeacock\OneDrive - DOI\reports\gabbs_valley\gv_r1_summary.pdf"]:
+for fn in [r"c:\Users\jpeacock\OneDrive - DOI\Geysers\jvgr\gz_pt_summary.pdf"]:
 
-    new_fn = pdf_file_reduce_size(fn, crop=True, 
-                                  gs_exe=r"c:\Program Files\gs\gs9.23\bin\gswin64c.exe")
+    new_fn = pdf_file_reduce_size(fn, crop=False, 
+                                  gs_exe="gswin64c")
