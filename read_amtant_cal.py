@@ -8,7 +8,7 @@ This is a temporary script file.
 import numpy as np
 import pandas as pd
 
-ant_fn = r"d:\Peacock\MTData\Ant_calibrations\antenna_20190411.cal"
+ant_fn = r"/mnt/hgfs/MT/amtant.cal"
 
 birrp = False
 
