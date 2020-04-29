@@ -16,30 +16,26 @@ import mtpy.core.mt as mt
 # =============================================================================
 # Parameters
 # =============================================================================
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_03")
-topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\mono_basin.asc"
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\EDI_Files_birrp\GeographicNorth")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\modem_inv\inv_05")
+topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
+overwrite = False
 
-fn_stem = 'ml'
-bounds = {'lat':np.array([37.755, 38.235]),
-          'lon':np.array([-119.3, -118.62])}
+fn_stem = 'mv'
+bounds = {'lat':np.array([30, 36.]),
+          'lon':np.array([-120.3, -116.085])}
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
-
-# dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_03\ml_modem_data_z03_t02_edit.dat")
+if overwrite and dfn.exists():
+    os.remove(dfn)
 
 if not save_path.exists():
     save_path.mkdir()
 # =============================================================================
 # Get edi files
 # =============================================================================
-edi_list = [fn for fn in  edi_path.glob('*.edi')]
-s_remove = ['s{0}'.format(ii) for ii in [11, 12, 13, 21, 22, 23, 31, 32, 33, 
-                                         42, 43, 51, 52, 53, 61, 62, 63, 72,
-                                         73]]
+edi_list = [fn for fn in list(edi_path.glob('*.edi')) if 'scec' in fn.name]
 
-for remove_edi in ['mb091', 'mb035', 'mb055', 'cay203'] + s_remove:
-    edi_list.remove(Path(edi_path).joinpath('{0}.edi'.format(remove_edi)))
     
 s_edi_list = []
 for edi in edi_list:
@@ -53,7 +49,7 @@ for edi in edi_list:
 #==============================================================================
 if not dfn.exists():
     inv_period_list = np.logspace(np.log10(1./300),
-                                  np.log10(1023.0),
+                                  np.log10(2048.0),
                                   num=23)
     data_obj = modem.Data(edi_list=s_edi_list, 
                           period_list=inv_period_list)
@@ -67,6 +63,7 @@ if not dfn.exists():
     data_obj.fill_data_array()
     
     #--> here is where you can rotate the data
+    data_obj.rotation_angle = 45
     data_obj.write_data_file(save_path=save_path, 
                              fn_basename="{0}_modem_data_z{1:02.0f}_t{2:02.0f}.dat".format(
                                          fn_stem,    
@@ -81,48 +78,29 @@ else:
 # First make the mesh
 #==============================================================================
 mod_obj = modem.Model(stations_object=data_obj.station_locations)
-mod_obj.cell_size_east = 500.
-mod_obj.cell_size_north = 500.
+mod_obj.cell_size_east = 125.
+mod_obj.cell_size_north = 125.
 mod_obj.pad_num = 5
-mod_obj.pad_east = 8
-mod_obj.pad_north = 8
+mod_obj.pad_east = 5
+mod_obj.pad_north = 5
 mod_obj.pad_method = 'extent1'
 mod_obj.z_mesh_method = 'new'
 mod_obj.pad_stretch_h = 1.5
-mod_obj.pad_stretch_v = 1.5
-mod_obj.ew_ext = 300000.
-mod_obj.ns_ext = 300000.
+mod_obj.pad_stretch_v = 1.3
+mod_obj.ew_ext = 200000.
+mod_obj.ns_ext = 200000.
 mod_obj.pad_z = 5
-mod_obj.n_layers = 50
+mod_obj.n_layers = 35
 mod_obj.n_air_layers = 15
-mod_obj.z1_layer = 10
-mod_obj.z_target_depth = 50000.
+mod_obj.z1_layer = 15
+mod_obj.z_target_depth = 30000.
 mod_obj.z_bottom = 300000.
 mod_obj.res_initial_value = 100.
 
 #--> here is where you can rotate the mesh
-mod_obj.mesh_rotation_angle = 0.0
+mod_obj.mesh_rotation_angle = 45.0
 
 mod_obj.make_mesh()
-
-# # adjust z mesh
-# def myround(num, base):
-#     return base * round(num / base)
-
-# new_z = np.zeros(46)
-# for ii, zz in enumerate(np.logspace(np.log10(20), np.log10(50000), 46)):
-#     if zz < 100:
-#         new_z[ii] = myround(zz, 5)
-#     else:
-#         new_z[ii] = myround(zz, 10**(int(np.log10(zz))-1))
-
-# z_pad = np.array([myround(pp, 10**(int(np.log10(pp))-1)) 
-#                 for pp in np.logspace(np.log10(60000), np.log10(300000), 5)])
-
-# gz = np.append(new_z, z_pad)
-# nz = np.array([gz[ii+1] - gz[ii] for ii in range(gz.shape[0] -1)])
-# mod_obj.nodes_z = nz
-#mod_obj.plot_mesh(fig_num=2)
 
 mod_obj.save_path = save_path
 # mod_obj.write_model_file(model_fn_basename='{0}_sm{1:02.0f}.rho'.format(fn_stem,
@@ -134,23 +112,17 @@ mod_obj.save_path = save_path
 
 mod_obj.data_obj = data_obj
 mod_obj.add_topography_to_model2(topo_fn,
-                                 airlayer_type='log_up')
+                                 airlayer_type='log_down', 
+                                 max_elev=1150)
 mod_obj.write_model_file(model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem))
-# mod_obj.plot_topography()
+mod_obj.plot_topography()
+
 # change data file to have relative topography
-# mod_obj = modem.Model()
-# mod_obj.read_model_file(r"C:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_02\ml_modem_sm02_topo.rho")
 data_obj.center_stations(mod_obj.model_fn)
 sx, sy = data_obj.project_stations_on_topography(mod_obj)
 
 mod_obj.plot_mesh(fig_num=2)
-# data_obj.write_data_file(save_path=save_path, 
-#                          fn_basename="{0}_modem_data_z{1:02.0f}_t{2:02.0f}_topo.dat".format(
-#                                         fn_stem,
-#                                         data_obj.error_value_z,
-#                                         100*data_obj.error_value_tipper),
-#                         elevation=True,
-#                         fill=False)
+
 ##==============================================================================
 ## make the covariance file
 ##==============================================================================
