@@ -15,12 +15,12 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_03\ml_modem_data_z03_t02_topography.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\modem_inv\inv_05\mv_modem_data_z03_t02_edit.dat"
 
-remove_stations = ['MB132', 'F1']
-shady_stations_z = ['C3.5', 'C6', 'MB510', 'MB152']
-shady_stations_t = ['C3.5', 'C6', 'MB510', 'MB152']
-remove_x = ['MB510']
+remove_stations = ['scec29']
+shady_stations_z = ['scec26', 'scec30', 'scec31', 'scec32']
+shady_stations_t = []
+remove_x = []
 remove_y = []
 flip_phase_x = []
 flip_phase_y = []
@@ -28,9 +28,9 @@ static_shift_x = []
 static_shift_y = []
 swap_channel = []
 
-add_err = 7
-add_err_period_range = [80, 3000]
-elevation_bool = True
+add_err = 10
+add_err_period_range = None
+elevation_bool = False
 
 inv_modes = ['1', '2', '5']
 z_err_value = 7.0
@@ -39,7 +39,7 @@ z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'mv'
+sv_fn = 'scec'
 log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv_fn))
 # =============================================================================
 # change data file

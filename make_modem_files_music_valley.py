@@ -19,13 +19,16 @@ import mtpy.core.mt as mt
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\EDI_Files_birrp\GeographicNorth")
 save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\modem_inv\inv_05")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
+
 overwrite = False
+topography = False
 
 fn_stem = 'mv'
 bounds = {'lat':np.array([30, 36.]),
           'lon':np.array([-120.3, -116.085])}
 
-dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
+dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\modem_inv\inv_05\mv_modem_data_z03_t02.dat")
+# dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if overwrite and dfn.exists():
     os.remove(dfn)
 
@@ -90,38 +93,61 @@ mod_obj.pad_stretch_v = 1.3
 mod_obj.ew_ext = 200000.
 mod_obj.ns_ext = 200000.
 mod_obj.pad_z = 5
-mod_obj.n_layers = 35
+mod_obj.n_layers = 50
 mod_obj.n_air_layers = 15
-mod_obj.z1_layer = 15
+mod_obj.z1_layer = 10
 mod_obj.z_target_depth = 30000.
 mod_obj.z_bottom = 300000.
-mod_obj.res_initial_value = 100.
+mod_obj.res_initial_value = 50.
 
 #--> here is where you can rotate the mesh
 mod_obj.mesh_rotation_angle = 45.0
 
 mod_obj.make_mesh()
 
+new_north = list(mod_obj.nodes_north[0:4]) + \
+            [round(125 + 125*.15*ii) for ii in range(19)][::-1] +\
+            [125] * 31 +\
+            [round(125 + 125*.1*ii) for ii in range(35)] +\
+            list(mod_obj.nodes_north[0:4])[::-1]
+
+new_east = list(mod_obj.nodes_east[0:4]) + \
+            [round(125 + 125*.3*ii) for ii in range(8)][::-1] +\
+            [125] * 18 +\
+            [round(125 + 125*.3*ii) for ii in range(14)] +\
+            list(mod_obj.nodes_east[0:4])[::-1]
+mod_obj.nodes_north = new_north
+mod_obj.grid_north -= mod_obj.grid_north.mean()
+
+mod_obj.nodes_east = new_east
+mod_obj.grid_east -= mod_obj.grid_east.mean()
+
+mod_obj.res_model = np.ones((mod_obj.nodes_north.size,
+                             mod_obj.nodes_east.size,
+                             mod_obj.nodes_z.size))
+mod_obj.res_model[:] = mod_obj.res_initial_value
+
+mod_obj.plot_mesh()
 mod_obj.save_path = save_path
-# mod_obj.write_model_file(model_fn_basename='{0}_sm{1:02.0f}.rho'.format(fn_stem,
-#                          np.log10(mod_obj.res_initial_value)))
+mod_obj.write_model_file(model_fn_basename='{0}_sm{1:02.0f}.rho'.format(fn_stem,
+                          np.log10(mod_obj.res_initial_value)))
 
 ### =============================================================================
 ### Add topography
 ### =============================================================================
-
-mod_obj.data_obj = data_obj
-mod_obj.add_topography_to_model2(topo_fn,
-                                 airlayer_type='log_down', 
-                                 max_elev=1150)
-mod_obj.write_model_file(model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem))
-mod_obj.plot_topography()
-
-# change data file to have relative topography
-data_obj.center_stations(mod_obj.model_fn)
-sx, sy = data_obj.project_stations_on_topography(mod_obj)
-
-mod_obj.plot_mesh(fig_num=2)
+if topography:
+    mod_obj.data_obj = data_obj
+    mod_obj.add_topography_to_model2(topo_fn,
+                                     airlayer_type='log_down', 
+                                     max_elev=1150)
+    mod_obj.write_model_file(model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem))
+    mod_obj.plot_topography()
+    
+    # change data file to have relative topography
+    data_obj.center_stations(mod_obj.model_fn)
+    sx, sy = data_obj.project_stations_on_topography(mod_obj)
+    
+    mod_obj.plot_mesh(fig_num=2)
 
 ##==============================================================================
 ## make the covariance file
@@ -136,7 +162,7 @@ cov.write_covariance_file(cov_fn=os.path.join(save_path, 'covariance.cov'),
                           model_fn=mod_obj.model_fn)
 
 mod_obj.write_vtk_file(vtk_save_path=save_path,
-                       vtk_fn_basename='{0}_sm_topo'.format(fn_stem))
+                       vtk_fn_basename='{0}_sm'.format(fn_stem))
 
 data_obj.data_array['elev'] = data_obj.data_array['rel_elev']
 data_obj.write_vtk_station_file(vtk_save_path=save_path,
