@@ -26,6 +26,7 @@ page_summary = 'This dataset consists of 14 magnetotelluric (MT) stations '+\
                'east-northeast profile. The U.S. Geological Survey '+\
                'acquired these data to understand the fault geometry of '+\
                'the Hayward Fault and the Rodgers Creek Fault.'
+title = 'Magnetotelluric data from San Pablo Bay, California'
 
 # =============================================================================
 # login and get child ids
@@ -45,7 +46,7 @@ for child_id in child_ids:
         continue
     
     ### adjust summary
-    child_json['summary'] = page_summary
+    child_json['title'] = '{0}: {1}'.format(title, child_json['title'])
     
     
     #### UPDATE CHILD ITEM

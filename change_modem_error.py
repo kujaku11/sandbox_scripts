@@ -15,30 +15,31 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\Documents\ShanesBugs\QHGH-MT-EDI\inv_01\qh_modem_data_03_edited_topo.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\modem_inv\inv_05\mv_modem_data_z03_t02_edit.dat"
 
-remove_stations = []
-shady_stations = []
+remove_stations = ['scec29']
+shady_stations_z = ['scec26', 'scec30', 'scec31', 'scec32']
+shady_stations_t = []
 remove_x = []
 remove_y = []
-flip_phase_x = ['MT1108--3']
-flip_phase_y = ['MT1108--3']
+flip_phase_x = []
+flip_phase_y = []
 static_shift_x = []
 static_shift_y = []
 swap_channel = []
 
 add_err = 10
 add_err_period_range = None
-elevation_bool = True
+elevation_bool = False
 
-inv_modes = ['2']
-z_err_value = 5.0
-t_err_value = .03
+inv_modes = ['1', '2', '5']
+z_err_value = 7.0
+t_err_value = .04
 z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'qh'
+sv_fn = 'scec'
 log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv_fn))
 # =============================================================================
 # change data file
@@ -47,10 +48,14 @@ d_obj = modem.Data()
 d_obj.read_data_file(dfn)
 
 ### add error to certain stations   
-if shady_stations is not None:
-    for e_station in shady_stations:
+if shady_stations_z is not None:
+    for e_station in shady_stations_z:
         s_find = np.where(d_obj.data_array['station'] == e_station)[0][0]
         d_obj.data_array[s_find]['z_err'] *= add_err 
+
+if shady_stations_t is not None:
+    for e_station in shady_stations_t:
+        s_find = np.where(d_obj.data_array['station'] == e_station)[0][0]
         d_obj.data_array[s_find]['tip_err'] *= add_err 
     
 ### remove a bad station
@@ -158,7 +163,8 @@ lines.append("\n"+"="*70)
 lines.append("Change Date = {0}".format(datetime.datetime.now().isoformat()))
 lines.append("dfn = {0}".format(dfn))
 lines.append("remove_stations = {0}".format(remove_stations))
-lines.append("shady_stations = {0}".format(shady_stations))
+lines.append("shady_stations_z = {0}".format(shady_stations_z))
+lines.append("shady_stations_t = {0}".format(shady_stations_t))
 lines.append("remove_x = {0}".format(remove_x))
 lines.append("remove_y = {0}".format(remove_y))
 lines.append("flip_phase_x = {0}".format(flip_phase_x))
@@ -168,7 +174,6 @@ lines.append("static_shift_y = {0}".format(static_shift_y))
 lines.append("swap_channel = {0}".format(swap_channel))
 lines.append("add_err = {0}".format(add_err))
 lines.append("elevation_bool = {0}".format(elevation_bool))
-
 lines.append("inv_modes = {0}".format(inv_modes))
 lines.append("z_err_value = {0}".format(z_err_value))
 lines.append("t_err_value = {0}".format(t_err_value))
