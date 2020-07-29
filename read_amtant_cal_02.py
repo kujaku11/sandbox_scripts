@@ -10,8 +10,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-ant_cal_fn = r"/mnt/hgfs/MT/amtant.cal"
-sv_path = Path(r"/mnt/hgfs/MT/birrp_calibrations")
+ant_cal_fn = r"/mnt/hgfs/peaco/Documents/MT/amtant.cal"
+sv_path = Path(r"/mnt/hgfs/peaco/Documents/MT/birrp_calibrations")
 if not sv_path.exists():
     sv_path.mkdir()
 

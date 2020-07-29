@@ -8,8 +8,8 @@ Created on Thu Aug 04 18:02:56 2016
 import os
 import shutil
 
-data_folder = r"d:\Peacock\MTData\SCEC"
-#data_folder = r"e:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\MusicValley"
+data_folder = r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SCEC"
+# data_folder = '/mnt/hgfs/MT/SCEC'
 for folder in os.listdir(data_folder):
     station_path = os.path.join(data_folder, folder)
     if os.path.isdir(station_path) is True:

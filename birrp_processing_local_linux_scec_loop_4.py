@@ -17,17 +17,17 @@ from pathlib import Path
 #==============================================================================
 coil_calibration_path = r"/mnt/hgfs/MT/birrp_calibrations"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = r"/mnt/hgfs/MT/MNP2019"
+local_path = r"/mnt/hgfs/MT/SCEC"
 #copy_edi_path = os.path.join(local_path, 'EDI_Files_birrp')
-station_df = pd.read_csv(r"/mnt/hgfs/MT/MNP2019/processing_combined.csv")
+station_df = pd.read_csv(r"/mnt/hgfs/MT/SCEC/scec_processing_loop.csv")
 
 b_param_dict = {'ilev': 0,
-                'c2threshb':.45,
-                'c2threshe':.45,
-                'c2thresh1':.45,
-                'ainuin':.9999,
-                'ainlin':.0000,
-                'nar':9}
+                'c2threshb': .45,
+                'c2threshe': .45,
+                'c2thresh1': .45,
+                'ainuin': .9999,
+                'ainlin': .0000,
+                'nar': 9}
 
 #==============================================================================
 # Station to process and remote reference
@@ -65,18 +65,18 @@ for row in station_df.itertuples():
                                 rr_station_z3d_dir=rr_local_station_path,
                                 station_ts_dir=os.path.join(local_station_path, 'TS'))
             zp_obj.birrp_exe = birrp_path
-            zp_obj.coil_cal_path = coil_calibration_path
-            zp_obj.get_calibrations()
+            zp_obj.calibration_path = coil_calibration_path
+            zp_obj.get_calibrations(zp_obj.calibration_path)
             try:
-                plot_obj, comb_edi_fn = zp_obj.process_data(df_list=[4],
-                                                            notch_dict={4:None},
-                                                            max_blocks=4,
-                                                            sr_dict={4096:(1000., 25),
-                                                                     256:(24.999, .1),
-                                                                     4:(.1, .00001)},
-                                                            use_blocks_dict={4:[0]},
-                                                            birrp_param_dict=b_param_dict,
-                                                            plot=False)
+                plot_obj, comb_edi_fn, sdf = zp_obj.process_data(df_list=[4],
+                                                                 notch_dict={4:None},
+                                                                 max_blocks=4,
+                                                                 sr_dict={4096:(1000., 25),
+                                                                          256:(24.999, .1),
+                                                                          4:(.1, .00001)},
+                                                                 use_blocks_dict={4:[0]},
+                                                                 birrp_param_dict=b_param_dict,
+                                                                 plot=False)
 
                 edi_list.append(comb_edi_fn)
                 plt.close('all')
