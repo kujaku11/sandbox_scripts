@@ -120,7 +120,8 @@ class TEMEMO():
         self.doi_absolute = [float(ii) for ii in lines[-4].strip().split()]
         self.doi_relative = [float(ii) for ii in lines[-2].strip().split()]
         
-    def plot(self, fig_num=1, iteration=None, res_limits=[10, 5000]):
+    def plot(self, fig_num=1, iteration=None, res_limits=[10, 5000], 
+             title=None):
         """
         plot data and models
         """
@@ -224,6 +225,12 @@ class TEMEMO():
         
         # make tight layout to make things look nice
         fig.tight_layout()
+        
+        # plot title
+        if title is not None:
+            fig.suptitle(title)
+            fig.subplots_adjust(top=.92)
+        
         fig.show()
         
         return fig, ax_t, ax_d
@@ -234,4 +241,4 @@ class TEMEMO():
 fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky\T00\_1_1.ml.emo"
 t = TEMEMO(fn)
 l = t.read_emo_file()
-f, ax1, ax2 = t.plot()
+f, ax1, ax2 = t.plot(title='TEM00')
