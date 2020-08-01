@@ -163,8 +163,8 @@ class TEMEMO():
         ax_t.legend(data_lines + resp_lines, 
                     data_labels + resp_labels,
                     loc='lower left',
-                    ncol=2,
-                    fontsize=6)
+                    ncol=1,
+                    fontsize=7)
         
         # plot depth
         res_keys = [col for col in self.model.columns if 'res' in col]
@@ -227,15 +227,11 @@ class TEMEMO():
         fig.show()
         
         return fig, ax_t, ax_d
-        
-        
-        
-        
 
 # =============================================================================
 # test
 # =============================================================================
-fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth\T00\_1_1.ml.emo"
+fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky\T00\_1_1.ml.emo"
 t = TEMEMO(fn)
 l = t.read_emo_file()
 f, ax1, ax2 = t.plot()
