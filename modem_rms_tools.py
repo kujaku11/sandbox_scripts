@@ -8,6 +8,7 @@ Created on Mon Feb 13 10:59:30 2017
 import numpy as np
 import mtpy.modeling.modem as modem
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def get_rms_summary_df(res_obj, rms_thresh=5.0):
@@ -87,8 +88,12 @@ def plot_rms_summary(res_obj, ylim=(0, 5), bar_width=0.5,
         ax.set_yticks(np.arange(ylim[0], ylim[1]))
         ax.set_title('')
         ax.legend(loc='upper right')
-    
-    return ax_list
+        ax.set_ylabel('RMS')
+        
+    fig = plt.gcf()
+    fig.set_size_inches([8, 9.5])
+    fig.tight_layout()
+    return fig, ax_list
 
 def plot_rms_by_period(res_obj, ylim=(0, 5), bar_width=0.5,
                        keys=['z', 't', 'zxx', 'zxy', 'zyx', 'zyy', 'tx', 'ty']):
@@ -105,15 +110,21 @@ def plot_rms_by_period(res_obj, ylim=(0, 5), bar_width=0.5,
         ax.set_yticks(np.arange(ylim[0], ylim[1]))
         ax.set_title('')
         ax.legend(loc='upper right')
+        ax.set_ylabel('RMS')
+    ax_list[-1].set_xlabel('Period (s)')
     
-    return ax_list
+    fig = plt.gcf()
+    fig.set_size_inches([8, 9.5])
+    fig.tight_layout()
+    return fig, ax_list
 # =============================================================================
 # run things
 # =============================================================================
 #res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv03\gz_err03_cov02_NLCG_057.res"
 #res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv04\gz_rm50_z03_c02_104.res"
-res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_z03_c02_074.res"
-rms_thresh = 5.0
+# res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_z03_c02_074.res"
+res_fn = r"d:\Documents\Montserrat\modem_inv\Inv05_dr\mont_topo_err07_cov04_NLCG_087.res"
+rms_thresh = 7.0
 
 res_obj = modem.Data()
 res_obj.read_data_file(res_fn)

@@ -25,13 +25,15 @@ def get_imports(fn_dir, import_list):
                 lines = fn.read_text().split('\n')
                 for line in lines:
                     if 'import' in line:
-                        if not '>>>' in line or 'mth5' not in line:
-                            line = line.split()
-                            if line[0] == 'from':
-                                imp = f"{line[1]}.{line[3]}"
+                        if not '>>>' in line:
+                            if 'from' in line:
+                                line = line.split(' ', 3)
+                                for mod in line[-1].split(','):
+                                    import_list.append(f"{line[1]}.{mod.strip()}")
                             else:
-                                imp = line[1]
-                            import_list.append(imp)
+                                line = line.split()
+                                import_list.append(line[1])
+                            
                     
     return import_list
 
