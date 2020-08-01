@@ -15,7 +15,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-from matplotlib.ticker import MultipleLocator
+from matplotlib.ticker import MultipleLocator, ScalarFormatter
 
 # =============================================================================
 # 
@@ -188,10 +188,12 @@ class TEMEMO():
         
         # set axis properties
         ax_d.set_xscale('log')
+        ax_d.set_xticks([1, 10, 100, 1000, 10000])
         ax_d.set_xlim(res_limits)
         ax_d.set_ylim((plot_depth.max(), plot_depth.min()))
         ax_d.yaxis.set_minor_locator(MultipleLocator(10))
         ax_d.yaxis.set_major_locator(MultipleLocator(50))
+        
         
         # plot doi
         ax_d.fill_between(res_limits, 
@@ -209,6 +211,8 @@ class TEMEMO():
                            self.doi_relative[1] - self.location['elevation']],
                           color=(.7, .7, .7),
                           alpha=.85)
+        
+        
         # make grid
         for ax in [ax_t, ax_d]:
             ax.grid(which='major', color=(.5, .5, .5), lw=.75, ls='-')
