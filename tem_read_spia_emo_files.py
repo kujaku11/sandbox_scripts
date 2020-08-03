@@ -392,7 +392,6 @@ class EMOCollection:
                                             method=method)
         
         # interpolate doi
-        print(distance)
         doi_rel_interp = interpolate.interp1d(distance,
                                               profile_sorted['doi_rel'],
                                               kind=method)
@@ -400,7 +399,8 @@ class EMOCollection:
         
         return new_x, elevation, model_interp, interp_doi_rel
         
-    def plot(self, dx=10, dz=40, method='linear', fig_num=1, res_limits=(0, 3)):
+    def plot(self, dx=10, dz=40, method='linear', fig_num=1, res_limits=(0, 3),
+             ypad=20, xpad=10):
         """
         
         """
@@ -422,14 +422,27 @@ class EMOCollection:
                         alpha=.5)
         
         # set axis limits
-        ax.set_ylim((nz.max(), nz.min()))
+        ax.set_ylim((nz.max(), nz.min() - ypad))
+        ax.set_xlim((nx.min() - xpad, nx.max() + xpad))
         
         # set labels
         ax.set_xlabel('Distance [m]')
         ax.set_ylabel('Elevation [m]')
         
-        plt.colorbar(mappable=im, ax=ax, shrink=.5)
+        cx = plt.colorbar(mappable=im, ax=ax, shrink=.85)
+        cx.set_label('$Log_{10}$(Resistivity) [$\Omega \cdot m$]')
         
+        # plot stations
+        for emo in self.emo_list:
+            if self.profile_direction == 'ew':
+                sx = emo.location['eastiong']
+            elif self.profile_direction == 'ns':
+                sx = emo.location['northing']
+            
+            print(sx, emo.location['elevation'])
+            ax.plot(sx, -1 * emo.location['elevation'] - 5,
+                    marker='v', ms=5, color='k')
+            
         return ax, fig
 
 def get_emo_files_from_dir(emo_dir, stations=None):
@@ -462,11 +475,10 @@ t = TEMEMO(fn)
 l = t.read_emo_file()
 #f, ax1, ax2 = t.plot(title="TEM00")
 
-emo_fn_list = get_emo_files_from_dir(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
+emo_fn_list = get_emo_files_from_dir(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky",
                                      stations=['T20', 'T21', 'T22', 'T23',
                                                'T24', 'T25']) 
 
 emo_collection = EMOCollection(emo_fn_list)
 emo_collection.profile_direction = 'ns'
-x, z, nm, doi = emo_collection.interpolate_model(dz=50, method='cubic')
-emo_collection.plot()
+emo_collection.plot(dx=5, dz=60, method='linear')
