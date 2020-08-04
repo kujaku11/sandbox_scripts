@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from matplotlib.ticker import MultipleLocator
 
+from mtpy.imaging import mtcolors
+
 # =============================================================================
 #
 # =============================================================================
@@ -379,8 +381,17 @@ class EMOCollection:
             f = interpolate.interp1d(emo.elevation, emo.resistivity,
                                      bounds_error=False,
                                      fill_value=np.nan)
-            models[ii, :] = f(elevation)
-         
+            models[ii, :] = f(elevation)    
+        nmodels = np.zeros((len(self.emo_list) + 2, depth.size)) 
+        nmodels[0] = models[0]
+        nmodels[1:-1] = models[:]
+        nmodels[-1] = models [-1] 
+        models = nmodels
+        # add a block on each side for easier plotting
+        
+        distance = np.append(np.append(distance[0] - 100, distance),
+                             distance[-1] + 100)
+        
         # interpolate model
         nx = int((distance.max() - distance.min()) / dx)
         new_x = np.linspace(distance.min(), distance.max(), nx)
@@ -392,56 +403,67 @@ class EMOCollection:
                                             method=method)
         
         # interpolate doi
+        doi_rel = np.append(np.append(profile_sorted['doi_rel'][0], 
+                                      profile_sorted['doi_rel']),
+                            profile_sorted['doi_rel'][-1])
         doi_rel_interp = interpolate.interp1d(distance,
-                                              profile_sorted['doi_rel'],
+                                              doi_rel,
                                               kind=method)
         interp_doi_rel = doi_rel_interp(new_x)
         
         return new_x, elevation, model_interp, interp_doi_rel
         
     def plot(self, dx=10, dz=40, method='linear', fig_num=1, res_limits=(0, 3),
-             ypad=20, xpad=10):
+             ypad=20, xpad=10, cmap='jet_r'):
         """
         
         """
         
         nx, nz, model, doi = self.interpolate_model(dx=dx, dz=dz, method=method)
-        
+        nmean = nx.mean()
+        nx -= nmean
         xg, yg = np.meshgrid(nx, nz)
         
         fig = plt.figure(fig_num)
+        fig.clf()
         ax = fig.add_subplot(1, 1, 1, aspect='equal')
         
         im = ax.pcolormesh(xg, yg, np.log10(model.T),
-                           cmap='jet_r',
+                           cmap=cmap,
                            vmin=res_limits[0],
                            vmax=res_limits[1])
         
         l1, = ax.plot(nx, doi, ls='--', lw=1, color=(.25, .25, .25))
         ax.fill_between(nx, doi, [nz.max()]*nx.size, color=(.5, .5, .5),
-                        alpha=.5)
+                        alpha=.5, hatch='X')
         
         # set axis limits
         ax.set_ylim((nz.max(), nz.min() - ypad))
         ax.set_xlim((nx.min() - xpad, nx.max() + xpad))
         
         # set labels
-        ax.set_xlabel('Distance [m]')
+        if self.profile_direction == 'ew':
+            ax.set_xlabel('Easting [m]')
+        elif self.profile_direction == 'ns':
+            ax.set_xlabel('Northing [m]')
         ax.set_ylabel('Elevation [m]')
+        ax.xaxis.set_minor_locator(MultipleLocator(10))
+        ax.yaxis.set_minor_locator(MultipleLocator(10))
         
-        cx = plt.colorbar(mappable=im, ax=ax, shrink=.85)
-        cx.set_label('$Log_{10}$(Resistivity) [$\Omega \cdot m$]')
+        cx = plt.colorbar(mappable=im, ax=ax, shrink=.75)
+        cx.set_label('Resistivity [$\Omega \cdot m$]')
+        cx.set_ticks([0, 1, 2, 3, 4])
+        cx.set_ticklabels(['$10^{0}$', '$10^{1}$', '$10^{2}$', '$10^{3}$', '$10^{4}$'])
         
         # plot stations
         for emo in self.emo_list:
             if self.profile_direction == 'ew':
-                sx = emo.location['eastiong']
+                sx = emo.location['easting'] - nmean
             elif self.profile_direction == 'ns':
-                sx = emo.location['northing']
+                sx = emo.location['northing'] - nmean
             
-            print(sx, emo.location['elevation'])
-            ax.plot(sx, -1 * emo.location['elevation'] - 5,
-                    marker='v', ms=5, color='k')
+            ax.plot(sx, -1 * emo.location['elevation'] - 7,
+                    marker='v', ms=7, color='k')
             
         return ax, fig
 
@@ -470,15 +492,40 @@ def get_emo_files_from_dir(emo_dir, stations=None):
 # =============================================================================
 # test
 # =============================================================================
-fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky\T00\_1_1.ml.emo"
-t = TEMEMO(fn)
-l = t.read_emo_file()
-#f, ax1, ax2 = t.plot(title="TEM00")
+# fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky\T00\_1_1.ml.emo"
+# t = TEMEMO(fn)
+# l = t.read_emo_file()
+# #f, ax1, ax2 = t.plot(title="TEM00")
 
-emo_fn_list = get_emo_files_from_dir(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky",
-                                     stations=['T20', 'T21', 'T22', 'T23',
-                                               'T24', 'T25']) 
+line_name = '30'
+# line = ['T20', 'T21', 'T22', 'T23', 'T24', 'T25']
+line = ['T07', 'T08', 'T00', 'T09', 'T10']
+# line = ['T00', 'T01', 'T02', 'T03', 'T04', 'T05']
+line = ['T11', 'T12', 'T13', 'T14']
 
-emo_collection = EMOCollection(emo_fn_list)
-emo_collection.profile_direction = 'ns'
-emo_collection.plot(dx=5, dz=60, method='linear')
+line = ['T30', 'T31', 'T32']
+tem_dir = Path(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models")
+
+for mtype in ['smooth', 'blocky']:
+    model_dir = tem_dir.joinpath(mtype)
+    
+    emo_fn_list = get_emo_files_from_dir(model_dir,
+                                         stations=line) 
+    
+    emo_collection = EMOCollection(emo_fn_list)
+    emo_collection.profile_direction = 'ns'
+    ax1, fig1 = emo_collection.plot(dx=5, 
+                                    dz=60,
+                                    method='linear',
+                                    res_limits=(1, 3.5),
+                                    cmap=mtcolors.mt_rd2gr2bl,
+                                    xpad=-60,
+                                    ypad=30)
+    
+    fig1.savefig(tem_dir.joinpath('Figures', 
+                                  f"um_tem_line_{line_name}_{mtype}.pdf"),
+                 dpi=300, bbox_inches='tight')
+    
+    fig1.savefig(tem_dir.joinpath('Figures',
+                                  f"um_tem_line_{line_name}_{mtype}.png"),
+                 dpi=300, bbox_inches='tight')
