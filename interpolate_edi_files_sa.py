@@ -8,7 +8,7 @@ import os
 import mtpy.core.mt as mt
 import numpy as np
 
-edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\EDI_Files\Rotated_W34N"
+edi_path = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\EDI_Files_birrp\Edited"
 edi_list = [os.path.join(edi_path, edi_fn) for edi_fn in os.listdir(edi_path)
              if edi_fn.endswith('.edi')]
 
@@ -17,7 +17,7 @@ if not os.path.isdir(save_path):
     os.mkdir(save_path)
 
 # make a new frequency list to interpolate on to [1000 Hz - 1000 sec]
-interp_freq = np.logspace(np.log10(320), np.log10(9.1553E-5), num=64)
+interp_freq = np.logspace(np.log10(1./1.031E-3), np.log10(1./2048), num=48)
 
 for edi_fn in edi_list:
     mt_obj = mt.MT(edi_fn)
