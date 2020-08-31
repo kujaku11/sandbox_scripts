@@ -44,6 +44,8 @@ class TEMEMO:
         self.resistivity = None
         self.depth = None
         self.elevation = None
+        self.norms = None
+        self.model_date = None
 
         self.channel_dict = {1: "HM-RC005", 2: "HM-RC200", 3: "LM-RC005",
                              4: "LM-RC200"}
@@ -72,7 +74,10 @@ class TEMEMO:
 
         lines = self.fn.read_text().split("\n")
         model_index = 0
+        norm_index = 0
         for ii, line in enumerate(lines):
+            if line.startswith("Norm's"):
+                norm_index = ii
             if line.startswith("Model #"):
                 model_index = ii
                 break
@@ -80,8 +85,20 @@ class TEMEMO:
         # can't fucking parse the header cause its not standard, just store
         # as a list of strings.
         self.model_parameters = lines[0 : model_index - 1]
-
-        max_iter = int(lines[model_index - 1].strip().split()[0])
+        date_list = self.model_parameters[5].strip().split()
+        date = '-'.join(date_list[1].split('.')[::-1])
+        self.model_date = f"{date}T{date_list[0]}"
+        
+        # get norms/rms
+        norm_keys = lines[norm_index + 1].strip().replace('_#', '').lower().split()
+        norm_dict = dict([(k, []) for k in norm_keys])
+        for ii in range(norm_index + 2, model_index, 1):
+            values = [float(vv) for vv in lines[ii].strip().split()]
+            for k, v in zip(norm_keys, values):
+                norm_dict[k].append(v)
+        n_index = np.array(norm_dict.pop('ite'), dtype=np.int)
+        self.norms = pd.DataFrame(norm_dict, index=n_index)
+        max_iter = self.norms.index.max()
 
         self.location = dict(
             [
@@ -132,8 +149,8 @@ class TEMEMO:
         self.data = pd.DataFrame(data)
 
         # get DOI
-        self.doi_absolute = [float(ii) for ii in lines[-4].strip().split()]
-        self.doi_relative = [float(ii) for ii in lines[-2].strip().split()]
+        self.doi_absolute = np.array([float(ii) for ii in lines[-4].strip().split()])
+        self.doi_relative = np.array([float(ii) for ii in lines[-2].strip().split()])
         
         # get resistivity 
         res_keys = [col for col in self.model.columns if "res" in col]
@@ -158,6 +175,7 @@ class TEMEMO:
         gs = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=(1, 2))
 
         fig = plt.figure(fig_num)
+        fig.clf()
         ax_t = fig.add_subplot(gs[1])
         ax_d = fig.add_subplot(gs[0])
 
@@ -172,7 +190,7 @@ class TEMEMO:
             (l1,) = ax_t.loglog(
                 data.time,
                 data.inp_data,
-                color=(1 / ds, 0, 0),
+                color=(1 / ds, 0, .2),
                 ls="-",
                 marker="o",
                 ms=2,
@@ -185,7 +203,7 @@ class TEMEMO:
             (l2,) = ax_t.loglog(
                 data.time,
                 data[iteration],
-                color=(0, 0, 1 / ds),
+                color=(0, ds / 4, 1 / ds),
                 ls="None",
                 marker="+",
                 ms=6,
@@ -238,6 +256,7 @@ class TEMEMO:
             ],
             color=(0.85, 0.85, 0.85),
             alpha=0.85,
+            hatch='X'
         )
 
         ax_d.fill_between(
@@ -252,12 +271,13 @@ class TEMEMO:
             ],
             color=(0.7, 0.7, 0.7),
             alpha=0.85,
+            hatch='X'
         )
 
         # make grid
         for ax in [ax_t, ax_d]:
-            ax.grid(which="major", color=(0.5, 0.5, 0.5), lw=0.75, ls="-")
-            ax.grid(which="minor", color=(0.65, 0.65, 0.65), lw=0.5, ls="--")
+            ax.grid(which="major", color=(0.65, 0.65, 0.65), lw=0.5, ls="-")
+            ax.grid(which="minor", color=(0.75, 0.75, 0.75), lw=0.25, ls="--")
             ax.set_axisbelow(True)
 
         # set axis labels
@@ -272,10 +292,11 @@ class TEMEMO:
 
         # plot title
         if title is not None:
-            fig.suptitle(title)
+            fig.suptitle(f"{title}; RMS = {self.norms.iloc[-1].total}",
+                         fontdict=f_dict)
             fig.subplots_adjust(top=0.92)
 
-        fig.show()
+        #fig.show()
 
         return fig, ax_t, ax_d
     
@@ -488,44 +509,120 @@ def get_emo_files_from_dir(emo_dir, stations=None):
             
     return emo_list
     
+def plot_station_loop(emo_dir, save_dir=None, fig_type='png'):
+    """
+    plot all stations in a directory from the .emo file
+    
+    :param emo_dir: DESCRIPTION
+    :type emo_dir: TYPE
+    :param save_dir: DESCRIPTION, defaults to None
+    :type save_dir: TYPE, optional
+    :return: DESCRIPTION
+    :rtype: TYPE
 
+    """
+    
+    if not isinstance(emo_dir, Path):
+        emo_dir = Path(emo_dir)
+        
+    if save_dir is not None:
+        if not isinstance(save_dir, Path):
+            save_dir = Path(save_dir)
+    else:
+        save_dir = emo_dir
+        
+    for folder in emo_dir.iterdir():
+        if folder.is_dir():
+            emo_fn = list(folder.glob('*.emo'))[-1]
+        emo_obj = TEMEMO(emo_fn)
+        emo_obj.read_emo_file()
+        fig, ax1, ax2 = emo_obj.plot(title=folder.name)
+        fig.savefig(save_dir.joinpath(f"{folder.name}.{fig_type}"), dpi=300,
+                    bbox_inches='tight')
+        print(f'\t-> Plotted {folder.name}')
+           
+def create_survey_summary(smooth_dir, blocky_dir):
+    """
+    creat a csv file of the models  
+    :param emo_dir: DESCRIPTION
+    :type emo_dir: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    
+    emo_list = []
+    for emo_dir in [Path(smooth_dir), Path(blocky_dir)]:
+        for emo_fn in get_emo_files_from_dir(emo_dir):
+            name = emo_fn.parts[-2]
+            emo_obj = TEMEMO(emo_fn)
+            emo_obj.read_emo_file()
+            entry = {'name': name, 
+                     'collection_date': '', 
+                     'collected_by': 'GMEGSC-USGS',
+                     'easting': emo_obj.location['easting'],
+                     'northing': emo_obj.location['northing'],
+                     'elevation': emo_obj.location['elevation'],
+                     'utm_zone': '11N',
+                     'loop_size': 100,
+                     'damping_resistor': 440,
+                     'model_type': emo_dir.name,
+                     'model_date': emo_obj.model_date,
+                     'doi_relative': emo_obj.doi_relative.mean(),
+                     'doi_absolute': emo_obj.doi_absolute.mean(),
+                     'rms_data': emo_obj.norms.iloc[-1].data,
+                     'rms_total': emo_obj.norms.iloc[-1].total}
+            for res_key in [col for col in emo_obj.model.columns if 'res' in col]:
+                entry[res_key.replace('res', 'resistivity')] = emo_obj.model[res_key].iloc[-1]
+                
+            for thick_key in [col for col in emo_obj.model.columns if 'thic' in col]:
+                entry[thick_key.replace('thic', 'thickness')] = emo_obj.model[thick_key].iloc[-1]
+            emo_list.append(entry)
+    return pd.DataFrame(emo_list)
+        
 # =============================================================================
 # test
 # =============================================================================
 # fn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky\T00\_1_1.ml.emo"
 # t = TEMEMO(fn)
 # l = t.read_emo_file()
-# #f, ax1, ax2 = t.plot(title="TEM00")
+# f, ax1, ax2 = t.plot(title="TEM00")
 
-line_name = '30'
-# line = ['T20', 'T21', 'T22', 'T23', 'T24', 'T25']
-line = ['T07', 'T08', 'T00', 'T09', 'T10']
-# line = ['T00', 'T01', 'T02', 'T03', 'T04', 'T05']
-line = ['T11', 'T12', 'T13', 'T14']
+# plot_station_loop(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
+#                   r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\Figures\smooth")
 
-line = ['T30', 'T31', 'T32']
-tem_dir = Path(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models")
+df = create_survey_summary(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
+                           r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky")
+df.to_csv(r"c:\Users\peaco\Documents\MT\UM2020\TEM\survey_summary.csv", index=False)
+# line_name = '30'
+# # line = ['T20', 'T21', 'T22', 'T23', 'T24', 'T25']
+# line = ['T07', 'T08', 'T00', 'T09', 'T10']
+# # line = ['T00', 'T01', 'T02', 'T03', 'T04', 'T05']
+# line = ['T11', 'T12', 'T13', 'T14']
 
-for mtype in ['smooth', 'blocky']:
-    model_dir = tem_dir.joinpath(mtype)
+# line = ['T30', 'T31', 'T32']
+# tem_dir = Path(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models")
+
+# for mtype in ['smooth', 'blocky']:
+#     model_dir = tem_dir.joinpath(mtype)
     
-    emo_fn_list = get_emo_files_from_dir(model_dir,
-                                         stations=line) 
+#     emo_fn_list = get_emo_files_from_dir(model_dir,
+#                                          stations=line) 
     
-    emo_collection = EMOCollection(emo_fn_list)
-    emo_collection.profile_direction = 'ns'
-    ax1, fig1 = emo_collection.plot(dx=5, 
-                                    dz=60,
-                                    method='linear',
-                                    res_limits=(1, 3.5),
-                                    cmap=mtcolors.mt_rd2gr2bl,
-                                    xpad=-60,
-                                    ypad=30)
+#     emo_collection = EMOCollection(emo_fn_list)
+#     emo_collection.profile_direction = 'ns'
+#     ax1, fig1 = emo_collection.plot(dx=5, 
+#                                     dz=60,
+#                                     method='linear',
+#                                     res_limits=(1, 3.5),
+#                                     cmap=mtcolors.mt_rd2gr2bl,
+#                                     xpad=-60,
+#                                     ypad=30)
     
-    fig1.savefig(tem_dir.joinpath('Figures', 
-                                  f"um_tem_line_{line_name}_{mtype}.pdf"),
-                 dpi=300, bbox_inches='tight')
+#     fig1.savefig(tem_dir.joinpath('Figures', 
+#                                   f"um_tem_line_{line_name}_{mtype}.pdf"),
+#                  dpi=300, bbox_inches='tight')
     
-    fig1.savefig(tem_dir.joinpath('Figures',
-                                  f"um_tem_line_{line_name}_{mtype}.png"),
-                 dpi=300, bbox_inches='tight')
+#     fig1.savefig(tem_dir.joinpath('Figures',
+#                                   f"um_tem_line_{line_name}_{mtype}.png"),
+#                  dpi=300, bbox_inches='tight')
