@@ -10,7 +10,7 @@ import numpy as np
 import mtpy.core.z as mtz
 import matplotlib.pyplot as plt
 
-dfn =  r"c:\Users\jpeacock\Documents\ShanesBugs\QHGH-MT-EDI\inv_01\qh_modem_data_03_edited.dat"
+dfn =  r"c:\MT\GV2020\modem_inv\inv_01\gv_modem_data_z03_t02_edited.dat"
 
 d_obj = modem.Data()
 d_obj.read_data_file(dfn)

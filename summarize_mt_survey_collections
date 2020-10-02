@@ -17,9 +17,9 @@ tol_dict = {4096: {'s_diff': 5 * 60,
             4: {'s_diff': 4 * 3600,
                 'min_points': 2**14}}
 
-survey_path = Path('/mnt/hgfs/MT/MusicValley')
-calibration_path = r"/mnt/hgfs/MT/birrp_calibrations"
-sdfn = survey_path.joinpath('mv_summary_df.csv')
+survey_path = Path('/mnt/hgfs/MT_Data/GV2020')
+calibration_path = r"/mnt/hgfs/MT_Data/birrp_calibrations"
+sdfn = survey_path.joinpath('gv_summary_df.csv')
 
 if sdfn.exists():
     sdf = pd.read_csv(sdfn)
@@ -27,7 +27,8 @@ if sdfn.exists():
 
 else:
     c_obj = zc.Z3DCollection()
-    sdf = c_obj.summarize_survey(survey_path, calibration_path)
+    sdf = c_obj.summarize_survey(survey_path, 
+                                 calibration_path=calibration_path)
 
 sdf['start'] = pd.to_datetime(sdf.start)
 

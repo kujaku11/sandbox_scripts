@@ -16,7 +16,6 @@ from mtpy.imaging import mtplottools as mtpl
 from mtpy.imaging import mtcolors
 import glob
 
-edi_dir = r"c:\Users\jpeacock\Documents\SaudiArabia\Rotated_W34N"
 
 class PlotPTShapes(mtpl.PlotSettings):
     """
@@ -83,6 +82,7 @@ class PlotPTShapes(mtpl.PlotSettings):
         """
         if self.fig is None:
             self.fig = plt.figure(self.fig_num, self.fig_size)
+        self.fig.clf()
             
         self.ax = self.fig.add_subplot(1, 1, 1, aspect='equal')
         
@@ -244,6 +244,7 @@ class PlotPTShapes(mtpl.PlotSettings):
 # =============================================================================
 # plot
 # =============================================================================
+edi_dir = r"/mnt/hgfs/MT_Data/GV2020/EDI_Files_birrp/Edited"
 edi_list = glob.glob(os.path.join(edi_dir, '*.edi'))
 
 ptm = PlotPTShapes(fn_list=edi_list)
