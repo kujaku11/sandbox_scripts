@@ -10,8 +10,9 @@ from pathlib import Path
 import shutil
 from mtpy.usgs import zen_processing as zp
 
-station_path = Path(r"/mnt/hgfs/peaco/Documents/MT/UM2020/um220/TS")
-copy_path = Path(r"/mnt/hgfs/peaco/Documents/MT/UM2020/EDI_Files_birrp")
+station_path = Path(r"/mnt/hgfs/MT_Data/GV2020/gv161/TS")
+copy_path = Path(r"/mnt/hgfs/MT_Data/GV2020/EDI_Files_birrp")
+# copy = True
 copy = False
 index = {4: -1, 256: -1, 4096: -1}
 
@@ -29,9 +30,9 @@ for df in [4096, 256, 4]:
 zp_obj = zp.Z3D2EDI()
 zp_obj.station_ts_dir = station_path.as_posix()
 c_edi = zp_obj.combine_edi_files(edi_list,
-                                 sr_dict={4096: (1000., 50),
-                                          256: (49.9, 0.02),
-                                          4: (0.019, .00001)})
+                                 sr_dict={4096: (1000., 12.5),
+                                          256: (12.49, 0.12),
+                                          4: (0.119, .00001)})
 if plot:
     rp = zp_obj.plot_responses(edi_list+[c_edi])
 

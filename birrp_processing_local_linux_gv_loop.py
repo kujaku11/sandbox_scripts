@@ -7,21 +7,28 @@ Created on Mon Sep 26 12:32:29 2016
 
 import os
 import shutil
+from pathlib import Path
 import mtpy.usgs.zen_processing as zp
 import pandas as pd
 
 #==============================================================================
 # local parameters
 #==============================================================================
-coil_calibration_path = r"/mnt/hgfs/MT/birrp_calibrations"
+coil_calibration_path = r"/mnt/hgfs/MT_Data/birrp_calibrations"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = r"/mnt/hgfs/MT/MusicValley"
-copy_edi_path = os.path.join(local_path, 'EDI_Files_birrp')
-processing_csv = r"/mnt/hgfs/MT/MusicValley/mv_processing_summary.csv"
+local_path = Path(r"/mnt/hgfs/MT_Data/GV2020")
+copy_edi_path = local_path.joinpath('EDI_Files_birrp')
+processing_csv = r"/mnt/hgfs/MT_Data/GV2020/processing_loop.csv"
 skip_stations = []
-process_stations = ['mv{0:02}'.format(ii) for ii in range(10, 27)]
+process_stations = ['gv{0:03}'.format(ii) for ii in [101, 102, 103, 104, 105,
+                                                     106, 107, 112, 113, 114,
+                                                     115,120, 121, 122, 123,
+                                                     128, 129, 130, 131, 132,
+                                                     137, 138, 139, 145, 146,
+                                                     147, 152, 153, 154, 155,
+                                                     161]]
 
-if not os.path.exists(copy_edi_path):
+if not copy_edi_path.exists():
     os.mkdir(copy_edi_path)
 
 #==============================================================================
@@ -46,8 +53,8 @@ for loop in loop_df.itertuples():
                   256: [int(ss.strip()) for ss in loop.block_256],
                   4:[int(ss.strip()) for ss in loop.block_4]}
     
-    use_df_list = [4]
-    overwrite = False
+    use_df_list = [4096, 256, 4]
+    overwrite = True
     
     local_station_path = os.path.join(local_path, station)
     if rr_station is not None:

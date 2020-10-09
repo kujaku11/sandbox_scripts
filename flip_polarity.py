@@ -8,9 +8,9 @@ Created on Wed Jul 19 14:39:00 2017
 import os
 import numpy as np
 
-fn_path = r"/mnt/hgfs/MT/MusicValley/mv20/TS"
+fn_path = r"/mnt/hgfs/MT_Data/GV2020/gv111/TS"
 
-comp = 'EY'
+comp = 'HY'
 
 fn_list = [os.path.join(fn_path, fn) for fn in os.listdir(fn_path)
            if fn.endswith(comp)]
