@@ -17,7 +17,7 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_03")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 
 fn_stem = 'mnp'

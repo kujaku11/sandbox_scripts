@@ -15,11 +15,11 @@ import datetime
 # =============================================================================
 # Inputs
 # =============================================================================
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mv_modem_data_z03_t02_edited.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z03_t02_edited.dat"
 
-remove_stations = ['mnp158']
-shady_stations_z = ['mnp113', 'mnp120']
-shady_stations_t = ['mnp113', 'mnp120']
+remove_stations = ['MNP158', 'CAX11']
+shady_stations_z = ['MNP113', 'MNP120', 'MNP170', 'mnp118', 'mp202']
+shady_stations_t = ['MNP113', 'MNP120', 'MNP170', 'mnp118', 'mnp148', 'mp202']
 remove_x = []
 remove_y = []
 flip_phase_x = []
@@ -39,7 +39,7 @@ z_err_type = 'eigen_floor'
 t_err_type = 'abs_floor'
 
 #sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = 'gv'
+sv_fn = 'mnp'
 log_fn = os.path.join(os.path.dirname(dfn), '{0}_change_data_file.log'.format(sv_fn))
 # =============================================================================
 # change data file

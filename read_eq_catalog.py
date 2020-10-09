@@ -10,29 +10,31 @@ Created on Tue Aug 25 10:34:28 2020
 
 import pandas as pd
 import geopandas as gpd
-import fiona
+# import fiona
 from shapely.geometry import Point
 
-gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+# gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
 
 
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\usgs_eq_catalog.csv"
+fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\mnp_earthquakes_scec.txt"
 
 df = pd.read_csv(fn, 
-                 delimiter=',',
+                 delimiter='\s+',
                  header=0,
-                 usecols=['time', 'latitude', 'longitude', 'depth', 'mag'],
+                 usecols=['date', 'time', 'latitude', 'longitude', 'depth', 'mag'],
                  index_col=False,
-                 skipfooter=1,
+                 #skipfooter=0,
                  engine='python')
 
 df.columns = df.columns.str.lower()
 
 df['geometry'] = df.apply(lambda z: Point(z.longitude, z.latitude), axis=1)
 gdf = gpd.GeoDataFrame(df)
+gdf.crs = {'init': 'epsg:4326'}
 
 gdf.to_file(fn[:-4] + '.shp')
 
-# Write file
-fiona.Env()
-gdf.to_file(fn[:-4] + '.kml', driver='KML')
+
+# # Write file
+# fiona.Env()
+# gdf.to_file(fn[:-4] + '.kml', driver='KML')
