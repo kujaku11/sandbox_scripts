@@ -20,14 +20,14 @@ edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
 save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 
-fn_stem = 'mv'
+fn_stem = 'mnp'
 
 overwrite = False
 topography = False
 
 
 bounds = {'lat':np.array([34.3, 35.75]),
-          'lon':np.array([-116.35, -114.75])}
+          'lon':np.array([-116.345, -114.75])}
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if overwrite and dfn.exists():
@@ -38,15 +38,16 @@ if not save_path.exists():
 # =============================================================================
 # Get edi files
 # =============================================================================
-edi_list = [fn for fn in list(edi_path.glob('*.edi'))]
-
+if not dfn.exists():
+    edi_list = [fn for fn in list(edi_path.glob('*.edi'))]
     
-s_edi_list = []
-for edi in edi_list:
-    mt_obj = mt.MT(edi)
-    if mt_obj.lat >= bounds['lat'].min() and mt_obj.lat <= bounds['lat'].max():
-        if mt_obj.lon >= bounds['lon'].min() and mt_obj.lon <= bounds['lon'].max():
-            s_edi_list.append(edi)
+        
+    s_edi_list = [edi_path.joinpath('USMTArray.CAW10.2019.edi')]
+    for edi in edi_list:
+        mt_obj = mt.MT(edi)
+        if mt_obj.lat >= bounds['lat'].min() and mt_obj.lat <= bounds['lat'].max():
+            if mt_obj.lon >= bounds['lon'].min() and mt_obj.lon <= bounds['lon'].max():
+                s_edi_list.append(edi)
 
 #==============================================================================
 # Make the data file
@@ -93,7 +94,7 @@ mod_obj.pad_stretch_h = 1.5
 mod_obj.pad_stretch_v = 1.2
 mod_obj.ew_ext = 350000.
 mod_obj.ns_ext = 350000.
-mod_obj.pad_z = 3
+mod_obj.pad_z = 9
 mod_obj.n_layers = 60
 mod_obj.n_air_layers = 1
 mod_obj.z1_layer = 20
@@ -106,27 +107,27 @@ mod_obj.mesh_rotation_angle = 0.0
 
 mod_obj.make_mesh()
 
-# new_north = list(mod_obj.nodes_north[0:4]) + \
-#             [round(125 + 125*.15*ii) for ii in range(19)][::-1] +\
-#             [125] * 31 +\
-#             [round(125 + 125*.1*ii) for ii in range(35)] +\
-#             list(mod_obj.nodes_north[0:4])[::-1]
+new_north = list(mod_obj.nodes_north[0:4]) + \
+            [round(2000 + 2000*.15*ii) for ii in range(12)][::-1] +\
+            [1500] * 75 +\
+            [round(2000 + 2000*.15*ii) for ii in range(5)] +\
+            list(mod_obj.nodes_north[0:4])[::-1]
 
-# new_east = list(mod_obj.nodes_east[0:4]) + \
-#             [round(125 + 125*.3*ii) for ii in range(8)][::-1] +\
-#             [125] * 18 +\
-#             [round(125 + 125*.3*ii) for ii in range(14)] +\
-#             list(mod_obj.nodes_east[0:4])[::-1]
-# mod_obj.nodes_north = new_north
-# mod_obj.grid_north -= mod_obj.grid_north.mean()
+new_east = list(mod_obj.nodes_east[0:3]) + \
+            [round(2000 + 2000*.15*ii) for ii in range(15)][::-1] +\
+            [1500] * 80 +\
+            [round(2000 + 2000*.15*ii) for ii in range(5)] +\
+            list(mod_obj.nodes_east[0:4])[::-1]
+mod_obj.nodes_north = new_north
+mod_obj.grid_north -= mod_obj.grid_north.mean()
 
-# mod_obj.nodes_east = new_east
-# mod_obj.grid_east -= mod_obj.grid_east.mean()
+mod_obj.nodes_east = new_east
+mod_obj.grid_east -= mod_obj.grid_east.mean()
 
-# mod_obj.res_model = np.ones((mod_obj.nodes_north.size,
-#                              mod_obj.nodes_east.size,
-#                              mod_obj.nodes_z.size))
-# mod_obj.res_model[:] = mod_obj.res_initial_value
+mod_obj.res_model = np.ones((mod_obj.nodes_north.size,
+                              mod_obj.nodes_east.size,
+                              mod_obj.nodes_z.size))
+mod_obj.res_model[:] = mod_obj.res_initial_value
 
 mod_obj.plot_mesh()
 mod_obj.save_path = save_path
