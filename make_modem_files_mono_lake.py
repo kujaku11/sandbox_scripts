@@ -17,10 +17,10 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_03")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_04")
 topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\mono_basin.asc")
 topography = False
-overwrite = False
+overwrite = True
 
 fn_stem = 'ml'
 bounds = {'lat':np.array([37.755, 38.235]),

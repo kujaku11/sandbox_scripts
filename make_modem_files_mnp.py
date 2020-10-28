@@ -17,7 +17,7 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_03")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_04")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 
 fn_stem = 'mnp'
@@ -42,7 +42,8 @@ if not dfn.exists():
     edi_list = [fn for fn in list(edi_path.glob('*.edi'))]
     
         
-    s_edi_list = [edi_path.joinpath('USMTArray.CAW10.2019.edi')]
+    s_edi_list = [edi_path.joinpath('USMTArray.CAW10.2019.edi'),
+                  edi_path.joinpath('USMTArray.CAX09.2019.edi')]
     for edi in edi_list:
         mt_obj = mt.MT(edi)
         if mt_obj.lat >= bounds['lat'].min() and mt_obj.lat <= bounds['lat'].max():

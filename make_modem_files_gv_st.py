@@ -14,12 +14,13 @@ import mtpy.modeling.modem as modem
 #==============================================================================
 # Inputs
 #==============================================================================
-edi_path = Path(r"c:\MT\GV2020\EDI_Files_birrp\Edited\GeographicNorth")
-save_path = Path(r"c:\MT\GV2020\modem_inv\inv_01")
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_03")
+topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\srtm_13_05.asc")
 fn_stem = 'gv'
-s_edi_list = list(edi_path.glob('*.edi'))
+s_edi_list = list(edi_path.glob('gv*.edi')) + list(edi_path.glob('DAC*.edi'))
 
-remove_list = ['gv04', 'gv14', 'gv21', 'gv03', 'gv10']
+remove_list = ['gv04', 'gv14', 'gv21', 'gv03', 'gv10', 'GV318']
 for ss in remove_list:
     s_edi_list.remove(edi_path.joinpath(ss + '.edi'))
                 
@@ -51,19 +52,19 @@ data_obj.write_data_file(save_path=save_path,
 # First make the mesh
 #==============================================================================
 mod_obj = modem.Model(data_obj.station_locations)
-mod_obj.cell_size_east = 1000
-mod_obj.cell_size_north = 1000
+mod_obj.cell_size_east = 750
+mod_obj.cell_size_north = 750
 mod_obj.pad_east = 7
 mod_obj.pad_north = 7
 mod_obj.pad_num = 4
-mod_obj.ew_ext = 200000
-mod_obj.ns_ext = 200000
+mod_obj.ew_ext = 250000
+mod_obj.ns_ext = 250000
 mod_obj.z_mesh_method = 'new'
 mod_obj.z_bottom = 200000
 mod_obj.z_target_depth = 70000
 mod_obj.pad_z = 5
-#mod_obj.n_air_layers = 20
-mod_obj.n_layers = 60
+mod_obj.n_air_layers = 15
+mod_obj.n_layers = 55
 mod_obj.z1_layer = 30
 mod_obj.pad_stretch_v = 1.8
 
@@ -71,22 +72,23 @@ mod_obj.pad_stretch_v = 1.8
 mod_obj.mesh_rotation_angle = 0
 
 mod_obj.make_mesh()
-mod_obj.plot_mesh()
+#mod_obj.plot_mesh()
 
-mod_obj.write_model_file(save_path=save_path, 
-                         model_fn_basename="{0}_sm02.rho".format(fn_stem))
+#mod_obj.write_model_file(save_path=save_path, 
+#                         model_fn_basename="{0}_sm02.rho".format(fn_stem))
 
 ## =============================================================================
 ## Add topography
 ## =============================================================================
-#mod_obj.add_topography_to_model2(topo_fn, airlayer_type='log_increasing_down')
-#mod_obj.write_model_file(model_fn_basename='{0}_sm02_topo.rho'.format(fn_stem))
-#
-#data_obj.center_stations(mod_obj.model_fn)
-#data_obj.project_stations_on_topography(mod_obj)
-#
-#mod_obj.plot_mesh(fig_num=3)
-#mod_obj.plot_topography()
+mod_obj.add_topography_to_model2(topo_fn, airlayer_type='log_down')
+mod_obj.write_model_file(save_path=save_path, 
+                         model_fn_basename='{0}_sm02_topo.rho'.format(fn_stem))
+
+data_obj.center_stations(mod_obj.model_fn)
+a, b = data_obj.project_stations_on_topography(mod_obj)
+
+mod_obj.plot_mesh(fig_num=3)
+mod_obj.plot_topography()
 #==============================================================================
 # make the covariance file
 #==============================================================================
@@ -99,10 +101,10 @@ cov.smoothing_num = 1
 cov.write_covariance_file(os.path.join(save_path, 'covariance.cov'),
                           model_fn=mod_obj.model_fn)
 
-#mod_obj.write_vtk_file(vtk_save_path=save_path,
-#                       vtk_fn_basename='{0}_sm_topo'.format(fn_stem))
-#data_obj.write_vtk_station_file(vtk_save_path=save_path,
-#                                vtk_fn_basename='{0}_stations'.format(fn_stem))
+mod_obj.write_vtk_file(vtk_save_path=save_path,
+                      vtk_fn_basename='{0}_sm_topo'.format(fn_stem))
+data_obj.write_vtk_station_file(vtk_save_path=save_path,
+                                vtk_fn_basename='{0}_stations'.format(fn_stem))
 
 mod_obj.print_mesh_params()
 mod_obj.print_model_file_summary()

@@ -7,10 +7,9 @@ Created on Mon Apr  7 12:05:45 2014
 # =============================================================================
 # Imports
 # =============================================================================
-from evtk.hl import pointsToVTK
+from pyevtk.hl import pointsToVTK
 import numpy as np
 import mtpy.utils.gis_tools as gis_tools
-import simplekml as skml
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point

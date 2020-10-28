@@ -47,13 +47,11 @@ def read_txt(text_fn):
     return z, err
             
 for txt_fn in fn_path.glob('*.txt'):
-    if 's22' not in txt_fn.name:
-        continue
+    # if 's22' not in txt_fn.name:
+    #     continue
     zmm_fn = txt_fn.with_suffix('.zmm')
     if zmm_fn.exists():
         m_obj = mt.MT(zmm_fn)
-        if m_obj.station not in ['s22']:
-            m_obj.lon -= 180
         new_z, new_err = read_txt(txt_fn)
         m_obj.Z = z.Z(new_z, new_err, np.array(f_list))
         m_obj.write_mt_file(fn_basename='{0}_uc'.format(m_obj.station))
