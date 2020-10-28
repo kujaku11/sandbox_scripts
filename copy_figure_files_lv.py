@@ -12,22 +12,20 @@ fn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\Report\2018_umatilla_mt_p
 
 fig_path = os.path.dirname(fn)
 
-with open(fn, 'r') as fid:
+with open(fn, "r") as fid:
     lines = fid.readlines()
 
 for line in lines:
-    if line[0] == '%':
+    if line[0] == "%":
         continue
-    if line.lower().find('includegraphics') > 0:
-        line_str = line.replace('{', ' ').replace('}', ' ')
-        line_list = line_str.strip().replace(';', '').split()
+    if line.lower().find("includegraphics") > 0:
+        line_str = line.replace("{", " ").replace("}", " ")
+        line_list = line_str.strip().replace(";", "").split()
         fig_dir_path = os.path.dirname(line_list[-1][1:])
         fig_fn = os.path.basename(line_list[-1])
-        if fig_fn.endswith('.pdf'):
-            std_out = subprocess.check_call(['magick',
-                                             'density 300',
-                                             fig_fn,
-                                             fig_fn[:-4]+'jpg'])
+        if fig_fn.endswith(".pdf"):
+            std_out = subprocess.check_call(
+                ["magick", "density 300", fig_fn, fig_fn[:-4] + "jpg"]
+            )
             if std_out == 0:
                 print("converted {0} to jpg".format(fig_fn))
-        

@@ -3,12 +3,11 @@ import numpy as np
 
 
 class ZFile:
-
     def __init__(self, filename):
 
         # attempt to open file
         try:
-            f = open(filename, 'r')
+            f = open(filename, "r")
         except IOError:
             raise IOError("File not found.")
 
@@ -19,23 +18,29 @@ class ZFile:
 
         # get station ID
         line = f.readline()
-        if line.lower().startswith('station'):
-            station = line.strip().split(':', 1)[1]
+        if line.lower().startswith("station"):
+            station = line.strip().split(":", 1)[1]
         else:
             station = line.strip()
         self.station = station
 
         # read coordinates and declination
         line = f.readline().strip().lower()
-        match = re.match(r'\s*coordinate\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+'
-                         r'declination\s+(-?\d+\.?\d*)', line)
+        match = re.match(
+            r"\s*coordinate\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+"
+            r"declination\s+(-?\d+\.?\d*)",
+            line,
+        )
         self.coordinates = (float(match.group(1)), float(match.group(2)))
         self.declination = float(match.group(3))
 
         # read number of channels and number of frequencies
         line = f.readline().strip().lower()
-        match = re.match(r'\s*number\s+of\s+channels\s+(\d+)\s+number\s+of'
-                         r'\s+frequencies\s+(\d+)', line)
+        match = re.match(
+            r"\s*number\s+of\s+channels\s+(\d+)\s+number\s+of"
+            r"\s+frequencies\s+(\d+)",
+            line,
+        )
         nchannels = int(match.group(1))
         nfreqs = int(match.group(2))
 
@@ -47,8 +52,9 @@ class ZFile:
         self.channels = []
         for i in range(nchannels):
             line = f.readline().strip()
-            match = re.match(r'\s*\d+\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+\w*\s+'
-                             r'(\w+)', line)
+            match = re.match(
+                r"\s*\d+\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+\w*\s+" r"(\w+)", line
+            )
             self.orientation[i, 0] = float(match.group(1))
             self.orientation[i, 1] = float(match.group(2))
             if len(match.group(3)) > 2:
@@ -65,13 +71,15 @@ class ZFile:
         #    channels (horizontal magnetics)
         # nchannels - 2 therefore is the number of predicted channels
         self.periods = np.zeros(nfreqs)
-        self.transfer_functions = np.zeros((nfreqs, nchannels - 2, 2),
-                                           dtype=np.complex64)
+        self.transfer_functions = np.zeros(
+            (nfreqs, nchannels - 2, 2), dtype=np.complex64
+        )
 
         # residual covariance -- square matrix with dimension as number of
         # predicted channels
-        self.sigma_e = np.zeros((nfreqs, nchannels - 2, nchannels - 2),
-                                dtype=np.complex64)
+        self.sigma_e = np.zeros(
+            (nfreqs, nchannels - 2, nchannels - 2), dtype=np.complex64
+        )
 
         # inverse coherent signal power -- square matrix, with dimension as the
         #    number of predictor channels
@@ -84,8 +92,11 @@ class ZFile:
 
             # extract period
             line = f.readline().strip()
-            self.periods[i] = float(re.match(r'\s*period\s*:\s+(\d+\.?\d*)\s+'
-                                             r'decimation\s+level', line).group(1))
+            self.periods[i] = float(
+                re.match(
+                    r"\s*period\s*:\s+(\d+\.?\d*)\s+" r"decimation\s+level", line
+                ).group(1)
+            )
 
             # skip two lines
             f.readline()
@@ -94,10 +105,12 @@ class ZFile:
             # read transfer functions
             for j in range(nchannels - 2):
                 comp1_r, comp1_i, comp2_r, comp2_i = f.readline().strip().split()
-                self.transfer_functions[i, j, 0] = \
-                    float(comp1_r) + 1.j * float(comp1_i)
-                self.transfer_functions[i, j, 1] = \
-                    float(comp2_r) + 1.j * float(comp2_i)
+                self.transfer_functions[i, j, 0] = float(comp1_r) + 1.0j * float(
+                    comp1_i
+                )
+                self.transfer_functions[i, j, 1] = float(comp2_r) + 1.0j * float(
+                    comp2_i
+                )
 
             # skip label line
             f.readline()
@@ -105,10 +118,10 @@ class ZFile:
             # read inverse coherent signal power matrix
             val1_r, val1_i = f.readline().strip().split()
             val2_r, val2_i, val3_r, val3_i = f.readline().strip().split()
-            self.sigma_s[i, 0, 0] = float(val1_r) + 1.j * float(val1_i)
-            self.sigma_s[i, 1, 0] = float(val2_r) + 1.j * float(val2_i)
-            self.sigma_s[i, 0, 1] = float(val2_r) - 1.j * float(val2_i)
-            self.sigma_s[i, 1, 1] = float(val3_r) + 1.j * float(val3_i)
+            self.sigma_s[i, 0, 0] = float(val1_r) + 1.0j * float(val1_i)
+            self.sigma_s[i, 1, 0] = float(val2_r) + 1.0j * float(val2_i)
+            self.sigma_s[i, 0, 1] = float(val2_r) - 1.0j * float(val2_i)
+            self.sigma_s[i, 1, 1] = float(val3_r) + 1.0j * float(val3_i)
 
             # skip label line
             f.readline()
@@ -116,15 +129,18 @@ class ZFile:
             # read residual covariance
             for j in range(nchannels - 2):
                 values = f.readline().strip().split()
-                for k in range(j+1):
+                for k in range(j + 1):
                     if j == k:
-                        self.sigma_e[i, j, k] = \
-                            float(values[2*k]) + 1.j * float(values[2*k+1])
+                        self.sigma_e[i, j, k] = float(values[2 * k]) + 1.0j * float(
+                            values[2 * k + 1]
+                        )
                     else:
-                        self.sigma_e[i, j, k] = \
-                            float(values[2*k]) + 1.j * float(values[2*k+1])
-                        self.sigma_e[i, k, j] = \
-                            float(values[2*k]) - 1.j * float(values[2*k+1])
+                        self.sigma_e[i, j, k] = float(values[2 * k]) + 1.0j * float(
+                            values[2 * k + 1]
+                        )
+                        self.sigma_e[i, k, j] = float(values[2 * k]) - 1.0j * float(
+                            values[2 * k + 1]
+                        )
 
             # val1_r, val1_i = f.readline().strip().split()
             # val2_r, val2_i, val3_r, val3_i = f.readline().strip().split()
@@ -141,121 +157,150 @@ class ZFile:
 
         f.close()
 
-    def impedance(self, angle=0.):
+    def impedance(self, angle=0.0):
 
         # check to see if there are actually electric fields in the TFs
-        if 'Ex' not in self.channels and 'Ey' not in self.channels:
-            raise ValueError("Cannot return apparent resistivity and phase "
-                             "data because these TFs do not contain electric "
-                             "fields as a predicted channel.")
+        if "Ex" not in self.channels and "Ey" not in self.channels:
+            raise ValueError(
+                "Cannot return apparent resistivity and phase "
+                "data because these TFs do not contain electric "
+                "fields as a predicted channel."
+            )
 
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
-        hx_index = self.channels.index('Hx')
-        hy_index = self.channels.index('Hy')
+        hx_index = self.channels.index("Hx")
+        hy_index = self.channels.index("Hy")
         u = np.eye(2, 2)
-        u[hx_index, hx_index] = \
-            np.cos((self.orientation[hx_index, 0] - angle) * np.pi/180.)
-        u[hx_index, hy_index] = \
-            np.sin((self.orientation[hx_index, 0] - angle) * np.pi/180.)
-        u[hy_index, hx_index] = \
-            np.cos((self.orientation[hy_index, 0] - angle) * np.pi/180.)
-        u[hy_index, hy_index] = \
-            np.sin((self.orientation[hy_index, 0] - angle) * np.pi/180.)
+        u[hx_index, hx_index] = np.cos(
+            (self.orientation[hx_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hx_index, hy_index] = np.sin(
+            (self.orientation[hx_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hy_index, hx_index] = np.cos(
+            (self.orientation[hy_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hy_index, hy_index] = np.sin(
+            (self.orientation[hy_index, 0] - angle) * np.pi / 180.0
+        )
         u = np.linalg.inv(u)
 
         # build transformation matrix for predicted channels (electric fields)
-        ex_index = self.channels.index('Ex')
-        ey_index = self.channels.index('Ey')
-        v = np.eye(self.transfer_functions.shape[1],
-                   self.transfer_functions.shape[1])
-        v[ex_index-2, ex_index-2] = \
-            np.cos((self.orientation[ex_index, 0] - angle) * np.pi/180.)
-        v[ey_index-2, ex_index-2] = \
-            np.sin((self.orientation[ex_index, 0] - angle) * np.pi/180.)
-        v[ex_index-2, ey_index-2] = \
-            np.cos((self.orientation[ey_index, 0] - angle) * np.pi/180.)
-        v[ey_index-2, ey_index-2] = \
-            np.sin((self.orientation[ey_index, 0] - angle) * np.pi/180.)
+        ex_index = self.channels.index("Ex")
+        ey_index = self.channels.index("Ey")
+        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
+        v[ex_index - 2, ex_index - 2] = np.cos(
+            (self.orientation[ex_index, 0] - angle) * np.pi / 180.0
+        )
+        v[ey_index - 2, ex_index - 2] = np.sin(
+            (self.orientation[ex_index, 0] - angle) * np.pi / 180.0
+        )
+        v[ex_index - 2, ey_index - 2] = np.cos(
+            (self.orientation[ey_index, 0] - angle) * np.pi / 180.0
+        )
+        v[ey_index - 2, ey_index - 2] = np.sin(
+            (self.orientation[ey_index, 0] - angle) * np.pi / 180.0
+        )
 
         # matrix multiplication...
-        rotated_transfer_functions = \
-            np.matmul(v, np.matmul(self.transfer_functions, u.T))
+        rotated_transfer_functions = np.matmul(
+            v, np.matmul(self.transfer_functions, u.T)
+        )
         rotated_sigma_s = np.matmul(u, np.matmul(self.sigma_s, u.T))
         rotated_sigma_e = np.matmul(v, np.matmul(self.sigma_e, v.T))
 
         # now pull out the impedance tensor
         z = np.zeros((self.periods.size, 2, 2), dtype=np.complex64)
-        z[:, 0, 0] = rotated_transfer_functions[:, ex_index-2, hx_index]   # Zxx
-        z[:, 0, 1] = rotated_transfer_functions[:, ex_index-2, hy_index]   # Zxy
-        z[:, 1, 0] = rotated_transfer_functions[:, ey_index-2, hx_index]   # Zyx
-        z[:, 1, 1] = rotated_transfer_functions[:, ey_index-2, hy_index]   # Zyy
+        z[:, 0, 0] = rotated_transfer_functions[:, ex_index - 2, hx_index]  # Zxx
+        z[:, 0, 1] = rotated_transfer_functions[:, ex_index - 2, hy_index]  # Zxy
+        z[:, 1, 0] = rotated_transfer_functions[:, ey_index - 2, hx_index]  # Zyx
+        z[:, 1, 1] = rotated_transfer_functions[:, ey_index - 2, hy_index]  # Zyy
 
         # and the variance information
         var = np.zeros((self.periods.size, 2, 2))
-        var[:, 0, 0] = np.real(rotated_sigma_e[:, ex_index-2, ex_index-2] *
-                               rotated_sigma_s[:, hx_index, hx_index])
-        var[:, 0, 1] = np.real(rotated_sigma_e[:, ex_index-2, ex_index-2] *
-                               rotated_sigma_s[:, hy_index, hy_index])
-        var[:, 1, 0] = np.real(rotated_sigma_e[:, ey_index-2, ey_index-2] *
-                               rotated_sigma_s[:, hx_index, hx_index])
-        var[:, 1, 1] = np.real(rotated_sigma_e[:, ey_index-2, ey_index-2] *
-                               rotated_sigma_s[:, hy_index, hy_index])
+        var[:, 0, 0] = np.real(
+            rotated_sigma_e[:, ex_index - 2, ex_index - 2]
+            * rotated_sigma_s[:, hx_index, hx_index]
+        )
+        var[:, 0, 1] = np.real(
+            rotated_sigma_e[:, ex_index - 2, ex_index - 2]
+            * rotated_sigma_s[:, hy_index, hy_index]
+        )
+        var[:, 1, 0] = np.real(
+            rotated_sigma_e[:, ey_index - 2, ey_index - 2]
+            * rotated_sigma_s[:, hx_index, hx_index]
+        )
+        var[:, 1, 1] = np.real(
+            rotated_sigma_e[:, ey_index - 2, ey_index - 2]
+            * rotated_sigma_s[:, hy_index, hy_index]
+        )
 
         error = np.sqrt(var)
 
         return z, error
 
-    def tippers(self, angle=0.):
+    def tippers(self, angle=0.0):
 
         # check to see if there is a vertical magnetic field in the TFs
-        if 'Hz' not in self.channels:
-            raise ValueError("Cannot return tipper data because the TFs do not "
-                             "contain the vertical magnetic field as a "
-                             "predicted channel.")
+        if "Hz" not in self.channels:
+            raise ValueError(
+                "Cannot return tipper data because the TFs do not "
+                "contain the vertical magnetic field as a "
+                "predicted channel."
+            )
 
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
-        hx_index = self.channels.index('Hx')
-        hy_index = self.channels.index('Hy')
+        hx_index = self.channels.index("Hx")
+        hy_index = self.channels.index("Hy")
         u = np.eye(2, 2)
-        u[hx_index, hx_index] = \
-            np.cos((self.orientation[hx_index, 0] - angle) * np.pi/180.)
-        u[hx_index, hy_index] = \
-            np.sin((self.orientation[hx_index, 0] - angle) * np.pi/180.)
-        u[hy_index, hx_index] = \
-            np.cos((self.orientation[hy_index, 0] - angle) * np.pi/180.)
-        u[hy_index, hy_index] = \
-            np.sin((self.orientation[hy_index, 0] - angle) * np.pi/180.)
+        u[hx_index, hx_index] = np.cos(
+            (self.orientation[hx_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hx_index, hy_index] = np.sin(
+            (self.orientation[hx_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hy_index, hx_index] = np.cos(
+            (self.orientation[hy_index, 0] - angle) * np.pi / 180.0
+        )
+        u[hy_index, hy_index] = np.sin(
+            (self.orientation[hy_index, 0] - angle) * np.pi / 180.0
+        )
         u = np.linalg.inv(u)
 
         # don't need to transform predicated channels (assuming no tilt in Hz)
-        hz_index = self.channels.index('Hz')
-        v = np.eye(self.transfer_functions.shape[1],
-                   self.transfer_functions.shape[1])
+        hz_index = self.channels.index("Hz")
+        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
 
         # matrix multiplication...
-        rotated_transfer_functions = \
-            np.matmul(v, np.matmul(self.transfer_functions, u.T))
+        rotated_transfer_functions = np.matmul(
+            v, np.matmul(self.transfer_functions, u.T)
+        )
         rotated_sigma_s = np.matmul(u, np.matmul(self.sigma_s, u.T))
         rotated_sigma_e = np.matmul(v, np.matmul(self.sigma_e, v.T))
 
         # now pull out tipper information
         tipper = np.zeros((self.periods.size, 2), dtype=np.complex64)
-        tipper[:, 0] = rotated_transfer_functions[:, hz_index-2, hx_index]   # Tx
-        tipper[:, 1] = rotated_transfer_functions[:, hz_index-2, hy_index]   # Ty
+        tipper[:, 0] = rotated_transfer_functions[:, hz_index - 2, hx_index]  # Tx
+        tipper[:, 1] = rotated_transfer_functions[:, hz_index - 2, hy_index]  # Ty
 
         # and the variance/error information
         var = np.zeros((self.periods.size, 2))
-        var[:, 0] = np.real(rotated_sigma_e[:, hz_index-2, hz_index-2] *
-                            rotated_sigma_s[:, hx_index, hx_index])   # Tx
-        var[:, 1] = np.real(rotated_sigma_e[:, hz_index-2, hz_index-2] *
-                            rotated_sigma_s[:, hy_index, hy_index])   # Ty
+        var[:, 0] = np.real(
+            rotated_sigma_e[:, hz_index - 2, hz_index - 2]
+            * rotated_sigma_s[:, hx_index, hx_index]
+        )  # Tx
+        var[:, 1] = np.real(
+            rotated_sigma_e[:, hz_index - 2, hz_index - 2]
+            * rotated_sigma_s[:, hy_index, hy_index]
+        )  # Ty
         error = np.sqrt(var)
 
         return tipper, error
+
 
 # =============================================================================
 # test

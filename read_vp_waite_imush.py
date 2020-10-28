@@ -27,47 +27,48 @@ lon = np.array(list(sorted(set(vp_dat[:, 2]))))
 
 vp_shape = (north.size, east.size, depth.size)
 
-vp_arr = np.zeros(vp_shape, dtype=[('vp', np.float),
-                                   ('per_vp', np.float),
-                                   ('dvp', np.float)])
+vp_arr = np.zeros(
+    vp_shape, dtype=[("vp", np.float), ("per_vp", np.float), ("dvp", np.float)]
+)
 
 for line in vp_dat:
-    
+
     ii = np.where(north == line[1])[0][0]
     jj = np.where(east == line[0])[0][0]
     kk = np.where(depth == line[4])[0][0]
-    
-    vp_arr['vp'][ii, jj, kk] = line[5]
-    vp_arr['per_vp'][ii, jj, kk] = line[6]
-    vp_arr['dvp'][ii, jj, kk] = line[7]
+
+    vp_arr["vp"][ii, jj, kk] = line[5]
+    vp_arr["per_vp"][ii, jj, kk] = line[6]
+    vp_arr["dvp"][ii, jj, kk] = line[7]
 
 
 ll_corner = (lon.min(), lat.min())
 
 for ii, dd in enumerate(depth):
-    if ii%2 == 1:
+    if ii % 2 == 1:
         continue
-    a2r.array2raster(os.path.join(sv_path, 
-                                  'waite_vp_{0:0.0f}km_wgs84.tif'.format(dd-depth.min())),
-                     ll_corner, 
-                     500.,
-                     500,
-                     vp_arr['vp'][:, :, ii])
+    a2r.array2raster(
+        os.path.join(sv_path, "waite_vp_{0:0.0f}km_wgs84.tif".format(dd - depth.min())),
+        ll_corner,
+        500.0,
+        500,
+        vp_arr["vp"][:, :, ii],
+    )
 
 
-#vtk_east = np.append(east, east[-1]*1)
-#vtk_north = np.append(north, north[-1]*1)
-#vtk_depth = np.append(depth, depth[-1]*1)
+# vtk_east = np.append(east, east[-1]*1)
+# vtk_north = np.append(north, north[-1]*1)
+# vtk_depth = np.append(depth, depth[-1]*1)
 ##vtk_east = east
 ##vtk_north = north
 ##vtk_depth = depth
 #
-#vtk_vp = vp_arr['vp'].T
-#vtk_per_vp = vp_arr['per_vp'].T
-#vtk_dvp = vp_arr['dvp'].T
+# vtk_vp = vp_arr['vp'].T
+# vtk_per_vp = vp_arr['per_vp'].T
+# vtk_dvp = vp_arr['dvp'].T
 #
-#a2vtk.gridToVTK(r"c:\Users\jpeacock\Documents\iMush\waite_vp",
-#                vtk_north, vtk_east, vtk_depth, 
+# a2vtk.gridToVTK(r"c:\Users\jpeacock\Documents\iMush\waite_vp",
+#                vtk_north, vtk_east, vtk_depth,
 #                cellData={'vp':vtk_vp,
 #                          'vp_per':vtk_per_vp,
 #                          'd_vp':vtk_dvp})

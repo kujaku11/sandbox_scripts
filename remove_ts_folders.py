@@ -13,7 +13,7 @@ data_folder = r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2
 for folder in os.listdir(data_folder):
     station_path = os.path.join(data_folder, folder)
     if os.path.isdir(station_path) is True:
-        ts_path = os.path.join(station_path, 'TS')
+        ts_path = os.path.join(station_path, "TS")
         if os.path.isdir(ts_path) is True:
             shutil.rmtree(ts_path)
-            print('Removed {0}'.format(ts_path))
+            print("Removed {0}".format(ts_path))

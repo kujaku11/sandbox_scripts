@@ -8,11 +8,11 @@ Created on Wed Sep 23 13:51:54 2015
 import mtpy.modeling.occam2d as occam
 
 s_edi_path = r"d:\Peacock\MTData\Umatilla\EDI_Files_birrp\Edited"
-s_list = ['hf{0:02}'.format(ss) for ss in [70, 5, 71, 48, 49]]
-#s_list = ['hf{0:02}'.format(ss) for ss in [70, 5, 6]]
+s_list = ["hf{0:02}".format(ss) for ss in [70, 5, 71, 48, 49]]
+# s_list = ['hf{0:02}'.format(ss) for ss in [70, 5, 6]]
 
 ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
-ocd.model_mode = 'log_te_tm'
+ocd.model_mode = "log_te_tm"
 ocd.phase_tm_err = 2.5
 ocd.res_tm_err = 20
 ocd.save_path = r"c:\MinGW32-xy\Peacock\occam\rae\inv_02"

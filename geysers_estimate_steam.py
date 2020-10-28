@@ -27,23 +27,23 @@ m_obj.read_model_file(m_fn)
 ### first need to interpolate depth data onto a similar map
 grid_north, grid_east = np.meshgrid(m_obj.grid_north, m_obj.grid_east)
 
-#--> felsite
+# --> felsite
 f_points = np.array([df_felsite.northing, df_felsite.easting]).T
-f_map = interpolate.griddata(f_points, df_felsite.depth,
-                             (grid_north, grid_east),
-                             method='cubic')
-#--> steam
+f_map = interpolate.griddata(
+    f_points, df_felsite.depth, (grid_north, grid_east), method="cubic"
+)
+# --> steam
 s_points = np.array([df_steam.northing, df_steam.easting]).T
-s_map = interpolate.griddata(s_points, df_steam.depth,
-                             (grid_north, grid_east),
-                             method='cubic')
+s_map = interpolate.griddata(
+    s_points, df_steam.depth, (grid_north, grid_east), method="cubic"
+)
 s_map[np.where(s_map < 0)] = 0
 s_map[np.where(s_map > 2300)] = 2300
-#s_map[12:26, 26:41] = 
+# s_map[12:26, 26:41] =
 
 
 steam = m_obj.res_model.copy()
-steam[:, :, :] = 1E12
+steam[:, :, :] = 1e12
 for x_index, xx in enumerate(m_obj.grid_north):
     for y_index, yy in enumerate(m_obj.grid_east):
         s_depth = s_map[y_index, x_index]
@@ -53,22 +53,14 @@ for x_index, xx in enumerate(m_obj.grid_north):
             f_depth = f_map[y_index, x_index]
             if np.isnan(f_depth):
                 f_depth = 3000
-            z_index = np.where((m_obj.grid_z <= f_depth) & 
-                               (m_obj.grid_z >= s_depth))
-            steam[x_index, y_index, z_index] = m_obj.res_model[x_index, 
-                                                               y_index, 
-                                                               z_index]
-            
-    
-    
-steam[np.where(m_obj.res_model > 1E11)] = 1E12
+            z_index = np.where((m_obj.grid_z <= f_depth) & (m_obj.grid_z >= s_depth))
+            steam[x_index, y_index, z_index] = m_obj.res_model[
+                x_index, y_index, z_index
+            ]
+
+
+steam[np.where(m_obj.res_model > 1e11)] = 1e12
 
 m_obj.res_model = steam
-m_obj.write_vtk_file(vtk_fn_basename='geysers_steam_res_inv06')
-m_obj.write_model_file(model_fn_basename='gz_steam_field_inv06.rho')
-
-
-    
-
-
-
+m_obj.write_vtk_file(vtk_fn_basename="geysers_steam_res_inv06")
+m_obj.write_model_file(model_fn_basename="gz_steam_field_inv06.rho")

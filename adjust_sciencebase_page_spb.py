@@ -17,16 +17,18 @@ import getpass
 # =============================================================================
 # Parameters
 # =============================================================================
-page_id = '5e45fc5ae4b0ff554f662cbe'
-username = 'jpeacock@usgs.gov'
+page_id = "5e45fc5ae4b0ff554f662cbe"
+username = "jpeacock@usgs.gov"
 password = getpass.getpass()
-              
-page_summary = 'This dataset consists of 14 magnetotelluric (MT) stations '+\
-               'collected in 2015 near San Pablo Bay, California along a '+\
-               'east-northeast profile. The U.S. Geological Survey '+\
-               'acquired these data to understand the fault geometry of '+\
-               'the Hayward Fault and the Rodgers Creek Fault.'
-title = 'Magnetotelluric data from San Pablo Bay, California'
+
+page_summary = (
+    "This dataset consists of 14 magnetotelluric (MT) stations "
+    + "collected in 2015 near San Pablo Bay, California along a "
+    + "east-northeast profile. The U.S. Geological Survey "
+    + "acquired these data to understand the fault geometry of "
+    + "the Hayward Fault and the Rodgers Creek Fault."
+)
+title = "Magnetotelluric data from San Pablo Bay, California"
 
 # =============================================================================
 # login and get child ids
@@ -42,13 +44,11 @@ for child_id in child_ids:
     try:
         child_json = sb_session.get_item(child_id)
     except:
-        print('---> skipping child id {0}'.format(child_id))
+        print("---> skipping child id {0}".format(child_id))
         continue
-    
+
     ### adjust summary
-    child_json['title'] = '{0}: {1}'.format(title, child_json['title'])
-    
-    
+    child_json["title"] = "{0}: {1}".format(title, child_json["title"])
+
     #### UPDATE CHILD ITEM
     sb_session.update_item(child_json)
-    

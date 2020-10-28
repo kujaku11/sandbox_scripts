@@ -9,14 +9,14 @@ from evtk.hl import pointsToVTK
 import numpy as np
 import mtpy.utils.latlongutmconversion as utm2ll
 
-#---------------------------------------------------
-#sfn = r"/home/jpeacock/Documents/EarthquakeLocations_DD.txt"
-#sfn = r"/mnt/hgfs/jpeacock/Documents/LV/shelly_2015_mm_eq.txt"
+# ---------------------------------------------------
+# sfn = r"/home/jpeacock/Documents/EarthquakeLocations_DD.txt"
+# sfn = r"/mnt/hgfs/jpeacock/Documents/LV/shelly_2015_mm_eq.txt"
 sfn = r"c:\Users\jpeacock\Documents\LV\shelly_2015_mm_eq.txt"
 
 len_file = 6211
 
-sfid = file(sfn, 'r')
+sfid = file(sfn, "r")
 lines = sfid.readlines()
 
 x = np.zeros(len_file)
@@ -32,18 +32,21 @@ for sline in lines[14:]:
     lat = float(slst[6])
     lon = float(slst[7])
     depth = float(slst[8])
-    
+
     zone, east, north = utm2ll.LLtoUTM(23, lat, lon)
-    x[read_line] = (east-east_0)/1000.
-    y[read_line] = (north-north_0)/1000.
+    x[read_line] = (east - east_0) / 1000.0
+    y[read_line] = (north - north_0) / 1000.0
     z[read_line] = depth
     read_line += 1
-    
-    
-    
+
+
 sfid.close()
 
 
-    
-pointsToVTK(r"c:\Users\jpeacock\Documents\LV\lv_3d_models\shelly_2015_mm_eq_lcv", y, x, z, 
-            data={'depth':z})
+pointsToVTK(
+    r"c:\Users\jpeacock\Documents\LV\lv_3d_models\shelly_2015_mm_eq_lcv",
+    y,
+    x,
+    z,
+    data={"depth": z},
+)

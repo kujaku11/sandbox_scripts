@@ -8,10 +8,10 @@ Created on Wed Sep 23 13:51:54 2015
 import mtpy.modeling.occam2d_rewrite as occam
 
 s_edi_path = r"c:\Users\jpeacock\Documents\ShanesBugs\Sev_MT_Final_ga\inv_edi_files"
-s_list = ['MT{0:03}'.format(ii) for ii in range(0, 12)] 
+s_list = ["MT{0:03}".format(ii) for ii in range(0, 12)]
 
 ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
-ocd.model_mode = 'log_all'
+ocd.model_mode = "log_all"
 ocd.phase_tm_err = 5
 ocd.res_tm_err = 30
 ocd.save_path = r"c:\MinGW32-xy\Peacock\occam\Folsom\inv01_all_rot"

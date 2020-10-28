@@ -15,19 +15,22 @@ class problem(object):
             - Rinc, Rdec : inclination and declination of remnance in block
 
     """
-    #Bdec, Binc, Bigrf = 90., 0., 50000.
-    Q, rinc, rdec = 0., 0., 0.
-    uType, mType = 'tf', 'induced'
-    susc = 1.
+
+    # Bdec, Binc, Bigrf = 90., 0., 50000.
+    Q, rinc, rdec = 0.0, 0.0, 0.0
+    uType, mType = "tf", "induced"
+    susc = 1.0
     prism = None
     survey = None
 
     @property
     def Mind(self):
         # Define magnetization direction as sum of induced and remanence
-        mind = PF.Magnetics.dipazm_2_xyz([self.survey.srcField.param[1]], [self.survey.srcField.param[2]])
+        mind = PF.Magnetics.dipazm_2_xyz(
+            [self.survey.srcField.param[1]], [self.survey.srcField.param[2]]
+        )
         R = rotationMatrix(-self.prism.pinc, -self.prism.pdec, normal=False)
-        Mind = self.susc*self.Higrf*R.dot(mind.T)
+        Mind = self.susc * self.Higrf * R.dot(mind.T)
         # Mind = self.susc*self.Higrf*PF.Magnetics.dipazm_2_xyz(self.Binc - self.prism.pinc,
         #                                                self.Bdec - self.prism.pdec)
         return Mind
@@ -37,7 +40,7 @@ class problem(object):
 
         mrem = PF.Magnetics.dipazm_2_xyz([self.rinc], [self.rdec])
         R = rotationMatrix(-self.prism.pinc, -self.prism.pdec, normal=False)
-        Mrem = self.Q*self.susc*self.Higrf * R.dot(mrem.T)
+        Mrem = self.Q * self.susc * self.Higrf * R.dot(mrem.T)
 
         # Mrem = self.Q*self.susc*self.Higrf * \
         #        PF.Magnetics.dipazm_2_xyz(self.rinc - self.prism.pinc, self.rdec - self.prism.pdec)
@@ -53,8 +56,8 @@ class problem(object):
     @property
     def G(self):
 
-        if getattr(self, '_G', None) is None:
-            #print "Computing G"
+        if getattr(self, "_G", None) is None:
+            # print "Computing G"
 
             # rot = Utils.mkvc(PF.Magnetics.dipazm_2_xyz(self.prism.pinc, self.prism.pdec))
 
@@ -71,7 +74,11 @@ class problem(object):
 
             rxLoc = R.dot(np.c_[xLoc, yLoc, zLoc].T).T
 
-            rxLoc = np.c_[rxLoc[:, 0] + self.prism.xc, rxLoc[:, 1] + self.prism.yc, rxLoc[:, 2] + self.prism.zc]
+            rxLoc = np.c_[
+                rxLoc[:, 0] + self.prism.xc,
+                rxLoc[:, 1] + self.prism.yc,
+                rxLoc[:, 2] + self.prism.zc,
+            ]
 
             # Create the linear forward system
             self._G = Intrgl_Fwr_Op(self.prism.xn, self.prism.yn, self.prism.zn, rxLoc)
@@ -80,27 +87,27 @@ class problem(object):
 
     def fields(self):
 
-        if (self.mType == 'induced') or (self.mType == 'total'):
+        if (self.mType == "induced") or (self.mType == "total"):
 
             b = self.G.dot(self.Mind)
             self.fieldi = self.extractFields(b)
 
-        if (self.mType == 'remanent') or (self.mType == 'total'):
+        if (self.mType == "remanent") or (self.mType == "total"):
 
             b = self.G.dot(self.Mrem)
 
             self.fieldr = self.extractFields(b)
 
-        if self.mType == 'induced':
+        if self.mType == "induced":
             return [self.fieldi]
-        elif self.mType == 'remanent':
+        elif self.mType == "remanent":
             return [self.fieldr]
-        elif self.mType == 'total':
+        elif self.mType == "total":
             return [self.fieldi, self.fieldr]
 
     def extractFields(self, bvec):
 
-        nD = int(bvec.shape[0]/3)
+        nD = int(bvec.shape[0] / 3)
         bvec = np.reshape(bvec, (3, nD))
 
         # rot = Utils.mkvc(PF.Magnetics.dipazm_2_xyz(-self.prism.pinc, -self.prism.pdec))
@@ -111,19 +118,20 @@ class problem(object):
         R = rotationMatrix(self.prism.pinc, self.prism.pdec)
         bvec = R.dot(bvec)
 
-        if self.uType == 'bx':
+        if self.uType == "bx":
             u = Utils.mkvc(bvec[0, :])
 
-        if self.uType == 'by':
+        if self.uType == "by":
             u = Utils.mkvc(bvec[1, :])
 
-        if self.uType == 'bz':
+        if self.uType == "bz":
             u = Utils.mkvc(bvec[2, :])
 
-        if self.uType == 'tf':
+        if self.uType == "tf":
             # Projection matrix
-            Ptmi = PF.Magnetics.dipazm_2_xyz([self.survey.srcField.param[1]],
-                                      [self.survey.srcField.param[2]])
+            Ptmi = PF.Magnetics.dipazm_2_xyz(
+                [self.survey.srcField.param[1]], [self.survey.srcField.param[2]]
+            )
 
             u = Utils.mkvc(Ptmi.dot(bvec))
 
@@ -157,17 +165,18 @@ def Intrgl_Fwr_Op(xn, yn, zn, rxLoc):
     ndata = rxLoc.shape[0]
 
     # Pre-allocate forward matrix
-    G = np.zeros((int(3*ndata), 3))
+    G = np.zeros((int(3 * ndata), 3))
 
     for ii in range(ndata):
 
         tx, ty, tz = PF.Magnetics.get_T_mat(Xn, Yn, Zn, rxLoc[ii, :])
 
         G[ii, :] = tx / 1e-9 * mu_0
-        G[ii+ndata, :] = ty / 1e-9 * mu_0
-        G[ii+2*ndata, :] = tz / 1e-9 * mu_0
+        G[ii + ndata, :] = ty / 1e-9 * mu_0
+        G[ii + 2 * ndata, :] = tz / 1e-9 * mu_0
 
     return G
+
 
 def rotationMatrix(inc, dec, normal=True):
     """
@@ -178,13 +187,17 @@ def rotationMatrix(inc, dec, normal=True):
     phi = -np.deg2rad(np.asarray(inc))
     theta = -np.deg2rad(np.asarray(dec))
 
-    Rx = np.asarray([[1, 0, 0],
-                    [0, np.cos(phi), -np.sin(phi)],
-                    [0, np.sin(phi), np.cos(phi)]])
+    Rx = np.asarray(
+        [[1, 0, 0], [0, np.cos(phi), -np.sin(phi)], [0, np.sin(phi), np.cos(phi)]]
+    )
 
-    Rz = np.asarray([[np.cos(theta), -np.sin(theta), 0],
-                    [np.sin(theta), np.cos(theta), 0],
-                    [0, 0, 1]])
+    Rz = np.asarray(
+        [
+            [np.cos(theta), -np.sin(theta), 0],
+            [np.sin(theta), np.cos(theta), 0],
+            [0, 0, 1],
+        ]
+    )
 
     if normal:
         R = Rz.dot(Rx)

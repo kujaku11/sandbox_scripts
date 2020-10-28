@@ -9,6 +9,4 @@ import pandas as pd
 
 fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\papers\ofr20161070_table02_rock_property_data.csv"
 
-df = pd.read_csv(fn, usecols=['ID', 'LAT', 'LONG', 'RT', 'SBD', 'POR', 'AGE'])
-
-
+df = pd.read_csv(fn, usecols=["ID", "LAT", "LONG", "RT", "SBD", "POR", "AGE"])

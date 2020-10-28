@@ -15,7 +15,7 @@ fig_dir = os.path.dirname(fn)
 lines = []
 count = 322
 ii = 0
-with open(fn, 'r') as fid:
+with open(fn, "r") as fid:
     while ii < count:
         try:
             lines.append(fid.readline())
@@ -26,20 +26,17 @@ with open(fn, 'r') as fid:
 for line in lines:
     if len(line) == 0:
         continue
-    if line[0] == '%':
+    if line[0] == "%":
         continue
-    if line.lower().find('includegraphics') > 0:
-        line_str = line.replace('{', ' ').replace('}', ' ')
-        line_list = line_str.strip().replace(';', '').split()
+    if line.lower().find("includegraphics") > 0:
+        line_str = line.replace("{", " ").replace("}", " ")
+        line_list = line_str.strip().replace(";", "").split()
         fig_dir_path = os.path.dirname(line_list[-1][1:])
         fig_fn = os.path.basename(line_list[-1])
-        if fig_fn.endswith('.pdf'):
+        if fig_fn.endswith(".pdf"):
             cfn = os.path.join(fig_dir, fig_fn)
-            std_out = subprocess.check_call(['magick',
-                                             '-density','300',
-                                             cfn,
-                                             '-flatten',
-                                             cfn[:-4]+'.jpg'])
+            std_out = subprocess.check_call(
+                ["magick", "-density", "300", cfn, "-flatten", cfn[:-4] + ".jpg"]
+            )
             if std_out == 0:
                 print("converted {0} to jpg".format(fig_fn))
-        
