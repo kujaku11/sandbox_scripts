@@ -16,9 +16,11 @@ import datetime
 # Inputs
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
+# dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01\mj_modem_data_z05_t02_edited.dat"
 remove_stations = []
-shady_stations_z = ["gv150"]
+shady_stations_zx = []
+shady_stations_zy = []
 shady_stations_t = []
 remove_x = []
 remove_y = []
@@ -28,19 +30,19 @@ static_shift_x = []
 static_shift_y = []
 swap_channel = []
 
-add_err_z = 5
+add_err_z = 10
 add_err_t = 0.15
-add_err_period_range = [0.0001, 1.0 / 400.0]
+add_err_period_range = None
 elevation_bool = True
 
-inv_modes = ["2"]
-z_err_value = 7.0
-t_err_value = 0.03
+inv_modes = ["1"]
+z_err_value = 5.0
+t_err_value = 0.02
 z_err_type = "eigen_floor"
 t_err_type = "abs_floor"
 
 # sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = "gv"
+sv_fn = "mj"
 log_fn = os.path.join(os.path.dirname(dfn), "{0}_change_data_file.log".format(sv_fn))
 # =============================================================================
 # change data file
@@ -49,10 +51,16 @@ d_obj = modem.Data()
 d_obj.read_data_file(dfn)
 
 ### add error to certain stations
-if shady_stations_z is not None:
-    for e_station in shady_stations_z:
+if shady_stations_zx is not None:
+    for e_station in shady_stations_zx:
         s_find = np.where(d_obj.data_array["station"] == e_station)[0][0]
-        d_obj.data_array[s_find]["z_err"] *= add_err_z
+        d_obj.data_array[s_find]["z_err"][:, 0, :] *= add_err_z
+
+### add error to certain stations
+if shady_stations_zy is not None:
+    for e_station in shady_stations_zy:
+        s_find = np.where(d_obj.data_array["station"] == e_station)[0][0]
+        d_obj.data_array[s_find]["z_err"][:, 1, :] *= add_err_z
 
 if shady_stations_t is not None:
     for e_station in shady_stations_t:
@@ -171,7 +179,8 @@ lines.append("\n" + "=" * 70)
 lines.append("Change Date = {0}".format(datetime.datetime.now().isoformat()))
 lines.append("dfn = {0}".format(dfn))
 lines.append("remove_stations = {0}".format(remove_stations))
-lines.append("shady_stations_z = {0}".format(shady_stations_z))
+lines.append("shady_stations_zx = {0}".format(shady_stations_zx))
+lines.append("shady_stations_zy = {0}".format(shady_stations_zy))
 lines.append("shady_stations_t = {0}".format(shady_stations_t))
 lines.append("remove_x = {0}".format(remove_x))
 lines.append("remove_y = {0}".format(remove_y))

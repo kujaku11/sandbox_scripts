@@ -17,7 +17,7 @@ from shapely.geometry import Point
 from pyevtk.hl import pointsToVTK
 from mtpy.utils import gis_tools
 
-fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\mnp_earthquakes_scec.txt"
+fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\scec_eq_socal.txt"
 # fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\usgs_eq_catalog.csv"
 
 df = pd.read_csv(
@@ -26,7 +26,7 @@ df = pd.read_csv(
     header=0,
     usecols=["date", "time", "latitude", "longitude", "depth", "mag"],
     index_col=False,
-    # skipfooter=0,
+    skipfooter=1,
     engine="python",
 )
 
@@ -40,7 +40,7 @@ gdf.to_file(fn[:-4] + ".shp")
 
 ### Make vtk of earthquakes
 model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-    35.064399, -115.665516
+    35.136203, -118.331333
 )
 
 # make a new array with easting and northing

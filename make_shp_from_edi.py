@@ -15,8 +15,10 @@ fiona.supported_drivers["kml"] = "rw"
 fiona.supported_drivers["KML"] = "rw"
 crs = {"init": "epsg:4326"}
 
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
-shp_fn = edi_path.joinpath("all_mt_stations.shp")
+edi_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01\edi_files"
+)
+shp_fn = edi_path.joinpath("southern_cal_mt_stations.shp")
 
 geometry = []
 stations = []

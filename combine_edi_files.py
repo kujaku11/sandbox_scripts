@@ -11,20 +11,16 @@ from mtpy.core import z
 import os
 from mtpy.imaging import mtplot
 
-edi_01 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\MNP_EDI_Files_birrp\mnp180.edi"
-)
-edi_02 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\MNP_EDI_Files_birrp\mnp313.edi"
-)
+edi_01 = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\MNP124.edi")
+edi_02 = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\USMTArray.CAW11.2019.edi")
 
 c_edi_fn = edi_01.parent.joinpath("{0}_c.edi".format(edi_01.stem))
 if c_edi_fn.exists():
     os.remove(c_edi_fn)
 
-fc_dict = {0: (1000, 0.5), 1: (0.499, 0.000001)}
+fc_dict = {0: (1000, 0.003), 1: (0.0029, 0.000001)}
 
-ss_dict = {0: (1, 1), 1: (0.5, 1)}
+ss_dict = {0: (1, 1), 1: (0.3, 0.5)}
 
 data_arr = np.zeros(
     150,
@@ -45,7 +41,9 @@ for ii, edi_fn in enumerate([edi_01, edi_02]):
         (mt_obj.Z.freq >= fc_dict[ii][1]) & (mt_obj.Z.freq <= fc_dict[ii][0])
     )
 
-    z_ss = mt_obj.remove_static_shift(ss_dict[ii][0], ss_dict[ii][1])
+    z_ss = mt_obj.remove_static_shift(ss_x=ss_dict[ii][0], ss_y=ss_dict[ii][1])
+    # if ii == 1:
+    #     z_ss.z[:, 0, :] *= -(1 + 1.7j)
 
     data_arr["freq"][count : count + len(f_index[0])] = z_ss.freq[f_index]
     data_arr["z"][count : count + len(f_index[0])] = z_ss.z[f_index]
@@ -87,5 +85,5 @@ mt_obj.Tipper = new_t
 n_edi_fn = mt_obj.write_mt_file(fn_basename=c_edi_fn.name)
 
 ptm = mtplot.plot_multiple_mt_responses(
-    fn_list=[edi_01, edi_02, n_edi_fn], plot_style="compare"
+    fn_list=[edi_01, edi_02, n_edi_fn], plot_style="compare", plot_tipper="yr",
 )

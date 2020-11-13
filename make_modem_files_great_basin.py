@@ -21,14 +21,14 @@ edi_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_02\edi_files"
 )
 save_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_02"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_03"
 )
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 averaged_stations = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_02\averaged_station_names.json"
 
 fn_stem = "gb"
 
-overwrite = True
+overwrite = False
 topography = False
 
 
@@ -131,12 +131,12 @@ else:
 mod_obj = modem.Model(stations_object=data_obj.station_locations)
 mod_obj.cell_size_east = 8000
 mod_obj.cell_size_north = 8000.0
-mod_obj.pad_num = 5
-mod_obj.pad_east = 3
-mod_obj.pad_north = 3
+mod_obj.pad_num = 2
+mod_obj.pad_east = 12
+mod_obj.pad_north = 12
 mod_obj.pad_method = "extent1"
 mod_obj.z_mesh_method = "new"
-mod_obj.pad_stretch_h = 1.2
+mod_obj.pad_stretch_h = 1.11
 mod_obj.pad_stretch_v = 1.25
 mod_obj.ew_ext = 350000.0
 mod_obj.ns_ext = 350000.0

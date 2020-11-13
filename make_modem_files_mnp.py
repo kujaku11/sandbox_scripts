@@ -17,7 +17,7 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_04")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 
 fn_stem = "mnp"
@@ -132,10 +132,14 @@ mod_obj.res_model = np.ones(
 )
 mod_obj.res_model[:] = mod_obj.res_initial_value
 
+# need to shift the center of the model to the proper spot
+mod_obj.grid_center[0] = mod_obj.grid_north.min()
+mod_obj.grid_center[1] = mod_obj.grid_east.min()
+
 mod_obj.plot_mesh()
 mod_obj.save_path = save_path
 mod_obj.write_model_file(
-    model_fn_basename="{0}_sm{1:02.0f}.rho".format(
+    model_fn_basename="{0}_sm{1:02.0f}_centered.rho".format(
         fn_stem, np.log10(mod_obj.res_initial_value)
     )
 )

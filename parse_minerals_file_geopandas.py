@@ -10,7 +10,7 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
 
-csv_fn = r"c:\Users\jpeacock\Documents\ArcGIS\minerals\mrds.csv"
+csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\mrds.csv"
 
 cols = [
     "site_name",
@@ -57,9 +57,9 @@ df.longitude = df.longitude.astype(np.float)
 # df = df[(df.latitude < 39.1) & (df.latitude > 38.5) &
 #        (df.longitude < -117.75) & (df.longitude > -118.5)]
 df = df[
-    (df.latitude < 49.1)
+    (df.latitude < 37.5)
     & (df.latitude > 31)
-    & (df.longitude < -67)
+    & (df.longitude < -114)
     & (df.longitude > -124)
 ]
 df = df.reset_index()
@@ -99,7 +99,7 @@ df = df.reset_index()
 df = df.rename(columns={"site_name": "site"})
 df.site = df.site.astype(str)
 
-for ore in ["gold", "silver", "mercury"]:
+for ore in ore_list:
     ore_df = df[["site", "latitude", "longitude", "dep_id", "dev_stat", ore]]
     ore_df = ore_df[ore_df[ore] == 1]
     ore_df = ore_df.reset_index()
@@ -109,5 +109,5 @@ for ore in ["gold", "silver", "mercury"]:
         continue
     gdf = gpd.GeoDataFrame(ore_df, crs=crs, geometry=points)
     gdf.to_file(
-        r"c:\Users\jpeacock\Documents\ArcGIS\minerals\world {0}.shp".format(ore)
+        r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\socal_{0}.shp".format(ore)
     )
