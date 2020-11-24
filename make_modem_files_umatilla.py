@@ -9,18 +9,23 @@ Created on Wed May 25 17:17:14 2016
 # ==============================================================================
 import os
 import numpy as np
+from pathlib import Path
 import mtpy.modeling.modem as modem
+import mtpy.core.mt as mt
 
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = r"d:\Peacock\MTData\Umatilla\EDI_Files_birrp_field\Edited"
-save_path = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv_04"
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_05\new_edis")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_06")
+topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
+fn_stem = "um"
+dfn = save_path.joinpath("{0}_modem_data_z03.dat".format(fn_stem))
 
-fn_stem = "umatilla"
-s_edi_list = [
-    os.path.join(edi_path, ss) for ss in os.listdir(edi_path) if ss.endswith(".edi")
-]
+# bounds = {"lat": np.array([45.627, 45.678]),
+#           "lon": np.array([-118.58, -118.553])}
+bounds = None
+
 
 if not os.path.exists(save_path):
     os.mkdir(save_path)
@@ -29,13 +34,29 @@ write_data = True
 write_model = True
 write_cov = True
 write_cfg = True
+topography = False
+center_stations = True
 # ==============================================================================
 # Make the data file
 # ==============================================================================
 if write_data:
+    if bounds is not None:
+        s_edi_list = []
+        mt_list = []
+        for edi in edi_path.glob("*.edi"):
+            mt_obj = mt.read_mt_file(edi)
+            if mt_obj.latitude >= bounds["lat"].min() and mt_obj.latitude <= bounds["lat"].max():
+                if (
+                    mt_obj.longitude >= bounds["lon"].min()
+                    and mt_obj.longitude <= bounds["lon"].max()
+                ):
+                    s_edi_list.append(edi)
+                    mt_list.append(mt_obj)
+    else:
+        s_edi_list = list(edi_path.glob("*.edi"))
     # make a list of periods to invert over that are spaced evenly in log space
     # format is np.logspace(highest frequency, lowest period, number of periods)
-    inv_period_list = np.logspace(-np.log10(500), np.log10(1023), num=23)
+    inv_period_list = np.logspace(-np.log10(700.1), np.log10(500), num=24)
 
     # make the data object
     data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list)
@@ -46,18 +67,20 @@ if write_data:
 
     data_obj.error_type_tipper = "abs_floor"
     data_obj.error_value_tipper = 0.03
+    
+    data_obj.model_epsg = 32611
 
     # set inversion mode
     data_obj.inv_mode = "2"
 
     # --> here is where you can rotate the data
-    data_obj.rotation_angle = 30
+    data_obj.rotation_angle = 0
 
     # write out the data file
     if data_obj.inv_mode == "2":
         data_obj.write_data_file(
             save_path=save_path,
-            fn_basename="{0}_modem_data_ef{1:02.0f}.dat".format(
+            fn_basename="{0}_modem_data_z{1:02.0f}.dat".format(
                 fn_stem, data_obj.error_value_z
             ),
             fill=True,
@@ -67,7 +90,7 @@ if write_data:
     elif data_obj.inv_mode == "5":
         data_obj.write_data_file(
             save_path=save_path,
-            fn_basename="{0}_modem_data_tip{1:02.0f}.dat".format(
+            fn_basename="{0}_modem_data_t{1:02.0f}.dat".format(
                 fn_stem, data_obj.error_value_tipper * 100
             ),
             fill=True,
@@ -77,13 +100,17 @@ if write_data:
     else:
         data_obj.write_data_file(
             save_path,
-            fn_basename="{0}_modem_data_ef{1:02.0f}_tip{2:02.0f}.dat".format(
+            fn_basename="{0}_modem_data_z{1:02.0f}_t{2:02.0f}.dat".format(
                 fn_stem, data_obj.error_value_z, data_obj.error_value_tipper * 100
             ),
             fill=True,
             compute_error=True,
             elevation=False,
         )
+else:
+    data_obj = modem.Data()
+    data_obj.read_data_file(dfn)
+    data_obj.model_epsg = 32611
 # ==============================================================================
 # First make the mesh
 # ==============================================================================
@@ -91,66 +118,103 @@ if write_model:
     mod_obj = modem.Model(data_obj.station_locations)
 
     # cell size inside the station area
-    mod_obj.cell_size_east = 350
-    mod_obj.cell_size_north = 350
+    mod_obj.cell_size_east = 50
+    mod_obj.cell_size_north = 50
 
     # number of cell_size cells outside the station area.  This is to reduce the
     # effect of changin cell sized outside the station area
-    mod_obj.pad_num = 3
+    mod_obj.pad_num = 5
 
     # number of padding cells going from edge of station area to ns_ext or ew_ext
-    mod_obj.pad_east = 8
-    mod_obj.pad_north = 8
+    mod_obj.pad_east = 20
+    mod_obj.pad_north = 20
 
     # extension of the model in E-W direction or N-S direction and depth
     # should be large enough to reduce edge effects
-    mod_obj.ew_ext = 300000
-    mod_obj.ns_ext = 300000
-    mod_obj.z_bottom = 250000
+    mod_obj.ew_ext = 60000
+    mod_obj.ns_ext = 60000
+    mod_obj.z_bottom = 50000
+    mod_obj.pad_stretch_h = 1.13
+    mod_obj.pad_stretch_v = 1.3
 
     # target depth of the model, roughly where you want the model resolution to be
     # optimal, roughly the deepest skin depth
-    mod_obj.z_target_depth = 25000
+    mod_obj.z_target_depth = 15000
 
     # padding from target depth to z_bottom
-    mod_obj.pad_z = 4
+    mod_obj.pad_z = 10
 
     # number of layers
-    mod_obj.n_layers = 35
+    mod_obj.n_layers = 55
+    mod_obj.n_air_layers = 20
 
     # thickness of 1st layer.  If you are not using topography or the topography
     # in your area is minimal, this is usually around 5 or 10 meters.  If the
     # topography is severe in the model area then a larger number is necessary to
     # minimize the number of extra layers.
-    mod_obj.z1_layer = 30
+    mod_obj.z1_layer = 5
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
 
     mod_obj.make_mesh()
-    mod_obj.plot_mesh()
+    if not topography:
+        mod_obj.plot_mesh()
 
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename=r"{0}_modem_sm_02.rho".format(fn_stem)
     )
+    
+    
+# =============================================================================
+#  Center stations
+# =============================================================================
+if center_stations:
+    data_obj.center_stations(mod_obj.model_fn)
+    data_obj.write_data_file(fn_basename='um_modem_data_z03_c.dat',
+                             compute_error=False,
+                             fill=False,
+                             elevation=True)
+### =============================================================================
+### Add topography
+### =============================================================================
+if topography:
+    mod_obj.data_obj = data_obj
+    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="log_down")
+    mod_obj.write_model_file(
+        model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem)
+    )
+    mod_obj.plot_topography()
+    mod_obj.plot_mesh(fig_num=2)
+    mod_obj.print_mesh_params()
+
+    model_fn = mod_obj.model_fn
+    mod_obj = modem.Model()
+    mod_obj.read_model_file(model_fn)
+    # change data file to have relative topography
+    data_obj.center_stations(mod_obj.model_fn)
+    sx, sy = data_obj.project_stations_on_topography(mod_obj)
+   
 # ==============================================================================
 # make the covariance file
 # ==============================================================================
 if write_cov:
-    cov = modem.Covariance(grid_dimensions=mod_obj.res_model.shape)
-    cov.smoothing_east = 0.3
-    cov.smoothing_north = 0.3
-    cov.smoothing_z = 0.3
-    cov.smoothing_num = 2
+    cov = modem.Covariance()
+    cov.smoothing_east = 0.4
+    cov.smoothing_north = 0.4
+    cov.smoothing_z = 0.4
+    cov.smoothing_num = 1
 
-    cov.write_covariance_file(os.path.join(save_path, "covariance.cov"))
+    cov.write_covariance_file(os.path.join(save_path, "covariance.cov"),
+                              model_fn=mod_obj.model_fn)
 
-# ==============================================================================
-# Write a config file to remember what the parameters are
-# ==============================================================================
-if write_cfg:
-    cfg_obj = modem.ModEM_Config()
-    cfg_obj.add_dict(obj=data_obj)
-    cfg_obj.add_dict(obj=mod_obj)
-    cfg_obj.add_dict(obj=cov)
-    cfg_obj.write_config_file(save_dir=save_path, config_fn_basename="inv_03.cfg")
+# # ==============================================================================
+# # Write a config file to remember what the parameters are
+# # ==============================================================================
+# if write_cfg:
+#     cfg_obj = modem.ModEM_Config()
+#     cfg_obj.add_dict(obj=data_obj)
+#     cfg_obj.add_dict(obj=mod_obj)
+#     cfg_obj.add_dict(obj=cov)
+#     cfg_obj.write_config_file(save_dir=save_path, config_fn_basename="inv_03.cfg")
+

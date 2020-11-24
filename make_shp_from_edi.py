@@ -16,25 +16,25 @@ fiona.supported_drivers["KML"] = "rw"
 crs = {"init": "epsg:4326"}
 
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01\edi_files"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\EDI_Files_birrp"
 )
-shp_fn = edi_path.joinpath("southern_cal_mt_stations.shp")
+shp_fn = edi_path.joinpath("umatilla_mt_stations.shp")
 
 geometry = []
 stations = []
 
 for edi in edi_path.glob("*.edi"):
-    mt_obj = mt.MT(edi)
-    geometry.append(Point(mt_obj.lon, mt_obj.lat))
+    mt_obj = mt.read_mt_file(edi)
+    geometry.append(Point(mt_obj.longitude, mt_obj.latitude))
     entry = {}
     entry["ID"] = mt_obj.station
-    entry["elevation"] = mt_obj.elev
-    entry["latitude"] = mt_obj.lat
-    entry["longitude"] = mt_obj.lon
+    entry["elevation"] = mt_obj.elevation
+    entry["latitude"] = mt_obj.latitude
+    entry["longitude"] = mt_obj.longitude
     entry["station"] = mt_obj.station
-    entry["survey"] = mt_obj.Site.survey
-    entry["start"] = mt_obj.Site.start_date
-    entry["end"] = mt_obj.Site.end_date
+    entry["survey"] = mt_obj.survey_metadata.survey_id
+    entry["start"] = mt_obj.station_metadata.time_period.start_date
+    entry["end"] = mt_obj.station_metadata.time_period.end_date
     stations.append(entry)
 
 # edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\repeat")

@@ -11,7 +11,7 @@ Created on Tue Nov  3 11:21:32 2020
 from pathlib import Path
 
 fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01\mj_z07_c05_122.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c025_006.dat"
 )
 n = 3
 
