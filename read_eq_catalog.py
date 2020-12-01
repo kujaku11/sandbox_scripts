@@ -22,18 +22,18 @@ fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\usgs_eq_catalog.c
 
 df = pd.read_csv(
     fn,
-    #delimiter="\s+",
+    # delimiter="\s+",
     header=0,
     usecols=["datetime", "latitude", "longitude", "depth", "magnitude"],
     index_col=False,
-    #skipfooter=1,
+    # skipfooter=1,
     engine="python",
 )
 
 df.columns = df.columns.str.lower()
 
-# df = df.loc[(df.latitude >= 38.5) & 
-#             (df.latitude <= 39.24) & 
+# df = df.loc[(df.latitude >= 38.5) &
+#             (df.latitude <= 39.24) &
 #             (df.longitude >= -118.65) &
 #             (df.longitude <= -117.69)]
 
@@ -64,8 +64,9 @@ vtk_arr = np.zeros(
 
 # compute easting and northing
 for ii in range(df.shape[0]):
-    e, n, z = gis_tools.project_point_ll2utm(df.latitude.iloc[ii], df.longitude.iloc[ii], 
-                                             utm_zone=model_utm)
+    e, n, z = gis_tools.project_point_ll2utm(
+        df.latitude.iloc[ii], df.longitude.iloc[ii], utm_zone=model_utm
+    )
     vtk_arr[ii]["east"] = (e - model_east) / 1000.0
     vtk_arr[ii]["north"] = (n - model_north) / 1000.0
     vtk_arr[ii]["depth"] = df.depth.iloc[ii]

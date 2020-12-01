@@ -15,9 +15,7 @@ fiona.supported_drivers["kml"] = "rw"
 fiona.supported_drivers["KML"] = "rw"
 crs = {"init": "epsg:4326"}
 
-edi_path = Path(
-    r"c:\Users\jpeacock\Documents\milipitas\new_edis"
-)
+edi_path = Path(r"c:\Users\jpeacock\Documents\milipitas\new_edis")
 shp_fn = edi_path.joinpath("SKP_GJ_data")
 
 geometry = []

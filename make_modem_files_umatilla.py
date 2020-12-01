@@ -16,9 +16,15 @@ import mtpy.core.mt as mt
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\new_edis")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_06")
-topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
+edi_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\new_edis"
+)
+save_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_06"
+)
+topo_fn = (
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
+)
 fn_stem = "um"
 dfn = save_path.joinpath("{0}_modem_data_z03.dat".format(fn_stem))
 
@@ -46,7 +52,10 @@ if write_data:
         mt_list = []
         for edi in edi_path.glob("*.edi"):
             mt_obj = mt.MT(edi)
-            if mt_obj.latitude >= bounds["lat"].min() and mt_obj.latitude <= bounds["lat"].max():
+            if (
+                mt_obj.latitude >= bounds["lat"].min()
+                and mt_obj.latitude <= bounds["lat"].max()
+            ):
                 if (
                     mt_obj.longitude >= bounds["lon"].min()
                     and mt_obj.longitude <= bounds["lon"].max()
@@ -68,7 +77,7 @@ if write_data:
 
     data_obj.error_type_tipper = "abs_floor"
     data_obj.error_value_tipper = 0.03
-    
+
     data_obj.model_epsg = 32611
 
     # set inversion mode
@@ -160,56 +169,60 @@ if write_model:
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
-    
+
     mod_obj.make_mesh()
-    
-    new_north = list(mod_obj.nodes_north[0:7]) + \
-                [round(120 + 120*.15*ii) for ii in range(14)][::-1] +\
-                [100] * 38 +\
-                [round(120 + 120*.15*ii) for ii in range(10)] +\
-                list(mod_obj.nodes_north[0:7])[::-1]
-    
-    new_east = list(mod_obj.nodes_east[0:7]) + \
-                [round(120 + 120*.15*ii) for ii in range(20)][::-1] +\
-                [100] * 42 +\
-                [round(120 + 120*.16*ii) for ii in range(15)] +\
-                [round(120 + 120*.16*ii) for ii in range(15)][::-1] +\
-                [100] * 5 +\
-                [round(120 + 120*.15*ii) for ii in range(7)] +\
-                list(mod_obj.nodes_east[0:7])[::-1]
+
+    new_north = (
+        list(mod_obj.nodes_north[0:7])
+        + [round(120 + 120 * 0.15 * ii) for ii in range(14)][::-1]
+        + [100] * 38
+        + [round(120 + 120 * 0.15 * ii) for ii in range(10)]
+        + list(mod_obj.nodes_north[0:7])[::-1]
+    )
+
+    new_east = (
+        list(mod_obj.nodes_east[0:7])
+        + [round(120 + 120 * 0.15 * ii) for ii in range(20)][::-1]
+        + [100] * 42
+        + [round(120 + 120 * 0.16 * ii) for ii in range(15)]
+        + [round(120 + 120 * 0.16 * ii) for ii in range(15)][::-1]
+        + [100] * 5
+        + [round(120 + 120 * 0.15 * ii) for ii in range(7)]
+        + list(mod_obj.nodes_east[0:7])[::-1]
+    )
     mod_obj.nodes_north = new_north
     mod_obj.grid_north -= mod_obj.grid_north.mean()
-    
+
     mod_obj.nodes_east = new_east
     mod_obj.grid_east -= mod_obj.grid_east.mean()
-    
-    mod_obj.grid_center = np.array([mod_obj.grid_north.min(),
-                                    mod_obj.grid_east.min(), 
-                                    0])
-    
-    
-    mod_obj.res_model = np.ones((mod_obj.nodes_north.size,
-                                  mod_obj.nodes_east.size,
-                                  mod_obj.nodes_z.size))
 
-    
+    mod_obj.grid_center = np.array(
+        [mod_obj.grid_north.min(), mod_obj.grid_east.min(), 0]
+    )
+
+    mod_obj.res_model = np.ones(
+        (mod_obj.nodes_north.size, mod_obj.nodes_east.size, mod_obj.nodes_z.size)
+    )
+
     if not topography:
         mod_obj.plot_mesh()
 
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename=r"{0}_modem_sm_02.rho".format(fn_stem)
     )
-    
-    
+
+
 # =============================================================================
 #  Center stations
 # =============================================================================
 if center_stations:
     data_obj.center_stations(mod_obj.model_fn)
-    data_obj.write_data_file(fn_basename='um_modem_data_z03_c.dat',
-                             compute_error=False,
-                             fill=False,
-                             elevation=True)
+    data_obj.write_data_file(
+        fn_basename="um_modem_data_z03_c.dat",
+        compute_error=False,
+        fill=False,
+        elevation=True,
+    )
 ### =============================================================================
 ### Add topography
 ### =============================================================================
@@ -229,7 +242,7 @@ if topography:
     # change data file to have relative topography
     data_obj.center_stations(mod_obj.model_fn)
     sx, sy = data_obj.project_stations_on_topography(mod_obj)
-   
+
 # ==============================================================================
 # make the covariance file
 # ==============================================================================
@@ -240,8 +253,9 @@ if write_cov:
     cov.smoothing_z = 0.5
     cov.smoothing_num = 1
 
-    cov.write_covariance_file(os.path.join(save_path, "covariance.cov"),
-                              model_fn=mod_obj.model_fn)
+    cov.write_covariance_file(
+        os.path.join(save_path, "covariance.cov"), model_fn=mod_obj.model_fn
+    )
 
 # # ==============================================================================
 # # Write a config file to remember what the parameters are
@@ -252,4 +266,3 @@ if write_cov:
 #     cfg_obj.add_dict(obj=mod_obj)
 #     cfg_obj.add_dict(obj=cov)
 #     cfg_obj.write_config_file(save_dir=save_path, config_fn_basename="inv_03.cfg")
-

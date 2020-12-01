@@ -7,9 +7,7 @@ Created on Mon Apr 24 13:08:58 2017
 
 import mtpy.modeling.modem as modem
 
-modem_model_fn = (
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c035_102.rho"
-)
+modem_model_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c035_102.rho"
 wl_fn = modem_model_fn[0:-4] + ".out"
 
 
