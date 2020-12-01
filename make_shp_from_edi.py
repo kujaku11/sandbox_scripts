@@ -16,15 +16,15 @@ fiona.supported_drivers["KML"] = "rw"
 crs = {"init": "epsg:4326"}
 
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\EDI_Files_birrp"
+    r"c:\Users\jpeacock\Documents\milipitas\new_edis"
 )
-shp_fn = edi_path.joinpath("umatilla_mt_stations.shp")
+shp_fn = edi_path.joinpath("SKP_GJ_data")
 
 geometry = []
 stations = []
 
 for edi in edi_path.glob("*.edi"):
-    mt_obj = mt.read_mt_file(edi)
+    mt_obj = mt.MT(edi)
     geometry.append(Point(mt_obj.longitude, mt_obj.latitude))
     entry = {}
     entry["ID"] = mt_obj.station

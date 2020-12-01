@@ -17,12 +17,12 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_modem_data_z03_c.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_modem_data_z03_c_topo_edits.dat"
 remove_stations = []
-shady_stations_zx = []
-shady_stations_zy = []
+shady_stations_zx = ["159", "UM132"]
+shady_stations_zy = ["159", "UM132", "um227"]
 shady_stations_t = []
-remove_x = []
+remove_x = ["UM120", "um221", "um227"]
 remove_y = []
 flip_phase_x = []
 flip_phase_y = []
@@ -30,13 +30,13 @@ static_shift_x = []
 static_shift_y = []
 swap_channel = []
 
-add_err_z = 5
+add_err_z = 7
 add_err_t = 0.15
 add_err_period_range = None
 elevation_bool = True
 
 inv_modes = ["2"]
-z_err_value = 7.0
+z_err_value = 5.0
 t_err_value = 0.03
 z_err_type = "eigen_floor"
 t_err_type = "abs_floor"

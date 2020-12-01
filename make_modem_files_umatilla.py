@@ -16,14 +16,14 @@ import mtpy.core.mt as mt
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_05\new_edis")
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\new_edis")
 save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_06")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
 fn_stem = "um"
 dfn = save_path.joinpath("{0}_modem_data_z03.dat".format(fn_stem))
 
-# bounds = {"lat": np.array([45.627, 45.678]),
-#           "lon": np.array([-118.58, -118.553])}
+# bounds = {"lat": np.array([45.593, 45.7]),
+#           "lon": np.array([-118.69, -118.409])}
 bounds = None
 
 
@@ -33,9 +33,10 @@ if not os.path.exists(save_path):
 write_data = True
 write_model = True
 write_cov = True
-write_cfg = True
-topography = False
+write_cfg = False
+topography = True
 center_stations = True
+new_edis = False
 # ==============================================================================
 # Make the data file
 # ==============================================================================
@@ -44,7 +45,7 @@ if write_data:
         s_edi_list = []
         mt_list = []
         for edi in edi_path.glob("*.edi"):
-            mt_obj = mt.read_mt_file(edi)
+            mt_obj = mt.MT(edi)
             if mt_obj.latitude >= bounds["lat"].min() and mt_obj.latitude <= bounds["lat"].max():
                 if (
                     mt_obj.longitude >= bounds["lon"].min()
@@ -56,7 +57,7 @@ if write_data:
         s_edi_list = list(edi_path.glob("*.edi"))
     # make a list of periods to invert over that are spaced evenly in log space
     # format is np.logspace(highest frequency, lowest period, number of periods)
-    inv_period_list = np.logspace(-np.log10(700.1), np.log10(500), num=24)
+    inv_period_list = np.logspace(-np.log10(700.1), np.log10(500), num=23)
 
     # make the data object
     data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list)
@@ -86,6 +87,7 @@ if write_data:
             fill=True,
             compute_error=True,
             elevation=False,
+            new_edis=new_edis,
         )
     elif data_obj.inv_mode == "5":
         data_obj.write_data_file(
@@ -96,6 +98,7 @@ if write_data:
             fill=True,
             compute_error=True,
             elevation=False,
+            new_edis=new_edis,
         )
     else:
         data_obj.write_data_file(
@@ -106,6 +109,7 @@ if write_data:
             fill=True,
             compute_error=True,
             elevation=False,
+            new_edis=new_edis,
         )
 else:
     data_obj = modem.Data()
@@ -118,22 +122,22 @@ if write_model:
     mod_obj = modem.Model(data_obj.station_locations)
 
     # cell size inside the station area
-    mod_obj.cell_size_east = 50
-    mod_obj.cell_size_north = 50
+    mod_obj.cell_size_east = 100
+    mod_obj.cell_size_north = 100
 
     # number of cell_size cells outside the station area.  This is to reduce the
     # effect of changin cell sized outside the station area
     mod_obj.pad_num = 5
 
     # number of padding cells going from edge of station area to ns_ext or ew_ext
-    mod_obj.pad_east = 20
-    mod_obj.pad_north = 20
+    mod_obj.pad_east = 10
+    mod_obj.pad_north = 10
 
     # extension of the model in E-W direction or N-S direction and depth
     # should be large enough to reduce edge effects
-    mod_obj.ew_ext = 60000
-    mod_obj.ns_ext = 60000
-    mod_obj.z_bottom = 50000
+    mod_obj.ew_ext = 80000
+    mod_obj.ns_ext = 80000
+    mod_obj.z_bottom = 80000
     mod_obj.pad_stretch_h = 1.13
     mod_obj.pad_stretch_v = 1.3
 
@@ -145,19 +149,50 @@ if write_model:
     mod_obj.pad_z = 10
 
     # number of layers
-    mod_obj.n_layers = 55
-    mod_obj.n_air_layers = 20
+    mod_obj.n_layers = 35
+    mod_obj.n_air_layers = 30
 
     # thickness of 1st layer.  If you are not using topography or the topography
     # in your area is minimal, this is usually around 5 or 10 meters.  If the
     # topography is severe in the model area then a larger number is necessary to
     # minimize the number of extra layers.
-    mod_obj.z1_layer = 5
+    mod_obj.z1_layer = 10
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
-
+    
     mod_obj.make_mesh()
+    
+    new_north = list(mod_obj.nodes_north[0:7]) + \
+                [round(120 + 120*.15*ii) for ii in range(14)][::-1] +\
+                [100] * 38 +\
+                [round(120 + 120*.15*ii) for ii in range(10)] +\
+                list(mod_obj.nodes_north[0:7])[::-1]
+    
+    new_east = list(mod_obj.nodes_east[0:7]) + \
+                [round(120 + 120*.15*ii) for ii in range(20)][::-1] +\
+                [100] * 42 +\
+                [round(120 + 120*.16*ii) for ii in range(15)] +\
+                [round(120 + 120*.16*ii) for ii in range(15)][::-1] +\
+                [100] * 5 +\
+                [round(120 + 120*.15*ii) for ii in range(7)] +\
+                list(mod_obj.nodes_east[0:7])[::-1]
+    mod_obj.nodes_north = new_north
+    mod_obj.grid_north -= mod_obj.grid_north.mean()
+    
+    mod_obj.nodes_east = new_east
+    mod_obj.grid_east -= mod_obj.grid_east.mean()
+    
+    mod_obj.grid_center = np.array([mod_obj.grid_north.min(),
+                                    mod_obj.grid_east.min(), 
+                                    0])
+    
+    
+    mod_obj.res_model = np.ones((mod_obj.nodes_north.size,
+                                  mod_obj.nodes_east.size,
+                                  mod_obj.nodes_z.size))
+
+    
     if not topography:
         mod_obj.plot_mesh()
 
@@ -200,9 +235,9 @@ if topography:
 # ==============================================================================
 if write_cov:
     cov = modem.Covariance()
-    cov.smoothing_east = 0.4
-    cov.smoothing_north = 0.4
-    cov.smoothing_z = 0.4
+    cov.smoothing_east = 0.5
+    cov.smoothing_north = 0.5
+    cov.smoothing_z = 0.5
     cov.smoothing_num = 1
 
     cov.write_covariance_file(os.path.join(save_path, "covariance.cov"),

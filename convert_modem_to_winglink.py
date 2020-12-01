@@ -8,7 +8,7 @@ Created on Mon Apr 24 13:08:58 2017
 import mtpy.modeling.modem as modem
 
 modem_model_fn = (
-    r"c:\Users\jpeacock\Documents\folsom\inversions\inv_01_dr\sev_modem_model.rho"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c035_102.rho"
 )
 wl_fn = modem_model_fn[0:-4] + ".out"
 
@@ -86,9 +86,9 @@ for ii in range(nz):
 
 wlk_lines.append("WINGLINK")
 wlk_lines.append("             1             1  (i j block numbers)")
-wlk_lines.append("  287.47236856   3832.9376029  (real world coordinates)")
+wlk_lines.append("  396.251217   4303.4740309 (real world coordinates)")
 wlk_lines.append("             0  (rotation)")
-wlk_lines.append("      2.798353  (top elevation)")
+wlk_lines.append("      -2.461  (top elevation)")
 wlk_lines.append("")
 
 # write file
