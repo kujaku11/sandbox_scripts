@@ -18,20 +18,21 @@ from pyevtk.hl import pointsToVTK
 from mtpy.utils import gis_tools
 
 # fn = r"C:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\ncedc_eq.txt"
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\usgs_eq_catalog.csv"
+fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\pnsn_event_export_20201201.csv"
 
 df = pd.read_csv(
     fn,
     # delimiter="\s+",
     header=0,
-    usecols=["datetime", "latitude", "longitude", "depth", "magnitude"],
+    usecols=["time utc", "lat", "lon", "depth km", "magnitude"],
     index_col=False,
     # skipfooter=1,
     engine="python",
 )
 
 df.columns = df.columns.str.lower()
-
+df.rename(columns={"lat": "latitude", "lon":"longitude", "depth km": "depth"},
+                  inplace=True)
 # df = df.loc[(df.latitude >= 38.5) &
 #             (df.latitude <= 39.24) &
 #             (df.longitude >= -118.65) &
@@ -48,7 +49,7 @@ gdf.to_file(fn[:-4] + ".shp")
 #     39.556431, -119.800694
 # )
 model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-    38.774109, -118.151242
+    45.650594, -118.562997
 )
 
 # make a new array with easting and northing
