@@ -20,21 +20,24 @@ edi_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\new_edis"
 )
 save_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_07"
+    r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_09"
 )
 topo_fn = (
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
 )
 fn_stem = "um"
-dfn = save_path.joinpath("{0}_modem_data_z03.dat".format(fn_stem))
+dfn = save_path.joinpath("{0}_modem_data_z05.dat".format(fn_stem))
 
 # Geothermal Zone
 # bounds = {"lat": np.array([45.593, 45.7]),
 #           "lon": np.array([-118.69, -118.409])}
 # zone 00
-bounds = {"lat": np.array([45.65, 45.6833]),
-          "lon": np.array([-118.591666, -118.55])}
-# bounds = None
+# bounds = {"lat": np.array([45.65, 45.6833]),
+#           "lon": np.array([-118.591666, -118.55])}
+bounds = None
+
+# 1D starting model (bottom depth, resistivity)
+sm_1d = [(0, 20, 10), (20, 500, 500), (500, 2000, 50)]
 
 
 if not os.path.exists(save_path):
@@ -42,11 +45,11 @@ if not os.path.exists(save_path):
 
 write_data = True
 write_model = True
-write_cov = True
+write_cov = False
 write_cfg = False
 topography = False
 center_stations = True
-new_edis = False
+new_edis = True
 # ==============================================================================
 # Make the data file
 # ==============================================================================
@@ -135,22 +138,22 @@ if write_model:
     mod_obj = modem.Model(data_obj.station_locations)
 
     # cell size inside the station area
-    mod_obj.cell_size_east = 35
-    mod_obj.cell_size_north = 35
+    mod_obj.cell_size_east = 50
+    mod_obj.cell_size_north = 50
 
     # number of cell_size cells outside the station area.  This is to reduce the
     # effect of changin cell sized outside the station area
-    mod_obj.pad_num = 10
+    mod_obj.pad_num = 8
 
     # number of padding cells going from edge of station area to ns_ext or ew_ext
-    mod_obj.pad_east = 15
-    mod_obj.pad_north = 15
+    mod_obj.pad_east = 8
+    mod_obj.pad_north = 8
 
     # extension of the model in E-W direction or N-S direction and depth
     # should be large enough to reduce edge effects
     mod_obj.ew_ext = 40000
     mod_obj.ns_ext = 40000
-    mod_obj.z_bottom = 30000
+    mod_obj.z_bottom = 40000
     mod_obj.pad_stretch_h = 1.13
     mod_obj.pad_stretch_v = 1.3
 
@@ -162,7 +165,7 @@ if write_model:
     mod_obj.pad_z = 8
 
     # number of layers
-    mod_obj.n_layers = 60
+    mod_obj.n_layers = 50
     mod_obj.n_air_layers = 30
 
     # thickness of 1st layer.  If you are not using topography or the topography
@@ -170,6 +173,7 @@ if write_model:
     # topography is severe in the model area then a larger number is necessary to
     # minimize the number of extra layers.
     mod_obj.z1_layer = 5
+    mod_obj.z_layer_rounding = -1
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
@@ -210,6 +214,13 @@ if write_model:
 
     if not topography:
         mod_obj.plot_mesh()
+        
+    # build 1D model
+    if sm_1d is not None:
+        for d1, d2, v in sm_1d:
+            z_where = np.where((mod_obj.grid_z < d2) & (mod_obj.grid_z >= d1))
+            mod_obj.res_model[:, :, z_where] = v
+    
 
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename=r"{0}_modem_sm_02.rho".format(fn_stem)

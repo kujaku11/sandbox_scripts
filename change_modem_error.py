@@ -17,12 +17,12 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_modem_data_z03_c_topo_edits.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_02\mj_modem_data_z05_t02_add.dat"
 remove_stations = []
-shady_stations_zx = ["159", "UM132"]
-shady_stations_zy = ["159", "UM132", "um227"]
+shady_stations_zx = []
+shady_stations_zy = []
 shady_stations_t = []
-remove_x = ["UM120", "um221", "um227"]
+remove_x = []
 remove_y = []
 flip_phase_x = []
 flip_phase_y = []
@@ -35,14 +35,14 @@ add_err_t = 0.15
 add_err_period_range = None
 elevation_bool = True
 
-inv_modes = ["2"]
-z_err_value = 5.0
+inv_modes = ["5"]
+z_err_value = 7.0
 t_err_value = 0.03
 z_err_type = "eigen_floor"
 t_err_type = "abs_floor"
 
 # sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = "um"
+sv_fn = "mj"
 log_fn = os.path.join(os.path.dirname(dfn), "{0}_change_data_file.log".format(sv_fn))
 # =============================================================================
 # change data file

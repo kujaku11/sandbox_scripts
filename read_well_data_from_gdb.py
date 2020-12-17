@@ -29,42 +29,47 @@ colors = {"basalt": (101/256, 80/256, 37/256),
           "red": (.85, .1, 0),
           "blue": (.05, .1, .85)}
 
-# straughan well 2, area 1, 1856, 1008, 765, 1837
-well_id = 1837
+# Area 1: straughan well 2, area 1, 1856, 1008, 765, 1837 769, 770, 772
+# area 3: 783, 781, 782, 774, 575, 1845, 572
+# area 1: 809, 807, 808, 905, 806, 795, 799, 791
+#well_id = 783
 
-well = g[g.SiteID == well_id]
-
-fig = plt.figure(1)
-
-ax = fig.add_subplot(1, 1, 1, aspect="equal")
-
-for index, level in well.iterrows():
-    fill = (.5, .5, .5)
-    materials = level.Material
-    # materials = [ss.strip() for ss in level.Material.split(',')]
-    # if materials[0] == 'basalt' and len(materials) > 1:
-    #     materials = materials[1:]
-    if "water bearing" in materials:
-        fill = colors["water"]
-    else:
-        for k, v in colors.items():
-            if k in materials:
-                fill = v
-                # break
-        
-    ax.fill_between([0, width], [level.From_Elev * f] * 2, [level.To_Elev * f] * 2,
-                    color=fill)
-    ax.text(width * 1.2, sum([level.From_Elev * f, level.To_Elev * f])/2, 
-            level.Material, va="baseline", ha="left",
-            fontdict={"size":10})
+for well_id in [774]:
+    well = g[g.SiteID == well_id]
     
-ax.set_ylabel("Elevation [m]", fontdict={"size": 16})
-ax.yaxis.set_major_locator(MultipleLocator(width))
-ax.yaxis.set_minor_locator(MultipleLocator(10))
-ax.set_title(f"{level.SiteName}\n{level.Easting}E, {level.Northing}N", fontdict={"size": 16, "weight": "bold"})
-fig.tight_layout()
-
-plt.show()
-
-fig.savefig(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\Figures\well_id_1837.png",
-            dpi=300)
+    fig = plt.figure(1, [5.5, 8.5])
+    fig.clf()
+    
+    ax = fig.add_subplot(1, 1, 1, aspect="equal")
+    
+    for index, level in well.iterrows():
+        fill = (.5, .5, .5)
+        materials = level.Material
+        # materials = [ss.strip() for ss in level.Material.split(',')]
+        # if materials[0] == 'basalt' and len(materials) > 1:
+        #     materials = materials[1:]
+        if "water bearing" in materials:
+            fill = colors["water"]
+        else:
+            for k, v in colors.items():
+                if k in materials:
+                    fill = v
+                    # break
+            
+        ax.fill_between([0, width], [level.From_Elev * f] * 2, [level.To_Elev * f] * 2,
+                        color=fill)
+        ax.text(width * 1.2, sum([level.From_Elev * f, level.To_Elev * f])/2, 
+                level.Material, va="baseline", ha="left",
+                fontdict={"size":10})
+        
+    ax.set_ylabel("Elevation [m]", fontdict={"size": 16})
+    ax.yaxis.set_major_locator(MultipleLocator(width))
+    ax.yaxis.set_minor_locator(MultipleLocator(10))
+    ax.set_title(f"Well ID: {int(level.SiteID)}\n{level.Easting}E, {level.Northing}N", fontdict={"size": 16, "weight": "bold"})
+    fig.tight_layout()
+    
+    plt.show()
+    
+    fig.savefig(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\Figures\well_id_{0}.png".format(well_id),
+                dpi=300)
+    
