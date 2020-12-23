@@ -15,8 +15,8 @@ fiona.supported_drivers["kml"] = "rw"
 fiona.supported_drivers["KML"] = "rw"
 crs = {"init": "epsg:4326"}
 
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
-shp_fn = edi_path.joinpath("all_mt_stations.shp")
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\EDI_Files_birrp\Edited\Interpolated")
+shp_fn = edi_path.joinpath("st_mt_stations.shp")
 geometry = []
 stations = []
 
