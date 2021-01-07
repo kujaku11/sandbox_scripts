@@ -192,8 +192,8 @@ def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_ea
                                                    points=True)
     print(f"Projected to {utm_zone}")
     xg, yg = np.meshgrid(grid_east, grid_north)
-    xg = xg.ravel() * scale
-    yg = yg.ravel() * scale
+    xg = xg[::-1, ::-1].ravel() * scale
+    yg = yg[::-1, ::-1].ravel() * scale
     
     # get appropriate grid values 
     depth = (nc_obj.depth.values.ravel() * d_scale + shift_z) * scale  
@@ -215,7 +215,7 @@ def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_ea
     )
     
     print(f"--> Wrote VTK file to {vtk_fn}")
-    return nc_obj, (xg, yg, depth)
+    return nc_obj, (yg, xg, depth)
     
 # =============================================================================
 # test
@@ -223,6 +223,8 @@ def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_ea
 nc_fn = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\earth_models\Moho_Temperature.nc"
     )
+points = True
+
 # northern CA/NV model center
 model_center = (39.635149, -119.803946)
 model_utm = "11S"
@@ -240,20 +242,26 @@ model_east, model_north, model_utm = gis_tools.project_point_ll2utm(model_center
 # rel_shift_north = -model_north - 100000 + 25000.
 
 # wUS-SH-2010
+# rel_shift_east = -model_east + 150000
+# rel_shift_north = -model_north - 100000
+
+# moho_temperature
 rel_shift_east = -model_east + 150000
-rel_shift_north = -model_north - 100000
+rel_shift_north = -model_north - 250000
 
-# x_obj, grid = read_nc_file(nc_fn,
-#                            utm_zone=model_utm, 
-#                            shift_east=rel_shift_east,
-#                            shift_north=rel_shift_north,
-#                            units="km")
 
-x_obj, grid = read_nc_file_points(nc_fn,
-                           utm_zone=model_utm, 
-                           shift_east=rel_shift_east,
-                           shift_north=rel_shift_north,
-                           units="km")
+if points:
+    x_obj, grid = read_nc_file_points(nc_fn,
+                               utm_zone=model_utm, 
+                               shift_east=rel_shift_east,
+                               shift_north=rel_shift_north,
+                               units="km")
+else:
+    x_obj, grid = read_nc_file(nc_fn,
+                            utm_zone=model_utm, 
+                            shift_east=rel_shift_east,
+                            shift_north=rel_shift_north,
+                            units="km")
 
 # vp = np.nan_to_num(nc_obj.variables["vp"][:])
 # dvp = nc_obj.variables["dvp_ulberg_mask"][:]
