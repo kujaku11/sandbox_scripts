@@ -16,17 +16,25 @@ with existing models.
 from pathlib import Path
 import xarray as xr
 import numpy as np
+
 # from scipy import interpolate
 
 import mtpy.utils.gis_tools as gis_tools
 from pyevtk.hl import gridToVTK, pointsToVTK
 
-#import mtpy.utils.array2raster as a2r
+# import mtpy.utils.array2raster as a2r
 # =============================================================================
 # Useful functions
 # =============================================================================
-def project_grid(latitude, longitude, utm_zone=None, epsg=None, 
-                 shift_east=0.0, shift_north=0.0, points=False):
+def project_grid(
+    latitude,
+    longitude,
+    utm_zone=None,
+    epsg=None,
+    shift_east=0.0,
+    shift_north=0.0,
+    points=False,
+):
     """
     Project the model grid into UTM coordinates
     
@@ -47,12 +55,13 @@ def project_grid(latitude, longitude, utm_zone=None, epsg=None,
 
     """
 
-        
-    lower_left = gis_tools.project_point_ll2utm(latitude.min(), longitude.min(),
-                                                utm_zone=utm_zone, epsg=epsg)
-    upper_right = gis_tools.project_point_ll2utm(latitude.max(), longitude.max(),
-                                                utm_zone=utm_zone, epsg=epsg)
-    
+    lower_left = gis_tools.project_point_ll2utm(
+        latitude.min(), longitude.min(), utm_zone=utm_zone, epsg=epsg
+    )
+    upper_right = gis_tools.project_point_ll2utm(
+        latitude.max(), longitude.max(), utm_zone=utm_zone, epsg=epsg
+    )
+
     # this maybe a bit of hack if the cells do not have even spacing
     if points:
         east = np.linspace(upper_right[0], lower_left[0], num=longitude.size)
@@ -60,14 +69,23 @@ def project_grid(latitude, longitude, utm_zone=None, epsg=None,
     else:
         east = np.linspace(upper_right[0], lower_left[0], num=longitude.size + 1)
         north = np.linspace(upper_right[1], lower_left[1], num=latitude.size + 1)
-    
+
     east += shift_east
     north += shift_north
-    
+
     return east, north, lower_left[-1]
 
-def read_nc_file(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_east=0.0, shift_north=0.0,
-                 units="m", shift_z=0.0):
+
+def read_nc_file(
+    nc_file,
+    vtk_fn=None,
+    utm_zone=None,
+    epsg=None,
+    shift_east=0.0,
+    shift_north=0.0,
+    units="m",
+    shift_z=0.0,
+):
     """
     Read NetCDF earth model file into UTM coordinates    
     
@@ -87,37 +105,39 @@ def read_nc_file(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_east=0.0,
     
     """
     nc_file = Path(nc_file)
-    
+
     if units == "m":
         scale = 1.0
     elif units == "km":
-        scale = 1./1000.
-    
+        scale = 1.0 / 1000.0
+
     if vtk_fn is None:
         vtk_fn = nc_file.parent.joinpath(nc_file.stem)
-    
-    # read .nc file into an xarray dataset 
+
+    # read .nc file into an xarray dataset
     nc_obj = xr.open_dataset(nc_file)
-    
+
     if nc_obj.depth.units == "km":
         d_scale = 1000
     else:
         d_scale = 1
-    
-    # get appropriate grid values 
-    depth = nc_obj.depth.values * d_scale + shift_z  
-    
+
+    # get appropriate grid values
+    depth = nc_obj.depth.values * d_scale + shift_z
+
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
-    grid_east, grid_north, utm_zone = project_grid(nc_obj.latitude.values,
-                                                   nc_obj.longitude.values,
-                                                   utm_zone=utm_zone,
-                                                   epsg=epsg, 
-                                                   shift_east=shift_east,
-                                                   shift_north=shift_north)
+    grid_east, grid_north, utm_zone = project_grid(
+        nc_obj.latitude.values,
+        nc_obj.longitude.values,
+        utm_zone=utm_zone,
+        epsg=epsg,
+        shift_east=shift_east,
+        shift_north=shift_north,
+    )
     print(f"Projected to {utm_zone}")
-    
+
     values_dict = {}
     for key, value in nc_obj.variables.items():
         if key in ["latitude", "longitude"]:
@@ -127,10 +147,10 @@ def read_nc_file(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_east=0.0,
         for z_index in range(depth.size):
             v_array[:, :, z_index] = value[z_index, ::-1, ::-1]
         values_dict[key] = v_array
-    
+
     # need to add another cell to the depth
     depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
-    #print(depth.shape, grid_east.shape, grid_north.shape)
+    # print(depth.shape, grid_east.shape, grid_north.shape)
     pointsToVTK(
         vtk_fn.as_posix(),
         grid_north * scale,
@@ -138,12 +158,22 @@ def read_nc_file(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_east=0.0,
         values_dict["depth"] * scale,
         values_dict,
     )
-    
+
     print(f"--> Wrote VTK file to {vtk_fn}")
     return nc_obj, (grid_north * scale, grid_east * scale, depth * scale)
 
-def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_east=0.0, shift_north=0.0,
-                 units="m", shift_z=0.0, z_key='depth'):
+
+def read_nc_file_points(
+    nc_file,
+    vtk_fn=None,
+    utm_zone=None,
+    epsg=None,
+    shift_east=0.0,
+    shift_north=0.0,
+    units="m",
+    shift_z=0.0,
+    z_key="depth",
+):
     """
     Read NetCDF earth model file into UTM coordinates    
     
@@ -163,42 +193,44 @@ def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_ea
     
     """
     nc_file = Path(nc_file)
-    
+
     if units == "m":
         scale = 1.0
     elif units == "km":
-        scale = 1./1000.
-    
+        scale = 1.0 / 1000.0
+
     if vtk_fn is None:
         vtk_fn = nc_file.parent.joinpath(nc_file.stem)
-    
-    # read .nc file into an xarray dataset 
+
+    # read .nc file into an xarray dataset
     nc_obj = xr.open_dataset(nc_file)
-    
+
     if nc_obj.depth.units == "km":
         d_scale = 1000
     else:
         d_scale = 1
-    
+
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
-    grid_east, grid_north, utm_zone = project_grid(nc_obj.latitude.values,
-                                                   nc_obj.longitude.values,
-                                                   utm_zone=utm_zone,
-                                                   epsg=epsg, 
-                                                   shift_east=shift_east,
-                                                   shift_north=shift_north,
-                                                   points=True)
+    grid_east, grid_north, utm_zone = project_grid(
+        nc_obj.latitude.values,
+        nc_obj.longitude.values,
+        utm_zone=utm_zone,
+        epsg=epsg,
+        shift_east=shift_east,
+        shift_north=shift_north,
+        points=True,
+    )
     print(f"Projected to {utm_zone}")
     xg, yg = np.meshgrid(grid_east, grid_north)
     xg = xg[::-1, ::-1].ravel() * scale
     yg = yg[::-1, ::-1].ravel() * scale
-    
-    # get appropriate grid values 
-    depth = (nc_obj.depth.values.ravel() * d_scale + shift_z) * scale  
+
+    # get appropriate grid values
+    depth = (nc_obj.depth.values.ravel() * d_scale + shift_z) * scale
     depth = depth.astype(xg.dtype)
-    
+
     values_dict = {}
     for key, value in nc_obj.variables.items():
         if key in ["latitude", "longitude"]:
@@ -207,61 +239,65 @@ def read_nc_file_points(nc_file, vtk_fn=None, utm_zone=None, epsg=None, shift_ea
         values_dict[key] = value.astype(xg.dtype)
 
     pointsToVTK(
-        vtk_fn.as_posix(),
-        yg,
-        xg,
-        depth,
-        values_dict,
+        vtk_fn.as_posix(), yg, xg, depth, values_dict,
     )
-    
+
     print(f"--> Wrote VTK file to {vtk_fn}")
     return nc_obj, (yg, xg, depth)
-    
+
+
 # =============================================================================
 # test
 # =============================================================================
-nc_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\earth_models\Moho_Temperature.nc"
-    )
+nc_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\Moho_Temperature.nc")
 points = True
 
 # northern CA/NV model center
 model_center = (39.635149, -119.803946)
 model_utm = "11S"
 
-model_east, model_north, model_utm = gis_tools.project_point_ll2utm(model_center[0],
-                                                                    model_center[1],
-                                                                    utm_zone=model_utm)
+# SWUS model
+model_center = (40.6425, -112.8255)
+model_utm = "11S"
+
+model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
+    model_center[0], model_center[1], utm_zone=model_utm
+)
+
 # relative shifts to center model on mt mode
-# NWUS11
+# NWUS11 - CA/NV
 # rel_shift_east = -model_east + 250000.
 # rel_shift_north = -model_north + 105000.
 
-# CAS19
+# CAS19 - CA/NV
 # rel_shift_east = -model_east + 150000 + 25000.
 # rel_shift_north = -model_north - 100000 + 25000.
 
-# wUS-SH-2010
+# wUS-SH-2010 - CA/NV
 # rel_shift_east = -model_east + 150000
 # rel_shift_north = -model_north - 100000
 
-# moho_temperature
+# moho_temperature - CA/NV
 rel_shift_east = -model_east + 150000
 rel_shift_north = -model_north - 250000
 
 
 if points:
-    x_obj, grid = read_nc_file_points(nc_fn,
-                               utm_zone=model_utm, 
-                               shift_east=rel_shift_east,
-                               shift_north=rel_shift_north,
-                               units="km")
+    x_obj, grid = read_nc_file_points(
+        nc_fn,
+        utm_zone=model_utm,
+        shift_east=rel_shift_east,
+        shift_north=rel_shift_north,
+        units="km",
+    )
 else:
-    x_obj, grid = read_nc_file(nc_fn,
-                            utm_zone=model_utm, 
-                            shift_east=rel_shift_east,
-                            shift_north=rel_shift_north,
-                            units="km")
+    x_obj, grid = read_nc_file(
+        nc_fn,
+        utm_zone=model_utm,
+        shift_east=rel_shift_east,
+        shift_north=rel_shift_north,
+        units="km",
+    )
 
 # vp = np.nan_to_num(nc_obj.variables["vp"][:])
 # dvp = nc_obj.variables["dvp_ulberg_mask"][:]
@@ -277,4 +313,3 @@ else:
 #                     1730.0,
 #                     1202.0,
 #                     (dvp[zz, :, :]))
-

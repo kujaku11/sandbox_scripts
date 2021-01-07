@@ -18,8 +18,9 @@ import xarray as xr
 from shapely.geometry import Point
 from pyevtk.hl import pointsToVTK
 from mtpy.utils import gis_tools
+
 # =============================================================================
-# 
+#
 # =============================================================================
 fn = r"c:\Users\jpeacock\OneDrive - DOI\earth_models\Moho_Temperature.nc"
 
@@ -30,4 +31,3 @@ lon, lat = np.meshgrid(nc_obj.longitude, nc_obj.latitude)
 x = lon.ravel()
 y = lat.ravel()
 z = nc_obj.depth.values.ravel()
-        

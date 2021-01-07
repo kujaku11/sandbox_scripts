@@ -12,9 +12,7 @@ import os
 model_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_z05_c03_083.rho"
 
 
-save_path = (
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\depth_slices"
-)
+save_path = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\depth_slices"
 model_center = (45.650594, -118.562997)
 
 

@@ -21,12 +21,11 @@ gdf = gpd.read_file(fn)
 
 # trim data
 if bounds is not None:
-    gdf = gdf.cx[bounds["longitude"][0]:bounds["longitude"][1], 
-                 bounds["latitude"][0]:bounds["latitude"][1]]
-    
+    gdf = gdf.cx[
+        bounds["longitude"][0] : bounds["longitude"][1],
+        bounds["latitude"][0] : bounds["latitude"][1],
+    ]
+
 # reproject
 if project_to is not None:
     gdf = gdf.to_crs(**project_to)
-
-
-

@@ -214,13 +214,12 @@ if write_model:
 
     if not topography:
         mod_obj.plot_mesh()
-        
+
     # build 1D model
     if sm_1d is not None:
         for d1, d2, v in sm_1d:
             z_where = np.where((mod_obj.grid_z < d2) & (mod_obj.grid_z >= d1))
             mod_obj.res_model[:, :, z_where] = v
-    
 
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename=r"{0}_modem_sm_02.rho".format(fn_stem)

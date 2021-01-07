@@ -31,8 +31,9 @@ df = pd.read_csv(
 )
 
 df.columns = df.columns.str.lower()
-df.rename(columns={"lat": "latitude", "lon":"longitude", "depth km": "depth"},
-                  inplace=True)
+df.rename(
+    columns={"lat": "latitude", "lon": "longitude", "depth km": "depth"}, inplace=True
+)
 # df = df.loc[(df.latitude >= 38.5) &
 #             (df.latitude <= 39.24) &
 #             (df.longitude >= -118.65) &

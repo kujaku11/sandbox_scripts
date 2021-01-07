@@ -11,7 +11,9 @@ Created on Thu Dec 24 12:46:13 2020
 from pathlib import Path
 from mt_metadata.base import BaseDict
 
-p = Path(r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\mt_metadata\transfer_functions\emtf_xml")
+p = Path(
+    r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\mt_metadata\transfer_functions\emtf_xml"
+)
 
 json_list = []
 for fn in p.glob("*.csv"):
