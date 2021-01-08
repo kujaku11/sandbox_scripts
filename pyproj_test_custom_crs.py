@@ -15,10 +15,10 @@ crs_wgs84 = proj.Proj(init="epsg:4326")
 
 # custom CRS
 c_proj = "tmerc"
-c_lat = 40.75
+c_lat = 0
 c_lon = -113.25
 c_k = 0.9996
-c_bind_x = 0
+c_bind_x = 4511000
 c_bind_y = 0
 c_geoid = "WGS84"
 c_units = 'm'

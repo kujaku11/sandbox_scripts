@@ -264,7 +264,7 @@ nc_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_
 save_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020", 
                nc_fn.stem)
 points = False
-custom_crs = '+proj=tmerc +lat_0=40.75 +lon_0=-113.25 +k=0.9996 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs'
+custom_crs = '+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs'
 
 # northern CA/NV model center
 # model_center = (39.635149, -119.803946)
@@ -291,8 +291,8 @@ else:
 # rel_shift_north = -model_north + 105000.
 
 # CAS19 - CA/NV
-rel_shift_east = model_east
-rel_shift_north = model_north
+rel_shift_east = -model_east + 200000
+rel_shift_north = -model_north
 
 # wUS-SH-2010 - CA/NV
 # rel_shift_east = -model_east + 150000
