@@ -25,4 +25,4 @@ c_units = 'm'
 custom_crs_str = f"+proj={c_proj} +lat_0={c_lat} +lon_0={c_lon} +k={c_k} +x_0={c_bind_x} +y_0={c_bind_y} +ellps={c_geoid} +units={c_units} +no_defs"
 crs_custom = proj.Proj(custom_crs_str)
 
-print(proj.transform(crs_wgs84, crs_custom, -113.25, 40.75))
+print(proj.transform(crs_wgs84, crs_custom, -131, 31))

@@ -27,6 +27,8 @@ import pyproj as proj
 # =============================================================================
 # Useful functions
 # =============================================================================
+
+
 def project_grid(
     latitude,
     longitude,
@@ -39,7 +41,7 @@ def project_grid(
 ):
     """
     Project the model grid into UTM coordinates
-    
+
     :param latitude: latitude array
     :type latitude: np.ndarray
     :param longitude: longitude array
@@ -60,23 +62,47 @@ def project_grid(
         lower_left = gis_tools.project_point_ll2utm(
             latitude.min(), longitude.min(), utm_zone=utm_zone, epsg=epsg
         )
+        lower_right = gis_tools.project_point_ll2utm(
+            latitude.min(), longitude.max(), utm_zone=utm_zone, epsg=epsg
+        )
         upper_right = gis_tools.project_point_ll2utm(
             latitude.max(), longitude.max(), utm_zone=utm_zone, epsg=epsg
         )
+        upper_left = gis_tools.project_point_ll2utm(
+            latitude.max(), longitude.min(), utm_zone=utm_zone, epsg=epsg
+        )
+
         utm_zone = lower_left[-1]
     else:
         default_proj = proj.Proj(init="epsg:4326")
         custom_proj = proj.Proj(pyproj_str)
-        lower_left = proj.transform(default_proj, custom_proj, longitude.min(), latitude.min())
-        upper_right = proj.transform(default_proj, custom_proj, longitude.max(), latitude.max())
+        lower_left = proj.transform(
+            default_proj, custom_proj, longitude.min(), latitude.min())
+        lower_right = proj.transform(
+            default_proj, custom_proj, longitude.max(), latitude.min())
+        upper_right = proj.transform(
+            default_proj, custom_proj, longitude.max(), latitude.max())
+        upper_left = proj.transform(
+            default_proj, custom_proj, longitude.min(), latitude.max())
         utm_zone = "custom"
-    # this maybe a bit of hack if the cells do not have even spacing
+
+    # get corners
+    # not that since we have to have a regular grid we cannot take into account
+    # distortion of the cells caused by the given projection.  So we will look
+    # for the mean location.
+    left = np.array([lower_left[0], upper_left[0]]).mean()
+    right = np.array([lower_right[0], upper_right[0]]).mean()
+    bottom = np.array([lower_left[1], lower_right[1]]).mean()
+    top = np.array([upper_left[1], upper_right[1]]).mean()
+    print(left, right, bottom, top)
+    # this is hack to put the data on a regular grid
+    # if the cells do not have even spacing bummer.
     if points:
-        east = np.linspace(upper_right[0], lower_left[0], num=longitude.size)
-        north = np.linspace(upper_right[1], lower_left[1], num=latitude.size)
+        east = np.linspace(left, right, num=longitude.size)
+        north = np.linspace(bottom, top, num=latitude.size)
     else:
-        east = np.linspace(upper_right[0], lower_left[0], num=longitude.size + 1)
-        north = np.linspace(upper_right[1], lower_left[1], num=latitude.size + 1)
+        east = np.linspace(left, right, num=longitude.size + 1)
+        north = np.linspace(bottom, top, num=latitude.size + 1)
 
     east += shift_east
     north += shift_north
@@ -97,7 +123,7 @@ def read_nc_file(
 ):
     """
     Read NetCDF earth model file into UTM coordinates    
-    
+
     :param nc_file: full path to netCDF file
     :type nc_file: string or Path
     :type longitude: np.ndarray
@@ -111,7 +137,7 @@ def read_nc_file(
     :type shift_north: float, optional
     :return: east, north, utm_zone
     :rtype: float, float, string
-    
+
     """
     nc_file = Path(nc_file)
 
@@ -136,7 +162,8 @@ def read_nc_file(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords(
+            {"longitude": nc_obj.longitude.values[:] - 360})
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -152,9 +179,10 @@ def read_nc_file(
     for key, value in nc_obj.variables.items():
         if key in ["depth", "latitude", "longitude"]:
             continue
-        v_array = np.zeros((nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size))
+        v_array = np.zeros(
+            (nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size))
         for z_index in range(depth.size):
-            v_array[:, :, z_index] = value[z_index, ::-1, ::-1]
+            v_array[:, :, z_index] = value[z_index, :, :]
         values_dict[key] = v_array
 
     # need to add another cell to the depth
@@ -186,7 +214,7 @@ def read_nc_file_points(
 ):
     """
     Read NetCDF earth model file into UTM coordinates    
-    
+
     :param nc_file: full path to netCDF file
     :type nc_file: string or Path
     :type longitude: np.ndarray
@@ -200,7 +228,7 @@ def read_nc_file_points(
     :type shift_north: float, optional
     :return: east, north, utm_zone
     :rtype: float, float, string
-    
+
     """
     nc_file = Path(nc_file)
 
@@ -222,7 +250,8 @@ def read_nc_file_points(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords(
+            {"longitude": nc_obj.longitude.values[:] - 360})
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -260,8 +289,9 @@ def read_nc_file_points(
 # =============================================================================
 # test
 # =============================================================================
-nc_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_Casc19-VS.nc")
-save_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020", 
+nc_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_wUS-SH-2010_percent.nc")
+save_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020",
                nc_fn.stem)
 points = False
 custom_crs = '+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs'
@@ -281,7 +311,8 @@ if custom_crs is None:
 else:
     default_proj = proj.Proj(init="epsg:4326")
     custom_proj = proj.Proj(custom_crs)
-    model_east, model_north = proj.transform(default_proj, custom_proj, model_center[1], model_center[0])
+    model_east, model_north = proj.transform(
+        default_proj, custom_proj, model_center[1], model_center[0])
 
     utm_zone = "custom"
 
@@ -291,8 +322,8 @@ else:
 # rel_shift_north = -model_north + 105000.
 
 # CAS19 - CA/NV
-rel_shift_east = -model_east + 200000
-rel_shift_north = -model_north
+# rel_shift_east = -model_east + 150000
+# rel_shift_north = -model_north
 
 # wUS-SH-2010 - CA/NV
 # rel_shift_east = -model_east + 150000
@@ -301,6 +332,10 @@ rel_shift_north = -model_north
 # moho_temperature - CA/NV
 # rel_shift_east = -model_east + 150000
 # rel_shift_north = -model_north - 250000
+
+# WUS_2010 -> SWUS
+rel_shift_east = -model_east
+rel_shift_north = -model_north
 
 
 if points:
