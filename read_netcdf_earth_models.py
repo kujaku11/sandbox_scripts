@@ -21,6 +21,7 @@ import numpy as np
 
 import mtpy.utils.gis_tools as gis_tools
 from pyevtk.hl import gridToVTK, pointsToVTK
+import pyproj as proj
 
 # import mtpy.utils.array2raster as a2r
 # =============================================================================
@@ -34,6 +35,7 @@ def project_grid(
     shift_east=0.0,
     shift_north=0.0,
     points=False,
+    pyproj_str=None,
 ):
     """
     Project the model grid into UTM coordinates
@@ -54,14 +56,20 @@ def project_grid(
     :rtype: float, float, string
 
     """
-
-    lower_left = gis_tools.project_point_ll2utm(
-        latitude.min(), longitude.min(), utm_zone=utm_zone, epsg=epsg
-    )
-    upper_right = gis_tools.project_point_ll2utm(
-        latitude.max(), longitude.max(), utm_zone=utm_zone, epsg=epsg
-    )
-
+    if pyproj_str is None:
+        lower_left = gis_tools.project_point_ll2utm(
+            latitude.min(), longitude.min(), utm_zone=utm_zone, epsg=epsg
+        )
+        upper_right = gis_tools.project_point_ll2utm(
+            latitude.max(), longitude.max(), utm_zone=utm_zone, epsg=epsg
+        )
+        utm_zone = lower_left[-1]
+    else:
+        default_proj = proj.Proj(init="epsg:4326")
+        custom_proj = proj.Proj(pyproj_str)
+        lower_left = proj.transform(default_proj, custom_proj, longitude.min(), latitude.min())
+        upper_right = proj.transform(default_proj, custom_proj, longitude.max(), latitude.max())
+        utm_zone = "custom"
     # this maybe a bit of hack if the cells do not have even spacing
     if points:
         east = np.linspace(upper_right[0], lower_left[0], num=longitude.size)
@@ -73,7 +81,7 @@ def project_grid(
     east += shift_east
     north += shift_north
 
-    return east, north, lower_left[-1]
+    return east, north, utm_zone
 
 
 def read_nc_file(
@@ -81,6 +89,7 @@ def read_nc_file(
     vtk_fn=None,
     utm_zone=None,
     epsg=None,
+    crs=None,
     shift_east=0.0,
     shift_north=0.0,
     units="m",
@@ -133,6 +142,7 @@ def read_nc_file(
         nc_obj.longitude.values,
         utm_zone=utm_zone,
         epsg=epsg,
+        pyproj_str=crs,
         shift_east=shift_east,
         shift_north=shift_north,
     )
@@ -140,10 +150,9 @@ def read_nc_file(
 
     values_dict = {}
     for key, value in nc_obj.variables.items():
-        if key in ["latitude", "longitude"]:
+        if key in ["depth", "latitude", "longitude"]:
             continue
-        v_array = np.zeros((nc_obj.latitude.size, nc_obj.longitude.size, depth.size))
-
+        v_array = np.zeros((nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size))
         for z_index in range(depth.size):
             v_array[:, :, z_index] = value[z_index, ::-1, ::-1]
         values_dict[key] = v_array
@@ -151,11 +160,11 @@ def read_nc_file(
     # need to add another cell to the depth
     depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
     # print(depth.shape, grid_east.shape, grid_north.shape)
-    pointsToVTK(
+    gridToVTK(
         vtk_fn.as_posix(),
         grid_north * scale,
         grid_east * scale,
-        values_dict["depth"] * scale,
+        depth * scale,
         values_dict,
     )
 
@@ -168,6 +177,7 @@ def read_nc_file_points(
     vtk_fn=None,
     utm_zone=None,
     epsg=None,
+    crs=None,
     shift_east=0.0,
     shift_north=0.0,
     units="m",
@@ -218,6 +228,7 @@ def read_nc_file_points(
         nc_obj.longitude.values,
         utm_zone=utm_zone,
         epsg=epsg,
+        pyproj_str=crs,
         shift_east=shift_east,
         shift_north=shift_north,
         points=True,
@@ -249,20 +260,30 @@ def read_nc_file_points(
 # =============================================================================
 # test
 # =============================================================================
-nc_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\Moho_Temperature.nc")
-points = True
+nc_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_Casc19-VS.nc")
+save_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020", 
+               nc_fn.stem)
+points = False
+custom_crs = '+proj=tmerc +lat_0=40.75 +lon_0=-113.25 +k=0.9996 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs'
 
 # northern CA/NV model center
-model_center = (39.635149, -119.803946)
-model_utm = "11S"
+# model_center = (39.635149, -119.803946)
+# model_utm = "11S"
 
 # SWUS model
-model_center = (40.6425, -112.8255)
+model_center = (40.75, -113.25)
 model_utm = "11S"
 
-model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-    model_center[0], model_center[1], utm_zone=model_utm
-)
+if custom_crs is None:
+    model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
+        model_center[0], model_center[1], utm_zone=model_utm
+    )
+else:
+    default_proj = proj.Proj(init="epsg:4326")
+    custom_proj = proj.Proj(custom_crs)
+    model_east, model_north = proj.transform(default_proj, custom_proj, model_center[1], model_center[0])
+
+    utm_zone = "custom"
 
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
@@ -270,22 +291,24 @@ model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
 # rel_shift_north = -model_north + 105000.
 
 # CAS19 - CA/NV
-# rel_shift_east = -model_east + 150000 + 25000.
-# rel_shift_north = -model_north - 100000 + 25000.
+rel_shift_east = model_east
+rel_shift_north = model_north
 
 # wUS-SH-2010 - CA/NV
 # rel_shift_east = -model_east + 150000
 # rel_shift_north = -model_north - 100000
 
 # moho_temperature - CA/NV
-rel_shift_east = -model_east + 150000
-rel_shift_north = -model_north - 250000
+# rel_shift_east = -model_east + 150000
+# rel_shift_north = -model_north - 250000
 
 
 if points:
     x_obj, grid = read_nc_file_points(
         nc_fn,
+        vtk_fn=save_fn,
         utm_zone=model_utm,
+        crs=custom_crs,
         shift_east=rel_shift_east,
         shift_north=rel_shift_north,
         units="km",
@@ -293,7 +316,9 @@ if points:
 else:
     x_obj, grid = read_nc_file(
         nc_fn,
+        vtk_fn=save_fn,
         utm_zone=model_utm,
+        crs=custom_crs,
         shift_east=rel_shift_east,
         shift_north=rel_shift_north,
         units="km",
