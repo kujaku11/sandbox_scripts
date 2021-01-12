@@ -8,13 +8,14 @@ Created on Wed Jan  6 19:37:03 2021
 :license: MIT
 
 """
-
+from pathlib import Path
 import geopandas as gpd
-from pyevtk.hl import polyLinesToVTK
+from gtv.files.shp import FileShp
 
-fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\qfaults.shp"
-bounds = {"longitude": (-123, -114), "latitude": (37, 42)}
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\qfaults.shp")
+bounds = {"longitude": (-124, -103), "latitude": (31, 42)}
 project_to = {"epsg": 26911}
+custom_crs = '+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs'
 
 # read in file
 gdf = gpd.read_file(fn)
@@ -29,3 +30,15 @@ if bounds is not None:
 # reproject
 if project_to is not None:
     gdf = gdf.to_crs(**project_to)
+    
+# make local shape file
+temp_fn = Path(fn.parent, "temp.shp")
+gdf.to_file(temp_fn)
+
+f = FileShp.read(temp_fn)
+f.toVTK(Path(fn.parent, fn.stem).as_posix())
+
+
+
+    
+

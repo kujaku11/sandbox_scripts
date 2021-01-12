@@ -10,8 +10,9 @@ Created on Mon Apr 25 17:20:17 2016
 import os
 from pathlib import Path
 import numpy as np
-import mtpy.modeling.modem as modem
-import mtpy.core.mt as mt
+from mtpy.modeling import modem
+from mtpy.core import mt
+from mtpy.core import mt_collection
 
 # =============================================================================
 # Parameters
@@ -20,26 +21,27 @@ import mtpy.core.mt as mt
 #     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_02\edi_files"
 # )
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
+csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\all_mt_stations.csv"
 save_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_04"
+    r"c:\Users\jpeacock\OneDrive - DOI\ca_volcanoes\modem_inv"
 )
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 
-fn_stem = "gb"
+fn_stem = "cav"
 
-# bounds = {"lat": np.array([37.25, 41.5]), "lon": np.array([-124.5, -114.5])}
-bounds = {"lat": np.array([39.25, 39.35]), "lon": np.array([-120.25, -119.975])}
+bounds = {"lat": np.array([31, 41.5]), "lon": np.array([-124.5, -114.5])}
 
 avg_radius = 10000
+model_epsg = 32611
 
 # directives on what to do
-write_data = False
+write_data = True
 write_model = True
 write_cov = True
 write_cfg = False
 topography = True
 center_stations = True
-new_edis = False
+new_edis = True
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if write_data and dfn.exists():
@@ -52,21 +54,14 @@ if not save_path.exists():
 # =============================================================================
 if not dfn.exists():
     if bounds is not None:
-        edi_list = [fn for fn in list(edi_path.glob("*.edi"))]
-        s_edi_list = []
-        mt_list = []
-        for edi in edi_list:
-            mt_obj = mt.MT(edi)
-            if (
-                mt_obj.latitude >= bounds["lat"].min()
-                and mt_obj.latitude <= bounds["lat"].max()
-            ):
-                if (
-                    mt_obj.longitude >= bounds["lon"].min()
-                    and mt_obj.longitude <= bounds["lon"].max()
-                ):
-                    s_edi_list.append(edi)
-                    mt_list.append(mt_obj)
+        mc = mt_collection.MTCollection()
+        mc.from_csv(csv_fn)
+        bbox_df = mc.apply_bbox(bounds['lon'].min(),
+                                bounds['lon'].max(),
+                                bounds['lat'].min(),
+                                bounds['lat'].max())
+
+        s_edi_list = bbox_df.fn.to_list()
     else:
         s_edi_list = list(edi_path.glob("*.edi"))
 
@@ -82,7 +77,7 @@ if not dfn.exists():
     data_obj.error_type_tipper = "abs_floor"
     data_obj.error_value_tipper = 0.02
     data_obj.inv_mode = "1"
-    data_obj.model_epsg = 32611
+    data_obj.model_epsg = model_epsg
     data_obj.data_array = data_obj.fill_data_array(data_obj.mt_dict)
 
     # --> here is where you can rotate the data
@@ -113,9 +108,11 @@ if not dfn.exists():
                 ]
                 if len(avg_z["lat"]) > 1:
                     mt_avg = mt.MT()
-                    avg_z["z"][np.where(avg_z["z"] == 0 + 0j)] = np.nan + 1j * np.nan
+                    avg_z["z"][np.where(avg_z["z"] == 0 + 0j)
+                               ] = np.nan + 1j * np.nan
                     avg_z["z_err"][np.where(avg_z["z_err"] == 0)] = np.nan
-                    avg_z["tip"][np.where(avg_z["z"] == 0 + 0j)] = np.nan + 1j * np.nan
+                    avg_z["tip"][np.where(
+                        avg_z["z"] == 0 + 0j)] = np.nan + 1j * np.nan
                     avg_z["tip_err"][np.where(avg_z["z_err"] == 0)] = np.nan
 
                     mt_avg.Z = mt.MTz.Z(
@@ -133,7 +130,8 @@ if not dfn.exists():
                     mt_avg.elevation = avg_z["elev"].mean()
                     mt_avg.station = f"AVG{count:03}"
                     mt_avg.station_metadata.comments = (
-                        "avgeraged_stations = " + ",".join(avg_z["station"].tolist())
+                        "avgeraged_stations = " +
+                        ",".join(avg_z["station"].tolist())
                     )
                     mt_avg.write_mt_file(save_dir=save_path)
 
@@ -147,23 +145,21 @@ if not dfn.exists():
 
     data_obj.write_data_file(
         save_path=save_path,
-        fn_basename="{0}_modem_data_z{1:02.0f}_t{2:02.0f}.dat".format(
-            fn_stem, data_obj.error_value_z, 100 * data_obj.error_value_tipper
-        ),
+        fn_basename=f"{fn_stem}_modem_data_z{data_obj.error_value_z:02.0f}_t{100 * data_obj.error_value_tipper:02.0f}.dat",
         fill=False,
         new_edis=new_edis,
     )
 else:
     data_obj = modem.Data()
     data_obj.read_data_file(dfn)
-    data_obj.model_epsg = 32611
+    data_obj.model_epsg = model_epsg
 # ==============================================================================
 # First make the mesh
 # ==============================================================================
 if write_model:
     mod_obj = modem.Model(stations_object=data_obj.station_locations)
-    mod_obj.cell_size_east = 5000
-    mod_obj.cell_size_north = 5000.0
+    mod_obj.cell_size_east = 6000
+    mod_obj.cell_size_north = 6000.0
     mod_obj.pad_num = 3
     mod_obj.pad_east = 10
     mod_obj.pad_north = 10
@@ -176,7 +172,7 @@ if write_model:
     mod_obj.pad_z = 9
     mod_obj.n_layers = 65
     mod_obj.n_air_layers = None
-    mod_obj.z1_layer = 50
+    mod_obj.z1_layer = 30
     mod_obj.z_target_depth = 120000.0
     mod_obj.z_bottom = 300000.0
     mod_obj.res_initial_value = 100.0
@@ -216,13 +212,12 @@ if write_model:
         )
     )
 
-### =============================================================================
-### Add topography
-### =============================================================================
+# =============================================================================
+# Add topography
+# =============================================================================
 if topography:
     mod_obj.data_obj = data_obj
-    mod_obj.station_locations.model_utm_zone = "11S"
-    mod_obj.station_locations.model_epsg = None
+    mod_obj.station_locations.model_epsg = model_epsg
     mod_obj.add_topography_to_model2(
         topo_fn, airlayer_type="log_down", max_elev=1150, shift_north=50000
     )
@@ -235,9 +230,9 @@ if topography:
     data_obj.center_stations(mod_obj.model_fn)
     sx, sy = data_obj.project_stations_on_topography(mod_obj)
 
-##==============================================================================
-## make the covariance file
-##==============================================================================
+# ==============================================================================
+# make the covariance file
+# ==============================================================================
 if write_cov:
     cov = modem.Covariance(grid_dimensions=mod_obj.res_model.shape)
     cov.smoothing_east = 0.4
