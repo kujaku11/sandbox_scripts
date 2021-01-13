@@ -31,17 +31,17 @@ fn_stem = "cav"
 
 bounds = {"lat": np.array([31, 41.5]), "lon": np.array([-124.5, -114.5])}
 
-avg_radius = 10000
+avg_radius = 5000
 model_epsg = 32611
 
 # directives on what to do
-write_data = False
+write_data = True
 write_model = True
 write_cov = True
 write_cfg = False
 topography = True
 center_stations = True
-new_edis = False
+new_edis = True
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if write_data and dfn.exists():
@@ -133,12 +133,18 @@ if not dfn.exists():
                         "avgeraged_stations = " +
                         ",".join(avg_z["station"].tolist())
                     )
-                    mt_avg.write_mt_file(save_dir=save_path)
+                    mt_avg.write_mt_file(save_dir=save_path.joinpath("new_edis"))
 
                     s_list.append(
                         {"count": count, "stations": avg_z["station"].tolist()}
                     )
                     count += 1
+                    
+                    # remove averaged stations
+                    data_obj.remove_station(avg_z["station"].tolist())
+                    
+                    # add averaged station
+                    data_obj.add_station(mt_object=mt_avg)
 
                 else:
                     continue
@@ -218,8 +224,7 @@ if topography:
     mod_obj.station_locations.model_epsg = model_epsg
     mod_obj.add_topography_to_model2(
         topo_fn, 
-        airlayer_type="log_down", 
-        max_elev=1150, 
+        airlayer_type="log_down",  
         shift_north=0.0,
         shift_east=20000
     )
