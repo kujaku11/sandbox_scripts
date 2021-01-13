@@ -35,13 +35,13 @@ avg_radius = 10000
 model_epsg = 32611
 
 # directives on what to do
-write_data = True
+write_data = False
 write_model = True
 write_cov = True
 write_cfg = False
 topography = True
 center_stations = True
-new_edis = True
+new_edis = False
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if write_data and dfn.exists():
@@ -158,8 +158,8 @@ else:
 # ==============================================================================
 if write_model:
     mod_obj = modem.Model(stations_object=data_obj.station_locations)
-    mod_obj.cell_size_east = 6000
-    mod_obj.cell_size_north = 6000.0
+    mod_obj.cell_size_east = 5000
+    mod_obj.cell_size_north = 5000.0
     mod_obj.pad_num = 3
     mod_obj.pad_east = 10
     mod_obj.pad_north = 10
@@ -167,10 +167,8 @@ if write_model:
     mod_obj.z_mesh_method = "new"
     mod_obj.pad_stretch_h = 1.11
     mod_obj.pad_stretch_v = 1.25
-    mod_obj.ew_ext = 350000.0
-    mod_obj.ns_ext = 350000.0
     mod_obj.pad_z = 9
-    mod_obj.n_layers = 65
+    mod_obj.n_layers = 70
     mod_obj.n_air_layers = None
     mod_obj.z1_layer = 30
     mod_obj.z_target_depth = 120000.0
@@ -219,7 +217,11 @@ if topography:
     mod_obj.data_obj = data_obj
     mod_obj.station_locations.model_epsg = model_epsg
     mod_obj.add_topography_to_model2(
-        topo_fn, airlayer_type="log_down", max_elev=1150, shift_north=50000
+        topo_fn, 
+        airlayer_type="log_down", 
+        max_elev=1150, 
+        shift_north=0.0,
+        shift_east=20000
     )
     mod_obj.write_model_file(
         model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem)

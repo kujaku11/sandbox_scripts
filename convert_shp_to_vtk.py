@@ -12,10 +12,14 @@ from pathlib import Path
 import geopandas as gpd
 from gtv.files.shp import FileShp
 
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\qfaults.shp")
-bounds = {"longitude": (-124, -103), "latitude": (31, 42)}
+fn = Path(r"c:\Users\jpeacock\Downloads\GIS\us_states_land.shp")
+#bounds = {"longitude": (-128, -100), "latitude": (50, 70)}
+bounds = None
 project_to = {"epsg": 26911}
 custom_crs = '+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs'
+# bounds = None
+# project_to = None
+# custom_crs = None
 
 # read in file
 gdf = gpd.read_file(fn)
@@ -29,15 +33,17 @@ if bounds is not None:
 
 # reproject
 if project_to is not None:
-    gdf = gdf.to_crs(**project_to)
+    gdf = gdf.to_crs(custom_crs)
     
-# make local shape file
-temp_fn = Path(fn.parent, "temp.shp")
-gdf.to_file(temp_fn)
-
-f = FileShp.read(temp_fn)
-f.toVTK(Path(fn.parent, fn.stem).as_posix())
-
+    # make local shape file
+    temp_fn = Path(fn.parent, "temp.shp")
+    gdf.to_file(temp_fn)
+    
+    f = FileShp.read(temp_fn)
+    f.toVTK(Path(fn.parent, fn.stem).as_posix())
+else:
+    f = FileShp.read(fn)
+    f.toVTK(Path(fn.parent, fn.stem).as_posix())
 
 
     
