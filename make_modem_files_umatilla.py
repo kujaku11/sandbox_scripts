@@ -11,7 +11,7 @@ import os
 import numpy as np
 from pathlib import Path
 import mtpy.modeling.modem as modem
-import mtpy.core.mt as mt
+from mtpy.core import mt_collection
 
 # ==============================================================================
 # Inputs
@@ -19,6 +19,7 @@ import mtpy.core.mt as mt
 edi_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\new_edis"
 )
+csv_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\all_mt_stations_02.csv")
 save_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\\Geothermal\Umatilla\modem_inv\inv_09"
 )
@@ -26,49 +27,51 @@ topo_fn = (
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\dem\umatilla_dem_200m.txt"
 )
 fn_stem = "um"
-dfn = save_path.joinpath("{0}_modem_data_z05.dat".format(fn_stem))
+dfn = save_path.joinpath("{0}_modem_data_z05_topo_edit.dat".format(fn_stem))
 
 # Geothermal Zone
-# bounds = {"lat": np.array([45.593, 45.7]),
-#           "lon": np.array([-118.69, -118.409])}
+bounds = {"lat": np.array([45.25, 45.75]), "lon": np.array([-118.8, -118.3])}
 # zone 00
 # bounds = {"lat": np.array([45.65, 45.6833]),
 #           "lon": np.array([-118.591666, -118.55])}
-bounds = None
 
 # 1D starting model (bottom depth, resistivity)
-sm_1d = [(0, 20, 10), (20, 500, 500), (500, 2000, 50)]
+# sm_1d = [(0, 20, 10), (20, 500, 500), (500, 2000, 50)]
+sm_1d = None
 
-
+avg_radius = None
+model_epsg = 32611
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 
-write_data = True
+write_data = False
 write_model = True
-write_cov = False
+write_cov = True
 write_cfg = False
-topography = False
-center_stations = True
+topography = True
+center_stations = False
 new_edis = True
+
+if write_data and dfn.exists():
+    os.remove(dfn)
+
+if not save_path.exists():
+    save_path.mkdir()
 # ==============================================================================
 # Make the data file
 # ==============================================================================
 if write_data:
     if bounds is not None:
-        s_edi_list = []
-        mt_list = []
-        for edi in edi_path.glob("*.edi"):
-            mt_obj = mt.MT(edi)
-            if (
-                mt_obj.latitude >= bounds["lat"].min()
-                and mt_obj.latitude <= bounds["lat"].max()
-            ):
-                if (
-                    mt_obj.longitude >= bounds["lon"].min()
-                    and mt_obj.longitude <= bounds["lon"].max()
-                ):
-                    s_edi_list.append(edi)
-                    mt_list.append(mt_obj)
+        mc = mt_collection.MTCollection()
+        mc.from_csv(csv_fn)
+        bbox_df = mc.apply_bbox(
+            bounds["lon"].min(),
+            bounds["lon"].max(),
+            bounds["lat"].min(),
+            bounds["lat"].max(),
+        )
+
+        s_edi_list = bbox_df.fn.to_list()
     else:
         s_edi_list = list(edi_path.glob("*.edi"))
     # make a list of periods to invert over that are spaced evenly in log space
@@ -85,7 +88,7 @@ if write_data:
     data_obj.error_type_tipper = "abs_floor"
     data_obj.error_value_tipper = 0.03
 
-    data_obj.model_epsg = 32611
+    data_obj.model_epsg = model_epsg
 
     # set inversion mode
     data_obj.inv_mode = "2"
@@ -130,7 +133,7 @@ if write_data:
 else:
     data_obj = modem.Data()
     data_obj.read_data_file(dfn)
-    data_obj.model_epsg = 32611
+    data_obj.model_epsg = model_epsg
 # ==============================================================================
 # First make the mesh
 # ==============================================================================
@@ -138,12 +141,12 @@ if write_model:
     mod_obj = modem.Model(data_obj.station_locations)
 
     # cell size inside the station area
-    mod_obj.cell_size_east = 50
-    mod_obj.cell_size_north = 50
+    mod_obj.cell_size_east = 250
+    mod_obj.cell_size_north = 250
 
     # number of cell_size cells outside the station area.  This is to reduce the
     # effect of changin cell sized outside the station area
-    mod_obj.pad_num = 8
+    mod_obj.pad_num = 5
 
     # number of padding cells going from edge of station area to ns_ext or ew_ext
     mod_obj.pad_east = 8
@@ -151,9 +154,9 @@ if write_model:
 
     # extension of the model in E-W direction or N-S direction and depth
     # should be large enough to reduce edge effects
-    mod_obj.ew_ext = 40000
-    mod_obj.ns_ext = 40000
-    mod_obj.z_bottom = 40000
+    mod_obj.ew_ext = 150000
+    mod_obj.ns_ext = 150000
+    mod_obj.z_bottom = 100000
     mod_obj.pad_stretch_h = 1.13
     mod_obj.pad_stretch_v = 1.3
 
@@ -165,7 +168,7 @@ if write_model:
     mod_obj.pad_z = 8
 
     # number of layers
-    mod_obj.n_layers = 50
+    mod_obj.n_layers = 35
     mod_obj.n_air_layers = 30
 
     # thickness of 1st layer.  If you are not using topography or the topography
@@ -242,7 +245,10 @@ if center_stations:
 ### =============================================================================
 if topography:
     mod_obj.data_obj = data_obj
-    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="log_down")
+    mod_obj.add_topography_to_model2(
+        topo_fn, airlayer_type="log_down", shift_north=-10300
+    )
+    mod_obj.res_model[:, -1, :] = mod_obj.res_model[:, -2, :]
     mod_obj.write_model_file(
         model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem)
     )

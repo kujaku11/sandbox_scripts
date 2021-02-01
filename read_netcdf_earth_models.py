@@ -77,13 +77,17 @@ def project_grid(
         default_proj = proj.Proj(init="epsg:4326")
         custom_proj = proj.Proj(pyproj_str)
         lower_left = proj.transform(
-            default_proj, custom_proj, longitude.min(), latitude.min())
+            default_proj, custom_proj, longitude.min(), latitude.min()
+        )
         lower_right = proj.transform(
-            default_proj, custom_proj, longitude.max(), latitude.min())
+            default_proj, custom_proj, longitude.max(), latitude.min()
+        )
         upper_right = proj.transform(
-            default_proj, custom_proj, longitude.max(), latitude.max())
+            default_proj, custom_proj, longitude.max(), latitude.max()
+        )
         upper_left = proj.transform(
-            default_proj, custom_proj, longitude.min(), latitude.max())
+            default_proj, custom_proj, longitude.min(), latitude.max()
+        )
         utm_zone = "custom"
 
     # get corners
@@ -162,8 +166,7 @@ def read_nc_file(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords(
-            {"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -180,7 +183,8 @@ def read_nc_file(
         if key in ["depth", "latitude", "longitude"]:
             continue
         v_array = np.zeros(
-            (nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size))
+            (nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size)
+        )
         for z_index in range(depth.size):
             v_array[:, :, z_index] = value[z_index, :, :]
         values_dict[key] = v_array
@@ -250,8 +254,7 @@ def read_nc_file_points(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords(
-            {"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -290,11 +293,13 @@ def read_nc_file_points(
 # test
 # =============================================================================
 nc_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_wUS-SH-2010_percent.nc")
-save_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020",
-               nc_fn.stem)
+    r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_wUS-SH-2010_percent.nc"
+)
+save_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020", nc_fn.stem
+)
 points = False
-custom_crs = '+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs'
+custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
 
 # northern CA/NV model center
 # model_center = (39.635149, -119.803946)
@@ -312,7 +317,8 @@ else:
     default_proj = proj.Proj(init="epsg:4326")
     custom_proj = proj.Proj(custom_crs)
     model_east, model_north = proj.transform(
-        default_proj, custom_proj, model_center[1], model_center[0])
+        default_proj, custom_proj, model_center[1], model_center[0]
+    )
 
     utm_zone = "custom"
 

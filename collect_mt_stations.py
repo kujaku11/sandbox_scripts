@@ -21,7 +21,7 @@ import xarray as xr
 from mtpy.core import mt
 
 # =============================================================================
-# 
+#
 # =============================================================================
 class MTCollection:
     """
@@ -30,8 +30,7 @@ class MTCollection:
 
     def __init__(self, mt_path=None):
         self.mt_path = self.check_path(mt_path)
-        
-    
+
     def check_path(self, mt_path):
         if mt_path is None:
             return None
@@ -40,7 +39,7 @@ class MTCollection:
             if not mt_path.exists():
                 raise IOError(f"{mt_path} does not exists")
             return mt_path
-    
+
     def create_mt_file_list(self, mt_path, file_types=[".edi"]):
         """
         Get a list of MT file from a given path
@@ -61,15 +60,12 @@ class MTCollection:
         self.mt_path = self.check_path(mt_path)
         if self.mt_path is None:
             return None
-        
+
         fn_list = []
         for ext in file_types:
             fn_list += list(self.mt_path.glob(ext))
-            
+
         return fn_list
-        
-        
-        
 
 
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
@@ -88,11 +84,11 @@ for fn in edi_path.glob("*.edi"):
     entry["longitude"] = m.longitude
     entry["elevation"] = m.elevation
     entry["acquired_by"] = m.station_metadata.acquired_by.author
-    entry["period_min"] = 1./m.Z.freq.max()
-    entry["period_max"] = 1./m.Z.freq.min()
+    entry["period_min"] = 1.0 / m.Z.freq.max()
+    entry["period_max"] = 1.0 / m.Z.freq.min()
     entry["file_date"] = m.station_metadata.provenance.creation_time
     entry["survey"] = m.survey_metadata.survey_id
-    
+
     # add entry to list to put into data frame
     station_list.append(entry)
 
@@ -123,8 +119,3 @@ for ii, row in sdf.iterrows():
 gdf = gpd.GeoDataFrame(sdf, crs=coordinate_system, geometry=geometry_list)
 gdf.fn = gdf.fn.astype("str")
 gdf.to_file(edi_path.joinpath("all_mt_stations.shp"))
-
-    
-    
-    
-
