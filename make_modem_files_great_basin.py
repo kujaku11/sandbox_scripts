@@ -17,29 +17,28 @@ from mtpy.core import mt_collection
 # =============================================================================
 # Parameters
 # =============================================================================
-# edi_path = Path(
-#     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\inv_02\edi_files"
-# )
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
 csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\all_mt_stations.csv"
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ca_volcanoes\modem_inv")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ca_volcanoes\modem_inv\inv_01")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 
-fn_stem = "cav"
+fn_stem = "canv"
 
 bounds = {"lat": np.array([31, 42.3]), "lon": np.array([-124.6, -113.8])}
+# bounds = None
 
-avg_radius = 5000
+avg_radius = 6000
 model_epsg = 32611
+model_utm_zone = "11S"
 
 # directives on what to do
-write_data = False
+write_data = True
 write_model = True
 write_cov = True
 write_cfg = False
 topography = True
-center_stations = True
-new_edis = False
+center_stations = False
+new_edis = True
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02_topo.dat".format(fn_stem))
 if write_data and dfn.exists():
@@ -58,6 +57,7 @@ if not dfn.exists():
     # =============================================================================
     if not dfn.exists():
         if bounds is not None:
+            print("found bounds")
             mc = mt_collection.MTCollection()
             mc.from_csv(csv_fn)
             bbox_df = mc.apply_bbox(
@@ -79,6 +79,7 @@ if not dfn.exists():
     data_obj.error_value_tipper = 0.02
     data_obj.inv_mode = "1"
     data_obj.model_epsg = model_epsg
+    data_obj.model_utm_zone = model_utm_zone
     data_obj.data_array = data_obj.fill_data_array(data_obj.mt_dict)
 
     # --> here is where you can rotate the data
@@ -86,6 +87,7 @@ if not dfn.exists():
 
     # # check for multiple stations in single cell
     if new_edis:
+        print("--- averaging stations ---")
         r = avg_radius
         count = 1
         s_list = []
@@ -131,7 +133,8 @@ if not dfn.exists():
                     mt_avg.station_metadata.comments = (
                         "avgeraged_stations = " + ",".join(avg_z["station"].tolist())
                     )
-                    mt_avg.write_mt_file(save_dir=save_path.joinpath("new_edis"))
+                    edi_obj = mt_avg.write_mt_file(save_dir=save_path.joinpath("new_edis"))
+                    print(f"wrote average file {edi_obj.fn}")
 
                     s_list.append(
                         {"count": count, "stations": avg_z["station"].tolist()}
@@ -209,8 +212,9 @@ if write_model:
 if topography:
     mod_obj.data_obj = data_obj
     mod_obj.station_locations.model_epsg = model_epsg
+    mod_obj.station_locations.model_utm_zone = model_utm_zone
     mod_obj.add_topography_to_model2(
-        topo_fn, airlayer_type="log_down", shift_north=0, shift_east=25000
+        topo_fn, airlayer_type="log_down", shift_north=0, shift_east=0
     )
     mod_obj.write_model_file(
         model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem)
@@ -218,7 +222,8 @@ if topography:
     mod_obj.plot_topography()
 
     # change data file to have relative topography
-    data_obj.center_stations(mod_obj.model_fn)
+    if center_stations:
+        data_obj.center_stations(mod_obj)
     sx, sy = data_obj.project_stations_on_topography(mod_obj)
 
 # ==============================================================================
