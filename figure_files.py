@@ -4,23 +4,24 @@ Created on Tue Jul 14 13:54:55 2015
 
 @author: jpeacock
 """
+from pathlib import Path
 import os
 import subprocess
 
 
 def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe="gs"):
-    current_dir = os.getcwd()
-    dir_path = os.path.abspath(os.path.dirname(input_fn))
+    current_dir = Path.cwd()
+    dir_path = input_fn.parent
     os.chdir(dir_path)
 
-    fn_in = os.path.basename(input_fn)
+    fn_in = Path(input_fn.name)
 
     if output_fn is None:
-        output_fn = "{0}_small.pdf".format(fn_in[:-4])
+        output_fn = f"{fn_in.stem}_small.pdf"
 
     if crop is True:
-        fn_crop = "{0}_crop0.pdf".format(fn_in[:-4])
-        std_out = subprocess.check_call(["pdfcrop", fn_in, fn_crop])
+        fn_crop = Path(f"{fn_in.stem}_crop0.pdf")
+        std_out = subprocess.check_call(["pdfcrop", str(fn_in), str(fn_crop)])
     else:
         fn_crop = fn_in
 
@@ -34,18 +35,18 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe="gs"):
             "-dNOPAUSE",
             "-dQUIET",
             "-dBATCH",
-            "-sOutputFile={0}".format(output_fn),
-            fn_crop,
+            f"-sOutputFile={output_fn}",
+            str(fn_crop),
         ]
     )
     if crop:
-        os.remove(fn_crop)
+        fn_crop.unlink()
     if std_out == 0:
-        print("converted {0} to {1}".format(fn_in, output_fn))
+        print(f"converted {fn_in} to {output_fn}")
         os.chdir(current_dir)
         return output_fn
 
-
-for fn in [r"c:\Users\jpeacock\OneDrive - DOI\Geysers\jvgr\gz_pt_summary.pdf"]:
-
+fn_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019")
+pdf_list = list(fn_path.glob("*.pdf"))
+for fn in pdf_list:
     new_fn = pdf_file_reduce_size(fn, crop=False, gs_exe="gswin64c")
