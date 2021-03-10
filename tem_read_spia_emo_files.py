@@ -23,10 +23,12 @@ from mtpy.imaging import mtcolors
 # =============================================================================
 #
 # =============================================================================
+
+
 class TEMEMO:
     """
     class to hold .emo files
-    
+
     """
 
     def __init__(self, fn=None):
@@ -46,8 +48,10 @@ class TEMEMO:
         self.elevation = None
         self.norms = None
         self.model_date = None
+        self.name = None
 
-        self.channel_dict = {1: "HM-RC005", 2: "HM-RC200", 3: "LM-RC005", 4: "LM-RC200"}
+        self.channel_dict = {1: "HM-RC005",
+                             2: "HM-RC200", 3: "LM-RC005", 4: "LM-RC200"}
 
     @property
     def fn(self):
@@ -70,6 +74,8 @@ class TEMEMO:
 
         if not self.fn.exists():
             raise ValueError(f"File {self.fn} does not exist")
+            
+        self.name = self.fn.parts[-2]
 
         lines = self.fn.read_text().split("\n")
         model_index = 0
@@ -83,13 +89,14 @@ class TEMEMO:
         # print(f"Model Index = {model_index}")
         # can't fucking parse the header cause its not standard, just store
         # as a list of strings.
-        self.model_parameters = lines[0 : model_index - 1]
+        self.model_parameters = lines[0: model_index - 1]
         date_list = self.model_parameters[5].strip().split()
         date = "-".join(date_list[1].split(".")[::-1])
         self.model_date = f"{date}T{date_list[0]}"
 
         # get norms/rms
-        norm_keys = lines[norm_index + 1].strip().replace("_#", "").lower().split()
+        norm_keys = lines[norm_index + 1].strip().replace("_#",
+                                                          "").lower().split()
         norm_dict = dict([(k, []) for k in norm_keys])
         for ii in range(norm_index + 2, model_index, 1):
             values = [float(vv) for vv in lines[ii].strip().split()]
@@ -129,15 +136,16 @@ class TEMEMO:
         # read data
         data_index = 0
         for ii, line in enumerate(
-            lines[model_index + max_iter :], model_index + max_iter
+            lines[model_index + max_iter:], model_index + max_iter
         ):
             if line.startswith("Data"):
                 data_index = ii
                 break
         # print(f"Data Index = {data_index}")
-        data_header = lines[data_index + 2].strip().replace("#", "").lower().split()
+        data_header = lines[data_index +
+                            2].strip().replace("#", "").lower().split()
         data = dict([(key, []) for key in data_header])
-        for line in lines[data_index + 3 :]:
+        for line in lines[data_index + 3:]:
             if "data" in line.lower():
                 continue
             values = line.strip().split()
@@ -148,8 +156,10 @@ class TEMEMO:
         self.data = pd.DataFrame(data)
 
         # get DOI
-        self.doi_absolute = np.array([float(ii) for ii in lines[-4].strip().split()])
-        self.doi_relative = np.array([float(ii) for ii in lines[-2].strip().split()])
+        self.doi_absolute = np.array([float(ii)
+                                      for ii in lines[-4].strip().split()])
+        self.doi_relative = np.array([float(ii)
+                                      for ii in lines[-2].strip().split()])
 
         # get resistivity
         res_keys = [col for col in self.model.columns if "res" in col]
@@ -158,7 +168,8 @@ class TEMEMO:
         # get depth
         thick_keys = [col for col in self.model.columns if "thic" in col]
         self.depth = self.model.iloc[-1][thick_keys].values
-        self.depth = [0] + [self.depth[0:ii].sum() for ii in range(self.depth.size)]
+        self.depth = [0] + [self.depth[0:ii].sum()
+                            for ii in range(self.depth.size)]
         self.depth = np.array(self.depth)
         self.elevation = np.array(self.depth) - self.location["elevation"]
 
@@ -174,7 +185,8 @@ class TEMEMO:
         plot data and models
         """
         if iteration is None:
-            iteration = sorted([col for col in self.data.columns if "ite" in col])[-1]
+            iteration = sorted(
+                [col for col in self.data.columns if "ite" in col])[-1]
             print(f"Using iteration column: {iteration}")
         gs = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=(1, 2))
 
@@ -287,7 +299,8 @@ class TEMEMO:
         # set axis labels
         f_dict = {"size": 12}
         ax_t.set_xlabel("Time [s]", fontdict=f_dict)
-        ax_t.set_ylabel(r"$\frac{dB}{dt}$ [$\frac{mV}{A \cdot m^4}$]", fontdict=f_dict)
+        ax_t.set_ylabel(
+            r"$\frac{dB}{dt}$ [$\frac{mV}{A \cdot m^4}$]", fontdict=f_dict)
         ax_d.set_xlabel(r"Resistivity [$\Omega \cdot m$]", fontdict=f_dict)
         ax_d.set_ylabel("Elevation [m]", fontdict=f_dict)
 
@@ -296,7 +309,8 @@ class TEMEMO:
 
         # plot title
         if title is not None:
-            fig.suptitle(f"{title}; RMS = {self.norms.iloc[-1].total}", fontdict=f_dict)
+            fig.suptitle(
+                f"{title}; RMS = {self.norms.iloc[-1].total}", fontdict=f_dict)
             fig.subplots_adjust(top=0.92)
 
         # fig.show()
@@ -324,14 +338,16 @@ class EMOCollection:
     def fn_list(self, fn_list):
         if not isinstance(fn_list, (list, tuple, np.ndarray)):
             raise ValueError(
-                "Input must be a list of SPIA .emo files, " + f" not {type(fn_list)}"
+                "Input must be a list of SPIA .emo files, " +
+                f" not {type(fn_list)}"
             )
 
         for ii, fn in enumerate(fn_list):
             if not isinstance(fn, Path):
                 fn_list[ii] = Path(fn)
                 if fn_list[ii].suffix.lower() not in [".emo"]:
-                    raise ValueError("Input must be a SPIA .emo files, " + f" not {fn}")
+                    raise ValueError(
+                        "Input must be a SPIA .emo files, " + f" not {fn}")
 
         self._fn_list = fn_list
 
@@ -366,7 +382,7 @@ class EMOCollection:
             direction[ii]["easting"] = self.emo_list[ii].location["easting"]
             direction[ii]["northing"] = self.emo_list[ii].location["northing"]
             direction[ii]["elevation"] = self.emo_list[ii].location["elevation"]
-            direction[ii]["name"] = self.fn_list[ii].name
+            direction[ii]["name"] = self.emo_list[ii].name
             direction[ii]["doi_rel"] = (
                 np.mean(self.emo_list[ii].doi_relative)
                 - self.emo_list[ii].location["elevation"]
@@ -387,7 +403,7 @@ class EMOCollection:
     def interpolate_model(self, dx=10, dz=50, method="linear"):
         """
         interpolate model onto grid
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -421,7 +437,8 @@ class EMOCollection:
         models = nmodels
         # add a block on each side for easier plotting
 
-        distance = np.append(np.append(distance[0] - 100, distance), distance[-1] + 100)
+        distance = np.append(
+            np.append(distance[0] - 100, distance), distance[-1] + 100)
 
         # interpolate model
         nx = int((distance.max() - distance.min()) / dx)
@@ -452,15 +469,17 @@ class EMOCollection:
         method="linear",
         fig_num=1,
         res_limits=(0, 3),
-        ypad=20,
+        ypad=80,
         xpad=10,
         cmap="jet_r",
+        names=True,
     ):
         """
-        
+
         """
 
-        nx, nz, model, doi = self.interpolate_model(dx=dx, dz=dz, method=method)
+        nx, nz, model, doi = self.interpolate_model(
+            dx=dx, dz=dz, method=method)
         nmean = nx.mean()
         nx -= nmean
         xg, yg = np.meshgrid(nx, nz)
@@ -477,6 +496,22 @@ class EMOCollection:
         ax.fill_between(
             nx, doi, [nz.max()] * nx.size, color=(0.5, 0.5, 0.5), alpha=0.5, hatch="X"
         )
+        
+        if names:
+            profile_sorted = self.sort_profile()
+            for emo in profile_sorted:
+                if self.profile_direction == "ns":
+                    x = emo["northing"] - nmean
+                elif self.profile_direction == "ew":
+                    x = emo["easting"] - nmean
+                    
+                ax.text(x,
+                        -1 * (emo["elevation"] + 30),
+                        emo["name"],
+                        ha="center",
+                        va="baseline",
+                        fontdict={'size': 10, "weight": "bold"})
+                
 
         # set axis limits
         ax.set_ylim((nz.max(), nz.min() - ypad))
@@ -494,7 +529,8 @@ class EMOCollection:
         cx = plt.colorbar(mappable=im, ax=ax, shrink=0.75)
         cx.set_label("Resistivity [$\Omega \cdot m$]")
         cx.set_ticks([0, 1, 2, 3, 4])
-        cx.set_ticklabels(["$10^{0}$", "$10^{1}$", "$10^{2}$", "$10^{3}$", "$10^{4}$"])
+        cx.set_ticklabels(
+            ["$10^{0}$", "$10^{1}$", "$10^{2}$", "$10^{3}$", "$10^{4}$"])
 
         # plot stations
         for emo in self.emo_list:
@@ -503,7 +539,8 @@ class EMOCollection:
             elif self.profile_direction == "ns":
                 sx = emo.location["northing"] - nmean
 
-            ax.plot(sx, -1 * emo.location["elevation"] - 7, marker="v", ms=7, color="k")
+            ax.plot(
+                sx, -1 * emo.location["elevation"] - 7, marker="v", ms=7, color="k")
 
         return ax, fig
 
@@ -533,7 +570,7 @@ def get_emo_files_from_dir(emo_dir, stations=None):
 def plot_station_loop(emo_dir, save_dir=None, fig_type="png"):
     """
     plot all stations in a directory from the .emo file
-    
+
     :param emo_dir: DESCRIPTION
     :type emo_dir: TYPE
     :param save_dir: DESCRIPTION, defaults to None
@@ -621,40 +658,52 @@ def create_survey_summary(smooth_dir, blocky_dir):
 # plot_station_loop(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
 #                   r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\Figures\smooth")
 
-df = create_survey_summary(
-    r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
-    r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky",
-)
-df.to_csv(r"c:\Users\peaco\Documents\MT\UM2020\TEM\survey_summary.csv", index=False)
-# line_name = '30'
-# # line = ['T20', 'T21', 'T22', 'T23', 'T24', 'T25']
-# line = ['T07', 'T08', 'T00', 'T09', 'T10']
-# # line = ['T00', 'T01', 'T02', 'T03', 'T04', 'T05']
+# df = create_survey_summary(
+#     r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth",
+#     r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\blocky",
+# )
+# df.to_csv(r"c:\Users\peaco\Documents\MT\UM2020\TEM\survey_summary.csv", index=False)
+line_name = '00'
+# line = ['T20', 'T21', 'T22', 'T23', 'T24', 'T25']
+line = ['T07', 'T08', 'T00', 'T09', 'T10']
+# line = ['T00', 'T01', 'T02', 'T03', 'T04', 'T05']
 # line = ['T11', 'T12', 'T13', 'T14']
 
 # line = ['T30', 'T31', 'T32']
-# tem_dir = Path(r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models")
 
-# for mtype in ['smooth', 'blocky']:
-#     model_dir = tem_dir.joinpath(mtype)
+line_dict = {"00": {"flist": ['T00', 'T01', 'T02', 'T03', 'T04', 'T05'], "d": "ns"},
+             "10": {"flist": ['T07', 'T08', 'T00', 'T09', 'T10'], "d": "ew"},
+             "15": {"flist": ['T11', 'T12', 'T13', 'T14'], "d": "ns"},
+             "20": {"flist": ['T20', 'T21', 'T22', 'T23', 'T24', 'T25'], "d": "ns"},
+             "30": {"flist": ['T30', 'T31', 'T32'], "d": "ns"}}
+tem_dir = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\TEM\Models")
 
-#     emo_fn_list = get_emo_files_from_dir(model_dir,
-#                                          stations=line)
 
-#     emo_collection = EMOCollection(emo_fn_list)
-#     emo_collection.profile_direction = 'ns'
-#     ax1, fig1 = emo_collection.plot(dx=5,
-#                                     dz=60,
-#                                     method='linear',
-#                                     res_limits=(1, 3.5),
-#                                     cmap=mtcolors.mt_rd2gr2bl,
-#                                     xpad=-60,
-#                                     ypad=30)
-
-#     fig1.savefig(tem_dir.joinpath('Figures',
-#                                   f"um_tem_line_{line_name}_{mtype}.pdf"),
-#                  dpi=300, bbox_inches='tight')
-
-#     fig1.savefig(tem_dir.joinpath('Figures',
-#                                   f"um_tem_line_{line_name}_{mtype}.png"),
-#                  dpi=300, bbox_inches='tight')
+for key, fdict in line_dict.items():
+    for mtype in ['smooth', 'blocky']:
+        model_dir = tem_dir.joinpath(mtype)
+    
+        emo_fn_list = get_emo_files_from_dir(model_dir,
+                                             stations=fdict["flist"])
+    
+        emo_collection = EMOCollection(emo_fn_list)
+        emo_collection.profile_direction = fdict["d"]
+        
+        ax1, fig1 = emo_collection.plot(dx=5,
+                                        dz=60,
+                                        method='linear',
+                                        res_limits=(1, 3.),
+                                        cmap=mtcolors.mt_jet_r,
+                                        xpad=-60,
+                                        ypad=80)
+        
+        
+    
+        fig1.savefig(tem_dir.joinpath('Figures',
+                                      f"um_tem_line_{key}_{mtype}.pdf"),
+                     dpi=300, bbox_inches='tight')
+    
+        fig1.savefig(tem_dir.joinpath('Figures',
+                                      f"um_tem_line_{key}_{mtype}.png"),
+                     dpi=300, bbox_inches='tight')

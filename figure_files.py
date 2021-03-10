@@ -48,5 +48,5 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe="gs"):
 
 fn_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019")
 pdf_list = list(fn_path.glob("*.pdf"))
-for fn in pdf_list:
-    new_fn = pdf_file_reduce_size(fn, crop=False, gs_exe="gswin64c")
+for fn in [r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019\mp_ivanpah_basin_profiles.pdf"]:
+    new_fn = pdf_file_reduce_size(Path(fn), crop=False, gs_exe="gswin64c")
