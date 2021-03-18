@@ -15,8 +15,8 @@ from mtpy.utils import array2raster
 
 mfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c025_126.rho"
 
-z_dict = {"surface": np.array((0, 5000)),
-          "middle_crust": np.array((5000, 12000)),
+z_dict = {"surface": np.array((0, 3000)),
+          "middle_crust": np.array((3000, 12000)),
           "lower_crust": np.array((12000, 27000))}
 pad = 7
 
@@ -38,10 +38,10 @@ for ii, key in enumerate(["surface", "middle_crust", "lower_crust"]):
     ax = fig.add_subplot(1, 3, 1 + ii, aspect="equal")
     im = ax.pcolormesh(gx, gy,
                        conductance, 
-                       cmap="hot", 
+                       cmap="gnuplot2", 
                        vmin=conductance[pad:-pad, pad:-pad].min(),
                        vmax=conductance[pad:-pad, pad:-pad].max())
-    
+    print(conductance[pad:-pad, pad:-pad].min(), conductance[pad:-pad, pad:-pad].max())
     ax.set_xlim((m.grid_east[pad], m.grid_east[-pad]))
     ax.set_ylim((m.grid_north[pad], m.grid_north[-pad]))
     
@@ -49,10 +49,10 @@ for ii, key in enumerate(["surface", "middle_crust", "lower_crust"]):
     
 
     
-    array2raster.array2raster(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\st_figures\conductance_{0}_crust.tiff".format(key),
-                              (-118.590929, 38.541344000000002),
-                              750.,
-                              750.,
-                              conductance[pad:-pad, pad:-pad])
+    # array2raster.array2raster(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\st_figures\conductance_{0}_crust.tiff".format(key),
+    #                           (-118.590929, 38.541344000000002),
+    #                           750.,
+    #                           750.,
+    #                           conductance[pad:-pad, pad:-pad])
     
 plt.show()
