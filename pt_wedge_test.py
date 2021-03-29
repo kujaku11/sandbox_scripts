@@ -284,7 +284,7 @@ class PlotPTShapes(mtpl.PlotSettings):
 # =============================================================================
 # plot
 # =============================================================================
-edi_dir = r"/mnt/hgfs/MT_Data/GV2020/EDI_Files_birrp/Edited"
+edi_dir = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\inv_07\new_edis"
 edi_list = glob.glob(os.path.join(edi_dir, "*.edi"))
 
 ptm = PlotPTShapes(fn_list=edi_list)

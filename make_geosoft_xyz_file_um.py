@@ -13,8 +13,8 @@ from mtpy.utils import gis_tools
 # mfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_final_err05_cov04_NLCG_040.rho"
 # dfn = r"c:\Users\jpeacock\Documents\Geothermal\Washington\MSH\inversions\mshn_modem_data_ef05.dat"
 
-mfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_z05_c025_089.rho"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_06\um_modem_data_z05.dat"
+mfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.rho"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_modem_data_z05_te2.dat"
 
 save_root = "um"
 
@@ -36,11 +36,11 @@ c_east, c_north, c_zone = gis_tools.project_point_ll2utm(
 # --> set padding
 mod_obj.write_geosoft_xyz(
     mfn[:-4] + "NAD83_11N.xyz",
-    c_east=c_east,
-    c_north=c_north,
-    pad_north=1,
-    pad_east=1,
-    pad_z=1,
+    c_east=c_east - 750,
+    c_north=c_north - 750,
+    pad_north=5,
+    pad_east=5, 
+    pad_z=17,
 )
 
 # # --> write model xyz file

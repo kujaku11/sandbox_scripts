@@ -11,7 +11,7 @@ from mtpy.core import mt
 from datetime import datetime
 
 
-edi_path = Path(r"c:\Users\jrpeacock\Documents\GitHub\mtpy\examples\data\ET_edi")
+edi_path = Path(r"c:\Users\jpeacock\Documents\GitHub\mtpy\examples\data\ET_edi")
 edi_list = list(edi_path.glob("*.edi"))
 
 def make_mt_dict(edi_list):

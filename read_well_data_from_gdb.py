@@ -38,7 +38,7 @@ colors = {
 # area 1: 809, 807, 808, 905, 806, 795, 799, 791
 # well_id = 783
 
-for well_id in [774]:
+for well_id in [781, 782, 783]:
     well = g[g.SiteID == well_id]
 
     fig = plt.figure(1, [5.5, 8.5])
@@ -69,15 +69,15 @@ for well_id in [774]:
             level.Material,
             va="baseline",
             ha="left",
-            fontdict={"size": 10},
+            fontdict={"size": 11},
         )
 
-    ax.set_ylabel("Elevation [m]", fontdict={"size": 16})
+    ax.set_ylabel("Elevation [m]", fontdict={"size": 14})
     ax.yaxis.set_major_locator(MultipleLocator(width))
     ax.yaxis.set_minor_locator(MultipleLocator(10))
     ax.set_title(
         f"Well ID: {int(level.SiteID)}\n{level.Easting}E, {level.Northing}N",
-        fontdict={"size": 16, "weight": "bold"},
+        fontdict={"size": 14, "weight": "bold"},
     )
     fig.tight_layout()
 

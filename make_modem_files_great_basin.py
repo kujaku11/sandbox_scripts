@@ -57,7 +57,6 @@ if not dfn.exists():
     # =============================================================================
     if not dfn.exists():
         if bounds is not None:
-            print("found bounds")
             mc = mt_collection.MTCollection()
             mc.from_csv(csv_fn)
             bbox_df = mc.apply_bbox(
@@ -87,6 +86,10 @@ if not dfn.exists():
 
     # # check for multiple stations in single cell
     if new_edis:
+        new_edi_path = save_path.joinpath("new_edis")
+        if not new_edi_path.exists():
+            new_edi_path.mkdir()
+            
         print("--- averaging stations ---")
         r = avg_radius
         count = 1
@@ -133,7 +136,7 @@ if not dfn.exists():
                     mt_avg.station_metadata.comments = (
                         "avgeraged_stations = " + ",".join(avg_z["station"].tolist())
                     )
-                    edi_obj = mt_avg.write_mt_file(save_dir=save_path.joinpath("new_edis"))
+                    edi_obj = mt_avg.write_mt_file(save_dir=new_edi_path)
                     print(f"wrote average file {edi_obj.fn}")
 
                     s_list.append(
