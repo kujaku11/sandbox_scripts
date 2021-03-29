@@ -18,7 +18,7 @@ def make_mt_dict(edi_list):
     d = {}
     for edi in edi_list:
         mt_obj = mt.MT(edi)
-        d[mt_obj.station] = mt_obj
+        d.update({mt_obj.station: mt_obj})
     return d
 
 def make_mt_dict_keys(edi_list):
@@ -45,6 +45,12 @@ def from_keys(n):
         
     return d
 
+def update_to_dict(n):
+    d = {}
+    for ii in range(n):
+        d.update({ii: np.random.rand(4096)})
+    return d
+
 def iterate_mt_list(n):
     dt = []
     for edi in n:
@@ -59,7 +65,7 @@ def iterate_mt_list(n):
 # mt_dict = make_mt_dict(edi_list)
 #m = mt.MT(edi_list[0])
 
-df = iterate_mt_list(edi_list[0:100])
+#df = iterate_mt_list(edi_list[0:100])
 
 
 
