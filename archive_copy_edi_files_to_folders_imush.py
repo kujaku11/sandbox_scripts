@@ -1,0 +1,36 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul 17 17:12:35 2018
+
+@author: jpeacock
+"""
+
+import os
+import shutil
+
+edi_path = r"/media/jpeacock/My Passport/imush_edi"
+png_path = r"/media/jpeacock/My Passport/imush_png"
+archive_path = r"/media/jpeacock/My Passport/iMUSH/Archive"
+
+edi_list = [
+    os.path.join(edi_path, edi) for edi in os.listdir(edi_path) if edi.endswith(".edi")
+]
+png_list = [
+    os.path.join(png_path, png) for png in os.listdir(png_path) if png.endswith(".png")
+]
+
+for edi, png in zip(sorted(edi_list), sorted(png_list)):
+    name = os.path.basename(edi)[0:-4]
+    archive_folder = os.path.join(archive_path, name)
+    if not os.path.exists(archive_folder):
+        os.mkdir(archive_folder)
+
+    for fn in os.listdir(archive_folder):
+        if fn.endswith(".edi") or fn.endswith(".png"):
+            os.remove(os.path.join(archive_folder, fn))
+            print "removed {0}".format(fn)
+
+    shutil.copy(edi, os.path.join(archive_folder, os.path.basename(edi)))
+    shutil.copy(png, os.path.join(archive_folder, os.path.basename(png)))
+    print ("Copied {0} and {1}".format(edi, png))

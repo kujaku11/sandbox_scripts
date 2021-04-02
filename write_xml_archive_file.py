@@ -5,6 +5,7 @@ Created on Tue Jul 10 08:22:27 2018
 @author: jpeacock
 """
 import mtpy.usgs.usgs_archive as archive
+
 # =============================================================================
 # Test
 # =============================================================================
@@ -21,10 +22,11 @@ m.survey.west = -121.34
 m.survey.north = 38.75
 m.survey.south = 38.75
 
-m.title += ' station006'
-m.supplement_info += 'file list: file1, file2, file3'
-m.survey.begin_date = '20170101T10:30:10 UTC'
-m.survey.end_date = '20170103T18:10:40 UTC'
+m.title += " station006"
+m.supplement_info += "file list: file1, file2, file3"
+m.survey.begin_date = "20170101T10:30:10 UTC"
+m.survey.end_date = "20170103T18:10:40 UTC"
 
-m.write_xml_file("c:\Users\jpeacock\Documents\imush\station_test.xml",
-                 write_station=True)
+m.write_xml_file(
+    "c:\Users\jpeacock\Documents\imush\station_test.xml", write_station=True
+)

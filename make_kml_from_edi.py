@@ -9,34 +9,33 @@ import geopandas as gpd
 from shapely.geometry import Point
 import fiona
 import mtpy.core.mt as mt
-import glob
+from pathlib import Path
 
-fiona.supported_drivers['kml'] = 'rw'
-fiona.supported_drivers['KML'] = 'rw'
-crs = {'init':'epsg:4326'}
+fiona.supported_drivers["kml"] = "rw"
+fiona.supported_drivers["KML"] = "rw"
+crs = {"init": "epsg:4326"}
 
-edi_path = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\*.edi"
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\MNP_EDI_Files_birrp")
+shp_fn = edi_path.joinpath("mnp_mt_stations.shp")
 
-edi_list = glob.glob(edi_path)
-                    
 geometry = []
-stations = {'ID':[],
-            'elev':[],
-            'lat':[],
-            'lon':[]}
+stations = []
 
-for edi in edi_list:
+for edi in edi_path.glob("*.edi"):
     mt_obj = mt.MT(edi)
     geometry.append(Point(mt_obj.lon, mt_obj.lat))
-    stations['ID'].append(mt_obj.station)
-    stations['elev'].append(mt_obj.elev)
-    stations['lat'].append(mt_obj.lat)
-    stations['lon'].append(mt_obj.lon)
-    
+    entry = {}
+    entry["ID"] = mt_obj.station
+    entry["elev"] = mt_obj.elev
+    entry["lat"] = mt_obj.lat
+    entry["lon"] = mt_obj.lon
+    entry["station"] = mt_obj.station
+    entry["acqby"] = mt_obj.Site.acquired_by
+    entry["survey"] = mt_obj.Site.survey
+    entry["date"] = mt_obj.Site.start_date
+    stations.append(entry)
+
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
-gdf.to_file(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\mv_mt_stations_all.kml",
-            driver='kml')
-#kml_obj.save(os.path.join(edi_path, "SAGE_2019_mt_stations.kml"))
-    
-            
-            
+# gdf.to_file(kml_fn+'.kml',
+#             driver='kml')
+gdf.to_file(shp_fn)

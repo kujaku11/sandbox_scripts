@@ -14,26 +14,26 @@ res = m1.Z.phase_xx
 ### estimate the median
 med = np.median(res)
 ### locate the point closest to the median
-tol = np.abs(res-np.median(res)).min()
-m_index = np.where((res-med >= tol*.95) & (res-med <= tol*1.05))[0][0]
+tol = np.abs(res - np.median(res)).min()
+m_index = np.where((res - med >= tol * 0.95) & (res - med <= tol * 1.05))[0][0]
 r_index = m_index + 1
 
 bad_points = []
 # go to the right
 while r_index < res.shape[0]:
-    r0 = res[r_index-1]
+    r0 = res[r_index - 1]
     r1 = res[r_index]
-    if abs(r1-r0) > np.cos(np.pi/4)*r0:
+    if abs(r1 - r0) > np.cos(np.pi / 4) * r0:
         bad_points.append(r_index)
     r_index += 1
-    
+
 # go to the left
 l_index = m_index - 1
 while l_index > -1:
-    r0 = res[l_index-1]
+    r0 = res[l_index - 1]
     r1 = res[l_index]
-    if abs(r1-r0) > np.cos(np.pi/4)*r0:
+    if abs(r1 - r0) > np.cos(np.pi / 4) * r0:
         bad_points.append(l_index)
     l_index -= 1
-    
+
 print(bad_points)

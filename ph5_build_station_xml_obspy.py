@@ -16,57 +16,63 @@ survey_df = pd.read_csv(survey_csv)
 
 # We'll first create all the various objects. These strongly follow the
 # hierarchy of StationXML files.
-inv = Inventory(networks=[],
-                source="MT Test")
+inv = Inventory(networks=[], source="MT Test")
 
-net = Network(code="MT",
-              # A list of stations. We'll add one later.
-              stations=[],
-              description="Test stations.",
-              # Start-and end dates are optional.
-              start_date=obspy.UTCDateTime(2016, 1, 2))
+net = Network(
+    code="MT",
+    # A list of stations. We'll add one later.
+    stations=[],
+    description="Test stations.",
+    # Start-and end dates are optional.
+    start_date=obspy.UTCDateTime(2016, 1, 2),
+)
 inv.networks.append(net)
 
-for row, station_df in survey_df.iterrows(): 
-    sta = Station(code=station_df['siteID'],
-                  latitude=station_df['lat'],
-                  longitude=station_df['lon'],
-                  elevation=station_df['nm_elev'],
-                  creation_date=obspy.UTCDateTime(2016, 1, 2),
-                  site=Site(name=station_df['siteID']))
-    
-    for comp in ['ex', 'ey', 'hx', 'hy', 'hz']:
-        if station_df['{0}_azm'.format(comp)] is not None:
-            if 'h' in comp:
-                cha = Channel(code=comp.upper(),
-                              location_code="",
-                              latitude=station_df['lat'],
-                              longitude=station_df['lon'],
-                              elevation=station_df['nm_elev'],
-                              depth=0,
-                              azimuth=station_df['{0}_azm'.format(comp)],
-                              dip=0,
-                              sample_rate=station_df['sampling_rate'])
-                cha.channel_number = station_df['{0}_num'.format(comp)]
-                cha.sensor = Equipment(serial_number=station_df['{0}_id'.format(comp)])
-            elif 'e' in comp:
-                cha = Channel(code=comp.upper(),
-                              location_code="",
-                              latitude=station_df['lat'],
-                              longitude=station_df['lon'],
-                              elevation=station_df['nm_elev'],
-                              depth=0,
-                              azimuth=station_df['{0}_azm'.format(comp)],
-                              dip=0,
-                              sample_rate=station_df['sampling_rate'])
-                cha.extra = {'dipole_length':{'value':10,
-                                              'namespace':'MT'}}
-#                cha.comments = Comment(['Dipole Length (m) = {0:.1f}'.format(station_df['{0}_len'.format(comp)])])
+for row, station_df in survey_df.iterrows():
+    sta = Station(
+        code=station_df["siteID"],
+        latitude=station_df["lat"],
+        longitude=station_df["lon"],
+        elevation=station_df["nm_elev"],
+        creation_date=obspy.UTCDateTime(2016, 1, 2),
+        site=Site(name=station_df["siteID"]),
+    )
+
+    for comp in ["ex", "ey", "hx", "hy", "hz"]:
+        if station_df["{0}_azm".format(comp)] is not None:
+            if "h" in comp:
+                cha = Channel(
+                    code=comp.upper(),
+                    location_code="",
+                    latitude=station_df["lat"],
+                    longitude=station_df["lon"],
+                    elevation=station_df["nm_elev"],
+                    depth=0,
+                    azimuth=station_df["{0}_azm".format(comp)],
+                    dip=0,
+                    sample_rate=station_df["sampling_rate"],
+                )
+                cha.channel_number = station_df["{0}_num".format(comp)]
+                cha.sensor = Equipment(serial_number=station_df["{0}_id".format(comp)])
+            elif "e" in comp:
+                cha = Channel(
+                    code=comp.upper(),
+                    location_code="",
+                    latitude=station_df["lat"],
+                    longitude=station_df["lon"],
+                    elevation=station_df["nm_elev"],
+                    depth=0,
+                    azimuth=station_df["{0}_azm".format(comp)],
+                    dip=0,
+                    sample_rate=station_df["sampling_rate"],
+                )
+                cha.extra = {"dipole_length": {"value": 10, "namespace": "MT"}}
+            #                cha.comments = Comment(['Dipole Length (m) = {0:.1f}'.format(station_df['{0}_len'.format(comp)])])
 
             sta.channels.append(cha)
     # Now tie it all together.
-    #cha.response = response
-    
+    # cha.response = response
+
     net.stations.append(sta)
 
 # And finally write it to a StationXML file. We also force a validation against
@@ -74,5 +80,4 @@ for row, station_df in survey_df.iterrows():
 #
 # Note that it is also possible to serialize to any of the other inventory
 # output formats ObsPy supports.
-inv.write("station.xml", format="STATIONXML", validate=True, 
-          nsmap={'MT_ns':'MT'})
+inv.write("station.xml", format="STATIONXML", validate=True, nsmap={"MT_ns": "MT"})

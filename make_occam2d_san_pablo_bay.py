@@ -9,11 +9,11 @@ import mtpy.modeling.occam2d_rewrite as occam
 import numpy as np
 
 s_edi_path = r"d:\Peacock\MTData\SanPabloBay\EDI_Files_dp"
-s_list = ['sp{0:02}'.format(ii) for ii in range(1, 16)] 
+s_list = ["sp{0:02}".format(ii) for ii in range(1, 16)]
 
 ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
 ocd.geoelectric_strike = 0.0
-ocd.model_mode = 'log_tm_tip'
+ocd.model_mode = "log_tm_tip"
 ocd.phase_tm_err = 2.5
 ocd.res_tm_err = 20
 ocd.tipper_err = 10
@@ -46,23 +46,22 @@ ocs.param_count = ocm.num_free_param
 ocs.save_path = ocd.save_path
 ocs.write_startup_file()
 
-#mask large tipper values in data file
+# mask large tipper values in data file
 data_fn = ocd.data_fn
 ocd = occam.Data()
 ocd.read_data_file(data_fn)
 
 for s_dict in ocd.data:
-    re_index = np.where(abs(s_dict['re_tip'][0]) > 1.0)
-    im_index = np.where(abs(s_dict['im_tip'][0]) > 1.0)
-    s_dict['re_tip'][0][re_index] = 0.0
-    s_dict['im_tip'][0][re_index] = 0.0
-    s_dict['re_tip'][0][im_index] = 0.0
-    s_dict['im_tip'][0][im_index] = 0.0
+    re_index = np.where(abs(s_dict["re_tip"][0]) > 1.0)
+    im_index = np.where(abs(s_dict["im_tip"][0]) > 1.0)
+    s_dict["re_tip"][0][re_index] = 0.0
+    s_dict["im_tip"][0][re_index] = 0.0
+    s_dict["re_tip"][0][im_index] = 0.0
+    s_dict["im_tip"][0][im_index] = 0.0
 
 # give station 6 larger error bars
-ocd.data[5]['tm_phase'][1] *= 20
-ocd.data[5]['tm_res'][1] *= 10
+ocd.data[5]["tm_phase"][1] *= 20
+ocd.data[5]["tm_res"][1] *= 10
 
-ocd.model_mode = 'log_tm_tip'
-ocd.write_data_file(data_fn='{0}_masked.dat'.format(data_fn[:-4]))
-
+ocd.model_mode = "log_tm_tip"
+ocd.write_data_file(data_fn="{0}_masked.dat".format(data_fn[:-4]))
