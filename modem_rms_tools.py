@@ -169,7 +169,7 @@ def plot_rms_by_period(
 # res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv04\gz_rm50_z03_c02_104.res"
 # res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_z03_c02_074.res"
 res_fn = (
-    r"d:\Documents\Montserrat\modem_inv\Inv05_dr\mont_topo_err07_cov04_NLCG_087.res"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c03_pfa_108.res"
 )
 rms_thresh = 7.0
 
@@ -179,5 +179,5 @@ res_obj.read_data_file(res_fn)
 summary_df = get_rms_summary_df(res_obj)
 period_df = get_rms_by_period_df(res_obj)
 
-ax1 = plot_rms_summary(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy"])
-ax2 = plot_rms_by_period(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy"])
+ax1 = plot_rms_summary(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy", "t", "tx", "ty"])
+ax2 = plot_rms_by_period(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy", "t", "tx", "ty"])

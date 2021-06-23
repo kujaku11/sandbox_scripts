@@ -9,11 +9,10 @@ import mtpy.utils.shapefiles as shapefiles
 import os
 
 dfn = (
-    r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_modem_data_rm50_z03.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z05_t02_edit.dat"
 )
-rfn = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04\gz_rm50_z03_c02_104.dat"
 
-save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv04"
+save_path = r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo"
 map_projection = "WGS84"
 theta_r = 0
 
@@ -21,17 +20,17 @@ theta_r = 0
 def check_dir(directory_path):
     if os.path.isdir(directory_path) is False:
         os.mkdir(directory_path)
-        print "Made directory {0}".format(directory_path)
+        print("Made directory {0}".format(directory_path))
 
 
 ##-----------------------------------------------------------
 # --> write phase tensor shape files
 pts = shapefiles.PTShapeFile()
 pts.projection = map_projection
-pts.ellipse_size = 500
+pts.ellipse_size = 4000
 
 # save files for data
-pts.save_path = os.path.join(save_path, "gz_pt_data_gn")
+pts.save_path = os.path.join(save_path, "cl_pt_data_gn")
 check_dir(pts.save_path)
 pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
 
@@ -47,17 +46,17 @@ pts.write_data_pt_shape_files_modem(dfn, rotation_angle=theta_r)
 
 # ----------------------------------------------------------------
 ##--> write tipper information
-# tps = shapefiles.TipperShapeFile()
-# tps.arrow_size = 10000
-# tps.arrow_head_height = 750
-# tps.arrow_head_width = 600
-# tps.arrow_lw = 100
-# tps.projection = map_projection
+tps = shapefiles.TipperShapeFile()
+tps.arrow_size = 10000
+tps.arrow_head_height = 750
+tps.arrow_head_width = 600
+tps.arrow_lw = 100
+tps.projection = map_projection
 #
-##save files for data
-# tps.save_path = os.path.join(save_path, 'gz_tipper_data')
-# check_dir(tps.save_path)
-# tps.write_tip_shape_files_modem(dfn, rotation_angle=theta_r)
+#save files for data
+tps.save_path = os.path.join(save_path, 'cl_tipper_data')
+check_dir(tps.save_path)
+tps.write_tip_shape_files_modem(dfn, rotation_angle=theta_r)
 #
 ##save files for response
 # tps.save_path = os.path.join(save_path, 'gz_tipper_model')

@@ -17,27 +17,29 @@ from shapely.geometry import Point
 from pyevtk.hl import pointsToVTK
 from mtpy.utils import gis_tools
 
-# fn = r"C:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\ncedc_eq.txt"
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\pnsn_event_export_20201201.csv"
+fn = r"C:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\ncedc_eq.txt"
+# fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\pnsn_event_export_20201201.csv"
 
 df = pd.read_csv(
     fn,
     # delimiter="\s+",
     header=0,
-    usecols=["time utc", "lat", "lon", "depth km", "magnitude"],
+    usecols=["datetime", "latitude", "longitude", "depth", "magnitude"],
+    # usecols=["time utc", "lat", "lon", "depth km", "magnitude"], # umatilla
     index_col=False,
     # skipfooter=1,
     engine="python",
 )
 
 df.columns = df.columns.str.lower()
-df.rename(
-    columns={"lat": "latitude", "lon": "longitude", "depth km": "depth"}, inplace=True
-)
-# df = df.loc[(df.latitude >= 38.5) &
-#             (df.latitude <= 39.24) &
-#             (df.longitude >= -118.65) &
-#             (df.longitude <= -117.69)]
+# df.rename(
+#     columns={"lat": "latitude", "lon": "longitude", "depth km": "depth"}, inplace=True
+# )
+# Clear lake region
+df = df.loc[(df.latitude >= 38.6) &
+            (df.latitude <= 39.35) &
+            (df.longitude >= -123.2) &
+            (df.longitude <= -122.33)]
 
 df["geometry"] = df.apply(lambda z: Point(z.longitude, z.latitude), axis=1)
 gdf = gpd.GeoDataFrame(df)
@@ -49,8 +51,14 @@ gdf.to_file(fn[:-4] + ".shp")
 # model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
 #     39.556431, -119.800694
 # )
+# Umatilla
+# model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
+#     45.650594, -118.562997
+# )
+
+# Clear Lake
 model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-    45.650594, -118.562997
+    38.987645, -122.751369
 )
 
 # make a new array with easting and northing
@@ -76,7 +84,7 @@ for ii in range(df.shape[0]):
 
 
 pointsToVTK(
-    f"{fn[:-4]}",
+    f"{fn[:-4]}_clearlake",
     vtk_arr["north"].copy(),
     vtk_arr["east"].copy(),
     vtk_arr["depth"].copy(),

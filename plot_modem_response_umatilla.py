@@ -8,9 +8,9 @@ Created on Mon Mar 02 11:58:23 2015
 import mtpy.modeling.modem as modem
 import os
 
-dfn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv_03\um_data_ef03_tec_edit.dat"
-rfn = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\modem_inv\inv_03\um_err03_cov03_NLCG_130.dat"
-sv_path = r"c:\Users\jpeacock\Documents\Geothermal\Umatilla\Report"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z05_t03.dat"
+rfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c025_126.dat"
+sv_path = r"c:\Users\jpeacock\OneDrive - DOI\General\manuscript\grl_tex\supplementary"
 
 data_obj = modem.Data()
 data_obj.read_data_file(dfn)

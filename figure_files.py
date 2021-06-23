@@ -45,8 +45,17 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe="gs"):
         print(f"converted {fn_in} to {output_fn}")
         os.chdir(current_dir)
         return output_fn
+# =============================================================================
+# Single File
+# =============================================================================
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\General\manuscript\grl_tex\figure_01_v2.pdf")
+new_fn = pdf_file_reduce_size(fn, crop=False, gs_exe="gswin64c")
 
-fn_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019")
-pdf_list = list(fn_path.glob("*.pdf"))
-for fn in [r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019\mp_ivanpah_basin_profiles.pdf"]:
-    new_fn = pdf_file_reduce_size(Path(fn), crop=False, gs_exe="gswin64c")
+
+# =============================================================================
+# Multiple Files
+# =============================================================================
+# fn_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\General\manuscript\grl_tex\figure_01.pdf")
+# pdf_list = list(fn_path.glob("*.pdf"))
+# for fn in [r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019\mp_ivanpah_basin_profiles.pdf"]:
+#     new_fn = pdf_file_reduce_size(Path(fn), crop=False, gs_exe="gswin64c")
