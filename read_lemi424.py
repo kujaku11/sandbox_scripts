@@ -114,6 +114,8 @@ class LEMI424:
             s.location.latitude = self.latitude
             s.location.longitude = self.longitude
             s.location.elevation = self.elevation
+            s.time_period.start = self.start
+            s.time_period.end = self.end
         return s
     
     @property
@@ -166,10 +168,9 @@ class LEMI424:
             else:
                 ch = ChannelTS("auxiliary")
         
-            ch.ts = self._df[comp].values
-            ch.start = self.start
-            ch.end = self.end
             ch.sample_rate = self.sample_rate
+            ch.start = self.start
+            ch.ts = self._df[comp].values
             ch.component = comp
             ch_list.append(ch)
         

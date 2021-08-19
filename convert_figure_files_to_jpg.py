@@ -9,10 +9,10 @@ import os
 import subprocess
 import shutil
 
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\jvgr\2019_jvgr_geysers_peacock_v3.tex"
+fn = r"c:\Users\jpeacock\OneDrive - DOI\TexDocs\CAGEO_LaTeXTemplate-main\mth5_manuscript.tex"
 
-convert = False
-rename = True
+convert = True
+rename = False
 
 fig_dir = os.path.dirname(fn)
 count = 1
