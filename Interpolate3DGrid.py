@@ -45,27 +45,30 @@ new_mod_model.z_target_depth = 40000
 new_mod_model.make_mesh()
 
 
-print 'Start Time = {0}'.format(time.ctime())
-#------- Interpolate onto a new mesh ------------
-#1) first need to make x, y, z have dimensions (nx, ny, nz), similar to res
-north, east, vert = np.broadcast_arrays(wsm.grid_north[:, None, None], 
-                                        wsm.grid_east[None, :, None], 
-                                        wsm.grid_z[None, None, :])
+print "Start Time = {0}".format(time.ctime())
+# ------- Interpolate onto a new mesh ------------
+# 1) first need to make x, y, z have dimensions (nx, ny, nz), similar to res
+north, east, vert = np.broadcast_arrays(
+    wsm.grid_north[:, None, None],
+    wsm.grid_east[None, :, None],
+    wsm.grid_z[None, None, :],
+)
 
-#2) next interpolate ont the new mesh
-new_res = spi.griddata((north.ravel(), east.ravel(), vert.ravel()),
-                        wsm.res_model.ravel(),
-                        (new_mod_model.grid_north[:, None, None], 
-                         new_mod_model.grid_east[None, :, None], 
-                         new_mod_model.grid_z[None, None, :]),
-                         method='linear')
+# 2) next interpolate ont the new mesh
+new_res = spi.griddata(
+    (north.ravel(), east.ravel(), vert.ravel()),
+    wsm.res_model.ravel(),
+    (
+        new_mod_model.grid_north[:, None, None],
+        new_mod_model.grid_east[None, :, None],
+        new_mod_model.grid_z[None, None, :],
+    ),
+    method="linear",
+)
 
 new_mod_model.res_model = new_res
 
 new_mfn = r"c:\MinGW32-xy\Peacock\ModEM\WS_StartingModel_03b\mb_remesh.ws"
 new_mod_model.write_model_file(model_fn=new_mfn)
 
-print 'End Time = {0}'.format(time.ctime())
-
-
-
+print "End Time = {0}".format(time.ctime())

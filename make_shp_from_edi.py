@@ -11,50 +11,48 @@ import fiona
 import mtpy.core.mt as mt
 from pathlib import Path
 
-fiona.supported_drivers['kml'] = 'rw'
-fiona.supported_drivers['KML'] = 'rw'
-crs = {'init':'epsg:4326'}
+fiona.supported_drivers["kml"] = "rw"
+fiona.supported_drivers["KML"] = "rw"
+crs = {"init": "epsg:4326"}
 
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\original")
-shp_fn = edi_path.joinpath('tg_repeat.shp')
-                    
+edi_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\EDI_Files_birrp\Edited\Interpolated"
+)
+shp_fn = edi_path.joinpath("st_mt_stations.shp")
 geometry = []
 stations = []
 
-for edi in edi_path.glob('*.edi'):
+for edi in edi_path.glob("*.edi"):
     mt_obj = mt.MT(edi)
-    geometry.append(Point(mt_obj.lon, mt_obj.lat))
+    geometry.append(Point(mt_obj.longitude, mt_obj.latitude))
     entry = {}
-    entry['ID'] = mt_obj.station
-    entry['elevation'] = mt_obj.elev
-    entry['latitude'] = mt_obj.lat
-    entry['longitude'] = mt_obj.lon
-    entry['station'] = mt_obj.station
-    entry['survey'] = 'Original'
-    entry['start'] = mt_obj._edi_obj.Info.info_list[7].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
-    entry['end'] = mt_obj._edi_obj.Info.info_list[8].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
+    entry["ID"] = mt_obj.station
+    entry["elevation"] = mt_obj.elevation
+    entry["latitude"] = mt_obj.latitude
+    entry["longitude"] = mt_obj.longitude
+    entry["station"] = mt_obj.station
+    entry["survey"] = mt_obj.survey_metadata.survey_id
+    entry["start"] = mt_obj.station_metadata.time_period.start_date
+    entry["end"] = mt_obj.station_metadata.time_period.end_date
     stations.append(entry)
-    
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\repeat")
 
-for edi in edi_path.glob('*.edi'):
-    mt_obj = mt.MT(edi)
-    geometry.append(Point(mt_obj.lon, mt_obj.lat))
-    entry = {}
-    entry['ID'] = mt_obj.station
-    entry['elevation'] = mt_obj.elev
-    entry['latitude'] = mt_obj.lat
-    entry['longitude'] = mt_obj.lon
-    entry['station'] = mt_obj.station + '-R'
-    entry['survey'] = 'Repeat'
-    entry['start'] = mt_obj._edi_obj.Info.info_list[7].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
-    entry['end'] = mt_obj._edi_obj.Info.info_list[8].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
-    stations.append(entry)
-    
+# edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ShanesBugs\Tongario_Hill\repeat")
+
+# for edi in edi_path.glob('*.edi'):
+#     mt_obj = mt.MT(edi)
+#     geometry.append(Point(mt_obj.lon, mt_obj.lat))
+#     entry = {}
+#     entry['ID'] = mt_obj.station
+#     entry['elevation'] = mt_obj.elev
+#     entry['latitude'] = mt_obj.lat
+#     entry['longitude'] = mt_obj.lon
+#     entry['station'] = mt_obj.station + '-R'
+#     entry['survey'] = 'Repeat'
+#     entry['start'] = mt_obj._edi_obj.Info.info_list[7].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
+#     entry['end'] = mt_obj._edi_obj.Info.info_list[8].split(':', 1)[1].strip().replace(' - ', 'T').replace('/', '-')
+#     stations.append(entry)
+
 gdf = gpd.GeoDataFrame(stations, crs=crs, geometry=geometry)
 # gdf.to_file(kml_fn+'.kml',
 #             driver='kml')
 gdf.to_file(shp_fn)
-    
-            
-            

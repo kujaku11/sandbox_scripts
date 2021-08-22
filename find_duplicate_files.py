@@ -22,7 +22,7 @@ def chunk_reader(fobj, chunk_size=1024):
 
 def get_hash(filename, first_chunk_only=False, hash=hashlib.sha1):
     hashobj = hash()
-    file_object = open(filename, 'rb')
+    file_object = open(filename, "rb")
 
     if first_chunk_only:
         hashobj.update(file_object.read(1024))
@@ -35,12 +35,13 @@ def get_hash(filename, first_chunk_only=False, hash=hashlib.sha1):
     return hashed
 
 
-def check_for_duplicates(paths, hash=hashlib.sha1,
-                         log_fn=r"c:\Users\jpeacock\Documents\duplicate_file.log"):
+def check_for_duplicates(
+    paths, hash=hashlib.sha1, log_fn=r"c:\Users\jpeacock\Documents\duplicate_file.log"
+):
     hashes_by_size = {}
     hashes_on_1k = {}
     hashes_full = {}
-    
+
     duplicate_list = []
     duplicate_lines = []
 
@@ -65,7 +66,7 @@ def check_for_duplicates(paths, hash=hashlib.sha1,
     # For all files with the same file size, get their hash on the 1st 1024 bytes
     for __, files in hashes_by_size.items():
         if len(files) < 2:
-            continue    # this file size is unique, no need to spend cpy cycles on it
+            continue  # this file size is unique, no need to spend cpy cycles on it
 
         for filename in files:
             small_hash = get_hash(filename, first_chunk_only=True)
@@ -74,35 +75,37 @@ def check_for_duplicates(paths, hash=hashlib.sha1,
             if duplicate:
                 hashes_on_1k[small_hash].append(filename)
             else:
-                hashes_on_1k[small_hash] = []          # create the list for this 1k hash
+                hashes_on_1k[small_hash] = []  # create the list for this 1k hash
                 hashes_on_1k[small_hash].append(filename)
 
     # For all files with the hash on the 1st 1024 bytes, get their hash on the full file - collisions will be duplicates
     for __, files in hashes_on_1k.items():
         if len(files) < 2:
-            continue    # this hash of fist 1k file bytes is unique, no need to spend cpy cycles on it
+            continue  # this hash of fist 1k file bytes is unique, no need to spend cpy cycles on it
 
         for filename in files:
             full_hash = get_hash(filename, first_chunk_only=False)
 
             duplicate = hashes_full.get(full_hash)
             if duplicate:
-                duplicate_lines.append("Duplicate found: {0} and {1}".format(filename, duplicate))
+                duplicate_lines.append(
+                    "Duplicate found: {0} and {1}".format(filename, duplicate)
+                )
                 duplicate_list.append((filename, duplicate))
-                
-                
+
             else:
                 hashes_full[full_hash] = filename
-                
-    with open(log_fn, 'w') as fid:
-        fid.write('\n'.join(duplicate_lines))
-    
-    print 'Wrote duplicate files to {0}'.format(log_fn)
+
+    with open(log_fn, "w") as fid:
+        fid.write("\n".join(duplicate_lines))
+
+    print "Wrote duplicate files to {0}".format(log_fn)
     return duplicate_list
 
-#if sys.argv[1:]:
+
+# if sys.argv[1:]:
 #    check_for_duplicates(sys.argv[1:])
-#else:
+# else:
 #    print "Please pass the paths to check as parameters to the script"
 
 d_list = check_for_duplicates([r"c:\Users\jpeacock\Documents"])

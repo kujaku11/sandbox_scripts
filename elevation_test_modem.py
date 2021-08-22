@@ -26,26 +26,30 @@ z = m.grid_z
 
 z_list = []
 for s_arr in d.data_array:
-    sx = s_arr['rel_north']
-    sy = s_arr['rel_east']
-    
+    sx = s_arr["rel_north"]
+    sy = s_arr["rel_east"]
+
     x_find = np.where((sx <= x[1:]) & (sx >= x[:-1]))[0][0]
     y_find = np.where((sy <= y[1:]) & (sy >= y[:-1]))[0][0]
-    z_find = np.amin(np.where(m.res_model[x_find, y_find, :] < 1E10)) 
-    z_test = np.where(m.res_model[x_find, y_find, :] < 1E10)[0][0]
+    z_find = np.amin(np.where(m.res_model[x_find, y_find, :] < 1e10))
+    z_test = np.where(m.res_model[x_find, y_find, :] < 1e10)[0][0]
 
-    z_list.append({'station':s_arr['station'],
-                   'grid_north':s_arr['rel_north'],
-                   'grid_east':s_arr['rel_east'],
-                   'grid_elev':s_arr['rel_elev'],
-                   'find_north': x[x_find],
-                   'find_east': y[y_find],
-                   'find_elev': z[z_find],
-                   'diff': s_arr['rel_elev'] - z[z_find],
-                   'index_east': y_find,
-                   'index_north': x_find,
-                   'index_z': z_find})
-    
+    z_list.append(
+        {
+            "station": s_arr["station"],
+            "grid_north": s_arr["rel_north"],
+            "grid_east": s_arr["rel_east"],
+            "grid_elev": s_arr["rel_elev"],
+            "find_north": x[x_find],
+            "find_east": y[y_find],
+            "find_elev": z[z_find],
+            "diff": s_arr["rel_elev"] - z[z_find],
+            "index_east": y_find,
+            "index_north": x_find,
+            "index_z": z_find,
+        }
+    )
+
 df = pd.DataFrame(z_list)
 df.to_csv(r"c:\Users\jpeacock\elevations_test.csv")
 
@@ -79,5 +83,3 @@ df.to_csv(r"c:\Users\jpeacock\elevations_test.csv")
 
 # plt.colorbar()
 # plt.show()
-            
-

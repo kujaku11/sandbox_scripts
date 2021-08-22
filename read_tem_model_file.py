@@ -15,9 +15,9 @@ import numpy as np
 
 mfn = r"c:\Users\peaco\Documents\MT\UM2020\TEM\Models\smooth\T00\_1_1.ml.mod"
 
-with open(mfn, 'r') as fid:
+with open(mfn, "r") as fid:
     lines = fid.readlines()
-    
+
 header = []
 h_find = True
 index = 0
@@ -34,24 +34,26 @@ n_layers = int(n_layers)
 
 index += 1
 
-model = {'resistivity':np.zeros(n_layers),
-         'thickness': np.zeros(n_layers-1),
-         'depth': np.zeros(n_layers)}
+model = {
+    "resistivity": np.zeros(n_layers),
+    "thickness": np.zeros(n_layers - 1),
+    "depth": np.zeros(n_layers),
+}
 
 # read resistivity
 for jj in range(n_layers):
     line = lines[index + jj].strip().split()
-    model['resistivity'][jj] = line[0]
+    model["resistivity"][jj] = line[0]
 
 # read thickness
 for jj in range(n_layers - 1):
     line = lines[index + n_layers + jj].strip().split()
-    model['thickness'][jj] = line[0] 
-    
+    model["thickness"][jj] = line[0]
+
 # read thickness
 for jj in range(n_layers - 1):
-    line = lines[index + 2* n_layers - 1 + jj].strip().split()
-    model['depth'][jj] = line[0]
-model['depth'][-1] = 20000      
-    
-df = pd.DataFrame(model['resistivity'], index=model['depth'])         
+    line = lines[index + 2 * n_layers - 1 + jj].strip().split()
+    model["depth"][jj] = line[0]
+model["depth"][-1] = 20000
+
+df = pd.DataFrame(model["resistivity"], index=model["depth"])

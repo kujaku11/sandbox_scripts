@@ -12,18 +12,18 @@ from pathlib import Path
 fn = r"/mnt/hgfs/MT/MNP2019/mnp172/processing_df.csv"
 header_len = 23
 
-tol_dict = {4096: {'s_diff': 5 * 60 * 4096,
-                   'min_points': 2**18},
-            256: {'s_diff': 3 * 3600 * 256,
-                  'min_points': 2**19},
-            4: {'s_diff': 3 * 3600 * 4,
-                'min_points': 2**14}}
+tol_dict = {
+    4096: {"s_diff": 5 * 60 * 4096, "min_points": 2 ** 18},
+    256: {"s_diff": 3 * 3600 * 256, "min_points": 2 ** 19},
+    4: {"s_diff": 3 * 3600 * 4, "min_points": 2 ** 14},
+}
 
 df = pd.read_csv(fn)
-df.start = pd.to_datetime(df.start, errors='coerce')
-df.stop = pd.to_datetime(df.stop, errors='coerce')
+df.start = pd.to_datetime(df.start, errors="coerce")
+df.stop = pd.to_datetime(df.stop, errors="coerce")
 df.remote = df.remote.astype(str)
 df.cal_fn = df.cal_fn.astype(str)
+
 
 def make_block_entry(entry, nskip, nread, rr_num=1):
     """
@@ -41,17 +41,21 @@ def make_block_entry(entry, nskip, nread, rr_num=1):
 
     """
 
-    r_dict = dict([('fn', entry.fn_ascii),
-                   ('nread', nread),
-                   ('nskip', nskip),
-                   ('comp', entry.component),
-                   ('calibration_fn', entry.cal_fn),
-                   ('rr', entry.remote),
-                   ('rr_num', rr_num),
-                   ('start', entry.start),
-                   ('stop', entry.stop),
-                   ('sampling_rate', entry.sampling_rate),
-                   ('station', entry.station)])
+    r_dict = dict(
+        [
+            ("fn", entry.fn_ascii),
+            ("nread", nread),
+            ("nskip", nskip),
+            ("comp", entry.component),
+            ("calibration_fn", entry.cal_fn),
+            ("rr", entry.remote),
+            ("rr_num", rr_num),
+            ("start", entry.start),
+            ("stop", entry.stop),
+            ("sampling_rate", entry.sampling_rate),
+            ("station", entry.station),
+        ]
+    )
     return r_dict
 
 
@@ -68,25 +72,25 @@ def compare_times(entry, start, stop, header_len=23):
     """
 
     sr = entry.sampling_rate
-    info_dict = {'nskip': 0, 'nread': 0, 'start_diff': 0, 'end_diff': 0}
+    info_dict = {"nskip": 0, "nread": 0, "start_diff": 0, "end_diff": 0}
 
     # estimate time difference at beginning
     start_time_diff = sr * (start - entry.start).total_seconds()
-    info_dict['start_diff'] = start_time_diff
+    info_dict["start_diff"] = start_time_diff
     # if difference is positive entry starts before station
     if start_time_diff > 0:
-        info_dict['nskip'] = header_len + start_time_diff
-        info_dict['nread'] = entry.nread - start_time_diff
+        info_dict["nskip"] = header_len + start_time_diff
+        info_dict["nread"] = entry.nread - start_time_diff
     else:
-        info_dict['nskip'] = header_len
-        info_dict['nread'] = entry.nread
+        info_dict["nskip"] = header_len
+        info_dict["nread"] = entry.nread
 
     # check the end times
     end_time_diff = sr * (entry.stop - stop).total_seconds()
-    info_dict['end_diff'] = end_time_diff
+    info_dict["end_diff"] = end_time_diff
     # if end diff is positive entry ends after station
     if end_time_diff > 0:
-        info_dict['nread'] -= end_time_diff
+        info_dict["nread"] -= end_time_diff
 
     return info_dict
 
@@ -124,11 +128,12 @@ def align_block(block_df):
 
     for entry in block_df.itertuples():
         diff_dict = compare_times(entry, b_start, b_stop)
-        for key in ['nskip', 'nread']:
+        for key in ["nskip", "nread"]:
             block_df.at[entry.Index, key] = diff_dict[key]
 
     block_df.nread = block_df.nread.min()
     return block_df
+
 
 def sort_blocks(df):
     """
@@ -145,10 +150,9 @@ def sort_blocks(df):
     birrp_dict = {}
     for sr in df.sampling_rate.unique():
         sr_list = []
-        sr_df = df[(df.sampling_rate == sr) & (df.remote == 'False')]
-        rr_df = df[(df.sampling_rate == sr) & (df.remote == 'True')]
-        rr_stations = dict([(rr, ii) for ii, rr in
-                            enumerate(rr_df.station.unique())])
+        sr_df = df[(df.sampling_rate == sr) & (df.remote == "False")]
+        rr_df = df[(df.sampling_rate == sr) & (df.remote == "True")]
+        rr_stations = dict([(rr, ii) for ii, rr in enumerate(rr_df.station.unique())])
 
         # sort through station blocks first
         for block in sr_df.block.unique():
@@ -157,9 +161,11 @@ def sort_blocks(df):
             # find the latest start time
             start = block_df.start.max()
             stop = block_df.stop.min()
-            if str(stop) == 'NaT':
-                print('Warning: Skipping block {0} for {1}.  '.format(block, sr) +\
-                      'Reason: no end time')
+            if str(stop) == "NaT":
+                print(
+                    "Warning: Skipping block {0} for {1}.  ".format(block, sr)
+                    + "Reason: no end time"
+                )
                 continue
 
             # get information for station block and align
@@ -177,21 +183,29 @@ def sort_blocks(df):
                     continue
                 t_diff = abs((rr_entry.start - start).total_seconds()) * sr
                 # check to see if the difference is within given tolerance
-                if t_diff < tol_dict[sr]['s_diff']:
+                if t_diff < tol_dict[sr]["s_diff"]:
                     # check number of samples
                     rr_samples = rr_entry.n_samples - t_diff
-                    if rr_samples < tol_dict[sr]['min_points']:
-                        print('WARNING: skipping {0} block {1} df {2} at {3}'.format(
-                              rr_entry.station, rr_entry.block,
-                              rr_entry.sampling_rate,
-                              rr_entry.start) +
-                              '\n\tNot enough points {0}'.format(rr_samples))
+                    if rr_samples < tol_dict[sr]["min_points"]:
+                        print(
+                            "WARNING: skipping {0} block {1} df {2} at {3}".format(
+                                rr_entry.station,
+                                rr_entry.block,
+                                rr_entry.sampling_rate,
+                                rr_entry.start,
+                            )
+                            + "\n\tNot enough points {0}".format(rr_samples)
+                        )
                     # make a block entry and append
                     else:
-                        rr_block_list.append(make_block_entry(rr_entry,
-                                             0,
-                                             rr_entry.n_samples,
-                                             rr_stations[rr_entry.station]))
+                        rr_block_list.append(
+                            make_block_entry(
+                                rr_entry,
+                                0,
+                                rr_entry.n_samples,
+                                rr_stations[rr_entry.station],
+                            )
+                        )
 
             # check to make sure there are remote references
             if len(rr_block_list) > 1:
@@ -203,6 +217,8 @@ def sort_blocks(df):
         birrp_dict[sr] = sr_list
 
     return birrp_dict
+
+
 # =============================================================================
 # Test
 # =============================================================================

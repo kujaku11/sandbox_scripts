@@ -19,9 +19,8 @@ xyz_fn = Path(r"C:\Users\jpeacock\Downloads\Aug.25.xyz")
 # read in file as a Pandas DataFrame
 df = pd.read_csv(xyz_fn, delim_whitespace=True)
 
-f_list = list(set([header.split('_')[1] for header in df.columns[14:]]))
+f_list = list(set([header.split("_")[1] for header in df.columns[14:]]))
 
 z_dict = {}
 for row in df.itertuples():
     entry = {}
-

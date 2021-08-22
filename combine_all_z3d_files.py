@@ -13,10 +13,6 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
-z3d_path = Path(r"/mnt/hgfs/MT_Data/Katmai2021/KAT028")
-sampling_rate = 4
-t_buffer = 8*3600
-
 
 def get_z3d_info(z3d_path):
     """
@@ -39,7 +35,6 @@ def get_z3d_info(z3d_path):
 
     return fn_dict
 
-
 def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
                       comp_list=['ex', 'ey', 'hx', 'hy', 'hz']):
     """
@@ -53,10 +48,26 @@ def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
                          of longest schedule chunk
     """
     st = datetime.datetime.now()
-    attr_list = ['station', 'channel_number', 'component', 'coordinate_system',
-                 'dipole_length', 'azimuth', 'units', 'lat', 'lon', 'elev',
-                 'datum', 'data_logger', 'instrument_id', 'calibration_fn',
-                 'declination',  'fn', 'conversion', 'gain']
+    attr_list = [
+        "station",
+        "channel_number",
+        "component",
+        "coordinate_system",
+        "dipole_length",
+        "azimuth",
+        "units",
+        "lat",
+        "lon",
+        "elev",
+        "datum",
+        "data_logger",
+        "instrument_id",
+        "calibration_fn",
+        "declination",
+        "fn",
+        "conversion",
+        "gain",
+    ]
 
     fn_df = get_z3d_info(z3d_path)
 
@@ -75,8 +86,8 @@ def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
         end_dt = datetime.datetime.fromisoformat(comp_df.start.max())
         t_diff = (end_dt - start_dt).total_seconds()
 
-        # make a new MTTS object that will have a length that is buffered
-        # at the end to make sure there is room for the data, will trimmed
+        ### make a new MTTS object that will have a length that is buffered
+        ### at the end to make sure there is room for the data, will trimmed
         new_ts = ts.MTTS()
         new_ts.ts = np.zeros(int((t_diff + t_buffer) * sampling_rate))
         new_ts.sampling_rate = sampling_rate
@@ -101,7 +112,6 @@ def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
             
 
             # get the end date as the last z3d file
-            
             end_date = z_obj.ts_obj.ts.index[-1]
             # fill attribute data frame
             for attr in attr_list:
@@ -140,15 +150,18 @@ def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
 
     et = datetime.datetime.now()
     compute_time = (et - st).total_seconds()
-    print('   Combining took {0:.2f} seconds'.format(compute_time))
+    print("   Combining took {0:.2f} seconds".format(compute_time))
     return return_fn_list
+
 
 # =============================================================================
 # test
 # =============================================================================
 
 #combined_fn_list = combine_z3d_files(fn_path, comp_list=["ex"])
-
+z3d_path = Path(r"c:\MT\Katmai2021\KAT028")
+sampling_rate = 4
+t_buffer = 8 * 3600
 
 attr_list = ['station', 'channel_number', 'component', 'coordinate_system',
              'dipole_length', 'azimuth', 'units', 'lat', 'lon', 'elev',
@@ -195,6 +208,7 @@ for row in comp_df.itertuples():
     
     plt.figure(index)
     plt.plot(new_ts.ts)
+    plt.plot(t_obj.ts)
     # get the end date as the last z3d file
     end_date = z_obj.ts_obj.ts.index[-1]
     # fill attribute data frame
@@ -206,6 +220,7 @@ for row in comp_df.itertuples():
 # need to trim the data
 new_ts.ts = new_ts.ts.data[(new_ts.ts.index >= start_dt) &
                            (new_ts.ts.index <= end_date)].to_frame()
+plt.plot(new_ts.ts)
 
 # fill gaps with forwards or backwards values, this seems to work
 # better than interpolation and is faster than regression.
@@ -238,3 +253,4 @@ new_ts.write_ascii_file(sv_fn_ascii.absolute())
 # compute_time = (et - st).total_seconds()
 # print('   Combining took {0:.2f} seconds'.format(compute_time))
 # return return_fn_list
+# combined_fn_list = combine_z3d_files(fn_path)

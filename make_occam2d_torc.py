@@ -8,10 +8,10 @@ Created on Wed Sep 23 13:51:54 2015
 import mtpy.modeling.occam2d_rewrite as occam
 
 s_edi_path = r"c:\Users\jpeacock\Documents\Geothermal\TorC\EDI_Files_INV"
-s_list = ['TC{0:03}'.format(ii) for ii in range(3, 13)] 
+s_list = ["TC{0:03}".format(ii) for ii in range(3, 13)]
 
 ocd = occam.Data(edi_path=s_edi_path, station_list=s_list)
-ocd.model_mode = 'log_all'
+ocd.model_mode = "log_all"
 ocd.phase_tm_err = 5
 ocd.res_tm_err = 30
 ocd.phase_te_err = 5

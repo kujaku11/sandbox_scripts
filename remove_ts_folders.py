@@ -26,3 +26,4 @@ for folder in os.listdir(data_folder):
                     print('Removed {0}'.format(ts_path))
                 except ValueError:
                     continue
+

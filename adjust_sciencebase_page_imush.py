@@ -18,22 +18,26 @@ import os
 # =============================================================================
 # Parameters
 # =============================================================================
-page_id = '5ad77f06e4b0e2c2dd25e798'
-username = 'jpeacock@usgs.gov'
+page_id = "5ad77f06e4b0e2c2dd25e798"
+username = "jpeacock@usgs.gov"
 password = getpass.getpass()
 
-ng_citation = 'Bedrosian, P. A., Peacock, J. R., Bowles-Martinez, E., '+\
-              'Schultz, A., Hill, G. J. (2018) Crustal inheritance '+\
-              'and a top-down control on arc magmatism at Mount St. Helens,'+\
-              ' Nature Geoscience, 11, p. 865-870.'
-              
-page_citation = 'Paul A. Bedrosian, Jared R. Peacock, Esteban Bowles-Martinez, '+\
-                'and Adam Schultz, 2018, Magnetotelluric data from the '+\
-                'imaging Magma Under St. Helens (iMUSH) project, U.S. '+\
-                'Geological Survey, https://doi.org/10.5066/P9NLXXB3.'
+ng_citation = (
+    "Bedrosian, P. A., Peacock, J. R., Bowles-Martinez, E., "
+    + "Schultz, A., Hill, G. J. (2018) Crustal inheritance "
+    + "and a top-down control on arc magmatism at Mount St. Helens,"
+    + " Nature Geoscience, 11, p. 865-870."
+)
 
-#edi_dir = r"/media/jpeacock/My Passport/imush_edi"
-#png_dir = r"/media/jpeacock/My Passport/imush_png"
+page_citation = (
+    "Paul A. Bedrosian, Jared R. Peacock, Esteban Bowles-Martinez, "
+    + "and Adam Schultz, 2018, Magnetotelluric data from the "
+    + "imaging Magma Under St. Helens (iMUSH) project, U.S. "
+    + "Geological Survey, https://doi.org/10.5066/P9NLXXB3."
+)
+
+# edi_dir = r"/media/jpeacock/My Passport/imush_edi"
+# png_dir = r"/media/jpeacock/My Passport/imush_png"
 archive_dir = r"h:\iMUSH\Archive"
 # =============================================================================
 # login and get child ids
@@ -49,64 +53,62 @@ for child_id in child_ids:
     try:
         child_json = sb_session.get_item(child_id)
     except:
-        print('---> skipping child id {0}'.format(child_id))
+        print("---> skipping child id {0}".format(child_id))
         continue
-    
+
     # need to add back in edi and png files
-    station = child_json['title'].split()[1].strip()
-    xml_fn = os.path.join(archive_dir, station, '{0}_meta.xml'.format(station))
-#    edi_fn = os.path.join(edi_dir, '{0}.edi'.format(station))
-#    png_fn = os.path.join(png_dir, '{0}.png'.format(station))
+    station = child_json["title"].split()[1].strip()
+    xml_fn = os.path.join(archive_dir, station, "{0}_meta.xml".format(station))
+    #    edi_fn = os.path.join(edi_dir, '{0}.edi'.format(station))
+    #    png_fn = os.path.join(png_dir, '{0}.png'.format(station))
 
     ### Add new xml file
-#    if os.path.isfile(xml_fn):
-#        child_json = sb_session.upload_files_and_update_item(child_json,
-#                                                             [xml_fn],
-#                                                             scrape_file=True)
-#    else:
-#        print('no xml for {0}'.format(station))
-#        continue
-    
+    #    if os.path.isfile(xml_fn):
+    #        child_json = sb_session.upload_files_and_update_item(child_json,
+    #                                                             [xml_fn],
+    #                                                             scrape_file=True)
+    #    else:
+    #        print('no xml for {0}'.format(station))
+    #        continue
+
     ### change web links
-    child_json['webLinks'] = [child_json['webLinks'][0]]
-    child_json['webLinks'][0]['type'] = 'Publication that references this resource'
-    child_json['webLinks'][0]['title'] = ng_citation
-    
+    child_json["webLinks"] = [child_json["webLinks"][0]]
+    child_json["webLinks"][0]["type"] = "Publication that references this resource"
+    child_json["webLinks"][0]["title"] = ng_citation
+
     ### page citation
-    child_json['citation'] = page_citation
-    
+    child_json["citation"] = page_citation
+
     ### order files
-    fn_dict = {'zip':[]}
+    fn_dict = {"zip": []}
     fn_list = [None, None, None]
-    for f_dict in child_json['files']:
-        fname = f_dict['name']
-        if fname.endswith('.edi'):
+    for f_dict in child_json["files"]:
+        fname = f_dict["name"]
+        if fname.endswith(".edi"):
             fn_list[1] = f_dict
-        elif fname.endswith('.png'):
+        elif fname.endswith(".png"):
             fn_list[2] = f_dict
-        elif fname.endswith('xml'):
-#            continue
+        elif fname.endswith("xml"):
+            #            continue
             fn_list[0] = f_dict
-        elif fname.endswith('zip'):
-            fn_dict['zip'].append(f_dict)
+        elif fname.endswith("zip"):
+            fn_dict["zip"].append(f_dict)
         else:
-            continue 
+            continue
     fn_list = [ff for ff in fn_list if ff is not None]
-    child_json['files'] = fn_list + sorted(fn_dict['zip'], 
-                                           key=lambda k: k['name'])
-    
-    
+    child_json["files"] = fn_list + sorted(fn_dict["zip"], key=lambda k: k["name"])
+
     ### reset title
-    child_json['title'] = 'station {0}'.format(station)
-    
+    child_json["title"] = "station {0}".format(station)
+
     ### change summary
-    child_json['summary'] = child_json['summary'].replace('146', '147')
-    
+    child_json["summary"] = child_json["summary"].replace("146", "147")
+
     #### UPDATE CHILD ITEM
     sb_session.update_item(child_json)
 
 
-#=======
+# =======
 
 #    child_json['citation'] = page_citation
 ##    ### sort order of files
@@ -122,25 +124,25 @@ for child_id in child_ids:
 ##        elif fname.endswith('zip'):
 ##            fn_dict['zip'].append(f_dict)
 ##        else:
-##            continue 
-##        
+##            continue
+##
 ##    # sort zip files by date
 ##    zip_fn_list = sorted(fn_dict['zip'], key=lambda k: k['name'])
-##    
+##
 ##    # make new list of file dictionaries
 ##    fn_list = [fn_dict['xml'], fn_dict['edi'], fn_dict['png']]
 ##    child_json['files'] = fn_list + zip_fn_list
-#    
+#
 #    ### change web links
 #    child_json['webLinks'] = [child_json['webLinks'][0]]
-#>>>>>>> f5d3b1ab01a81c55641a4e3c09d6ee60ecebd6f1
+# >>>>>>> f5d3b1ab01a81c55641a4e3c09d6ee60ecebd6f1
 #    ### remove the double doi in the citation
 #    https_find_01 = child_json['citation'].find('https')
 #    https_find_02 = child_json['citation'].find('https', https_find_01+5)
-#    
+#
 #    child_json['citation'] = child_json['citation'][0:https_find_01]+\
 #                             child_json['citation'][https_find_02:]
-#    
+#
 #    ### sort order of files
 #    edi_find = False
 #    xml_find = False
@@ -160,12 +162,12 @@ for child_id in child_ids:
 #        elif fname.endswith('zip'):
 #            fn_dict['zip'].append(f_dict)
 #        else:
-#            continue 
-#        
+#            continue
+#
 #    # sort zip files by date
 #    zip_fn_list = sorted(fn_dict['zip'], key=lambda k: k['name'])
-    
-    # make new list of file dictionaries
+
+# make new list of file dictionaries
 #    if not edi_find:
 #        if os.path.isfile(edi_fn):
 #            child_json = sb_session.upload_file_to_item(child_json, edi_fn, scrape_file=False)
@@ -179,9 +181,5 @@ for child_id in child_ids:
 #    else:
 #        fn_list = [fn_dict['xml'], fn_dict['edi'], fn_dict['png']]
 #    child_json['files'] = fn_list + zip_fn_list
-#    
+#
 #    child_json['summary'] = child_json['summary'].replace('146', '147')
-    
-    
-
-    

@@ -12,10 +12,13 @@ import mtpy.imaging.mtplot as mtplot
 import mtpy
 
 edi_path = r"c:\Users\jpeacock\Documents\SaudiArabia\Kyhbar_EDI_Files"
-edi_list = [os.path.join(edi_path, edi_fn) for edi_fn in os.listdir(edi_path)
-            if edi_fn.endswith('.edi')]
+edi_list = [
+    os.path.join(edi_path, edi_fn)
+    for edi_fn in os.listdir(edi_path)
+    if edi_fn.endswith(".edi")
+]
 
-#for edi_fn in edi_list:
+# for edi_fn in edi_list:
 #    mt_obj = mt.MT(edi_fn)
 
 ptm = mtplot.plot_pt_map(fn_list=edi_list)
