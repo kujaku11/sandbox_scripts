@@ -32,7 +32,7 @@ model_epsg = 32611
 model_utm_zone = "11S"
 
 # directives on what to do
-write_data = True
+write_data = False
 write_model = True
 write_cov = True
 write_cfg = False
@@ -40,7 +40,7 @@ topography = True
 center_stations = True
 new_edis = True
 
-dfn = save_path.joinpath("{0}_modem_data_z03_t02_topo.dat".format(fn_stem))
+dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if write_data and dfn.exists():
     os.remove(dfn)
 
@@ -172,6 +172,7 @@ if not dfn.exists():
         new_edis=new_edis,
     )
 else:
+    print(f"Reading in {dfn}")
     data_obj = modem.Data()
     data_obj.read_data_file(dfn)
     data_obj.model_epsg = model_epsg
@@ -210,7 +211,7 @@ if write_model:
     mod_obj.plot_mesh()
     mod_obj.save_path = save_path
     mod_obj.write_model_file(
-        model_fn_basename="{0}_sm{1:02.0f}.rho".format(
+        model_fn_basename="{0}_sm{1:02.0f}_1.rho".format(
             fn_stem, np.log10(mod_obj.res_initial_value)
         )
     )
@@ -226,7 +227,7 @@ if topography:
         topo_fn, airlayer_type="log_down", shift_north=0, shift_east=0
     )
     mod_obj.write_model_file(
-        model_fn_basename=r"{0}_modem_sm02_topo.rho".format(fn_stem)
+        model_fn_basename=r"{0}_modem_sm02_topo_1.rho".format(fn_stem)
     )
     mod_obj.plot_topography()
 
