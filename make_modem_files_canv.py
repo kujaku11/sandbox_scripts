@@ -19,28 +19,28 @@ from mtpy.core import mt_collection
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
 csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\all_mt_stations.csv"
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ca_volcanoes\modem_inv\inv_01")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\canv_01")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 
 fn_stem = "canv"
 
-bounds = {"lat": np.array([31, 42.3]), "lon": np.array([-124.6, -113.8])}
+bounds = {"lat": np.array([31, 44.0]), "lon": np.array([-124.6, -113.8])}
 # bounds = None
 
-avg_radius = 6000
+avg_radius = 10000
 model_epsg = 32611
 model_utm_zone = "11S"
 
 # directives on what to do
-write_data = True
+write_data = False
 write_model = True
 write_cov = True
 write_cfg = False
 topography = True
-center_stations = False
+center_stations = True
 new_edis = True
 
-dfn = save_path.joinpath("{0}_modem_data_z03_t02_topo.dat".format(fn_stem))
+dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
 if write_data and dfn.exists():
     os.remove(dfn)
 
@@ -55,20 +55,21 @@ if not dfn.exists():
     # =============================================================================
     # Get edi files
     # =============================================================================
-    if not dfn.exists():
-        if bounds is not None:
-            mc = mt_collection.MTCollection()
-            mc.from_csv(csv_fn)
-            bbox_df = mc.apply_bbox(
-                bounds["lon"].min(),
-                bounds["lon"].max(),
-                bounds["lat"].min(),
-                bounds["lat"].max(),
-            )
+    if bounds is not None:
+        mc = mt_collection.MTCollection()
+        mc.from_csv(csv_fn)
+        bbox_df = mc.apply_bbox(
+            bounds["lon"].min(),
+            bounds["lon"].max(),
+            bounds["lat"].min(),
+            bounds["lat"].max(),
+        )
 
-            s_edi_list = bbox_df.fn.to_list()
-        else:
-            s_edi_list = list(edi_path.glob("*.edi"))
+        s_edi_list = bbox_df.fn.to_list()
+    else:
+        s_edi_list = list(edi_path.glob("*.edi"))
+        
+    print(f"INFO: found {len(s_edi_list)} stations")
 
     inv_period_list = np.logspace(np.log10(1.0 / 100), np.log10(18720), num=23)
     data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list)
@@ -136,26 +137,30 @@ if not dfn.exists():
                     mt_avg.station_metadata.comments = (
                         "avgeraged_stations = " + ",".join(avg_z["station"].tolist())
                     )
-                    edi_obj = mt_avg.write_mt_file(save_dir=new_edi_path)
-                    print(f"wrote average file {edi_obj.fn}")
-
-                    s_list.append(
-                        {"count": count, "stations": avg_z["station"].tolist()}
-                    )
-                    count += 1
-
-                    # remove averaged stations
                     try:
-                        data_obj.data_array, data_obj.mt_dict = data_obj.remove_station(
-                            avg_z["station"].tolist()
+                        edi_obj = mt_avg.write_mt_file(save_dir=new_edi_path)
+                        print(f"wrote average file {edi_obj.fn}")
+    
+                        s_list.append(
+                            {"count": count, "stations": avg_z["station"].tolist()}
                         )
-                    except KeyError:
-                        print("Could not remove {avg_z['station'].tolist()}")
-
-                    # add averaged station
-                    data_obj.data_array, data_obj.mt_dict = data_obj.add_station(
-                        mt_object=mt_avg
-                    )
+                        count += 1
+    
+                        # remove averaged stations
+                        try:
+                            data_obj.data_array, data_obj.mt_dict = data_obj.remove_station(
+                                avg_z["station"].tolist()
+                            )
+                        except KeyError:
+                            print("Could not remove {avg_z['station'].tolist()}")
+    
+                        # add averaged station
+                        data_obj.data_array, data_obj.mt_dict = data_obj.add_station(
+                            mt_object=mt_avg
+                        )
+                    except Exception as error:
+                        print(f"{error} ")
+                        print(avg_z['station'].tolist())
 
                 else:
                     continue
@@ -167,6 +172,7 @@ if not dfn.exists():
         new_edis=new_edis,
     )
 else:
+    print(f"Reading in {dfn}")
     data_obj = modem.Data()
     data_obj.read_data_file(dfn)
     data_obj.model_epsg = model_epsg
@@ -175,8 +181,8 @@ else:
 # ==============================================================================
 if write_model:
     mod_obj = modem.Model(stations_object=data_obj.station_locations)
-    mod_obj.cell_size_east = 5000
-    mod_obj.cell_size_north = 5000.0
+    mod_obj.cell_size_east = 8000
+    mod_obj.cell_size_north = 8000
     mod_obj.pad_num = 3
     mod_obj.pad_east = 10
     mod_obj.pad_north = 10
@@ -188,10 +194,11 @@ if write_model:
     mod_obj.ns_ext = 2.6e6
     mod_obj.pad_z = 9
     mod_obj.n_layers = 70
+    # setting this to none will force to only add bathymetry
     mod_obj.n_air_layers = None
     mod_obj.z1_layer = 30
     mod_obj.z_target_depth = 180000.0
-    mod_obj.z_bottom = 300000.0
+    mod_obj.z_bottom = 500000.0
     mod_obj.res_initial_value = 100.0
 
     # --> here is where you can rotate the mesh
