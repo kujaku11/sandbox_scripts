@@ -7,9 +7,12 @@ Created on Mon Sep 26 12:32:29 2016
 
 import os
 import shutil
+import sys
+import traceback
 import mtpy.usgs.zen_processing as zp
 # import pandas as pd
 from pathlib import Path
+
 
 #==============================================================================
 # local parameters
@@ -25,14 +28,15 @@ if not copy_edi_path.exists():
 #==============================================================================
 # Station to process and remote reference
 #==============================================================================
-station = 'KAT039'
-# rr_station = ['KAT028', 'KAT039']
-rr_station = None
+station = 'KAT279'
+rr_station = ['KAT002', 'KAT046']
+# rr_station = None
 
-block_dict = {4096: [2, 3, 4],
-              256: [1, 2, 4],
+block_dict = {4096: [0, 1, 2],
+              256: [1, 2, 3],
               4: [0]}
 use_df_list = [4096, 256, 4]
+# use_df_list = [4]
 overwrite = False
 df_overwrite = True
 copy_edi =True
@@ -75,14 +79,14 @@ zp_obj.calibration_path = coil_calibration_path
 # zp_obj.survey_config_fn = Path(zp_obj.station_ts_dir).joinpath('{0}.cfg'.format(station))
 # zp_obj.survey_config.read_survey_config_file(zp_obj.survey_config_fn,
 #                                              station)
-zp_obj._tol_dict[4]['s_diff'] = 6 * 4 * 3600
+zp_obj._tol_dict[4]['s_diff'] = 6 * 24 * 4 * 3600
 #zp_obj._tol_dict[256]['s_diff'] = .5 * 256 * 3600
 kw_dict = {'df_fn': dfn,
            'df_list': use_df_list,
            'notch_dict': {4096: None, 256: None, 4: None},
-           'sr_dict': {4096: (1000., 50),
-                       256: (49.49, .002),
-                       4: (.002, .00001)},
+           'sr_dict': {4096: (1000., 20),
+                       256: (19.99, .01),
+                       4: (.01, .000001)},
            'use_blocks_dict': block_dict,
            'birrp_param_dict': b_param_dict,
            'overwrite': overwrite}
@@ -103,6 +107,7 @@ with zp.Capturing() as output:
                                                        rr_station))
         print('x' * 50)
         print('ERROR: {0}'.format(error))
+        traceback.print_exc()
         print('x' * 50)
 
 log_fn = local_path.joinpath('{0}_processing.log'.format(station))
