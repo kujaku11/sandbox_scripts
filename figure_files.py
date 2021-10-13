@@ -48,7 +48,7 @@ def pdf_file_reduce_size(input_fn, output_fn=None, crop=True, gs_exe="gs"):
 # =============================================================================
 # Single File
 # =============================================================================
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019\mp_basemap_01.pdf")
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\g3_2019\g3_peacock_mp_mt_diff.pdf")
 new_fn = pdf_file_reduce_size(fn, crop=False, gs_exe="gswin64c")
 
 

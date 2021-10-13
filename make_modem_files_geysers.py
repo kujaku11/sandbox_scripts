@@ -7,24 +7,24 @@ Created on Wed May 25 17:17:14 2016
 # ==============================================================================
 # Imports
 # ==============================================================================
-import os
+from pathlib import Path
 import numpy as np
 import mtpy.modeling.modem as modem
 
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = r"c:\Users\jpeacock\Documents\ClearLake\EDI_Files_birrp\Edited"
-save_path = r"c:\Users\jpeacock\Documents\ClearLake\modem_inv\inv05"
-topo_fn = r"c:\Users\jpeacock\Documents\ClearLake\dem\geysers_dem_150m.txt"
+edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\EDI_files_birrp_processed\Geographic\Edited")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01")
+topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\geysers_dem_150m.txt")
+model_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_sm50_topo.rho")
+
 
 fn_stem = "gz"
-s_edi_list = [
-    os.path.join(edi_path, ss) for ss in os.listdir(edi_path) if ss.endswith(".edi")
-]
+s_edi_list = list(edi_path.glob("gz3*.edi"))
 
-if not os.path.exists(save_path):
-    os.mkdir(save_path)
+if not save_path.exists():
+    save_path.mkdir()
 # ==============================================================================
 # Make the data file
 # ==============================================================================
@@ -52,82 +52,90 @@ data_obj.model_epsg = 32611
 data_obj.rotation_angle = 0
 
 # write out the data file
-dfn = "{0}_modem_data".format(fn_stem)
+dfn = f"{fn_stem}_modem_data"
 if data_obj.rotation_angle != 0:
     if data_obj.rotation_angle < 0:
-        dfn += "_rm{0:02.0f}".format(data_obj.rotation_angle)
+        dfn += f"_rm{data_obj.rotation_angle:02.0f}"
     else:
-        dfn += "_r{0:02.0f}".format(data_obj.rotation_angle)
+        dfn += f"_r{data_obj.rotation_angle:02.0f}"
 
 if data_obj.inv_mode == "2":
-    dfn = "{0}_z{1:02.0f}.dat".format(dfn, data_obj.error_value_z)
+    dfn = f"{dfn}_z{data_obj.error_value_z:02.0f}.dat"
 
 elif data_obj.inv_mode == "5":
-    dfn = "{0}_t{2:02.0f}.dat".format(dfn, data_obj.error_value_tipper * 100)
+    dfn = f"{dfn}_t{data_obj.error_value_tipper * 100:02.0f}.dat"
 else:
-    dfn = "{0}_z{1:02.0f}_t{2:02.0f}.dat".format(
-        dfn, data_obj.error_value_z, data_obj.error_value_tipper * 100
-    )
+    dfn = "{dfn}_z{data_obj.error_value_z:02.0f}_t{data_obj.error_value_tipper * 100:02.0f}.dat"
 data_obj.write_data_file(save_path=save_path, fn_basename=dfn)
+
 
 
 # ==============================================================================
 # First make the mesh
 # ==============================================================================
-mod_obj = modem.Model(data_obj.station_locations)
+if not model_fn.exists():
+    mod_obj = modem.Model(data_obj.station_locations)
+    
+    # cell size inside the station area
+    mod_obj.cell_size_east = 200
+    mod_obj.cell_size_north = 200
+    
+    ### Padding information
+    mod_obj.pad_num = 8
+    mod_obj.pad_east = 10
+    mod_obj.pad_north = 10
+    mod_obj.pad_z = 5
+    mod_obj.pad_method = "extent1"
+    
+    # extension of the model in E-W direction or N-S direction and depth
+    # should be large enough to reduce edge effects
+    mod_obj.ew_ext = 350000
+    mod_obj.ns_ext = 350000
+    mod_obj.z_bottom = 250000
+    mod_obj.z_target_depth = 20000
+    mod_obj.pad_stretch_v = 2.5
+    mod_obj.res_initial_value = 50.0
+    mod_obj.z_mesh_method = "new"
+    
+    # number of layers
+    mod_obj.n_air_layers = 20
+    mod_obj.n_layers = 50
+    
+    # thickness of 1st layer.  If you are not using topography or the topography
+    # in your area is minimal, this is usually around 5 or 10 meters.  If the
+    # topography is severe in the model area then a larger number is necessary to
+    # minimize the number of extra layers.
+    mod_obj.z1_layer = 20
+    
+    # --> here is where you can rotate the mesh
+    mod_obj.mesh_rotation_angle = 0
+    
+    mod_obj.make_mesh()
+    
+    # --> add topography
+    
+    mod_obj.add_topography_to_model2(
+        topographyfile=topo_fn, airlayer_type="log_increasing_down"
+    )
+    
+    mod_obj.write_model_file(
+        save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
+    )
 
-# cell size inside the station area
-mod_obj.cell_size_east = 200
-mod_obj.cell_size_north = 200
+else:
+    mod_obj = modem.Model()
+    mod_obj.read_model_file(model_fn)
+    mod_obj.station_locations = data_obj.station_locations
 
-### Padding information
-mod_obj.pad_num = 8
-mod_obj.pad_east = 10
-mod_obj.pad_north = 10
-mod_obj.pad_z = 5
-mod_obj.pad_method = "extent1"
-
-# extension of the model in E-W direction or N-S direction and depth
-# should be large enough to reduce edge effects
-mod_obj.ew_ext = 350000
-mod_obj.ns_ext = 350000
-mod_obj.z_bottom = 250000
-mod_obj.z_target_depth = 20000
-mod_obj.pad_stretch_v = 2.5
-mod_obj.res_initial_value = 50.0
-mod_obj.z_mesh_method = "new"
-
-# number of layers
-mod_obj.n_air_layers = 20
-mod_obj.n_layers = 50
-
-# thickness of 1st layer.  If you are not using topography or the topography
-# in your area is minimal, this is usually around 5 or 10 meters.  If the
-# topography is severe in the model area then a larger number is necessary to
-# minimize the number of extra layers.
-mod_obj.z1_layer = 20
-
-# --> here is where you can rotate the mesh
-mod_obj.mesh_rotation_angle = 0
-
-mod_obj.make_mesh()
-
-# --> add topography
-
-mod_obj.add_topography_to_model2(
-    topographyfile=topo_fn, airlayer_type="log_increasing_down"
-)
-
-mod_obj.write_model_file(
-    save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
-)
-
-### center stations
-data_obj.center_stations(mod_obj.model_fn)
+### center stations and put on to the original grid.
+data_obj.center_stations(mod_obj)
+data_obj._center_lat = 38.831979
+data_obj._center_lon = -122.828190
+data_obj.data_array["rel_north"] += 200
 data_obj.project_stations_on_topography(mod_obj)
 
 mod_obj.plot_mesh(fig_num=3)
-mod_obj.plot_topography()
+# mod_obj.plot_topography()
 # ==============================================================================
 # make the covariance file
 # ==============================================================================
@@ -138,7 +146,7 @@ cov.smoothing_z = 0.5
 cov.smoothing_num = 1
 
 cov.write_covariance_file(
-    os.path.join(save_path, "covariance.cov"), model_fn=mod_obj.model_fn
+    save_path.joinpath("covariance.cov"), model_fn=mod_obj.model_fn
 )
 
 # =============================================================================

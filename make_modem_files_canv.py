@@ -40,7 +40,7 @@ topography = True
 center_stations = True
 new_edis = True
 
-dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
+dfn = save_path.joinpath("{0}_modem_data_z10_t03.dat".format(fn_stem))
 if write_data and dfn.exists():
     os.remove(dfn)
 
@@ -199,7 +199,7 @@ if write_model:
     mod_obj.z1_layer = 30
     mod_obj.z_target_depth = 180000.0
     mod_obj.z_bottom = 500000.0
-    mod_obj.res_initial_value = 100.0
+    mod_obj.res_initial_value = 70.0
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0.0
