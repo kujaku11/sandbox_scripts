@@ -43,19 +43,19 @@ class MTCollection:
     def create_mt_file_list(self, mt_path, file_types=[".edi"]):
         """
         Get a list of MT file from a given path
-        
+
         :param mt_path: full path to where the MT transfer functions are stored
         :type mt_path: string or :class:`pathlib.Path`
-        
+
         :param file_types: List of file types to look for given their extension
         :type file_types: list
-        
+
         Currently available file types are or will be:
             - .edi - EDI files
             - .zmm - EMTF output file
             - .j - BIRRP output file
             - .avg - Zonge output file
-            
+
         """
         self.mt_path = self.check_path(mt_path)
         if self.mt_path is None:

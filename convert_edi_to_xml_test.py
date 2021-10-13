@@ -345,7 +345,7 @@ class XML_Config(object):
 
     def write_cfg_file(self, cfg_fn=None):
         """
-        write out configuration file        
+        write out configuration file
         """
         if cfg_fn is not None:
             self.cfg_fn = cfg_fn
@@ -442,7 +442,7 @@ class XML_Config(object):
 class EDI_to_XML(object):
     """
     convert an EDI file to XML format
-    
+
     """
 
     def __init__(self, **kwargs):

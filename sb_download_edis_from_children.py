@@ -27,6 +27,6 @@ for child_id in children:
     except IndexError:
         print(f"Could not find EDI file in {child['title']} ")
         continue
-    
+
     session.download_file(edi_dict["url"], edi_dict["name"], destination=save_path)
     print(f"--> downloaded {edi_dict['name']}")

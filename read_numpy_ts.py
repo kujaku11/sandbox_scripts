@@ -16,4 +16,3 @@ t = ts.MTTS()
 t.ts = hx
 t.sampling_rate = 50
 t.start_time_utc = "2020-01-01T00:00:00"
-

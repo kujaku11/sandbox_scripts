@@ -50,7 +50,10 @@ df = pd.DataFrame(df_dict)
 df.to_csv(csv_file, index=False)
 
 # write shape file
-gdf = gpd.GeoDataFrame(df, crs=datum,)
+gdf = gpd.GeoDataFrame(
+    df,
+    crs=datum,
+)
 gdf["geometry"] = [Point(x[1]["lon"], x[1]["lat"]) for x in df.iterrows()]
 gdf.to_file(shp_file)
 

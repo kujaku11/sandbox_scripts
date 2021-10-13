@@ -42,9 +42,9 @@ def get_z3d_info(z3d_path):
 
 def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8 * 3600):
     """
-    Combine all z3d files for a given station and given component for 
+    Combine all z3d files for a given station and given component for
     processing and getting the long period estimations.
-    
+
     :param str z3d_path: full path to z3d files
     :param str component: component to combine
     :param int new_sampling_rate: new sampling rate of the data

@@ -14,10 +14,14 @@ import mtpy.modeling.modem as modem
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\EDI_files_birrp_processed\Geographic\Edited")
+edi_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\EDI_files_birrp_processed\Geographic\Edited"
+)
 save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01")
 topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\geysers_dem_150m.txt")
-model_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_sm50_topo.rho")
+model_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_sm50_topo.rho"
+)
 
 
 fn_stem = "gz"
@@ -69,24 +73,23 @@ else:
 data_obj.write_data_file(save_path=save_path, fn_basename=dfn)
 
 
-
 # ==============================================================================
 # First make the mesh
 # ==============================================================================
 if not model_fn.exists():
     mod_obj = modem.Model(data_obj.station_locations)
-    
+
     # cell size inside the station area
     mod_obj.cell_size_east = 200
     mod_obj.cell_size_north = 200
-    
+
     ### Padding information
     mod_obj.pad_num = 8
     mod_obj.pad_east = 10
     mod_obj.pad_north = 10
     mod_obj.pad_z = 5
     mod_obj.pad_method = "extent1"
-    
+
     # extension of the model in E-W direction or N-S direction and depth
     # should be large enough to reduce edge effects
     mod_obj.ew_ext = 350000
@@ -96,28 +99,28 @@ if not model_fn.exists():
     mod_obj.pad_stretch_v = 2.5
     mod_obj.res_initial_value = 50.0
     mod_obj.z_mesh_method = "new"
-    
+
     # number of layers
     mod_obj.n_air_layers = 20
     mod_obj.n_layers = 50
-    
+
     # thickness of 1st layer.  If you are not using topography or the topography
     # in your area is minimal, this is usually around 5 or 10 meters.  If the
     # topography is severe in the model area then a larger number is necessary to
     # minimize the number of extra layers.
     mod_obj.z1_layer = 20
-    
+
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
-    
+
     mod_obj.make_mesh()
-    
+
     # --> add topography
-    
+
     mod_obj.add_topography_to_model2(
         topographyfile=topo_fn, airlayer_type="log_increasing_down"
     )
-    
+
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
     )

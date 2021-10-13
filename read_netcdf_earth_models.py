@@ -126,7 +126,7 @@ def read_nc_file(
     shift_z=0.0,
 ):
     """
-    Read NetCDF earth model file into UTM coordinates    
+    Read NetCDF earth model file into UTM coordinates
 
     :param nc_file: full path to netCDF file
     :type nc_file: string or Path
@@ -217,7 +217,7 @@ def read_nc_file_points(
     z_key="depth",
 ):
     """
-    Read NetCDF earth model file into UTM coordinates    
+    Read NetCDF earth model file into UTM coordinates
 
     :param nc_file: full path to netCDF file
     :type nc_file: string or Path
@@ -282,7 +282,11 @@ def read_nc_file_points(
         values_dict[key] = value.astype(xg.dtype)
 
     pointsToVTK(
-        vtk_fn.as_posix(), yg, xg, depth, values_dict,
+        vtk_fn.as_posix(),
+        yg,
+        xg,
+        depth,
+        values_dict,
     )
 
     print(f"--> Wrote VTK file to {vtk_fn}")

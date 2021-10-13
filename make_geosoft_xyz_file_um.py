@@ -39,7 +39,7 @@ mod_obj.write_geosoft_xyz(
     c_east=c_east - 750,
     c_north=c_north - 750,
     pad_north=5,
-    pad_east=5, 
+    pad_east=5,
     pad_z=17,
 )
 

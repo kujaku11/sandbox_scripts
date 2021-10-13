@@ -15,7 +15,9 @@ n = 3600 * df
 dt = np.arange(n) / df
 
 ex = np.zeros(n)
-for p, a, s in zip(np.logspace(-3, 3, 50), np.random.randint(0, 20, 50), np.random.randn(50)):
+for p, a, s in zip(
+    np.logspace(-3, 3, 50), np.random.randint(0, 20, 50), np.random.randn(50)
+):
     ex += a * np.cos(np.pi * 2 * p * dt + p / np.pi)
 
 
@@ -27,5 +29,5 @@ t.start_time_utc = "2021-01-01T12:00:00"
 
 plt.plot(t.ts)
 
-t.decimate(256/4)
+t.decimate(256 / 4)
 plt.plot(t.ts)

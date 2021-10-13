@@ -13,7 +13,7 @@ import numpy as np
 def arrhenius(temperature, wtp_h2o, pressure=1):
     """
     melt resistivity of rhyolite from Gaillard [2004]
-    
+
     """
     R = 8.314  # units are kJ/mol/K
     sigma_0 = -78.9 * np.log(wtp_h2o) + 754
@@ -47,7 +47,7 @@ def dacite_arrhenius(temperature, wtp_h2o, pressure=1):
 def basalt_arrhenius(temperature, wtp_k2o):
     """
     electrical resistivity from Gaillard [2005]
-    
+
     """
 
     a1 = 0.742
@@ -74,7 +74,7 @@ def nernst_einstein(mobility, charge, concentration, temperature, haven):
 def modified_brick(sigma_1, sigma_2, percent_2):
     """
     modified brick mising model
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -97,7 +97,7 @@ def modified_brick(sigma_1, sigma_2, percent_2):
 def modified_archies(sigma_1, sigma_2, percent_2, m=1.05):
     """
     modified archies law
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -116,7 +116,7 @@ def modified_archies(sigma_1, sigma_2, percent_2, m=1.05):
 def hs_lower(sigma_1, sigma_2, percent_2):
     """
     hashin-shtrickman lower bound
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -146,12 +146,12 @@ def calculate_ob(concentration_dict):
     """
     calculate optical bacisity using the formulation from Zhang [2010]
     and parameters from Duffy and Ingram [1975], following Pommier, [2013]
-    
+
     concentration_dict must have keys:
         - ['Al', 'Ca', 'Fe', 'H', 'K', 'Mg', 'Mn', 'Na', 'Si']
-        
+
     values are percent concentrations for each oxide
-    
+
     """
     # dictionary of lambda ob values from Duffy
     lob = {

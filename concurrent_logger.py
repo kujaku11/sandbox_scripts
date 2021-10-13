@@ -78,8 +78,10 @@ except ImportError:
         # Should be safe to reuse `SystemRandom` - not software state dependant
         randbits = random.SystemRandom().getrandbits
     else:
+
         def randbits(nb):
             return random.Random().getrandbits(nb)
+
 
 try:
     import gzip
@@ -98,10 +100,21 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
     """
 
     def __init__(
-            self, filename, mode='a', maxBytes=0, backupCount=0,
-            encoding=None, debug=False, delay=None, use_gzip=False,
-            owner=None, chmod=None, umask=None, newline=None, terminator="\n",
-            unicode_error_policy='ignore',
+        self,
+        filename,
+        mode="a",
+        maxBytes=0,
+        backupCount=0,
+        encoding=None,
+        debug=False,
+        delay=None,
+        use_gzip=False,
+        owner=None,
+        chmod=None,
+        umask=None,
+        newline=None,
+        terminator="\n",
+        unicode_error_policy="ignore",
     ):
         """
         Open the specified file and use it as the stream for logging.
@@ -165,25 +178,28 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         self.use_gzip = True if gzip and use_gzip else False
         self.gzip_buffer = 8096
 
-        if unicode_error_policy not in ('ignore', 'replace', 'strict'):
-            unicode_error_policy = 'ignore'
+        if unicode_error_policy not in ("ignore", "replace", "strict"):
+            unicode_error_policy = "ignore"
             warnings.warn(
                 "Invalid unicode_error_policy for concurrent_log_handler: "
                 "must be ignore, replace, or strict. Defaulting to ignore.",
-                UserWarning)
+                UserWarning,
+            )
         self.unicode_error_policy = unicode_error_policy
 
         if delay not in (None, True):
             warnings.warn(
-                'parameter delay is now ignored and implied as True, '
-                'please remove from your config.',
-                DeprecationWarning)
+                "parameter delay is now ignored and implied as True, "
+                "please remove from your config.",
+                DeprecationWarning,
+            )
 
         # Construct the handler with the given arguments in "delayed" mode
         # because we will handle opening the file as needed. File name
         # handling is done by FileHandler since Python 2.5.
         super(ConcurrentRotatingFileHandler, self).__init__(
-            filename, mode, encoding=encoding, delay=True)
+            filename, mode, encoding=encoding, delay=True
+        )
 
         self.terminator = terminator or "\n"
 
@@ -216,7 +232,9 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
             return
         lock_file = self.lockFilename
         self._console_log(
-            "concurrent-log-handler %s opening %s" % (hash(self), lock_file), stack=False)
+            "concurrent-log-handler %s opening %s" % (hash(self), lock_file),
+            stack=False,
+        )
 
         with self._alter_umask():
             self.stream_lock = open(lock_file, "wb", buffering=0)
@@ -240,7 +258,11 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         with self._alter_umask():
             # noinspection PyArgumentList
             stream = io.open(
-                self.baseFilename, mode=mode, encoding=self.encoding, newline=self.newline)
+                self.baseFilename,
+                mode=mode,
+                encoding=self.encoding,
+                newline=self.newline,
+            )
 
         self._do_chown_and_chmod(self.baseFilename)
 
@@ -259,7 +281,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
                 os.umask(prev_umask)
 
     def _close(self):
-        """ Close file stream.  Unlike close(), we don't tear anything down, we
+        """Close file stream.  Unlike close(), we don't tear anything down, we
         expect the log to be re-opened after rotation."""
 
         if self.stream:
@@ -275,13 +297,23 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         if not self._debug:
             return
         import threading
+
         tid = threading.current_thread().name
         pid = os.getpid()
-        stack_str = ''
+        stack_str = ""
         if stack:
             stack_str = ":\n" + "".join(traceback.format_stack())
         asctime = time.asctime()
-        print("[%s %s %s] %s%s" % (tid, pid, asctime, msg, stack_str,))
+        print(
+            "[%s %s %s] %s%s"
+            % (
+                tid,
+                pid,
+                asctime,
+                msg,
+                stack_str,
+            )
+        )
 
     def emit(self, record):
         """
@@ -329,7 +361,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
             # Try to emit in a form acceptable to the output encoding
             # The unicode_error_policy determines whether this is lossy.
             try:
-                encoding = getattr(stream, 'encoding', self.encoding or 'us-ascii')
+                encoding = getattr(stream, "encoding", self.encoding or "us-ascii")
                 msg_bin = msg.encode(encoding, self.unicode_error_policy)
                 msg = msg_bin.decode(encoding, self.unicode_error_policy)
                 stream.write(msg)
@@ -343,7 +375,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
 
     def _do_lock(self):
         if self.is_locked:
-            return   # already locked... recursive?
+            return  # already locked... recursive?
         self._open_lockfile()
         if self.stream_lock:
             for i in range(10):
@@ -373,7 +405,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
 
     def close(self):
         """
-        Close log stream and stream_lock. """
+        Close log stream and stream_lock."""
         self._console_log("In close()", stack=True)
         try:
             self._close()
@@ -409,12 +441,13 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         except (IOError, OSError):
             exc_value = sys.exc_info()[1]
             self._console_log(
-                "rename failed.  File in use? exception=%s" % (exc_value,), stack=True)
+                "rename failed.  File in use? exception=%s" % (exc_value,), stack=True
+            )
             return
 
-        gzip_ext = ''
+        gzip_ext = ""
         if self.use_gzip:
-            gzip_ext = '.gz'
+            gzip_ext = ".gz"
 
         def do_rename(source_fn, dest_fn):
             self._console_log("Rename %s -> %s" % (source_fn, dest_fn + gzip_ext))

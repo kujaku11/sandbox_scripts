@@ -28,9 +28,9 @@ model_center = (45.654713, -118.547148)
 # model_center = (45.650594, -118.562997)
 
 m_epsg = 26911
-m_east, m_north, m_zone = gis_tools.project_point_ll2utm(model_center[0], 
-                                                         model_center[1],
-                                                         epsg=m_epsg)
+m_east, m_north, m_zone = gis_tools.project_point_ll2utm(
+    model_center[0], model_center[1], epsg=m_epsg
+)
 
 
 def interp(model_east, model_north, surface_east, surface_north, surface_values):
@@ -42,13 +42,14 @@ def interp(model_east, model_north, surface_east, surface_north, surface_values)
 
     return interpolate.griddata(points, values, xi).reshape(mxg.shape)
 
+
 def read(fn):
     df = pd.read_csv(fn, header=0, index_col=0)
     x = df.x83utm11.unique()
     y = df.y83utm11.unique()
     z = df.grid_code.to_numpy()
     z = -1 * z.reshape((y.size, x.size))
-    
+
     return x, y, z
 
 
@@ -77,33 +78,33 @@ for ii in range(mx.size - 1):
             continue
         k1 = 0
         k2 = np.where(m.grid_z >= mcrb[jj, ii])[0][0]
-        c = (1./m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
+        c = (1.0 / m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
         c_top[jj, ii] = np.nansum(c)
-        
+
         k1 = np.where(m.grid_z >= mcrb[jj, ii])[0][0]
         k2 = np.where(m.grid_z >= mbase[jj, ii])[0][0]
-        c = (1./m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
+        c = (1.0 / m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
         c_crb[jj, ii] = np.nansum(c)
-        
+
         k1 = np.where(m.grid_z >= mbase[jj, ii])[0][0]
         k2 = np.where(m.grid_z >= mbase[jj, ii] + 3000)[0][0]
-        c = (1./m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
+        c = (1.0 / m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
         c_base[jj, ii] = np.nansum(c)
-        
+
         k1 = np.where(m.grid_z >= 6000)[0][0]
         k2 = np.where(m.grid_z >= 10000)[0][0]
-        c = (1./m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
+        c = (1.0 / m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
         c_8k[jj, ii] = np.nansum(c)
-        
+
         k1 = np.where(m.grid_z >= 10000)[0][0]
         k2 = np.where(m.grid_z >= 15000)[0][0]
-        c = (1./m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
+        c = (1.0 / m.res_model[jj, ii, k1:k2]) * abs(m.grid_z[k1:k2])
         c_15k[jj, ii] = np.nansum(c)
-        
-        
+
+
 m2r = array2raster.ModEM_to_Raster()
-ll_cc = m2r.get_model_lower_left_coord(m,
-    model_center=model_center, pad_east=9, pad_north=9
+ll_cc = m2r.get_model_lower_left_coord(
+    m, model_center=model_center, pad_east=9, pad_north=9
 )
 m2r.model_obj = m
 
@@ -115,12 +116,3 @@ for ii, carray in enumerate([c_top, c_crb, c_base, c_8k, c_15k]):
     m2r.model_obj.grid_z = np.array([ii, 100])
     m2r.model_obj.res_model = carray.reshape((mdem.shape[0], mdem.shape[1], 1))
     m2r.write_raster_files()
-
-
-
-
-        
-        
-        
-
-

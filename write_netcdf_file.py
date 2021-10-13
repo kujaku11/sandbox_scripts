@@ -12,9 +12,10 @@ import numpy as np
 
 mfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.rho"
 
-model_center = (45.654713,  -118.547148)
+model_center = (45.654713, -118.547148)
 model_center_ne = gis_tools.project_point_ll2utm(
-    model_center[0], model_center[1], epsg=26911)
+    model_center[0], model_center[1], epsg=26911
+)
 
 m_obj = modem.Model()
 m_obj.read_model_file(mfn)
@@ -36,7 +37,11 @@ for ii, east in enumerate(model_center_ne[1] - m_obj.grid_east[:-1]):
     lon[ii] = lon_00
 
 # nc_obj = netCDF4.Dataset(m_obj.model_fn[:-4]+'.nc', 'w', format='NETCDF4')
-nc_obj = netCDF4.Dataset(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.nc", "w", format="NETCDF4")
+nc_obj = netCDF4.Dataset(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.nc",
+    "w",
+    format="NETCDF4",
+)
 nc_obj.setncattr("description", "Resistivity Model from ModEM")
 
 # dimensions

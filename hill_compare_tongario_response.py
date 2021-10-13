@@ -158,7 +158,9 @@ for ii, ff in enumerate(f_arr):
                     test_arr[
                         max([kk - pad, 0]) : min([kk + pad, nr]),
                         max([jj - pad, 0]) : min([jj + pad, nr]),
-                    ] += (b_arr[comp][ii] - p_arr[comp][ii])
+                    ] += (
+                        b_arr[comp][ii] - p_arr[comp][ii]
+                    )
                     continue
 
         ax = fig.add_subplot(2, 2, cc, aspect="equal")

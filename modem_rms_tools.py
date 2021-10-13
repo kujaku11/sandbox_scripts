@@ -116,7 +116,7 @@ def plot_rms_summary(
     keys=["z", "t", "zxx", "zxy", "zyx", "zyy", "tx", "ty"],
 ):
     """
-    plot summary as bar plots 
+    plot summary as bar plots
     """
     summary_df = get_rms_summary_df(res_obj)
     ax_list = summary_df[keys].plot.bar(
@@ -142,7 +142,7 @@ def plot_rms_by_period(
     keys=["z", "t", "zxx", "zxy", "zyx", "zyy", "tx", "ty"],
 ):
     """
-    plot periods as bar plots 
+    plot periods as bar plots
     """
     period_df = get_rms_by_period_df(res_obj)
     ax_list = period_df[keys].plot.bar(
@@ -168,9 +168,7 @@ def plot_rms_by_period(
 # res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv03\gz_err03_cov02_NLCG_057.res"
 # res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv04\gz_rm50_z03_c02_104.res"
 # res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\gz_z03_c02_074.res"
-res_fn = (
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c03_pfa_108.res"
-)
+res_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\st_z05_t02_c03_pfa_108.res"
 rms_thresh = 7.0
 
 res_obj = modem.Data()
@@ -180,4 +178,6 @@ summary_df = get_rms_summary_df(res_obj)
 period_df = get_rms_by_period_df(res_obj)
 
 ax1 = plot_rms_summary(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy", "t", "tx", "ty"])
-ax2 = plot_rms_by_period(res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy", "t", "tx", "ty"])
+ax2 = plot_rms_by_period(
+    res_obj, keys=["z", "zxx", "zxy", "zyx", "zyy", "t", "tx", "ty"]
+)

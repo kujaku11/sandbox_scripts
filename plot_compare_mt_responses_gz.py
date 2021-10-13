@@ -8,11 +8,15 @@ from pathlib import Path
 import numpy as np
 import mtpy.imaging.mtplot as mtplot
 
-original_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\EDI_Files_birrp\Edited\Geographic")
-phase1_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\EDI_files_birrp_processed\Geographic\Edited")
+original_dir = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\EDI_Files_birrp\Edited\Geographic"
+)
+phase1_dir = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\EDI_files_birrp_processed\Geographic\Edited"
+)
 save_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\Reports")
 
-f1 =[]
+f1 = []
 f2 = []
 for fn1 in original_dir.glob("*.edi"):
     for fn2 in phase1_dir.glob("*.edi"):

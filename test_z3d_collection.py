@@ -245,9 +245,7 @@ class Z3DCollection(object):
         return z3d_df
 
     def _make_block_dict(self, z3d_df):
-        """
-
-        """
+        """ """
         block_dict = {}
         for sr in z3d_df.sampling_rate.unique():
             block_dict[sr] = list(z3d_df[z3d_df.sampling_rate == sr].block.unique())

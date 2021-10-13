@@ -90,7 +90,7 @@ class Glover(object):
     @property
     def x(self):
         """
-        get the x axis 
+        get the x axis
         """
         x = self.phase_01.phi
         if type(x) is float:

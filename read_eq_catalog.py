@@ -36,10 +36,12 @@ df.columns = df.columns.str.lower()
 #     columns={"lat": "latitude", "lon": "longitude", "depth km": "depth"}, inplace=True
 # )
 # Clear lake region
-df = df.loc[(df.latitude >= 38.6) &
-            (df.latitude <= 39.35) &
-            (df.longitude >= -123.2) &
-            (df.longitude <= -122.33)]
+df = df.loc[
+    (df.latitude >= 38.6)
+    & (df.latitude <= 39.35)
+    & (df.longitude >= -123.2)
+    & (df.longitude <= -122.33)
+]
 
 df["geometry"] = df.apply(lambda z: Point(z.longitude, z.latitude), axis=1)
 gdf = gpd.GeoDataFrame(df)

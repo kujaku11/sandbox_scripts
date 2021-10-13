@@ -12,8 +12,6 @@ page_id = "60d39cc1d34e12a1b009c64b"
 username = "jpeacock@usgs.gov"
 
 
-
-
 # initialize a session
 session = sb.SbSession()
 
@@ -54,9 +52,10 @@ for child in session.get_child_ids(page_id):
         "Phase tensor ellipses align in the direction of electrical current "
         "flow and warmer color represents the subsurface becoming more conductive "
         "and cooler colors more resistive. All plots are on the same period "
-        "scale [10E-3, 10E+4] seconds.")
-    page_dict['summary'] = summary
-    page_dict['body'] = summary
+        "scale [10E-3, 10E+4] seconds."
+    )
+    page_dict["summary"] = summary
+    page_dict["body"] = summary
     session.update_item(page_dict)
     print(f"--> {count}: Updated {station}")
     count += 1

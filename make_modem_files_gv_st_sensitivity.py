@@ -14,7 +14,9 @@ import mtpy.modeling.modem as modem
 # ==============================================================================
 # Inputs
 # ==============================================================================
-dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_sensitivity\st_1d_z03_t01_flat.dat")
+dfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_sensitivity\st_1d_z03_t01_flat.dat"
+)
 save_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_sensitivity"
 )
@@ -56,8 +58,9 @@ mod_obj.mesh_rotation_angle = 0
 mod_obj.make_mesh()
 mod_obj.plot_mesh()
 
-mod_obj.write_model_file(save_path=save_path,
-                        model_fn_basename="{0}_sm02.rho".format(fn_stem))
+mod_obj.write_model_file(
+    save_path=save_path, model_fn_basename="{0}_sm02.rho".format(fn_stem)
+)
 
 ## =============================================================================
 ## Add topography

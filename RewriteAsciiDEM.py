@@ -67,7 +67,9 @@ new_elev = elevation[new_x, new_y]
 
 new_east_mesh, new_north_mesh = np.meshgrid(new_east, new_north, indexing="ij")
 # plot the elevation to be sure its all correct
-fig = plt.figure(1,)
+fig = plt.figure(
+    1,
+)
 ax = fig.add_subplot(1, 1, 1, aspect="equal")
 # pm = ax.pcolormesh(east_mesh, north_mesh, elevation, cmap='summer',
 #                   vmin=elevation.min())

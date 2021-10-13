@@ -31,13 +31,19 @@ def summarize_metadata_standards():
     for key in ["survey", "station", "run", "electric", "magnetic", "auxiliary"]:
         obj = ts_classes[key.capitalize()]()
         summary_dict.add_dict(obj.attr_dict, key)
-    
-    for key in ["Coefficient", "FIR", "FrequencyResponseTable",
-                "PoleZero", "TimeDelay"]:
+
+    for key in [
+        "Coefficient",
+        "FIR",
+        "FrequencyResponseTable",
+        "PoleZero",
+        "TimeDelay",
+    ]:
         key += "Filter"
         obj = flt_classes[key]()
         summary_dict.add_dict(obj._attr_dict, validate_attribute(key))
     return summary_dict
+
 
 def summarize_metadata_all_standards():
     """
@@ -49,17 +55,22 @@ def summarize_metadata_all_standards():
     for key, obj in ts_classes.items():
         obj = obj()
         try:
-            summary_dict.add_dict(obj._attr_dict,
-                                  validate_attribute(key))
+            summary_dict.add_dict(obj._attr_dict, validate_attribute(key))
         except AttributeError:
             print(f"skipping {key}")
-    
-    for key in ["Coefficient", "FIR", "FrequencyResponseTable",
-                "PoleZero", "TimeDelay"]:
+
+    for key in [
+        "Coefficient",
+        "FIR",
+        "FrequencyResponseTable",
+        "PoleZero",
+        "TimeDelay",
+    ]:
         key += "Filter"
         obj = flt_classes[key]()
         summary_dict.add_dict(obj._attr_dict, validate_attribute(key))
     return summary_dict
+
 
 def make_df(summary_dict):
     """
@@ -80,25 +91,38 @@ def make_df(summary_dict):
     for key in sorted(summary_dict.keys()):
         v_dict = summary_dict[key]
         entry = {"attribute": key}
-        for dkey in ["description", "required", "type", "style", 
-                     "units", "options", "alias", "example"]:
+        for dkey in [
+            "description",
+            "required",
+            "type",
+            "style",
+            "units",
+            "options",
+            "alias",
+            "example",
+        ]:
             value = v_dict[dkey]
-            if value in [[], None, ]:
+            if value in [
+                [],
+                None,
+            ]:
                 value = ""
             elif isinstance(value, str):
-                value = value.replace("", '').replace("[", "").replace("]", "")
+                value = value.replace("", "").replace("[", "").replace("]", "")
             elif isinstance(value, list):
-                value = ",".join(["{0}".format(ii) for ii in value])   
-            
-                
+                value = ",".join(["{0}".format(ii) for ii in value])
+
             entry[dkey] = value
-            
+
         entry_list.append(entry)
-            
+
     df = pd.DataFrame(entry_list)
 
     return df
 
+
 df = make_df(summarize_metadata_all_standards())
-df.to_csv(r"c:\Users\jpeacock\OneDrive - DOI\mt\mt_metadata\mt_timeseries_metadata_standard_v3.csv", 
-          index=False)
+df.to_csv(
+    r"c:\Users\jpeacock\OneDrive - DOI\mt\mt_metadata\mt_timeseries_metadata_standard_v3.csv",
+    index=False,
+)

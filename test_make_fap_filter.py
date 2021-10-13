@@ -10,19 +10,23 @@ import pandas as pd
 from pathlib import Path
 
 
-from mt_metadata.timeseries.filters.frequency_response_table_filter import FrequencyResponseTableFilter
+from mt_metadata.timeseries.filters.frequency_response_table_filter import (
+    FrequencyResponseTableFilter,
+)
 from mt_metadata.timeseries.filters.channel_response_filter import ChannelResponseFilter
 
-fap_filter = FrequencyResponseTableFilter(name='correction_factor_bx',
-                                          units_in='nT',
-                                          units_out='nT',
-                                          comments='Frequency dependent correction for magnetic field')
+fap_filter = FrequencyResponseTableFilter(
+    name="correction_factor_bx",
+    units_in="nT",
+    units_out="nT",
+    comments="Frequency dependent correction for magnetic field",
+)
 
 bx_cal_file = Path(r"c:\Users\jpeacock\Documents\test_data\LEMI-424_N131_Bx.rsp")
 
-df = pd.read_csv(bx_cal_file, 
-                 delimiter="\s+",
-                 names=["frequency", "amplitude", "phase"])
+df = pd.read_csv(
+    bx_cal_file, delimiter="\s+", names=["frequency", "amplitude", "phase"]
+)
 
 df.phase = np.deg2rad(df.phase)
 

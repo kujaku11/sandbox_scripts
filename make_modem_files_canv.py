@@ -19,7 +19,9 @@ from mtpy.core import mt_collection
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
 csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES\all_mt_stations.csv"
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\canv_01")
+save_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\canv_01"
+)
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 
 fn_stem = "canv"
@@ -68,7 +70,7 @@ if not dfn.exists():
         s_edi_list = bbox_df.fn.to_list()
     else:
         s_edi_list = list(edi_path.glob("*.edi"))
-        
+
     print(f"INFO: found {len(s_edi_list)} stations")
 
     inv_period_list = np.logspace(np.log10(1.0 / 100), np.log10(18720), num=23)
@@ -90,7 +92,7 @@ if not dfn.exists():
         new_edi_path = save_path.joinpath("new_edis")
         if not new_edi_path.exists():
             new_edi_path.mkdir()
-            
+
         print("--- averaging stations ---")
         r = avg_radius
         count = 1
@@ -140,27 +142,28 @@ if not dfn.exists():
                     try:
                         edi_obj = mt_avg.write_mt_file(save_dir=new_edi_path)
                         print(f"wrote average file {edi_obj.fn}")
-    
+
                         s_list.append(
                             {"count": count, "stations": avg_z["station"].tolist()}
                         )
                         count += 1
-    
+
                         # remove averaged stations
                         try:
-                            data_obj.data_array, data_obj.mt_dict = data_obj.remove_station(
-                                avg_z["station"].tolist()
-                            )
+                            (
+                                data_obj.data_array,
+                                data_obj.mt_dict,
+                            ) = data_obj.remove_station(avg_z["station"].tolist())
                         except KeyError:
                             print("Could not remove {avg_z['station'].tolist()}")
-    
+
                         # add averaged station
                         data_obj.data_array, data_obj.mt_dict = data_obj.add_station(
                             mt_object=mt_avg
                         )
                     except Exception as error:
                         print(f"{error} ")
-                        print(avg_z['station'].tolist())
+                        print(avg_z["station"].tolist())
 
                 else:
                     continue

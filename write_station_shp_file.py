@@ -87,7 +87,10 @@ for ii, edi in enumerate(edi_list):
     data_arr["acq_by"][ii] = "USGS"
 
 ### make geopandas data frame with points
-gdf = gpd.GeoDataFrame(data_arr, crs=datum,)
+gdf = gpd.GeoDataFrame(
+    data_arr,
+    crs=datum,
+)
 gdf["geometry"] = [Point(x["longitude"], x["latitude"]) for x in data_arr]
 
 gdf.to_file(os.path.join(edi_dir, shp_fn))

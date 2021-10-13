@@ -16,11 +16,11 @@ def read_modem_models(model_file, ref_loc):
     Inputs:
         model_file - path to the modEM model file
         ref_loc - xyz reference location for the model and
-        	mesh has to be in a metric reference frame
+                mesh has to be in a metric reference frame
 
     Returns:
-    	(mesh, mod_dict) - tuple containing the mesh and a model dict
-    		with resistivity model.
+        (mesh, mod_dict) - tuple containing the mesh and a model dict
+                with resistivity model.
     """
     # Note: using UTM xyz convention
 
