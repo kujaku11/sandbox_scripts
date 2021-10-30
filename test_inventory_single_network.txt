@@ -1,0 +1,2 @@
+network,station,location,channel,start,end
+ZU,CAS04,,,2020-06-02T19:00:00,2020-07-13T19:00:00

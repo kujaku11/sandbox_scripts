@@ -8,13 +8,14 @@ from pathlib import Path
 from mtpy.core.mt import MT
 
 epath = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
-fn_list = list(epath.glob("USA-Nevada*"))
+fn_list = list(epath.glob("USA-Utah*"))
 
 chars = 280
 
 key_dict = {
     "latitude": "location.latitude",
     "longitude": "location.longitude",
+    "elevation": "location.elevation",
     "declination": "location.declination.value",
     "declination.epoch": "location.declination.epoch",
     "start": "time_period.start",

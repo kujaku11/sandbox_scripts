@@ -5,15 +5,17 @@ Created on Tue Sep  7 11:11:14 2021
 @author: jpeacock
 """
 
-from pathlib import Path
 import sciencebasepy as sb
 
 # BRod 2003 Northeast Nevada
-page_id = "59c54adbe4b017cf313d5850"
+# page_id = "59c54adbe4b017cf313d5850"
 
 # BRod 2007 North Wells Nevada
-page_id = "59ba6d0ce4b091459a563b34"
+# page_id = "59ba6d0ce4b091459a563b34"
 save_path = r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES"
+
+# BRod 2003 Utah
+page_id = "59de8dbee4b05fe04ccd3ada"
 
 session = sb.SbSession()
 
