@@ -24,7 +24,10 @@ surface_fn = r"c:\Users\jpeacock\OneDrive - DOI\General - Umatilla\2&3D modeling
 prebase_fn = r"c:\Users\jpeacock\OneDrive - DOI\General - Umatilla\2&3D modeling\exported_3D_surfaces\for_Jared\csvFiles\preBase_toPts2.csv"
 precrb_fn = r"c:\Users\jpeacock\OneDrive - DOI\General - Umatilla\2&3D modeling\exported_3D_surfaces\for_Jared\csvFiles\preCRB_toPts2.csv"
 
+# model center for inv_09
 model_center = (45.654713, -118.547148)
+
+# model center for inv_06
 # model_center = (45.650594, -118.562997)
 
 m_epsg = 26911
@@ -103,10 +106,9 @@ for ii in range(mx.size - 1):
 
 
 m2r = array2raster.ModEM_to_Raster()
-ll_cc = m2r.get_model_lower_left_coord(
-    m, model_center=model_center, pad_east=9, pad_north=9
-)
 m2r.model_obj = m
+ll_cc = m2r.get_model_lower_left_coord(model_center=model_center, pad_east=9, pad_north=9
+)
 
 m2r.lower_left_corner = ll_cc
 m2r.save_path = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\depth_slices"
@@ -116,3 +118,4 @@ for ii, carray in enumerate([c_top, c_crb, c_base, c_8k, c_15k]):
     m2r.model_obj.grid_z = np.array([ii, 100])
     m2r.model_obj.res_model = carray.reshape((mdem.shape[0], mdem.shape[1], 1))
     m2r.write_raster_files()
+    print(ii)

@@ -38,10 +38,12 @@ colors = {
 # area 1: 809, 807, 808, 905, 806, 795, 799, 791
 # well_id = 783
 
-for well_id in [781, 782, 783]:
+plt.rcParams["font.size"] = 14
+
+for well_id in [781]:
     well = g[g.SiteID == well_id]
 
-    fig = plt.figure(1, [5.5, 8.5])
+    fig = plt.figure(1, [7, 8.5])
     fig.clf()
 
     ax = fig.add_subplot(1, 1, 1, aspect="equal")
@@ -69,7 +71,7 @@ for well_id in [781, 782, 783]:
             level.Material,
             va="baseline",
             ha="left",
-            fontdict={"size": 11},
+            fontdict={"size": 16},
         )
 
     ax.set_ylabel("Elevation [m]", fontdict={"size": 14})

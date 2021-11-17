@@ -13,6 +13,7 @@ survey_csv_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\EDI_Files
 edi_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\EDI_Files_birrp_phase_02\final_edis"
 )
+# edi_path = Path(r"d:\edit2\Rotated_m14_deg")
 edi_list = list(edi_path.glob("*.edi"))
 
 save_dir_edi = Path(
@@ -64,7 +65,7 @@ for edi_fn in edi_list:
     m.survey_metadata.time_period.start_date = "2020-07-15"
 
     # Station
-    m.station_metadata.acquired_by.author = "Jared Peacock"
+    m.station_metadata.acquired_by.author = "US Geological Survey"
     m.station_metadata.acquired_by.comments = "U.S. Geological Survey"
     m.station_metadata.channel_layout = "L"
     m.station_metadata.comments = "measurement_coordinate_system = geomagnetic"

@@ -296,22 +296,22 @@ def read_nc_file_points(
 # =============================================================================
 # test
 # =============================================================================
-nc_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_wUS-SH-2010_percent.nc"
-)
-save_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\paul_paraview_files\WSUS_2020", nc_fn.stem
-)
-points = False
-custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+nc_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models")
 
+points = False
+#custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+custom_crs = None
 # northern CA/NV model center
 # model_center = (39.635149, -119.803946)
 # model_utm = "11S"
 
 # SWUS model
-model_center = (40.75, -113.25)
-model_utm = "11S"
+# model_center = (40.75, -113.25)
+# model_utm = "11S"
+
+# Clear Lake
+model_center = (38.987645, -122.751369)
+model_utm = "10S"
 
 if custom_crs is None:
     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
@@ -325,7 +325,7 @@ else:
     )
 
     utm_zone = "custom"
-
+    
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
 # rel_shift_east = -model_east + 250000.
@@ -346,28 +346,41 @@ else:
 # WUS_2010 -> SWUS
 rel_shift_east = -model_east
 rel_shift_north = -model_north
+    
+nc_list = [{"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
+           {"fn": "western_us_DNA13_percent.nc", "points": False},
+           {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
+           {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
+           {"fn": "Moho_Temperature.nc", "points": True},
+           ]
 
+for nc_entry in nc_list:
 
-if points:
-    x_obj, grid = read_nc_file_points(
-        nc_fn,
-        vtk_fn=save_fn,
-        utm_zone=model_utm,
-        crs=custom_crs,
-        shift_east=rel_shift_east,
-        shift_north=rel_shift_north,
-        units="km",
+    nc_fn = nc_path.joinpath(nc_entry["fn"])
+    save_fn = Path(
+        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv", nc_fn.stem
     )
-else:
-    x_obj, grid = read_nc_file(
-        nc_fn,
-        vtk_fn=save_fn,
-        utm_zone=model_utm,
-        crs=custom_crs,
-        shift_east=rel_shift_east,
-        shift_north=rel_shift_north,
-        units="km",
-    )
+
+    if nc_entry["points"]:
+        x_obj, grid = read_nc_file_points(
+            nc_fn,
+            vtk_fn=save_fn,
+            utm_zone=model_utm,
+            crs=custom_crs,
+            shift_east=rel_shift_east,
+            shift_north=rel_shift_north,
+            units="km",
+        )
+    else:
+        x_obj, grid = read_nc_file(
+            nc_fn,
+            vtk_fn=save_fn,
+            utm_zone=model_utm,
+            crs=custom_crs,
+            shift_east=rel_shift_east,
+            shift_north=rel_shift_north,
+            units="km",
+        )
 
 # vp = np.nan_to_num(nc_obj.variables["vp"][:])
 # dvp = nc_obj.variables["dvp_ulberg_mask"][:]
