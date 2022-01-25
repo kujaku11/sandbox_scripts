@@ -16,7 +16,8 @@ m_base.read_model_file(mfn_base)
 m_repeat = Model()
 m_repeat.read_model_file(mfn_repeat_01)
 
-m_base.res_model = m_base.res_model / m_repeat.res_model
+# m_base.res_model = m_base.res_model / m_repeat.res_model
+m_base.res_model = m_repeat.res_model - m_base.res_model
 
-m_base.write_vtk_file(vtk_fn_basename="cec_repeat_01_ratio",
-                      label="resistivity_ratio")
+m_base.write_vtk_file(vtk_fn_basename="cec_repeat_01_difference",
+                      label="resistivity")
