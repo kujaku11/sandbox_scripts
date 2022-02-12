@@ -17,7 +17,7 @@ from matplotlib import gridspec
 from mtpy.modeling.modem import Residual
 
 rfn = (
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\inv_07\mp_z05_c05_126.res"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gb_01\gb_z03_t02_c02_046.res"
 )
 im_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\Figures\mp_st_basemap.png"
 
@@ -61,10 +61,10 @@ ax1 = fig.add_subplot(gs1[0, :], aspect="equal")
 ax2 = fig.add_subplot(gs1[1, 0])
 # ax3 = fig.add_subplot(gs1[1, 1], sharey=ax2)
 
-im = image.imread(im_fn)
-ax1.imshow(im, extent=(-115.7425, -115.258, 35.39, 35.565))
-ax1.set_xlim((-115.72, -115.275))
-ax1.set_ylim((35.41, 35.5475))
+# im = image.imread(im_fn)
+# ax1.imshow(im, extent=(-115.7425, -115.258, 35.39, 35.565))
+# ax1.set_xlim((-115.72, -115.275))
+# ax1.set_ylim((35.41, 35.5475))
 ax2_list = []
 ax3_list = []
 line_list = []
@@ -101,10 +101,10 @@ for ii in range(2):
         )
         ax3.plot(
             range(r.rms_array.shape[0]),
-            np.repeat(1.55, r.rms_array.shape[0]),
+            np.repeat(2.43, r.rms_array.shape[0]),
             color="k",
             ls="--",
-            lw=1,
+            lw=2,
             zorder=1,
         )
         ax3.set_xticks(np.arange(r.rms_array.size, step=2))
@@ -135,7 +135,7 @@ ax1.set_ylabel("Latitude (deg)", fontdict=label_dict)
 ax2.set_ylim(0.51, 3.49)
 ax2.plot(
     r.period_list,
-    np.repeat(1.55, r.period_list.size),
+    np.repeat(2.43, r.period_list.size),
     color="k",
     ls="--",
     lw=1,
@@ -173,7 +173,8 @@ color_bar.set_label("RMS", fontdict=label_dict)
 # ax3.set_xticks(np.arange(r.rms_array.size, step=2))
 # ax3.set_xticklabels(rms_sort["station"][np.arange(r.rms_array.size, step=2)],
 #                     fontdict={"rotation": 90})
-ax3.set_xlabel((" " * 20).join(["West", "Middle", "East"]), fontdict=label_dict)
+# ax3.set_xlabel((" " * 20).join(["West", "Middle", "East"]), fontdict=label_dict)
+ax3.set_xlabel("Station", fontdict=label_dict)
 # ax3.grid(which="major", color=(.5, .5, .5), lw=.5)
 # ax3.set_axisbelow(True)
 
