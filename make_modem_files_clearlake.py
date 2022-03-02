@@ -23,7 +23,7 @@ model_epsg = 32610
 model_utm_zone = "10S"
 
 # directives on what to do
-write_data = True
+write_data = False
 write_model = True
 write_cov = True
 write_cfg = False
@@ -41,7 +41,7 @@ for remove in remove_list:
     except:
         print(f"Could not find {remove} in fn_list")
 
-dfn = save_path.joinpath(f"{fn_stem}_modem_data_z03_t02_topo.dat")
+dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z03_t02_topo_edit_02.dat")
 if write_data and dfn.exists():
     os.remove(dfn)
 
@@ -79,8 +79,8 @@ else:
 # ==============================================================================
 if write_model:
     mod_obj = modem.Model(data_obj.station_locations)
-    mod_obj.cell_size_east = 750
-    mod_obj.cell_size_north = 750
+    mod_obj.cell_size_east = 500
+    mod_obj.cell_size_north = 500
     mod_obj.pad_east = 7
     mod_obj.pad_north = 7
     mod_obj.pad_num = 4
@@ -91,7 +91,7 @@ if write_model:
     mod_obj.z_target_depth = 70000
     mod_obj.pad_z = 5
     mod_obj.n_air_layers = 15
-    mod_obj.n_layers = 50
+    mod_obj.n_layers = 54
     mod_obj.z1_layer = 30
     mod_obj.pad_stretch_v = 1.8
 
@@ -114,7 +114,7 @@ if topography:
     )
     if center_stations:
         data_obj.center_stations(mod_obj)
-    a, b = data_obj.project_stations_on_topography(mod_obj)
+    data_obj.project_stations_on_topography(mod_obj)
 
     mod_obj.plot_mesh(fig_num=3)
     mod_obj.plot_topography()

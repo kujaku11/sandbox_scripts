@@ -57,10 +57,10 @@ df.longitude = df.longitude.astype(np.float)
 # df = df[(df.latitude < 39.1) & (df.latitude > 38.5) &
 #        (df.longitude < -117.75) & (df.longitude > -118.5)]
 df = df[
-    (df.latitude < 39.5)
-    & (df.latitude > 36.5)
-    & (df.longitude < -116.0)
-    & (df.longitude > -119.75)
+    (df.latitude < 44.5)
+    & (df.latitude > 33)
+    & (df.longitude < -110.0)
+    & (df.longitude > -124.0)
 ]
 df = df.reset_index()
 
@@ -109,5 +109,5 @@ for ore in ore_list:
         continue
     gdf = gpd.GeoDataFrame(ore_df, crs=crs, geometry=points)
     gdf.to_file(
-        r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\lv_{0}.shp".format(ore)
+        r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\gb_{0}.shp".format(ore)
     )

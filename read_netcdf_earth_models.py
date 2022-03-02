@@ -215,6 +215,7 @@ def read_nc_file_points(
     units="m",
     shift_z=0.0,
     z_key="depth",
+    bbox=None
 ):
     """
     Read NetCDF earth model file into UTM coordinates
@@ -255,6 +256,8 @@ def read_nc_file_points(
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
+    
+    
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -309,9 +312,13 @@ custom_crs = None
 # model_center = (40.75, -113.25)
 # model_utm = "11S"
 
+# Great Basin
+model_center = (38.615252, -119.015192)
+model_utm = "11S"
+
 # Clear Lake
-model_center = (38.987645, -122.751369)
-model_utm = "10S"
+# model_center = (38.987645, -122.751369)
+# model_utm = "10S"
 
 if custom_crs is None:
     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
@@ -351,14 +358,15 @@ nc_list = [{"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
            {"fn": "western_us_DNA13_percent.nc", "points": False},
            {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
            {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
-           {"fn": "Moho_Temperature.nc", "points": True},
+           {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
+           {"fn": "moho_temperature_great_basin.nc", "points": True},
            ]
 
-for nc_entry in nc_list:
+for nc_entry in nc_list[-1:]:
 
     nc_fn = nc_path.joinpath(nc_entry["fn"])
     save_fn = Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv", nc_fn.stem
+        r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv", nc_fn.stem
     )
 
     if nc_entry["points"]:

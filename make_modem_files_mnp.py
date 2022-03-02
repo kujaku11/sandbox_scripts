@@ -17,7 +17,8 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_Files")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02")
+avg_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_avg_edis")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_03")
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\MusicValley\mv_topo.asc"
 
 fn_stem = "mnp"
@@ -38,24 +39,14 @@ if not save_path.exists():
 # Get edi files
 # =============================================================================
 if not dfn.exists():
-    edi_list = [fn for fn in list(edi_path.glob("*.edi"))]
-
-    s_edi_list = [
-        edi_path.joinpath("USMTArray.CAW10.2019.edi"),
-        edi_path.joinpath("USMTArray.CAX09.2019.edi"),
-    ]
-    for edi in edi_list:
-        mt_obj = mt.MT(edi)
-        if mt_obj.lat >= bounds["lat"].min() and mt_obj.lat <= bounds["lat"].max():
-            if mt_obj.lon >= bounds["lon"].min() and mt_obj.lon <= bounds["lon"].max():
-                s_edi_list.append(edi)
+    edi_list = list(edi_path.glob("mnp*.edi")) + list(avg_path.glob("*.edi"))
 
 # ==============================================================================
 # Make the data file
 # ==============================================================================
 if not dfn.exists():
-    inv_period_list = np.logspace(np.log10(1.0 / 300), np.log10(10000), num=23)
-    data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list)
+    inv_period_list = np.logspace(np.log10(1.0 / 300), np.log10(1000), num=23)
+    data_obj = modem.Data(edi_list=edi_list, period_list=inv_period_list)
     data_obj.error_type_z = "eigen_floor"
     data_obj.error_value_z = 3.0
     data_obj.error_type_tipper = "abs_floor"
