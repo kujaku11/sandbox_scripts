@@ -15,7 +15,7 @@ import mtpy.modeling.modem as modem
 # Inputs
 # ==============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inversion_edis")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_02_topo")
+save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_03_topo")
 topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc")
 fn_stem = "cl"
 
@@ -90,8 +90,8 @@ if write_model:
     mod_obj.z_bottom = 300000
     mod_obj.z_target_depth = 70000
     mod_obj.pad_z = 5
-    mod_obj.n_air_layers = 15
-    mod_obj.n_layers = 54
+    mod_obj.n_air_layers = 37
+    mod_obj.n_layers = 48
     mod_obj.z1_layer = 30
     mod_obj.pad_stretch_v = 1.8
 
@@ -108,7 +108,8 @@ if write_model:
 ## Add topography
 ## =============================================================================
 if topography:
-    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="log_down")
+    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="constant",
+                                     max_elev=1350)
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
     )
@@ -123,9 +124,9 @@ if topography:
 # ==============================================================================
 if write_cov:
     cov = modem.Covariance(grid_dimensions=mod_obj.res_model.shape)
-    cov.smoothing_east = 0.4
-    cov.smoothing_north = 0.4
-    cov.smoothing_z = 0.4
+    cov.smoothing_east = 0.5
+    cov.smoothing_north = 0.5
+    cov.smoothing_z = 0.5
     cov.smoothing_num = 1
 
     cov.write_covariance_file(
