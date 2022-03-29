@@ -9,7 +9,7 @@ import h5py
 
 f = h5py.File(r"h5_transfer_function_container.h5", "a")
 
-tf = f.create_dataset("tf", (20, 3, 2)) 
+tf = f.create_dataset("tf", (20, 3, 2))
 
 tf.dims[0].label = "period"
 tf.dims[1].label = "output"
@@ -36,4 +36,3 @@ tf.dims[1].attach_scale(f["hz"])
 
 tf.dims[2].attach_scale(f["hx"])
 tf.dims[2].attach_scale(f["hy"])
-

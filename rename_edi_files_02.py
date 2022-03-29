@@ -15,5 +15,3 @@ for ii, fn in enumerate(fg_files, 100):
     e1 = EDI(fn)
     e1.station = f"frg{ii:03}"
     e1.write(fn)
-    
-    

@@ -23,4 +23,3 @@ ex_metadata.sample_rate = 256
 
 ex = r.add_channel("ex", "electric", None, channel_metadata=ex_metadata)
 ex.replace_dataset(np.random.rand(11059200))
-

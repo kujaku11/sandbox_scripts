@@ -41,7 +41,9 @@ for remove in remove_list:
     except:
         print(f"Could not find {remove} in fn_list")
 
-dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z03_t02_topo_edit_02.dat")
+dfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z03_t02_topo_edit_02.dat"
+)
 if write_data and dfn.exists():
     os.remove(dfn)
 
@@ -108,8 +110,7 @@ if write_model:
 ## Add topography
 ## =============================================================================
 if topography:
-    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="constant",
-                                     max_elev=1350)
+    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="constant", max_elev=1350)
     mod_obj.write_model_file(
         save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
     )

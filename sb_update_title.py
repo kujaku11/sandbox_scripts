@@ -31,9 +31,11 @@ for child in session.get_child_ids(page_id):
     #     session.update_item(page_dict)
     #     print(f"--> {count}: Updated {station}")
     #     count += 1
-        
+
     if "station" in page_dict["title"].lower():
-        page_dict["citation"] = page_dict["citation"].replace(", https", "US Geological Survey data release, https")
+        page_dict["citation"] = page_dict["citation"].replace(
+            ", https", "US Geological Survey data release, https"
+        )
         session.update_item(page_dict)
         # print(f"--> {count}: Updated {station}")
         # count += 1

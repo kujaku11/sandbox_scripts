@@ -8,13 +8,15 @@ from pathlib import Path
 import pickle
 from mt_metadata.timeseries.filters import PoleZeroFilter, ChannelResponseFilter
 
-pz_filter = PoleZeroFilter(name='correction_factor_bx',
-                           units_in='nT',
-                           units_out='nT',
-                           comments='Frequency dependent correction for magnetic field channel Hx',
-                           normalization_factor=1)
+pz_filter = PoleZeroFilter(
+    name="correction_factor_bx",
+    units_in="nT",
+    units_out="nT",
+    comments="Frequency dependent correction for magnetic field channel Hx",
+    normalization_factor=1,
+)
 bx_cal_file = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\LEMI-424_N131_Bx.zpk")
-with open(bx_cal_file, 'rb') as fin:
+with open(bx_cal_file, "rb") as fin:
     zpk = pickle.load(fin)
     pz_filter.poles = zpk.poles
     pz_filter.zeros = zpk.zeros

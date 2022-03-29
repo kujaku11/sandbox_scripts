@@ -81,9 +81,7 @@ for jj, f in enumerate(range(0, 60, 4)):
     ax.xaxis.set_major_locator(MultipleLocator(0.05))
     ax.yaxis.set_major_locator(MultipleLocator(0.05))
     plt.colorbar(
-        im,
-        ax=ax,
-        shrink=0.6,
+        im, ax=ax, shrink=0.6,
     )
 
     plt.show()

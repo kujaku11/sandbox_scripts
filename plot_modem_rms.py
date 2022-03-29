@@ -16,9 +16,7 @@ from matplotlib import image
 from matplotlib import gridspec
 from mtpy.modeling.modem import Residual
 
-rfn = (
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gb_01\gb_z03_t02_c02_046.res"
-)
+rfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gb_01\gb_z03_t02_c02_046.res"
 im_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\Figures\mp_st_basemap.png"
 
 
@@ -160,10 +158,7 @@ ax2.set_ylabel("RMS", fontdict=label_dict)
 # cb_ax = mcb.make_axes(ax, orientation='vertical', fraction=.1)
 cb_ax = fig.add_axes([0.93, 0.65, 0.0175, 0.25])
 color_bar = mcb.ColorbarBase(
-    cb_ax,
-    cmap=rms_cmap,
-    norm=colors.Normalize(vmin=0, vmax=5),
-    orientation="vertical",
+    cb_ax, cmap=rms_cmap, norm=colors.Normalize(vmin=0, vmax=5), orientation="vertical",
 )
 
 color_bar.set_label("RMS", fontdict=label_dict)

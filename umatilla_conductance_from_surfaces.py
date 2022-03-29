@@ -107,7 +107,8 @@ for ii in range(mx.size - 1):
 
 m2r = array2raster.ModEM_to_Raster()
 m2r.model_obj = m
-ll_cc = m2r.get_model_lower_left_coord(model_center=model_center, pad_east=9, pad_north=9
+ll_cc = m2r.get_model_lower_left_coord(
+    model_center=model_center, pad_east=9, pad_north=9
 )
 
 m2r.lower_left_corner = ll_cc

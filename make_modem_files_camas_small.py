@@ -28,10 +28,7 @@ if not os.path.exists(save_path):
 # Make the data file
 # ==============================================================================
 inv_period_list = np.logspace(-np.log10(500), np.log10(1023), num=23)
-data_obj = modem.Data(
-    edi_list=s_edi_list,
-    period_list=inv_period_list,
-)
+data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list,)
 
 data_obj.error_type_z = "eigen_floor"
 data_obj.error_value_z = 3.0

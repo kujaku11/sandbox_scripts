@@ -53,12 +53,7 @@ for ii, key in enumerate(["surface", "middle_crust", "lower_crust"]):
     conductance = np.log10(conductance.sum(axis=2))
 
     ax = fig.add_subplot(1, 3, 1 + ii, aspect="equal")
-    im = ax.pcolormesh(
-        gx,
-        gy,
-        conductance,
-        cmap="gnuplot2",
-    )
+    im = ax.pcolormesh(gx, gy, conductance, cmap="gnuplot2",)
     # vmin=conductance[pad:-pad, pad:-pad].min(),
     # vmax=conductance[pad:-pad, pad:-pad].max())
 

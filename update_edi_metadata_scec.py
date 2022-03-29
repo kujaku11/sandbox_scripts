@@ -5,7 +5,7 @@ Created on Wed Jun 23 18:02:58 2021
 @author: jpeacock
 """
 # =============================================================================
-# 
+#
 # =============================================================================
 from pathlib import Path
 import pandas as pd
@@ -38,15 +38,15 @@ for zmm_fn in zmm_list:
     # survey
     m.survey_metadata.acquired_by.author = "Jared R. Peacock"
     m.survey_metadata.acquired_by.comments = "U.S. Geological Survey"
-    m.survey_metadata.citation_dataset.authors = "J. R. Peacock and P.E. Share MacParland"
+    m.survey_metadata.citation_dataset.authors = (
+        "J. R. Peacock and P.E. Share MacParland"
+    )
     m.survey_metadata.citation_dataset.doi = "https://doi.org/10.5066/P990U7GE"
     m.survey_metadata.citation_dataset.year = "2022"
     m.survey_metadata.comments = None
     m.survey_metadata.country = "USA"
     m.survey_metadata.datum = "WGS84"
-    m.survey_metadata.geographic_name = (
-        "Southern San Andreas Fault Zone, California"
-    )
+    m.survey_metadata.geographic_name = "Southern San Andreas Fault Zone, California"
     m.survey_metadata.name = "Southern San Andreas Fault Zone"
     m.survey_metadata.northwest_corner.latitude = survey_df.latitude.max()
     m.survey_metadata.northwest_corner.longitude = survey_df.longitude.min()
@@ -122,11 +122,15 @@ for zmm_fn in zmm_list:
         - m.station_metadata.location.declination.value
     )
     m.station_metadata.runs[0].ex.positive.x = 0
-    m.station_metadata.runs[0].ex.positive.x2 = m.station_metadata.runs[0].ex.dipole_length * np.cos(
+    m.station_metadata.runs[0].ex.positive.x2 = m.station_metadata.runs[
+        0
+    ].ex.dipole_length * np.cos(
         np.deg2rad(m.station_metadata.runs[0].ex.translated_azimuth)
     )
     m.station_metadata.runs[0].ex.positive.y = 0
-    m.station_metadata.runs[0].ex.positive.y2 = m.station_metadata.runs[0].ex.dipole_length * np.sin(
+    m.station_metadata.runs[0].ex.positive.y2 = m.station_metadata.runs[
+        0
+    ].ex.dipole_length * np.sin(
         np.deg2rad(m.station_metadata.runs[0].ex.translated_azimuth)
     )
     m.station_metadata.runs[0].ex.units = "millivolts"
@@ -149,11 +153,15 @@ for zmm_fn in zmm_list:
         - m.station_metadata.location.declination.value
     )
     m.station_metadata.runs[0].ey.positive.x = 0
-    m.station_metadata.runs[0].ey.positive.x2 = m.station_metadata.runs[0].ey.dipole_length * np.cos(
+    m.station_metadata.runs[0].ey.positive.x2 = m.station_metadata.runs[
+        0
+    ].ey.dipole_length * np.cos(
         np.deg2rad(m.station_metadata.runs[0].ey.translated_azimuth)
     )
     m.station_metadata.runs[0].ey.positive.y = 0
-    m.station_metadata.runs[0].ey.positive.y2 = m.station_metadata.runs[0].ey.dipole_length * np.sin(
+    m.station_metadata.runs[0].ey.positive.y2 = m.station_metadata.runs[
+        0
+    ].ey.dipole_length * np.sin(
         np.deg2rad(m.station_metadata.runs[0].ey.translated_azimuth)
     )
     m.station_metadata.runs[0].ey.units = "millivolts"

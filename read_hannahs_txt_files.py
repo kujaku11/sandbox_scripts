@@ -60,14 +60,7 @@ def read_txt(text_fn):
 
     lines = text_fn.read_text().split("\n")
     nf = len(lines) - 1
-    z = np.zeros(
-        (
-            nf,
-            2,
-            2,
-        ),
-        dtype=np.complex,
-    )
+    z = np.zeros((nf, 2, 2,), dtype=np.complex,)
     err = np.zeros((nf, 2, 2), dtype=np.float)
 
     for mm, line in enumerate(lines):

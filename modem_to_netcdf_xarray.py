@@ -12,7 +12,9 @@ import pyproj
 from mtpy.modeling.modem import Model, Data
 
 
-inv_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01")
+inv_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01"
+)
 
 m = Model()
 m.read_model_file(inv_path.joinpath("mj_z05_t02_c03_126.rho"))
@@ -30,6 +32,7 @@ class CenterPoint:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+
 # great basin center
 # center = CenterPoint(**{"latitude": 38.615252,
 #                 "longitude": -119.015192,
@@ -45,8 +48,10 @@ x_crs = pyproj.CRS("epsg:4326")
 
 translator = pyproj.Transformer.from_crs(model_crs, x_crs)
 
-east, north = np.broadcast_arrays(m.grid_north[pad:-(pad+1), None] + center.north,
-                                  m.grid_east[None, pad:-(pad+1)] + center.east)
+east, north = np.broadcast_arrays(
+    m.grid_north[pad : -(pad + 1), None] + center.north,
+    m.grid_east[None, pad : -(pad + 1)] + center.east,
+)
 
 
 lat, lon = translator.transform(north.ravel(), east.ravel())
@@ -57,12 +62,11 @@ depth = (m.grid_z[:-1] + center.elev) / 1000
 
 # need to have longitude first
 x_res = np.swapaxes(np.log10(m.res_model[pad:-pad, pad:-pad, :]), 0, 1).T
-x = xr.DataArray(x_res, 
-                 coords=[ ("depth", depth),
-                         ("latitude", latitude),
-                         ("longitude", longitude),
-                         ],
-                 dims=["depth", "latitude", "longitude"])
+x = xr.DataArray(
+    x_res,
+    coords=[("depth", depth), ("latitude", latitude), ("longitude", longitude),],
+    dims=["depth", "latitude", "longitude"],
+)
 
 x.name = "electrical_resistivity"
 x.attrs["long_name"] = "electrical resistivity"
@@ -88,13 +92,17 @@ x.coords["depth"].attrs["standard_name"] = "depth"
 ds = xr.Dataset(*[{"resistivity": x}])
 
 
-# fill in some metadata                 
+# fill in some metadata
 
 ds.attrs["Conventions"] = "CF-1.0"
 ds.attrs["Metadata_Conventions"] = "Unidata Dataset Discovery v1.0"
-ds.attrs["title"] = "Electrical resistivity of the Great Basin from magnetotelluric data"
+ds.attrs[
+    "title"
+] = "Electrical resistivity of the Great Basin from magnetotelluric data"
 ds.attrs["id"] = "GB_MT_2022"
-ds.attrs["summary"] = "A 3D electrical resistivity model of the Great Basin in the western US derived from magnetotelluric data using the inversion software ModEM."
+ds.attrs[
+    "summary"
+] = "A 3D electrical resistivity model of the Great Basin in the western US derived from magnetotelluric data using the inversion software ModEM."
 ds.attrs["keywords"] = "electrical resistivity, Great Basin"
 ds.attrs["Conventions"] = "CF-1.0"
 ds.attrs["Metadata_Conventions"] = "Unidata Dataset Discovery v1.0"
@@ -102,14 +110,18 @@ ds.attrs["author_name"] = "Jared Peacock"
 ds.attrs["author_url"] = ""
 ds.attrs["author_email"] = "jpeacock@usgs.gov"
 ds.attrs["institution"] = "US Geological Survey"
-ds.attrs["repository_name"] = "",
-ds.attrs["repository_institution"] = "",
-ds.attrs["repository_pid"] = "",
-ds.attrs["acknowledgment"] = "Data were collected by various researchers over the last 30 years."
+ds.attrs["repository_name"] = ("",)
+ds.attrs["repository_institution"] = ("",)
+ds.attrs["repository_pid"] = ("",)
+ds.attrs[
+    "acknowledgment"
+] = "Data were collected by various researchers over the last 30 years."
 ds.attrs["references"] = "Peacock et al."
-ds.attrs["history"] = "First version 2022-03-04" 
+ds.attrs["history"] = "First version 2022-03-04"
 ds.attrs["comment"] = "Model has not been tested for sensitivity, use with caution"
-ds.attrs["NCO"] = "netCDF Operators version 4.7.5 (Homepage = http://nco.sf.net, Code=http://github/nco/nco"
+ds.attrs[
+    "NCO"
+] = "netCDF Operators version 4.7.5 (Homepage = http://nco.sf.net, Code=http://github/nco/nco"
 
 # geospatial metadata
 ds.attrs["geospatial_lat_min"] = latitude.min()
@@ -129,7 +141,3 @@ ds.attrs["geospatial_vertical_positive"] = "down"
 
 
 ds.to_netcdf(path=inv_path.joinpath("mj_z05_t02_c03_126.nc"))
-
-
-
-

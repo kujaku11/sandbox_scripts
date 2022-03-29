@@ -71,11 +71,15 @@ for ii, key in enumerate(["surface", "middle_crust", "lower_crust"]):
 
     cb = plt.colorbar(im, ax=ax, shrink=0.35)
 
-    array2raster.array2raster(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\1d_conductance_{0}.tif".format(key),
-                              (-119.052319, 40.179765000000003),
-                              300.,
-                              300.,
-                              conductance[pad:-pad, pad:-pad])
+    array2raster.array2raster(
+        r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\1d_conductance_{0}.tif".format(
+            key
+        ),
+        (-119.052319, 40.179765000000003),
+        300.0,
+        300.0,
+        conductance[pad:-pad, pad:-pad],
+    )
 
     # array2raster.array2raster(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\conductance_{0}_crust.tiff".format(key),
     #                           model_center,

@@ -9,10 +9,9 @@ import pandas as pd
 from mtpy.imaging.plotspectrogram import PlotTF
 
 
-
 fn = r"c:\Users\jpeacock\Downloads\jared.asc"
 df = 22
-dt = 1./df
+dt = 1.0 / df
 
 data = pd.read_csv(fn, index_col="Time", usecols=["data", "Time"])
 
@@ -27,6 +26,3 @@ tf.fig__num = 3
 
 
 tf.plot()
-
-
- 

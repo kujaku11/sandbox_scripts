@@ -26,57 +26,6 @@ point_geometry = [Point(row.longitude, row.latitude) for row in df.itertuples()]
 gdf = gpd.GeoDataFrame(df["station"], geometry=point_geometry)
 
 with fiona.Env():
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     # Might throw a WARNING - CPLE_NotSupported in b'dataset sample_out.kml does not support layer creation option ENCODING'
     gdf.to_file(fn[:-4] + ".kml", driver="KML")

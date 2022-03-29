@@ -11,8 +11,12 @@ import mtpy.modeling.modem as modem
 import numpy as np
 import matplotlib.pyplot as plt
 
-mfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\gsv_z03_t02_c03_137.rho")
-dfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\gsv_modem_data_z03_t02.dat")
+mfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\gsv_z03_t02_c03_137.rho"
+)
+dfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GraniteSprings\modem_inv\inv_03\gsv_modem_data_z03_t02.dat"
+)
 save_root = "gsv"
 rot_angle = 0.0
 
@@ -124,7 +128,11 @@ im = ax.pcolormesh(
 cb = plt.colorbar(im, ax=ax)
 
 ax.scatter(
-    data_obj.station_locations.east, data_obj.station_locations.north, marker="v", c="k", s=25
+    data_obj.station_locations.east,
+    data_obj.station_locations.north,
+    marker="v",
+    c="k",
+    s=25,
 )
 ax.set_xlabel("Easting (m)")
 ax.set_ylabel("Northing (m)")

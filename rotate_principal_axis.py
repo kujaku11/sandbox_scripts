@@ -20,11 +20,10 @@ for edi_filename in edi_path.glob("*.edi"):
     m = MT(edi_filename)
     m.Z.rotate(m.Z.rotation_angle)
     m.Tipper.rotate(m.Tipper.rotation_angle)
-    
+
     p = m.plot_mt_response(plot_num=2)
-    p.save_plot(edi_path.joinpath(f"{m.station}_geographic.png").as_posix(),
-                fig_dpi=300)
-    
+    p.save_plot(
+        edi_path.joinpath(f"{m.station}_geographic.png").as_posix(), fig_dpi=300
+    )
+
     m.write_mt_file(fn_basename=f"{m.station}_geographic.edi")
-    
-    

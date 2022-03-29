@@ -215,7 +215,7 @@ def read_nc_file_points(
     units="m",
     shift_z=0.0,
     z_key="depth",
-    bbox=None
+    bbox=None,
 ):
     """
     Read NetCDF earth model file into UTM coordinates
@@ -256,8 +256,7 @@ def read_nc_file_points(
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
-    
-    
+
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -285,11 +284,7 @@ def read_nc_file_points(
         values_dict[key] = value.astype(xg.dtype)
 
     pointsToVTK(
-        vtk_fn.as_posix(),
-        yg,
-        xg,
-        depth,
-        values_dict,
+        vtk_fn.as_posix(), yg, xg, depth, values_dict,
     )
 
     print(f"--> Wrote VTK file to {vtk_fn}")
@@ -302,7 +297,7 @@ def read_nc_file_points(
 nc_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models")
 
 points = False
-#custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+# custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
 custom_crs = None
 # northern CA/NV model center
 # model_center = (39.635149, -119.803946)
@@ -332,7 +327,7 @@ else:
     )
 
     utm_zone = "custom"
-    
+
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
 # rel_shift_east = -model_east + 250000.
@@ -353,14 +348,15 @@ else:
 # WUS_2010 -> SWUS
 rel_shift_east = -model_east
 rel_shift_north = -model_north
-    
-nc_list = [{"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
-           {"fn": "western_us_DNA13_percent.nc", "points": False},
-           {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
-           {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
-           {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
-           {"fn": "moho_temperature_great_basin.nc", "points": True},
-           ]
+
+nc_list = [
+    {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
+    {"fn": "western_us_DNA13_percent.nc", "points": False},
+    {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
+    {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
+    {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
+    {"fn": "moho_temperature_great_basin.nc", "points": True},
+]
 
 for nc_entry in nc_list[-1:]:
 

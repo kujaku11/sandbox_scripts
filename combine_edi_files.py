@@ -85,7 +85,5 @@ mt_obj.Tipper = new_t
 n_edi_fn = mt_obj.write_mt_file(fn_basename=c_edi_fn.name)
 
 ptm = mtplot.plot_multiple_mt_responses(
-    fn_list=[edi_01, edi_02, n_edi_fn],
-    plot_style="compare",
-    plot_tipper="yr",
+    fn_list=[edi_01, edi_02, n_edi_fn], plot_style="compare", plot_tipper="yr",
 )

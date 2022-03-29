@@ -11,9 +11,10 @@ import numpy as np
 from pyevtk.hl import pointsToVTK
 import pyproj
 
+
 def project_points(x, y, initial_crs, final_crs):
     project = pyproj.Transformer.from_crs(initial_crs, final_crs)
-    
+
     new_x, new_y = project.transform(x, y)
     if isinstance(x, (float, int)):
         if new_x == np.inf and new_y == np.inf:
@@ -23,45 +24,55 @@ def project_points(x, y, initial_crs, final_crs):
             new_x, new_y = project.transform(y, x)
     return new_x, new_y
 
-def shape_to_points(shp_fn, final_epsg, model_east, model_north, model_depth=0,
-                    x="latitude", y="longitude"):
+
+def shape_to_points(
+    shp_fn,
+    final_epsg,
+    model_east,
+    model_north,
+    model_depth=0,
+    x="latitude",
+    y="longitude",
+):
     gdf = gpd.read_file(shp_fn)
-    
+
     initial_crs = gdf.crs
     final_crs = pyproj.CRS(f"EPSG:{final_epsg}")
-    
+
     if x == None or y == None:
-        new_x, new_y = project_points(gdf.geometry.x.to_numpy(), 
-                                      gdf.geometry.y.to_numpy(),
-                                      initial_crs,
-                                      final_crs)
+        new_x, new_y = project_points(
+            gdf.geometry.x.to_numpy(), gdf.geometry.y.to_numpy(), initial_crs, final_crs
+        )
     else:
-        new_x, new_y = project_points(gdf[x].to_numpy(), 
-                                      gdf[y].to_numpy(),
-                                      initial_crs,
-                                      final_crs)
+        new_x, new_y = project_points(
+            gdf[x].to_numpy(), gdf[y].to_numpy(), initial_crs, final_crs
+        )
     new_x -= model_east
     new_y -= model_north
     depth = np.zeros(gdf.shape[0]) - model_depth
-    
-    return new_x/1000, new_y/1000, depth/1000
 
-def shp_to_vtk(shp_fn, vtk_fn, final_epsg, model_center, model_depth=0, 
-               x="latitude", y="longitude"):
+    return new_x / 1000, new_y / 1000, depth / 1000
+
+
+def shp_to_vtk(
+    shp_fn, vtk_fn, final_epsg, model_center, model_depth=0, x="latitude", y="longitude"
+):
     model_east, model_north = project_points(
-        model_center[0], 
-        model_center[1], 
-        pyproj.CRS("EPSG:4326"), 
+        model_center[0],
+        model_center[1],
+        pyproj.CRS("EPSG:4326"),
         pyproj.CRS(f"EPSG:{final_epsg}"),
-        )
-    
-    x, y, z = shape_to_points(shp_fn, final_epsg, model_east, model_north,
-                              model_depth=model_depth, x=x, y=y)
-    
+    )
+
+    x, y, z = shape_to_points(
+        shp_fn, final_epsg, model_east, model_north, model_depth=model_depth, x=x, y=y
+    )
+
     pointsToVTK(vtk_fn, y, x, z)
-    
+
+
 # =============================================================================
-#    
+#
 # =============================================================================
 # Great Basin
 model_center = (38.615252, -119.015192)
@@ -89,4 +100,5 @@ shp_to_vtk(
     32611,
     model_center,
     x=None,
-    y=None)
+    y=None,
+)
