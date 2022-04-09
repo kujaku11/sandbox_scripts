@@ -16,7 +16,7 @@ from pathlib import Path
 #==============================================================================
 coil_calibration_path = r"/mnt/hgfs/MT_Data/birrp_responses"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = Path(r"/mnt/hgfs/MT_Data/GZ2021")
+local_path = Path(r"/mnt/hgfs/MT_Data/UM2020")
 copy_edi_path = local_path.joinpath('EDI_files_birrp')
 
 if not copy_edi_path.exists():
@@ -25,17 +25,17 @@ if not copy_edi_path.exists():
 #==============================================================================
 # Station to process and remote reference
 #==============================================================================
-station = 'gz211'
-rr_station = ['gz214']
-# rr_station = None
+station = 'um222'
+# rr_station = ['gz214']
+rr_station = None
 
 block_dict = {4096: [0, 1, 2],
-              256: [0, 1, 2, 3],
+              256: [0, 1, 2],
               4: [0]}
 use_df_list = [4096, 256, 4]
 overwrite = False
 df_overwrite = True
-copy_edi = False
+copy_edi = True
 
 local_station_path = local_path.joinpath(station)
 if rr_station is not None:

@@ -16,7 +16,7 @@ from pathlib import Path
 #==============================================================================
 coil_calibration_path = r"/mnt/hgfs/MT_Data/birrp_responses_02"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = Path(r"/mnt/hgfs/MT_Data/CL2021")
+local_path = Path(r"/mnt/hgfs/MT_Data/GZ2021")
 copy_edi_path = local_path.joinpath('EDI_files_birrp')
 
 if not copy_edi_path.exists():
@@ -25,14 +25,14 @@ if not copy_edi_path.exists():
 #==============================================================================
 # Station to process and remote reference
 #==============================================================================
-station = 'cl128'
-# rr_station = ['cl128']
-rr_station = None
+station = 'gz330'
+rr_station = ['gz301', 'gz303']
+# rr_station = None
 
-block_dict = {4096: [0, 1],
-              256: [1, 2],
+block_dict = {4096: [1, 2, 3],
+              256: [2, 3, 4],
               4: [0]}
-use_df_list = [4]
+use_df_list = [4096, 256, 4]
 overwrite = False
 df_overwrite = True
 copy_edi =True
@@ -65,7 +65,7 @@ b_param_dict = {'ilev': ilev,
                 'ainlin': .00001,
                 'nar': 5,
                 'tbw': 2,
-                'thetae': [0, 270, 0]}
+                'thetae': [0, 90, 0]}
 
 zp_obj = zp.Z3D2EDI(station_z3d_dir=local_station_path,
                     rr_station_z3d_dir=rr_local_station_path) #,
@@ -80,9 +80,9 @@ zp_obj._tol_dict[4]['s_diff'] = 6 * 4 * 3600
 kw_dict = {'df_fn': dfn,
            'df_list': use_df_list,
            'notch_dict': {4096: None, 256: None, 4: None},
-           'sr_dict': {4096: (1000., 50),
-                       256: (49.49, .1),
-                       4: (.1, .00001)},
+           'sr_dict': {4096: (1000., 25),
+                       256: (24.9, .01),
+                       4: (.01, .00001)},
            'use_blocks_dict': block_dict,
            'birrp_param_dict': b_param_dict,
            'overwrite': overwrite}
