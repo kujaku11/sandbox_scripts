@@ -52,7 +52,7 @@ def process_station(
     fn_copy=True,
 ):
     """
-    process station 
+    process station
     """
     # ==============================================================================
     # Copy Z3D files to local folder

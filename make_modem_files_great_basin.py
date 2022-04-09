@@ -89,7 +89,7 @@ if not dfn.exists():
         new_edi_path = save_path.joinpath("new_edis")
         if not new_edi_path.exists():
             new_edi_path.mkdir()
-            
+
         print("--- averaging stations ---")
         r = avg_radius
         count = 1

@@ -23,7 +23,7 @@ def archies(sigma_measured, porosity, saturation, n=2, m=2, alpha=1):
 def modified_brick(sigma_1, sigma_2, percent_2):
     """
     modified brick mising model
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -46,7 +46,7 @@ def modified_brick(sigma_1, sigma_2, percent_2):
 def modified_archies(sigma_1, sigma_2, percent_2, m=1.05):
     """
     modified archies law
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -65,7 +65,7 @@ def modified_archies(sigma_1, sigma_2, percent_2, m=1.05):
 def hs_lower(sigma_1, sigma_2, percent_2):
     """
     hashin-shtrickman lowe r bound
-    
+
     sigma_1 is the resistivity of the host material
     sigma_2 is the resistivity of the filling material
     percent_2 is the percentage of the filling material
@@ -81,9 +81,7 @@ def hs_lower(sigma_1, sigma_2, percent_2):
 
 
 def sigma_fluid(sigma_zero, initial_temperature, salinty, temperature):
-    """
-    
-    """
+    """ """
     sigma_f = (sigma_zero * (initial_temperature + 21.5)) / (temperature + 21.5)
 
     return sigma_f

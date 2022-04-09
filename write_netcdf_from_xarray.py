@@ -11,27 +11,35 @@ import mtpy.utils.gis_tools as gis_tools
 import numpy as np
 import xarray as xr
 
-mfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.rho")
+mfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Umatilla\modem_inv\inv_09\um_z05_c025_086.rho"
+)
 
-model_center = (45.654713,  -118.547148)
+model_center = (45.654713, -118.547148)
 model_center_ne = gis_tools.project_point_ll2utm(
-    model_center[0], model_center[1], epsg=26911)
+    model_center[0], model_center[1], epsg=26911
+)
 
 m_obj = modem.Model()
 m_obj.read_model_file(mfn)
 
-x = xr.DataArray(m_obj.res_model, 
-                 dims=("northing", "easting", "depth"),
-                 coords={
-                     "northing": m_obj.grid_north[:-1] + model_center_ne[0],
-                     "easting": m_obj.grid_east[:-1] + model_center_ne[1],
-                     "depth": m_obj.grid_z[:-1]},
-                 attrs={"distance_units": "meters",
-                        "resistivity_units": "ohm-meters",
-                        "model_center_ll": model_center,
-                        "model_center_utm": model_center_ne,
-                        "datum": "NAD83",
-                        "description": "electrical resistivity"})
+x = xr.DataArray(
+    m_obj.res_model,
+    dims=("northing", "easting", "depth"),
+    coords={
+        "northing": m_obj.grid_north[:-1] + model_center_ne[0],
+        "easting": m_obj.grid_east[:-1] + model_center_ne[1],
+        "depth": m_obj.grid_z[:-1],
+    },
+    attrs={
+        "distance_units": "meters",
+        "resistivity_units": "ohm-meters",
+        "model_center_ll": model_center,
+        "model_center_utm": model_center_ne,
+        "datum": "NAD83",
+        "description": "electrical resistivity",
+    },
+)
 x.name = "resistivity"
 x.to_netcdf(mfn.parent.joinpath("ctuir_phase2_resistivity_model.nc"))
 

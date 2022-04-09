@@ -32,8 +32,8 @@ class Battery(Base):
         self.comments = None
         self.test = None
         super().__init__(**kwargs)
-        
-        
+
+
 class DL(Battery):
     __doc__ = write_lines(attr_dict)
 
@@ -41,23 +41,24 @@ class DL(Battery):
 
         super().__init__(**kwargs)
         self._attr_dict.update(test_attr_dict)
-    
+
 
 class Old:
     def __init__(self, a={}, **kwargs):
         self._a = a
-        
+
         for k, v in kwargs.items():
             setattr(k, v)
-            
+
+
 class New(Old):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._a.update({"b":10})
-        
-        
+        self._a.update({"b": 10})
+
+
 # =============================================================================
-# Tests 
+# Tests
 # =============================================================================
 b = Base()
 print(b.get_attribute_list())
@@ -65,8 +66,3 @@ c = Battery()
 print(b.get_attribute_list())
 d = DL()
 print(b.get_attribute_list())
-
-
-
-
- 

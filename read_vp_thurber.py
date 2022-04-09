@@ -34,15 +34,19 @@ for line in lines:
         lat, lon, value = [float(vv) for vv in line.strip().split()]
         ve, vn, vg = gis_tools.project_point_ll2utm(lat, lon, utm_zone=model_utm_zone)
         entries.append((lat, lon, vn, ve, depth, value))
-        
-# make the entries into an np array for easier use.    
-entries = np.array(entries, dtype=[
-    ("lat", np.float),
-    ("lon", np.float),
-    ("north", np.float),
-    ("east", np.float),
-    ("depth", np.float),
-    ("vp", np.float)])
+
+# make the entries into an np array for easier use.
+entries = np.array(
+    entries,
+    dtype=[
+        ("lat", np.float),
+        ("lon", np.float),
+        ("north", np.float),
+        ("east", np.float),
+        ("depth", np.float),
+        ("vp", np.float),
+    ],
+)
 
 # get all unique cell locations
 grid_east = np.unique(entries["east"])
@@ -57,9 +61,9 @@ for ii, zz in enumerate(grid_z):
     level = entries[np.where(entries["depth"] == zz)]
     points = np.vstack([arr.flatten() for arr in [level["east"], level["north"]]]).T
     values = level["vp"].flatten()
-    
+
     vp[:, :, ii] = griddata(points, values, xi, method="linear").reshape(ge.shape)
-    
+
 # need to add an extra cell to each direction for vtk all in meters.
 vtk_east = np.append(grid_east, grid_east[-1] * 1.001)
 vtk_north = np.append(grid_north, grid_north[-1] * 1.001)
@@ -67,5 +71,3 @@ vtk_z = np.append(np.array([0]), grid_z) * 1000
 
 # write VTK file
 gridToVTK(vtk_fn.as_posix(), vtk_north, vtk_east, vtk_z, cellData={"Vp": vp})
-
-

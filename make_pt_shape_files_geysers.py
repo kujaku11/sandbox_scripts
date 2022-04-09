@@ -8,9 +8,7 @@ Created on Fri Nov 07 09:15:17 2014
 import mtpy.utils.shapefiles as shapefiles
 import os
 
-dfn = (
-    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z05_t02_edit.dat"
-)
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z05_t02_edit.dat"
 
 save_path = r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo"
 map_projection = "WGS84"
@@ -53,8 +51,8 @@ tps.arrow_head_width = 600
 tps.arrow_lw = 100
 tps.projection = map_projection
 #
-#save files for data
-tps.save_path = os.path.join(save_path, 'cl_tipper_data')
+# save files for data
+tps.save_path = os.path.join(save_path, "cl_tipper_data")
 check_dir(tps.save_path)
 tps.write_tip_shape_files_modem(dfn, rotation_angle=theta_r)
 #

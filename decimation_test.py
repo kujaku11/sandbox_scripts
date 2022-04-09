@@ -15,7 +15,9 @@ n = 3600 * df
 dt = np.arange(n) / df
 
 ex = np.zeros(n)
+
 for p, a, s in zip(np.logspace(-3, 3, 10), np.random.randint(0, 20, 10), np.random.randn(10)):
+
     ex += a * np.cos(np.pi * 2 * p * dt + p / np.pi)
 
 t = ts.MTTS()
@@ -26,5 +28,5 @@ t.start_time_utc = "2021-01-01T12:00:00"
 
 plt.plot(t.ts)
 
-t.decimate(256/4)
+t.decimate(256 / 4)
 plt.plot(t.ts)

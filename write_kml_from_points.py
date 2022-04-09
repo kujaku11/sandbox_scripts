@@ -14,15 +14,18 @@ import geopandas as gpd
 from shapely.geometry import Point
 
 
-gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
 
-fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\Permits\2020.09.09_Geysers_Monitoring_MT_Stations_Lat_Long_East_North.csv"
+# fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\Permits\2020.09.09_Geysers_Monitoring_MT_Stations_Lat_Long_East_North.csv"
+fn = r"C:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\battle_mountain_proposed_mt.txt"
 
-df = pd.read_csv(fn, header=0)
-point_geometry = [Point(row.Longitude, row.Latitude) for row in df.itertuples()]
+df = pd.read_csv(fn, header=0, sep="\s+")
 
-gdf = gpd.GeoDataFrame(df["Name"], geometry=point_geometry)
+point_geometry = [Point(row.longitude, row.latitude) for row in df.itertuples()]
+
+gdf = gpd.GeoDataFrame(df["station"], geometry=point_geometry)
 
 with fiona.Env():
+
     # Might throw a WARNING - CPLE_NotSupported in b'dataset sample_out.kml does not support layer creation option ENCODING'
-    gdf.to_file(fn[:-4] + ".kml", driver='KML')
+    gdf.to_file(fn[:-4] + ".kml", driver="KML")

@@ -41,7 +41,7 @@ pts.ellipse_size = 900
 # pts.write_resp_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
 
 # save files for data-model
-pts.save_path = os.path.join(save_path, 'mp_pt_residual_gn')
+pts.save_path = os.path.join(save_path, "mp_pt_residual_gn")
 check_dir(pts.save_path)
 pts.write_residual_pt_shape_files_modem(dfn, rfn, rotation_angle=theta_r)
 

@@ -29,47 +29,47 @@ def interpolate_model_grid(
 ):
     """
     interpolate an old model onto a new model
-    
+
     Arguments
     ------------------
         **old_model_fn** : string
                            full path to the old model file, or the file
                            that contains the original model that will be
                            interpolated onto a new grid, new_model_fn
-        
+
         **new_model_fn** : string
                            full path to the new model file to interpolate
                            old_model_fn on to.
-        
+
         **save_path** : string
                         directory path to save new interpolated model file
                         *default* is os.path.dirname(new_model_fn)
-        
+
         **new_fn_basename** : string
                               filename given to the new interpolated model
                               *default* is
                               os.path.basename(new_model_fn+'interp')
-                           
+
         **pad** : int
                   number of cells which to pad outer values of the grid.
                   Say new_model_fn is larger than old_model_fn, then there
-                  will be Nan where the model don't match up, pad will 
+                  will be Nan where the model don't match up, pad will
                   extend values from the given number of cells from the edge
                   of new_model_fn.
-                  
+
         **nan_rho** : float
                       if there are Nan in the new_model, they will be given
                       this value. *default* is 100 Ohm-m
-        
+
         **shift_east** : float
                          shift east of new_model grid relative to the old
                          model grid in meters. *Default* is 0
-        
+
         **shift_north** : float
                          shift north of new_model grid relative to the old
                          model grid in meters. *Default* is 0
-                         
-            
+
+
     """
     print "Interpolating {0} into {1}".format(old_model_fn, new_model_fn)
     # check to see if the old model is modem or ws

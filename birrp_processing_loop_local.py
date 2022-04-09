@@ -49,7 +49,7 @@ def process_station(
     fn_copy=True,
 ):
     """
-    process station 
+    process station
     """
     station_path = os.path.join(local_path, station)
     if rr_station is not None:

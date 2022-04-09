@@ -80,8 +80,8 @@ def write_netcdf(
 ):
     """
     write netcdf file
-    
-    netcdf config file 
+
+    netcdf config file
     """
     ### Clip model
     lat, lon, depth, res = clip_modem_model(model_fn, clip)

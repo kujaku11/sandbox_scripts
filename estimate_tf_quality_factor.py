@@ -24,7 +24,7 @@ from mtpy.core import mt
 class EMTFStats(object):
     """
     Class to estimate data quality of EM transfer functions
-    
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -178,7 +178,7 @@ class EMTFStats(object):
     def estimate_data_quality(self, stat_df=None, stat_fn=None, limits_fn=None):
         """
         Input either data frame or file name for csv
-        
+
         be able to update limits
         """
         if stat_df is not None:

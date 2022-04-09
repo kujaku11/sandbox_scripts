@@ -16,54 +16,54 @@ def remove_static_shift_spatial_filter(
 ):
 
     """
-    Remove static shift from a station using a spatial median filter.  This 
+    Remove static shift from a station using a spatial median filter.  This
     will look at all the edi files in the same directory as edi_fn and find
     those station within the given radius (meters).  Then it will find
-    the medain static shift for the x and y modes and remove it, given that 
+    the medain static shift for the x and y modes and remove it, given that
     it is larger than the shift tolerance away from 1.  A new edi file will
-    be written in a new folder called SS.  
-    
+    be written in a new folder called SS.
+
     Arguments
     -----------------
         **edi_fn** : string
                      full path to edi file to have static shift removed
-                     
+
         **radius** : float
                      radius to look for nearby stations, in meters.
                      *default* is 1000 m
-        
+
         **num_freq** : int
                        number of frequencies calculate the median static
-                       shift.  This is assuming the first frequency is the 
-                       highest frequency.  Cause usually highest frequencies 
+                       shift.  This is assuming the first frequency is the
+                       highest frequency.  Cause usually highest frequencies
                        are sampling a 1D earth.  *default* is 20
-                       
+
         **freq_skip** : int
-                        number of frequencies to skip from the highest 
-                        frequency.  Sometimes the highest frequencies are 
+                        number of frequencies to skip from the highest
+                        frequency.  Sometimes the highest frequencies are
                         not reliable due to noise or low signal in the AMT
                         deadband.  This allows you to skip those frequencies.
                         *default* is 4
-        
+
         **shift_tol** : float
                         Tolerance on the median static shift correction.  If
                         the data is noisy the correction factor can be biased
                         away from 1.  Therefore the shift_tol is used to stop
                         that bias.  If 1-tol < correction < 1+tol then the
                         correction factor is set to 1.  *default* is 0.15
-                        
+
         **plot** : [ True | False ]
                    Boolean to plot the corrected response against the
                    non-corrected response.  *default* is False
-                        
+
     Returns
     ----------------
         **new_edi_fn_ss** : string
                             new path to the edi file with static shift removed
-                            
+
         **shift_corrections** : (float, float)
                                 static shift corrections for x and y modes
-        
+
         **plot_obj** : mtplot.plot_multiple_mt_responses object
                        If plot is True a plot_obj is returned
                        If plot is False None is returned

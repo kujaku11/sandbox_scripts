@@ -17,7 +17,7 @@ import os
 class Occam2DModelManipulator(occam2d.Occam2DModel):
     """
     will plot the occam model and let the user change the resistivity values.
-    
+
     """
 
     def __init__(self, iterfn):
@@ -60,9 +60,9 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def plotResModel(self, res_range=(0, 4), res_num=9):
         """
         plot the resistivity model with finite element mesh on and scale is
-        in meters, which makes everything a lot easier to handle at the 
+        in meters, which makes everything a lot easier to handle at the
         moment.
-        
+
         """
         self._make_resisitivity_range(res_range[0], res_range[1], res_num)
 
@@ -128,9 +128,9 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
 
     def _caluculate_midpoints(self):
         """
-        calculate mid points of the mesh squares to locate the cursor and 
+        calculate mid points of the mesh squares to locate the cursor and
         decide which triangles to color.
-        
+
         """
 
         # calculate mid points in x direction
@@ -164,18 +164,18 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
 
     def _make_resisitivity_range(self, res_min, res_max, res_num):
         """
-        create a range of resistivities on a log scale for res_num of 
+        create a range of resistivities on a log scale for res_num of
         resistivities
-        
+
         Arguments:
         -----------
             **res_min** : minimum resistivity value on log10 scale
-            
+
             **res_max** : maximum resistivity value on log10 scale
-            
-            **res_num** : number of resistivity values between 
+
+            **res_num** : number of resistivity values between
                           res_min and res_max
-        
+
         """
         self.res_min = res_min
         self.res_max = res_max
@@ -233,9 +233,9 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
             self.change_model_res(int(x_change), int(y_change))
 
     def change_model_res(self, xchange, ychange):
-        """                    
+        """
         change the resistivity values in the model file and mesh file
-        
+
         and replot the data to change the figure
         """
 
@@ -300,7 +300,7 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def set_res_value(self, label):
         """
         set the resistivity value of the radio box and internally
-        
+
         """
 
         self.res_ii = np.where(np.array(self.radio_res_labels) == label)[0][0]
@@ -323,7 +323,7 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def _get_x_index(self, x1, x2):
         """
         get the index value of the points to be changed
-        
+
         """
         if x1 < x2:
             xchange = np.where((self.plotx >= x1) & (self.plotx <= x2))[0]
@@ -355,9 +355,9 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def _get_y_index(self, y1, y2):
         """
         get the index value of the points to be changed in north direction
-        
+
         need to flip the index because the plot is flipped
-        
+
         """
 
         if y1 < y2:
@@ -388,7 +388,7 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def rewriteMeshFile(self):
         """
         rewrite mesh file so the changed values are correct
-        
+
         """
         # check the mesh
         mfid = open(self.meshfn, "r")
@@ -429,7 +429,7 @@ class Occam2DModelManipulator(occam2d.Occam2DModel):
     def rewrite_iter_fn(self):
         """
         rewrite the startup file as a starting model
-        
+
         """
         sfid = open(self.iterfn, "r")
         slines = sfid.readlines()

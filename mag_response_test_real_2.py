@@ -62,7 +62,7 @@ def coil_response(time_series, dt):
 
 def add_coil_response(time_series, dt):
     """
-    add a coil response to a time series in the frequency domain 
+    add a coil response to a time series in the frequency domain
     """
 
     # compute length of time series
