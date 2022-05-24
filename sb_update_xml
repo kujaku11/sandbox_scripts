@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb  4 12:14:53 2022
+
+@author: peacock
+"""
+
+from pathlib import Path
+from archive.mt_xml import MTSBXML
+
+archive_dir = Path("/mnt/hgfs/MT_Data/SCEC/Archive")
+
+for station_dir in list(archive_dir.iterdir())[:]:
+    station = station_dir.name
+    xml_fn = station_dir.joinpath(f"{station}.xml")
+    if not xml_fn.exists():
+        print(f"Skipping {xml_fn}")
+        continue
+    
+    x = MTSBXML()
+    x.read(xml_fn)
+    x.validate()
+    
+    # # # update title
+    # # x.metadata.idinfo.citation.citeinfo.title.text += f": Station {station}"
+    
+    # # # update description
+    # # x.metadata.idinfo.descript.abstract.text += f" The data included here are for MT station {station}. A shapefile with station information for all stations in this dataset is available at https://doi.org/10.5066/P990U7GE of data release."
+    
+    # x.save()
+    
+    # text = xml_fn.read_text().split("\n")
+    # with open(xml_fn, "w") as fid:
+    #     fid.write("\n".join(text[0:115]+["     </keywords>"] + text[115:]))
+        
+    

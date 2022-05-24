@@ -38,7 +38,7 @@ def get_z3d_info(z3d_path):
 def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
                       comp_list=['ex', 'ey', 'hx', 'hy', 'hz']):
     """
-    Combine all z3d files for a given station and given component for
+    Combine all z3d files for a given station and given component for 
     processing and getting the long period estimations.
 
     :param str z3d_path: full path to z3d files
@@ -159,7 +159,7 @@ def combine_z3d_files(z3d_path, new_sampling_rate=4, t_buffer=8*3600,
 # =============================================================================
 
 #combined_fn_list = combine_z3d_files(fn_path, comp_list=["ex"])
-z3d_path = Path(r"c:\MT\Katmai2021\KAT028")
+z3d_path = Path(r"/mnt/hgfs/MT_Data/Katmai2021/KAT028")
 sampling_rate = 4
 t_buffer = 8 * 3600
 
@@ -196,7 +196,7 @@ attr_dict = dict([(key, []) for key in attr_list])
 index = 1
 for row in comp_df.itertuples():
     z_obj = zen.Zen3D(row.fn)
-    print(row.fn)
+    print(row)
     z_obj.read_z3d()
     t_obj = z_obj.ts_obj
     # decimate to the required sampling rate
