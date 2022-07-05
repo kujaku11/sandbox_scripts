@@ -17,7 +17,7 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_03_topo\cl_modem_data_z05_t02_edit_01_topo.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_01\bm_modem_data_z03_t02_topo_edit.dat"
 remove_stations = []
 shady_stations_zx = []
 shady_stations_zy = []
@@ -28,22 +28,26 @@ flip_phase_x = []
 flip_phase_y = []
 static_shift_x = []
 static_shift_y = []
-swap_channel = []
+swap_channel = [
+    ("bm200", ([0, 0], [1, 0])),
+    ("bm200", ([1, 1], [0, 1])),
+    ("bm200", ([0, 0], [1, 1])),
+]
 
 add_err_z = 7
 add_err_t = 0.15
 add_err_period_range = None
 elevation_bool = True
 
-inv_modes = ["2", "5"]
-z_err_value = 7
+inv_modes = ["1"]
+z_err_value = 3
 t_err_value = 0.02
 z_err_type = "eigen_floor"
 t_err_type = "abs_floor"
 
 # sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = "cl"
-log_fn = os.path.join(os.path.dirname(dfn), "{0}_change_data_file.log".format(sv_fn))
+sv_fn = "bm"
+log_fn = os.path.join(os.path.dirname(dfn), f"{sv_fn}_change_data_file.log")
 # =============================================================================
 # change data file
 # =============================================================================
@@ -55,18 +59,15 @@ if shady_stations_zx is not None:
     for e_station in shady_stations_zx:
         s_find = np.where(d_obj.data_array["station"] == e_station)[0][0]
         d_obj.data_array[s_find]["z_err"][:, 0, :] *= add_err_z
-
 ### add error to certain stations
 if shady_stations_zy is not None:
     for e_station in shady_stations_zy:
         s_find = np.where(d_obj.data_array["station"] == e_station)[0][0]
         d_obj.data_array[s_find]["z_err"][:, 1, :] *= add_err_z
-
 if shady_stations_t is not None:
     for e_station in shady_stations_t:
         s_find = np.where(d_obj.data_array["station"] == e_station)[0][0]
         d_obj.data_array[s_find]["tip_err"] += add_err_t
-
 ### remove a bad station
 if remove_stations is not None:
     for b_station in remove_stations:
@@ -75,45 +76,38 @@ if remove_stations is not None:
         d_obj.data_array[s_find]["z_err"][:] = 0
         d_obj.data_array[s_find]["tip"][:] = 0
         d_obj.data_array[s_find]["tip_err"][:] = 0
-
 ### remove x component
 if remove_x is not None:
     for b_station in remove_x:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 0, :] = 0
         d_obj.data_array[s_find]["z_err"][:, 0, :] = 0
-
 ### remove y component
 if remove_y is not None:
     for b_station in remove_y:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 1, :] = 0
         d_obj.data_array[s_find]["z_err"][:, 1, :] = 0
-
 ### flip x phase
 if flip_phase_x is not None:
     for b_station in flip_phase_x:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 0, :] *= -1
-
 ### flip x phase
 if flip_phase_y is not None:
     for b_station in flip_phase_y:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 1, :] *= -1
-
 ### static shift x
 if static_shift_x is not None:
     for b_station, ss in static_shift_x:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 0, :] *= ss
-
 ### static shift y
 if static_shift_y is not None:
     for b_station, ss in static_shift_y:
         s_find = np.where(d_obj.data_array["station"] == b_station)[0][0]
         d_obj.data_array[s_find]["z"][:, 1, :] *= ss
-
 ### swap channel z [(station, ((ii_1, jj_1), (ii_2, jj_2)))]
 if swap_channel is not None:
     for b_station, ss in swap_channel:
@@ -122,7 +116,6 @@ if swap_channel is not None:
         z2 = d_obj.data_array[s_find]["z"][:, ss[1][0], ss[1][1]].copy()
         d_obj.data_array[s_find]["z"][:, ss[0][0], ss[0][1]] = z2
         d_obj.data_array[s_find]["z"][:, ss[1][0], ss[1][1]] = z1
-
 ### add period error
 if add_err_period_range is not None:
     err_periods = np.where(
@@ -130,7 +123,6 @@ if add_err_period_range is not None:
         & (d_obj.period_list <= add_err_period_range[1])
     )
     d_obj.data_array["z_err"][:, err_periods, :, :] *= add_err_z
-
 for inv_mode in inv_modes:
     d_obj.error_type_z = z_err_type
     d_obj.error_type_tipper = t_err_type
@@ -168,8 +160,6 @@ for inv_mode in inv_modes:
             compute_error=True,
             elevation=elevation_bool,
         )
-
-
 # =============================================================================
 # write a log file
 # =============================================================================

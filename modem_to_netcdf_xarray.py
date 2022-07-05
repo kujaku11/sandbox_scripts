@@ -4,43 +4,41 @@ Created on Thu Mar  3 16:29:24 2022
 
 @author: jpeacock
 """
+# =============================================================================
+# Imports
+# =============================================================================
 
 from pathlib import Path
 import xarray as xr
 import numpy as np
 import pyproj
+import json
 from mtpy.modeling.modem import Model, Data
 
-
+# =============================================================================
+# Inputs
+# =============================================================================
 inv_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\EasternMojave\modem_inv\inv_01"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gb_01"
 )
-
-m = Model()
-m.read_model_file(inv_path.joinpath("mj_z05_t02_c03_126.rho"))
-
-d = Data()
-d.read_data_file(inv_path.joinpath(r"mj_z05_t02_c03_126.dat"))
-center = d.center_point
+basename = "gb_z03_t02_c02_046"
+metadata_path = inv_path.joinpath("netcdf_metadata.json")
 
 pad = 12
 model_epsg = 32611
 
+# =============================================================================
 
-class CenterPoint:
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+m = Model()
+m.read_model_file(inv_path.joinpath(f"{basename}.rho"))
 
+d = Data()
+d.read_data_file(inv_path.joinpath(f"{basename}.dat"))
+center = d.center_point
 
-# great basin center
-# center = CenterPoint(**{"latitude": 38.615252,
-#                 "longitude": -119.015192,
-#                 "easting": 324551.82381348,
-#                 "northing": 4276008.10412004,
-#                 "elevation": 0.,
-#                 "utm_zone":"10S",
-#                 "model_epsg": "32611"})
+with open(metadata_path, "r") as fid:
+    metadata = json.load(fid)
+
 
 # need to project points onto a lat/lon grid
 model_crs = pyproj.CRS(f"epsg:{model_epsg}")
@@ -60,7 +58,7 @@ latitude = np.linspace(lat.min(), lat.max(), east.shape[0])
 longitude = np.linspace(lon.min(), lon.max(), east.shape[1])
 depth = (m.grid_z[:-1] + center.elev) / 1000
 
-# need to have longitude first
+# need to depth, latitude, longitude for NetCDF
 x_res = np.swapaxes(np.log10(m.res_model[pad:-pad, pad:-pad, :]), 0, 1).T
 x = xr.DataArray(
     x_res,
@@ -68,12 +66,13 @@ x = xr.DataArray(
     dims=["depth", "latitude", "longitude"],
 )
 
+# =============================================================================
+# fill in the metadata
 x.name = "electrical_resistivity"
 x.attrs["long_name"] = "electrical resistivity"
 x.attrs["units"] = "Ohm-m"
 x.attrs["standard_name"] = "resistivity"
 x.attrs["display_name"] = "log10(resistivity)"
-
 
 # metadata for coordinates
 x.coords["latitude"].attrs["long_name"] = "Latitude; positive_north"
@@ -96,32 +95,10 @@ ds = xr.Dataset(*[{"resistivity": x}])
 
 ds.attrs["Conventions"] = "CF-1.0"
 ds.attrs["Metadata_Conventions"] = "Unidata Dataset Discovery v1.0"
-ds.attrs[
-    "title"
-] = "Electrical resistivity of the Great Basin from magnetotelluric data"
-ds.attrs["id"] = "GB_MT_2022"
-ds.attrs[
-    "summary"
-] = "A 3D electrical resistivity model of the Great Basin in the western US derived from magnetotelluric data using the inversion software ModEM."
-ds.attrs["keywords"] = "electrical resistivity, Great Basin"
-ds.attrs["Conventions"] = "CF-1.0"
-ds.attrs["Metadata_Conventions"] = "Unidata Dataset Discovery v1.0"
-ds.attrs["author_name"] = "Jared Peacock"
-ds.attrs["author_url"] = ""
-ds.attrs["author_email"] = "jpeacock@usgs.gov"
-ds.attrs["institution"] = "US Geological Survey"
-ds.attrs["repository_name"] = ("",)
-ds.attrs["repository_institution"] = ("",)
-ds.attrs["repository_pid"] = ("",)
-ds.attrs[
-    "acknowledgment"
-] = "Data were collected by various researchers over the last 30 years."
-ds.attrs["references"] = "Peacock et al."
-ds.attrs["history"] = "First version 2022-03-04"
-ds.attrs["comment"] = "Model has not been tested for sensitivity, use with caution"
-ds.attrs[
-    "NCO"
-] = "netCDF Operators version 4.7.5 (Homepage = http://nco.sf.net, Code=http://github/nco/nco"
+ds.attrs["NCO"] = "netCDF Operators version 4.7.5 (Homepage = http://nco.sf.net, Code=http://github/nco/nco"
+
+for key, value in metadata.items():
+    ds.attrs[key] = value
 
 # geospatial metadata
 ds.attrs["geospatial_lat_min"] = latitude.min()
@@ -139,5 +116,5 @@ ds.attrs["geospatial_vertical_max"] = depth.max()
 ds.attrs["geospatial_vertical_units"] = "km"
 ds.attrs["geospatial_vertical_positive"] = "down"
 
-
-ds.to_netcdf(path=inv_path.joinpath("mj_z05_t02_c03_126.nc"))
+# write to netcdf
+ds.to_netcdf(path=inv_path.joinpath(f"{basename}.nc"))
