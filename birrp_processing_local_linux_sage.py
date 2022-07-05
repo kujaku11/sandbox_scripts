@@ -17,7 +17,7 @@ from mtpy.utils.mtpy_logger import get_mtpy_logger
 # ==============================================================================
 coil_calibration_path = Path(r"/mnt/hgfs/MT_Data/birrp_responses_02")
 birrp_path = Path(r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big")
-local_path = Path(r"/mnt/hgfs/MT_Data/BM2022")
+local_path = Path(r"/mnt/hgfs/MT_Data/SAGE2022")
 copy_edi_path = local_path.joinpath("EDI_files_birrp")
 
 if not copy_edi_path.exists():
@@ -25,11 +25,11 @@ if not copy_edi_path.exists():
 # ==============================================================================
 # Station to process and remote reference
 # ==============================================================================
-station = "bm67"
-rr_station = ["bm25", "bm39"]
+station = "vc2205"
+rr_station = ["vc2201"]
 # rr_station = None
 
-block_dict = {4096: [0, 1, 2], 256: [1, 2, 3], 4: [0]}
+block_dict = {4096: [0, 1, 2], 256: [1, 2], 4: [0]}
 use_df_list = [4096, 256, 4]
 # use_df_list = [4]
 overwrite = False
@@ -49,6 +49,7 @@ b_param_dict = {
     "nar": 9,
     "tbw": 2,
     "thetae": [0, 90, 0],
+    "thetab": [0, 90, 0],
 }
 
 logger = get_mtpy_logger(
@@ -79,6 +80,7 @@ zp_obj = zp.Z3D2EDI(
 # station_ts_dir=local_station_path.joinpath("TS"))
 zp_obj.birrp_exe = birrp_path
 zp_obj.calibration_path = coil_calibration_path
+
 # zp_obj.survey_config_fn = Path(zp_obj.station_ts_dir).joinpath("{0}.cfg".format(station))
 # zp_obj.survey_config.read_survey_config_file(zp_obj.survey_config_fn,
 #                                              station)
@@ -96,7 +98,7 @@ kw_dict = {
 
 with zp.Capturing() as output:
     try:
-        plot_obj, comb_edi_fn, zdf = zp_obj.process_data(**kw_dict)
+        plot_obj, comb_edi_fn = zp_obj.process_data(**kw_dict)
         if copy_edi:
             cp_edi_fn = os.path.join(copy_edi_path, station + ".edi")
             shutil.copy(comb_edi_fn, cp_edi_fn)

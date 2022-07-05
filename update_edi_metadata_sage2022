@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jul  4 18:28:13 2022
+
+@author: peacock
+"""
+
+from pathlib import Path
+from mt_metadata.transfer_functions.core import TF
+
+# from mtpy.imaging.plotresponse import PlotResponse
+import pandas as pd
+
+edi_dir = Path(r"/mnt/hgfs/MT_Data/SAGE2022/EDI_files_birrp")
+summary = pd.read_csv(r"/mnt/hgfs/MT_Data/SAGE2022/survey_summary.csv")
+
+for edi_fn in edi_dir.glob("*.edi"):
+    t = TF(edi_fn)
+
+    t.survey_metadata.id = "SAGE 2022"
+    t.survey_metadata.project = "Valles Caldera"
+
+    t.station_metadata.acquired_by.name = "Peacock + SAGE Team"
+    t.station_metadata.orientation.reference_frame = "geomagnetic"
+    t.station_metadata.transfer_function.units = (
+        "millivolts per kilometer per nanotesla"
+    )
+    t.station_metadata.transfer_function.coordinate_system = "geomagnetic"
+
+    t.station_metadata.runs[0].ex.measurement_azimuth = 0
+    t.station_metadata.runs[0].ey.measurement_azimuth = 90
+    t.station_metadata.runs[0].hx.measurement_azimuth = 0
+    t.station_metadata.runs[0].hy.measurement_azimuth = 90
+    t.station_metadata.runs[0].hz.measurement_dip = 90
+
+    t.station_metadata.location.declination.value = 7.95
+    ch_df = summary[summary.station == int(t.station[-1])]
+
+    t.station_metadata.runs[0].data_logger.id = ch_df.data_logger.iloc[0]
+
+    t.station_metadata.runs[0].ex.positive.x2 = ch_df.ex_length.iloc[0]
+    t.station_metadata.runs[0].ey.positive.y2 = ch_df.ey_length.iloc[0]
+    t.station_metadata.runs[0].hx.channel_number = ch_df.hx_sensor.iloc[0]
+    t.station_metadata.runs[0].hy.channel_number = ch_df.hy_sensor.iloc[0]
+    t.station_metadata.runs[0].hz.channel_number = ch_df.hz_sensor.iloc[0]
+
+    t.write_tf_file(save_dir=edi_dir.joinpath("edited"))
+    # p = PlotResponse(fn=edi_fn, plot_num=2, plot_pt="y", plot_tipper="yri")
+    # p.save_plot(
+    #     edi_dir.joinpath("edited", f"{t.station}_response.png").as_posix(), fig_dpi=300
+    # )
