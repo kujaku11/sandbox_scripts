@@ -16,9 +16,9 @@ import pandas as pd
 # ==============================================================================
 coil_calibration_path = r"/mnt/hgfs/MT_Data/birrp_responses"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = Path(r"/mnt/hgfs/MT_Data/CL2021")
+local_path = Path(r"/mnt/hgfs/MT_Data/GB2022")
 copy_edi_path = local_path.joinpath("EDI_Files_birrp")
-processing_csv = r"/mnt/hgfs/MT_Data/CL2021/processing_loop.csv"
+processing_csv = r"/mnt/hgfs/MT_Data/GB2022/processing_loop.csv"
 skip_stations = []
 
 if not copy_edi_path.exists():
@@ -34,14 +34,14 @@ df_converter = {
 }
 loop_df = pd.read_csv(processing_csv, converters=df_converter)
 
-for loop in list(loop_df.itertuples())[52:]:
-    station = f"cl{loop.station}"
+for loop in list(loop_df.itertuples()):
+    station = f"cv{loop.station}"
     if station in skip_stations:
         continue
     # if station not in process_stations:
     #     continue
 
-    rr_station = [f"cl{ss.strip()}" for ss in loop.rr_station]
+    rr_station = [f"cv{ss.strip()}" for ss in loop.rr_station]
 
     block_dict = {
         4096: [int(ss.strip()) for ss in loop.block_4096],
@@ -73,7 +73,7 @@ for loop in list(loop_df.itertuples())[52:]:
         "c2threshe": 0.35,
         "c2thresh1": 0.35,
         "ainuin": 0.9999,
-        "ainlin": 0.0000,
+        "ainlin": 0.00001,
         "nar": 7,
         "tbw": 2,
     }
