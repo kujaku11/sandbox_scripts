@@ -18,7 +18,7 @@ edi_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
 )
 save_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_03"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_04"
 )
 topo_fn = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\GIS\bm_dem_wgs84_100m.asc"
@@ -67,8 +67,8 @@ if write_data is False:
 # First make the mesh
 # ==============================================================================
 mod_obj = modem.Model(data_obj.station_locations)
-mod_obj.cell_size_east = 400
-mod_obj.cell_size_north = 400
+mod_obj.cell_size_east = 250
+mod_obj.cell_size_north = 250
 mod_obj.pad_east = 15
 mod_obj.pad_north = 15
 mod_obj.pad_num = 4
@@ -83,6 +83,7 @@ mod_obj.n_layers = 60
 mod_obj.z1_layer = 20
 mod_obj.pad_stretch_v = 1.8
 mod_obj.z_layer_rounding = 1
+mod_obj.res_initial_value = 50
 
 
 # --> here is where you can rotate the mesh
@@ -113,9 +114,9 @@ mod_obj.plot_topography()
 # make the covariance file
 # ==============================================================================
 cov = modem.Covariance(grid_dimensions=mod_obj.res_model.shape)
-cov.smoothing_east = 0.4
-cov.smoothing_north = 0.4
-cov.smoothing_z = 0.4
+cov.smoothing_east = 0.6
+cov.smoothing_north = 0.6
+cov.smoothing_z = 0.6
 cov.smoothing_num = 1
 
 cov.write_covariance_file(

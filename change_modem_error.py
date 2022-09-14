@@ -17,7 +17,7 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_01\bm_modem_data_z03_t02_topo_edit.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_04\bm_modem_data_z03_t02_topo.dat"
 remove_stations = []
 shady_stations_zx = []
 shady_stations_zy = []
@@ -39,8 +39,8 @@ add_err_t = 0.15
 add_err_period_range = None
 elevation_bool = True
 
-inv_modes = ["1"]
-z_err_value = 3
+inv_modes = ["2", "5"]
+z_err_value = 10
 t_err_value = 0.02
 z_err_type = "eigen_floor"
 t_err_type = "abs_floor"
