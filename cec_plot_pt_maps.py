@@ -9,19 +9,21 @@ import pandas as pd
 from mtpy.imaging import mtplot
 
 
-df_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\phase_01_filenames.csv"
+df_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\phase_02_filenames.csv"
 df = pd.read_csv(df_fn)
 
 ptype = "map"
 
 if ptype == "map":
-    # image_dict = {"file": r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\Reports\figures\basemap_no_stations.png",
-    #               "extent": (-122.9015, -122.67, 38.9025, 38.7175)}
-
     image_dict = {
-        "file": r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\calpine_fault_planes.png",
-        "extent": (-122.903, -122.6, 38.915, 38.655),
+        "file": r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\Reports\figures\basemap_no_stations.png",
+        "extent": (-122.9015, -122.67, 38.9025, 38.7175),
     }
+
+    # image_dict = {
+    #     "file": r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\calpine_fault_planes.png",
+    #     "extent": (-122.903, -122.6, 38.915, 38.655),
+    # }
 
     pr = mtplot.plot_residual_pt_maps(
         df.original.to_list(),
@@ -40,7 +42,7 @@ if ptype == "map":
         pr.plot()
 
         pr.save_figure(
-            f"c:\\Users\\jpeacock\\OneDrive - DOI\\Geysers\\CEC\\Reports\\figures\\rpt_map_fault_planes_{freq}s.png",
+            f"c:\\Users\\jpeacock\\OneDrive - DOI\\Geysers\\CEC\\Reports\\phase2\\figures\\rpt_map_fault_planes_{freq}s.png",
             fig_dpi=300,
         )
 

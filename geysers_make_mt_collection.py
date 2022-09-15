@@ -49,15 +49,15 @@ edi_path_2017 = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2017_EDI_files_birrp_processed\GeographicNorth"
 )
 edi_path_2021 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2021_EDI_files_birrp_processed\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2021_EDI_files_birrp_processed\GeographicNorth\SS"
 )
 edi_path_2022 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2022_EDI_files_birrp_processed\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2022_EDI_files_birrp_processed\GeographicNorth\SS"
 )
 
 # =============================================================================
 mc = MTCollection(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC")
-mc.open_collection(basename="cec_geysers_monitoring")
+mc.open_collection(basename="cec_geysers_monitoring_ss")
 
 for edi_fn in edi_path_2017.glob("*.edi"):
     tf = MT(edi_fn)
@@ -69,6 +69,7 @@ for edi_fn in edi_path_2017.glob("*.edi"):
     tf.survey_metadata.name = "The Geysers MT Base Survey"
 
     tf.station = f"{tf.station[0:2]}3{tf.station[2:]}".lower()
+    tf.tf_id = tf.station
     tf.station_metadata.location.declination.value = -13.86
     tf.station_metadata.time_period._end_dt = (
         tf.station_metadata.time_period._start_dt + (3600 * 25)
@@ -104,6 +105,8 @@ for edi_fn in edi_path_2021.glob("*.edi"):
 
     if not tf.station.startswith("g"):
         tf.station = f"gz{tf.station}"
+    tf.tf_id = tf.station
+
     tf.station_metadata.location.declination.value = -13.56
     tf.station_metadata.time_period._end_dt = (
         tf.station_metadata.time_period._start_dt + (3600 * 25)
@@ -142,6 +145,8 @@ for edi_fn in edi_path_2022.glob("*.edi"):
         tf.station_metadata.time_period._start_dt + (3600 * 25)
     )
 
+    tf.tf_id = tf.station
+
     tf.station_metadata.runs[0].hy.measurement_azimuth = 90
     tf.station_metadata.runs[
         0
@@ -157,3 +162,5 @@ for edi_fn in edi_path_2022.glob("*.edi"):
     )
 
     mc.add_tf(tf)
+
+mc.close_collection()

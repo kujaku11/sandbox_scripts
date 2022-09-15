@@ -77,15 +77,15 @@ def remove_static_shift(
 # =============================================================================
 
 df_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\phase_01_filenames.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\phase_01_v_02_filenames.csv"
 )
 first = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2017_EDI_files_birrp_processed\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2021_EDI_files_birrp_processed\GeographicNorth"
 )
 second = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2021_EDI_files_birrp_processed\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2022_EDI_files_birrp_processed\GeographicNorth"
 )
 
 # =============================================================================
 make_fn_df(df_fn, first, second)
-remove_static_shift(df_fn, save_dir=second.joinpath("SS"))
+remove_static_shift(df_fn, save_dir=second.joinpath("SS_1v2"))
