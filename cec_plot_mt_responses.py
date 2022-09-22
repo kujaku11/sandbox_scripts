@@ -51,7 +51,7 @@ for tf_id in station_list:
         "gz320",
     ]:
         res_limits = (1, 10000)
-        phase_limits = (0, 106)
+        phase_limits = (0, 104)
     elif tf_id in ["gz348", "gz205", "gz212"]:
 
         res_limits = (0.1, 30000)
@@ -59,11 +59,11 @@ for tf_id in station_list:
 
     elif tf_id in ["gz331", "gz327"]:
         res_limits = (0.01, 10000)
-        phase_limits = (0, 106)
+        phase_limits = (0, 104)
 
     else:
         res_limits = (0.3, 1000)
-        phase_limits = (0, 106)
+        phase_limits = (0, 104)
 
     pmr = mc.plot_mt_response(
         station_df,
