@@ -57,7 +57,7 @@ edi_path_2022 = Path(
 
 # =============================================================================
 mc = MTCollection(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC")
-mc.open_collection(basename="cec_geysers_monitoring_ss")
+mc.open_collection(basename="cec_geysers_monitoring_ss_02")
 
 for edi_fn in edi_path_2017.glob("*.edi"):
     tf = MT(edi_fn)
