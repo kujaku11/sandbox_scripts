@@ -71,7 +71,7 @@ def interpolate_model_grid(
 
 
     """
-    print "Interpolating {0} into {1}".format(old_model_fn, new_model_fn)
+    print(f"Interpolating {old_model_fn} into {new_model_fn}")
     # check to see if the old model is modem or ws
     if old_model_fn[-4:] == ".rho":
         old_mod = modem.Model()
@@ -109,7 +109,7 @@ def interpolate_model_grid(
 
         new_fn_basename = "{0}_interp{1}".format(fn[0:ext_find], new_ext)
 
-    print "Start Time = {0}".format(time.ctime())
+    print(f"Start Time = {time.ctime()}")
 
     # make a grid of old model
     old_north, old_east = np.broadcast_arrays(
@@ -134,8 +134,8 @@ def interpolate_model_grid(
         except IndexError:
             old_zz = -1
 
-        print "New depth={0:.2f}; old depth={1:.2f}".format(
-            new_mod.grid_z[zz], old_mod.grid_z[old_zz]
+        print(
+            f"New depth={new_mod.grid_z[zz]:.2f}; old depth={old_mod.grid_z[old_zz]:.2f}"
         )
 
         new_res[:, :, zz] = spi.griddata(
@@ -151,10 +151,14 @@ def interpolate_model_grid(
         new_res[0:pad, pad:-pad, zz] = new_res[pad, pad:-pad, zz]
         new_res[-pad:, pad:-pad, zz] = new_res[-pad - 1, pad:-pad, zz]
         new_res[:, 0:pad, zz] = (
-            new_res[:, pad, zz].repeat(pad).reshape(new_res[:, 0:pad, zz].shape)
+            new_res[:, pad, zz]
+            .repeat(pad)
+            .reshape(new_res[:, 0:pad, zz].shape)
         )
         new_res[:, -pad:, zz] = (
-            new_res[:, -pad - 1, zz].repeat(pad).reshape(new_res[:, -pad:, zz].shape)
+            new_res[:, -pad - 1, zz]
+            .repeat(pad)
+            .reshape(new_res[:, -pad:, zz].shape)
         )
 
     #
@@ -162,10 +166,12 @@ def interpolate_model_grid(
 
     if new_fn_type == "modem":
         new_mod.write_model_file(
-            save_path=save_path, model_fn_basename=new_fn_basename, res_model=new_res
+            save_path=save_path,
+            model_fn_basename=new_fn_basename,
+            res_model=new_res,
         )
     else:
-        nfid = file(os.path.join(save_path, new_fn_basename), "w")
+        nfid = open(os.path.join(save_path, new_fn_basename), "w")
         nfid.write("# interpolated starting model for ws written by mtpy\n")
         nfid.write(
             "{0} {1} {2} {3}\n".format(
@@ -202,11 +208,13 @@ def interpolate_model_grid(
                 for ii in range(new_mod.nodes_north.shape[0]):
                     nfid.write(
                         "{0:.4e}\n".format(
-                            new_res[(new_mod.nodes_north.shape[0] - 1) - ii, jj, kk]
+                            new_res[
+                                (new_mod.nodes_north.shape[0] - 1) - ii, jj, kk
+                            ]
                         )
                     )
         nfid.close()
-        print "Wrote file to {0}".format(os.path.join(save_path, new_fn_basename))
+        print(f"Wrote file to {os.path.join(save_path, new_fn_basename)}")
 
     #        new_mesh = ws.WSMesh()
     #        new_mesh.write_initial_file(nodes_north=new_mod.nodes_north,
@@ -215,7 +223,7 @@ def interpolate_model_grid(
     #                                    res_model=new_res,
     #                                    save_path=save_path)
 
-    print "End Time = {0}".format(time.ctime())
+    print(f"End Time = {time.ctime()}")
     return os.path.join(save_path, new_fn_basename)
 
 
@@ -231,6 +239,8 @@ def interpolate_model_grid(
 # interpolate_model_grid(ws_fn, modem_fn, pad=5, new_fn_basename='lv_ws_sm.rho',
 #                       shift_east = 4500, shift_north = 1700)
 
-mod_fn_old = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_02\sa_t02_049.rho"
-mod_fn_new = r"c:\Users\jpeacock\Documents\SaudiArabia\inversions\inv_03\sa_sm02.rho"
-interpolate_model_grid(mod_fn_old, mod_fn_new, new_fn_basename="sa_sm_zt.rho", pad=3)
+mod_fn_old = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\inv_2021_02\gz_z03_c02_090.rho"
+mod_fn_new = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\larger_grid_2021\gz_sm02_topo.rho"
+interpolate_model_grid(
+    mod_fn_old, mod_fn_new, new_fn_basename="gz_2021_sm.rho", pad=5
+)

@@ -17,7 +17,7 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\modem_inv\inv_04\bm_modem_data_z03_t02_topo.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\inv_all_01\lvmb_modem_data_z03_t02_tec.dat"
 remove_stations = []
 shady_stations_zx = []
 shady_stations_zy = []
@@ -28,11 +28,7 @@ flip_phase_x = []
 flip_phase_y = []
 static_shift_x = []
 static_shift_y = []
-swap_channel = [
-    ("bm200", ([0, 0], [1, 0])),
-    ("bm200", ([1, 1], [0, 1])),
-    ("bm200", ([0, 0], [1, 1])),
-]
+swap_channel = []
 
 add_err_z = 7
 add_err_t = 0.15
@@ -46,7 +42,7 @@ z_err_type = "eigen_floor"
 t_err_type = "abs_floor"
 
 # sv_fn = os.path.basename(dfn)[0:os.path.basename(dfn).find('_')]
-sv_fn = "bm"
+sv_fn = "lvmb"
 log_fn = os.path.join(os.path.dirname(dfn), f"{sv_fn}_change_data_file.log")
 # =============================================================================
 # change data file

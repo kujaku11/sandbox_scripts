@@ -17,14 +17,16 @@ import mtpy.core.mt as mt
 # Parameters
 # =============================================================================
 edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\EDI_FILES")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_04")
+save_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\inv_05"
+)
 topo_fn = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\MonoLake\mono_basin.asc"
 )
 topography = False
 overwrite = True
 
-fn_stem = "ml"
+fn_stem = "lvmb"
 bounds = {"lat": np.array([37.755, 38.235]), "lon": np.array([-119.3, -118.62])}
 
 dfn = save_path.joinpath("{0}_modem_data_z03_t02.dat".format(fn_stem))
@@ -39,39 +41,42 @@ if not save_path.exists():
 # Get edi files
 # =============================================================================
 edi_list = [fn for fn in edi_path.glob("*.edi")]
-s_remove = [
-    "s{0}".format(ii)
-    for ii in [
-        11,
-        12,
-        13,
-        21,
-        22,
-        23,
-        31,
-        32,
-        33,
-        42,
-        43,
-        51,
-        52,
-        53,
-        61,
-        62,
-        63,
-        72,
-        73,
-    ]
-]
+# s_remove = [
+#     "s{0}".format(ii)
+#     for ii in [
+#         11,
+#         12,
+#         13,
+#         21,
+#         22,
+#         23,
+#         31,
+#         32,
+#         33,
+#         42,
+#         43,
+#         51,
+#         52,
+#         53,
+#         61,
+#         62,
+#         63,
+#         72,
+#         73,
+#     ]
+# ]
 
-for remove_edi in ["mb091", "mb035", "mb055", "cay203"] + s_remove:
+for remove_edi in ["mb091", "mb035", "mb055", "cay203"]:
     edi_list.remove(Path(edi_path).joinpath("{0}.edi".format(remove_edi)))
 
 s_edi_list = []
 for edi in edi_list:
     mt_obj = mt.MT(edi)
     if mt_obj.lat >= bounds["lat"].min() and mt_obj.lat <= bounds["lat"].max():
-        if mt_obj.lon >= bounds["lon"].min() and mt_obj.lon <= bounds["lon"].max():
+        if (
+            mt_obj.lon >= bounds["lon"].min()
+            and mt_obj.lon <= bounds["lon"].max()
+        ):
             s_edi_list.append(edi)
 
 # ==============================================================================

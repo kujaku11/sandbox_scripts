@@ -166,7 +166,9 @@ def read_nc_file(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords(
+            {"longitude": nc_obj.longitude.values[:] - 360}
+        )
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -255,7 +257,9 @@ def read_nc_file_points(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
+        nc_obj = nc_obj.assign_coords(
+            {"longitude": nc_obj.longitude.values[:] - 360}
+        )
 
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
@@ -284,7 +288,11 @@ def read_nc_file_points(
         values_dict[key] = value.astype(xg.dtype)
 
     pointsToVTK(
-        vtk_fn.as_posix(), yg, xg, depth, values_dict,
+        vtk_fn.as_posix(),
+        yg,
+        xg,
+        depth,
+        values_dict,
     )
 
     print(f"--> Wrote VTK file to {vtk_fn}")
@@ -307,13 +315,13 @@ custom_crs = None
 # model_center = (40.75, -113.25)
 # model_utm = "11S"
 
-# Great Basin
-model_center = (38.615252, -119.015192)
-model_utm = "11S"
+# # Great Basin
+# model_center = (38.615252, -119.015192)
+# model_utm = "11S"
 
-# Clear Lake
-# model_center = (38.987645, -122.751369)
-# model_utm = "10S"
+## Clear Lake
+model_center = (38.986014, -122.778463)
+model_utm = "10S"
 
 if custom_crs is None:
     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
@@ -358,11 +366,12 @@ nc_list = [
     {"fn": "moho_temperature_great_basin.nc", "points": True},
 ]
 
-for nc_entry in nc_list[-1:]:
+for nc_entry in nc_list[:-1]:
 
     nc_fn = nc_path.joinpath(nc_entry["fn"])
     save_fn = Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv", nc_fn.stem
+        r"c:\Users\jpeacock\OneDrive - DOI\Clearlake\modem_inv",
+        nc_fn.stem,
     )
 
     if nc_entry["points"]:
