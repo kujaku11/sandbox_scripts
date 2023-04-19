@@ -34,7 +34,7 @@ df_converter = {
 }
 loop_df = pd.read_csv(processing_csv, converters=df_converter)
 
-for loop in list(loop_df.itertuples())[52:]:
+for loop in list(loop_df.itertuples())[74:]:
     station = f"cl{loop.station}"
     if station in skip_stations:
         continue
@@ -88,7 +88,7 @@ for loop in list(loop_df.itertuples())[52:]:
     kw_dict = {
         "df_list": use_df_list,
         "notch_dict": {4096: None, 256: None, 4: None},
-        "sr_dict": {4096: (1000.0, 49.9), 256: (49.899, 0.01), 4: (0.01, 0.00001)},
+        "sr_dict": {4096: (1000.0, 24.9), 256: (24.899, 0.01), 4: (0.01, 0.00001)},
         "use_blocks_dict": block_dict,
         "birrp_param_dict": b_param_dict,
         "overwrite": overwrite,
