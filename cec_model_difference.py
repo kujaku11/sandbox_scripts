@@ -5,13 +5,18 @@ Created on Wed Nov 10 14:31:28 2021
 @author: jpeacock
 """
 from pathlib import Path
-from mtpy.modeling.modem import Data, Model
+from mtpy.modeling.modem import Model
 
+# mfn_base = Path(
+#     r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_2022_01\gz_base_sm.rho"
+# )
 mfn_base = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_base_sm.rho"
-)
-mfn_repeat_01 = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_z05_c03_061.rho"
+)
+
+
+mfn_repeat_01 = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\modem_inv\repeat_01\gz_rev_z05_c02_052.rho"
 )
 
 m_base = Model()
@@ -23,4 +28,6 @@ m_repeat.read_model_file(mfn_repeat_01)
 # m_base.res_model = m_base.res_model / m_repeat.res_model
 m_base.res_model = m_repeat.res_model - m_base.res_model
 
-m_base.write_vtk_file(vtk_fn_basename="cec_repeat_01_difference", label="resistivity")
+m_base.write_vtk_file(
+    vtk_fn_basename="cec_repeat_2021_2017_rev", label="resistivity"
+)

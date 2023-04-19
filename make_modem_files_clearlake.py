@@ -14,8 +14,12 @@ import mtpy.modeling.modem as modem
 # ==============================================================================
 # Inputs
 # ==============================================================================
-edi_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inversion_edis")
-save_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_03_topo")
+edi_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inversion_edis"
+)
+save_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_05_topo"
+)
 topo_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc")
 fn_stem = "cl"
 
@@ -31,18 +35,9 @@ topography = True
 center_stations = True
 new_edis = False
 
-s_edi_list = list(edi_path.glob("*.edi"))
-
-remove_list = ["cl126", "cl200"]
-
-for remove in remove_list:
-    try:
-        s_edi_list.remove(edi_path.joinpath(f"{remove}.edi"))
-    except:
-        print(f"Could not find {remove} in fn_list")
 
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_01_topo\cl_modem_data_z03_t02_topo_edit_02.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_05_topo\cl_modem_data_z03_t02_teca.dat"
 )
 if write_data and dfn.exists():
     os.remove(dfn)
@@ -54,6 +49,16 @@ if not os.path.exists(save_path):
 # Make the data file
 # ==============================================================================
 if not dfn.exists():
+    s_edi_list = list(edi_path.glob("*.edi"))
+
+    remove_list = ["cl126", "cl200"]
+
+    for remove in remove_list:
+        try:
+            s_edi_list.remove(edi_path.joinpath(f"{remove}.edi"))
+        except:
+            print(f"Could not find {remove} in fn_list")
+
     inv_period_list = np.logspace(-np.log10(300), np.log10(2048), num=23)
     data_obj = modem.Data(edi_list=s_edi_list, period_list=inv_period_list)
 
@@ -96,6 +101,7 @@ if write_model:
     mod_obj.n_layers = 48
     mod_obj.z1_layer = 30
     mod_obj.pad_stretch_v = 1.8
+    mod_obj.z_layer_rounding = 1
 
     # --> here is where you can rotate the mesh
     mod_obj.mesh_rotation_angle = 0
@@ -110,9 +116,12 @@ if write_model:
 ## Add topography
 ## =============================================================================
 if topography:
-    mod_obj.add_topography_to_model2(topo_fn, airlayer_type="constant", max_elev=1350)
+    mod_obj.add_topography_to_model2(
+        topo_fn, airlayer_type="constant", max_elev=1350
+    )
     mod_obj.write_model_file(
-        save_path=save_path, model_fn_basename="{0}_sm02_topo.rho".format(fn_stem)
+        save_path=save_path,
+        model_fn_basename="{0}_sm02_topo.rho".format(fn_stem),
     )
     if center_stations:
         data_obj.center_stations(mod_obj)
