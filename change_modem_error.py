@@ -17,7 +17,7 @@ import datetime
 # =============================================================================
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\modem_inv\mnp_02\mnp_modem_data_z05_t02_edited.dat"
 # dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\modem_inv\st_topo_inv_02\gv_modem_data_z03_t02_topo_edited.dat"
-dfn = r"c:\Users\jpeacock\OneDrive - DOI\LV\Inversions\inv_all_01\lvmb_modem_data_z03_t02_tec.dat"
+dfn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gb_01\gb_modem_data_z03_t02_edit_16.dat"
 remove_stations = []
 shady_stations_zx = []
 shady_stations_zy = []
