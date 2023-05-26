@@ -28,6 +28,8 @@ warnings.filterwarnings("ignore")
 # ## Important Parameters.
 
 station = "gz316"
+
+for station_path in p.iterdir() if "gz" in h.name]
 survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023")
 save_path = survey_dir.joinpath(station)
 mth5_path = save_path.joinpath(f"{station}_with_1s_run.h5")
