@@ -24,13 +24,19 @@ mc.open_collection(
 
 # create a list of station to iterate over focused on repeat stations with
 # 2022
-station_list = mc.master_dataframe.loc[
-    mc.master_dataframe.survey == "GZ2023"
-].tf_id.unique()
+# station_list = mc.master_dataframe.loc[
+#     mc.master_dataframe.survey == "GZ2023"
+# ].tf_id.unique()
+
+# repeated stations in 2023
+station_list = ["gz207", "gz306", "gz310"]
 
 # plot the responses
 for tf_id in station_list:
     station_df = mc.master_dataframe.loc[mc.master_dataframe.tf_id == tf_id]
+    station_df = station_df.append(
+        mc.master_dataframe.loc[mc.master_dataframe.tf_id == f"{tf_id}2"]
+    )
     station_df = station_df.sort_values("survey")
     if tf_id in [
         "gz350",
@@ -78,3 +84,5 @@ for tf_id in station_list:
         save_path.joinpath(f"{tf_id}_compare.png"),
         fig_dpi=300,
     )
+
+mc.close_collection()
