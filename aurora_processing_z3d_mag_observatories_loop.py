@@ -241,18 +241,18 @@ class ProcessMTH5ObsRR:
             )
             combine.write(
                 fn=self.edi_path.joinpath(
-                    f"{self.station}_rr_mo_combined_01.edi"
+                    f"{self.station}_rr_frn_combined_01.edi"
                 )
             )
 
-            combine.tf_id = f"{self.station}_rr_mo_combined"
+            combine.tf_id = f"{self.station}_rr_frn_combined"
             combine.survey_metadata.id = new_tf.survey_metadata.id
 
             self._add_tf_to_mth5(combine)
 
             p1 = combine.plot_mt_response(fig_num=5, plot_num=2)
             p1.save_plot(
-                self.edi_path.joinpath(f"{self.station}_mag_obs_combined.png"),
+                self.edi_path.joinpath(f"{self.station}_rr_frn_combined.png"),
                 fig_dpi=300,
                 close_plot=True,
             )
@@ -287,14 +287,14 @@ class ProcessMTH5ObsRR:
             z_file_path=None,
         )
 
-        tf_cls.tf_id = f"{self.station}_1s_rr_mo"
+        tf_cls.tf_id = f"{self.station}_1s_rr_frn"
         tf_cls.survey_metadata.id = self.survey
 
         self._add_tf_to_mth5(tf_cls)
 
         edi = tf_cls.write(
             self.mth5_path.parent.joinpath(
-                f"{self.station}_{self.sample_rate}_rr_mo.edi"
+                f"{self.station}_{self.sample_rate}_rr_frn.edi"
             )
         )
 

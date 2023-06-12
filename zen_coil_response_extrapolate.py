@@ -27,8 +27,8 @@ from mt_metadata.timeseries.filters import PoleZeroFilter
 class Extrapolate:
     def __init__(self, fap_filter, **kwargs):
         self.fap = fap_filter
-        self.n_poles = 5
-        self.n_zeros = 2
+        self.n_poles = 3
+        self.n_zeros = 3
         self.seed = 1
         self.method = "Powell"
 
@@ -143,4 +143,4 @@ fap = c.get_coil_response_fap(2284)
 pz = Extrapolate(fap)
 
 r = pz.fit()
-r.plot_response(np.logspace(3, -5, 100))
+r.plot_response(np.logspace(5, -5, 100))

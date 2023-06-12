@@ -12,20 +12,20 @@ from mtpy import MTCollection
 
 # =============================================================================
 save_path = Path(
-    r"c:\\Users\\jpeacock\\OneDrive - DOI\\Geysers\\CEC\\Reports\\phase2\\figures"
+    r"c:\\Users\\jpeacock\\OneDrive - DOI\\Geysers\\CEC\\Reports\\phase3\\figures"
 )
 
 ### Open MTH5 file
 mc = MTCollection()
 mc.open_collection(
-    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss.h5"
+    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss_03.h5"
 )
 
 
 # create a list of station to iterate over focused on repeat stations with
 # 2022
 station_list = mc.master_dataframe.loc[
-    mc.master_dataframe.survey == "GZ2022"
+    mc.master_dataframe.survey == "GZ2023"
 ].tf_id.unique()
 
 # plot the responses
