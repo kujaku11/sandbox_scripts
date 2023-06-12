@@ -12,16 +12,18 @@ from mtpy import MTCollection
 
 # =============================================================================
 save_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\Reports\phase2\figures"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\Reports\phase3\figures"
 )
 
 ### Open MTH5 file
 mc = MTCollection()
 mc.open_collection(
-    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss.h5"
+    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss_03.h5"
 )
 # =============================================================================
 ptype = "map"
+survey_01 = "GZ2022"
+survey_02 = "GZ2023"
 
 if ptype == "map":
     image_dict = {
@@ -35,14 +37,14 @@ if ptype == "map":
     # }
 
     mc.working_dataframe = mc.master_dataframe.loc[
-        mc.master_dataframe.survey == "GZ2017"
+        mc.master_dataframe.survey == survey_01
     ]
-    phase_1_list = mc.get_tf_list()
+    phase_1_list = mc.to_mt_data()
 
     mc.working_dataframe = mc.master_dataframe.loc[
-        mc.master_dataframe.survey == "GZ2022"
+        mc.master_dataframe.survey == survey_02
     ]
-    phase_2_list = mc.get_tf_list()
+    phase_2_list = mc.to_mt_data()
 
     ptm = mc.plot_residual_phase_tensor(
         phase_1_list,
@@ -50,7 +52,8 @@ if ptype == "map":
         ellipse_size=0.0175,
         ellipse_range=(0, 20),
         med_filt_kernel=(7, 3),
-        image_dict=image_dict,
+        image_file=image_dict["file"],
+        image_extent=image_dict["extent"],
         plot_freq=1.0 / 10,
         subplot_top=0.93,
         subplot_left=0.1,
@@ -61,9 +64,12 @@ if ptype == "map":
         ptm.plot()
 
         ptm.save_plot(
-            save_path.joinpath(f"rpt_2017_vs_2022_{freq}s.png"),
+            save_path.joinpath(f"rpt_{survey_01}_vs_{survey_02}_{freq}s.png"),
             fig_dpi=300,
         )
+
+
+mc.close_collection()
 
 # elif ptype == "pseudo":
 #     profile_index = [25, 26, 28, 10, 9, 8, 7, 6, 38, 40, 39]
