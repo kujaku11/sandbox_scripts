@@ -310,16 +310,17 @@ class ProcessMTH5ObsRR:
 # )
 # p.process()
 
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2022")
 
 for station_path in survey_dir.iterdir():
     station = station_path.name
-    if "gz" in station:
+    if "gz" in station and station_path.is_dir():
         try:
             p_obj = ProcessMTH5ObsRR(station, survey_dir)
             p_obj.process()
 
         except Exception as error:
+            print("XXX==================================XXX")
             print(f"XXX Station {station} FAILED XXX")
             print(error)
             print("XXX==================================XXX")
