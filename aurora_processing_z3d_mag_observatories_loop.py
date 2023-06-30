@@ -109,6 +109,20 @@ class ProcessMTH5ObsRR:
             return self._survey_dir.name
         return None
 
+    def has_hz(self):
+        """
+        figure out if station has hz or not
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        for fn in self.save_path.glob("*"):
+            if fn.name.lower().endswith("hz.z3d"):
+                return True
+        return False
+
     def make_mth5(self):
         ## get z3d files
         zc = Z3DCollection(self.save_path)
@@ -211,7 +225,10 @@ class ProcessMTH5ObsRR:
             decimation.estimator.engine = "RME_RR"
             decimation.window.type = "dpss"
             decimation.window.additional_args = {"alpha": 2.5}
-            decimation.output_channels = ["ex", "ey"]
+            if self.has_hz():
+                decimation.output_channels = ["ex", "ey", "hz"]
+            else:
+                decimation.output_channels = ["ex", "ey"]
             decimation.window.overlap = 64
             decimation.window.num_samples = 128
 
@@ -310,11 +327,11 @@ class ProcessMTH5ObsRR:
 # )
 # p.process()
 
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2022")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021")
 
 for station_path in survey_dir.iterdir():
     station = station_path.name
-    if "gz" in station and station_path.is_dir():
+    if "cl" in station and station_path.is_dir():
         try:
             p_obj = ProcessMTH5ObsRR(station, survey_dir)
             p_obj.process()
