@@ -48,6 +48,8 @@ with MTH5() as m:
                 ch_metadata = phx_collection.metadata_dict[
                     "102"
                 ].get_ch_metadata(ch_ts.channel_metadata.channel_number)
+                ### Need to add filter information here.
+
                 # need to update the time period and sample rate as estimated from the data not the metadata
                 ch_metadata.sample_rate = ch_ts.sample_rate
                 ch_metadata.time_period.update(
