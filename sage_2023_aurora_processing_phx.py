@@ -28,10 +28,13 @@ local_mth5_path = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\102_060923\mth5_from_phoenix.h5"
 )
 
-remote_station = None
-remote_mth5_path = None
+remote_station = "Tucson"
+remote_mth5_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\usgs_geomag_bou_tuc_xy.h5"
+)
 
-sample_rate = 150
+
+sample_rate = 1
 
 # =============================================================================
 mth5_run_summary = RunSummary()
@@ -50,11 +53,11 @@ run_summary.mini_summary
 kernel_dataset = KernelDataset()
 if remote_station is not None:
     kernel_dataset.from_run_summary(
-        RunSummary(df=run_summary.df.iloc[0:1]), local_station, remote_station
+        RunSummary(df=run_summary.df), local_station, remote_station
     )
 else:
     kernel_dataset.from_run_summary(
-        RunSummary(df=run_summary.df.iloc[0:1]), local_station
+        RunSummary(df=run_summary.df), local_station
     )
 mimimum_run_duration = 3600 * 5  # seconds
 kernel_dataset.drop_runs_shorter_than(mimimum_run_duration)
