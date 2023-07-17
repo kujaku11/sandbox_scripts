@@ -31,7 +31,7 @@ local_mth5_path = Path(
 remote_station = None
 remote_mth5_path = None
 
-sample_rate = 24000
+sample_rate = 150
 
 # =============================================================================
 mth5_run_summary = RunSummary()
@@ -50,13 +50,13 @@ run_summary.mini_summary
 kernel_dataset = KernelDataset()
 if remote_station is not None:
     kernel_dataset.from_run_summary(
-        RunSummary(df=run_summary.df.iloc[0:10]), local_station, remote_station
+        RunSummary(df=run_summary.df.iloc[0:1]), local_station, remote_station
     )
 else:
     kernel_dataset.from_run_summary(
-        RunSummary(df=run_summary.df.iloc[0:10]), local_station
+        RunSummary(df=run_summary.df.iloc[0:1]), local_station
     )
-mimimum_run_duration = 1  # seconds
+mimimum_run_duration = 3600 * 5  # seconds
 kernel_dataset.drop_runs_shorter_than(mimimum_run_duration)
 kernel_dataset.mini_summary
 

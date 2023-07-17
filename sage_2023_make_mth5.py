@@ -8,16 +8,39 @@ This is a temporary script file.
 from pathlib import Path
 from mth5.mth5 import MTH5
 from mth5 import read_file
-from mth5.io.phoenix import ReceiverMetadataJSON, PhoenixCollection
+from mth5.io.phoenix import PhoenixCollection
+from mth5.io.zen import CoilResponse
 
 # =============================================================================
 
 station_dir = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\102_060923"
 )
+antcal_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\xamtant_combined_052523.cal"
+)
+ant_cal = CoilResponse(calibration_file=antcal_fn)
 
 phx_collection = PhoenixCollection(file_path=station_dir)
 run_dict = phx_collection.get_runs(sample_rates=[150, 24000])
+
+
+def get_coil_numbers(comment):
+    c_list = comment.split(".", 1)[-1].split()
+    coil_dict = {}
+    coil_keys = ["h1", "h2", "h3"]
+    count = 0
+    for c_str in c_list:
+        c_str = c_str.replace(",", "")
+        try:
+            c_str = int(c_str)
+            coil_dict[coil_keys[count]] = c_str
+            count += 1
+
+        except ValueError:
+            pass
+    return coil_dict
+
 
 with MTH5() as m:
     m.open_mth5(station_dir.joinpath("mth5_from_phoenix.h5"), "w")
@@ -42,20 +65,20 @@ with MTH5() as m:
                     **{
                         "channel_map": phx_collection.metadata_dict[
                             "102"
-                        ].channel_map
+                        ].channel_map,
+                        "rxcal_fn": r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10621_647A2F41.rxcal.json",
                     }
                 )
-                ch_metadata = phx_collection.metadata_dict[
-                    "102"
-                ].get_ch_metadata(ch_ts.channel_metadata.channel_number)
-                ### Need to add filter information here.
 
-                # need to update the time period and sample rate as estimated from the data not the metadata
-                ch_metadata.sample_rate = ch_ts.sample_rate
-                ch_metadata.time_period.update(
-                    ch_ts.channel_metadata.time_period
-                )
-                ch_ts.channel_metadata.update(ch_metadata)
+                if ch_ts.component in ["h1", "h2", "h3"]:
+                    coil_dict = get_coil_numbers(
+                        ch_ts.station_metadata.comments
+                    )
+                    coil_number = coil_dict[ch_ts.component]
+                    coil_fap = ant_cal.get_coil_response_fap(coil_number)
+                    ch_ts.channel_metadata.filter.name.append(coil_fap.name)
+                    ch_ts.channel_metadata.filter.applied.append(False)
+                    ch_ts.channel_response_filter.filters_list.append(coil_fap)
 
                 # add channel to the run group
                 ch_dataset = run_group.from_channel_ts(ch_ts)
