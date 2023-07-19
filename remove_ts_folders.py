@@ -5,24 +5,26 @@ Created on Thu Aug 04 18:02:56 2016
 @author: jpeacock-pr
 """
 
-import os
 import shutil
+from pathlib import Path
 
-# data_folder = r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SCEC"
-data_folder = "/mnt/hgfs/MT_Data/GB2022"
-# data_folder = r"c:\MT\GB2022"
-for folder in os.listdir(data_folder):
-    station_path = os.path.join(data_folder, folder)
-    if os.path.isdir(station_path) is True:
-        for p_folder in os.listdir(station_path):
-            ts_path = os.path.join(station_path, p_folder)
-            if os.path.isdir(ts_path):
-                if p_folder in ["TS"]:
+# data_folder = Path(r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SCEC")
+# data_folder = Path("/mnt/hgfs/MT_Data/GZ2023")
+data_folder = Path(r"c:\MT\GZ2023")
+for station_path in data_folder.iterdir():
+
+    if station_path.is_dir():
+        for ts_path in station_path.iterdir():
+            if ts_path.is_dir():
+                if ts_path.name in ["TS"]:
                     shutil.rmtree(ts_path)
-                    print("Removed {0}".format(ts_path))
+                    print(f"Removed {ts_path}")
                 try:
-                    fp = int(p_folder)
+                    fp = int(ts_path.name)
                     shutil.rmtree(ts_path)
-                    print("Removed {0}".format(ts_path))
+                    print(f"Removed {ts_path}")
                 except ValueError:
                     continue
+            if ts_path.suffix in [".h5"]:
+                print(f"Deleting {ts_path}")
+                ts_path.unlink()
