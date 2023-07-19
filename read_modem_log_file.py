@@ -102,15 +102,20 @@ class ModEMLog(object):
             ### plot lambda
             ax_l.semilogy(self.log_df.index, self.log_df["lambda"])
             ax_l.tick_params(labelbottom=False)
-            ax_l.set_yticks([10 ** ii for ii in range(6, -8, -1)])
+            ax_l.set_yticks([10**ii for ii in range(6, -8, -1)])
             ax_l.set_ylim(
-                (self.log_df["lambda"].min() * 0.7, self.log_df["lambda"].max() * 1.8)
+                (
+                    self.log_df["lambda"].min() * 0.7,
+                    self.log_df["lambda"].max() * 1.8,
+                )
             )
 
             ### plot m2
             ax_m2.plot(self.log_df.index, self.log_df.m2)
             ax_m2.tick_params(labelbottom=False)
-            ax_m2.set_ylim((self.log_df.m2.min() * 0.75, self.log_df.m2.max() * 1.3))
+            ax_m2.set_ylim(
+                (self.log_df.m2.min() * 0.75, self.log_df.m2.max() * 1.3)
+            )
 
             ### plot rms
             ax_rms.plot(self.log_df.index, self.log_df.rms)
@@ -119,7 +124,9 @@ class ModEMLog(object):
 
             for ax, label in zip([ax_a, ax_f, ax_l, ax_m2, ax_rms], self._keys):
                 ax.grid(which="major", lw=0.5, ls="--", color=(0.5, 0.5, 0.5))
-                ax.grid(which="minor", lw=0.25, ls="--", color=(0.75, 0.75, 0.75))
+                ax.grid(
+                    which="minor", lw=0.25, ls="--", color=(0.75, 0.75, 0.75)
+                )
                 ax.set_ylabel(label, fontdict={"weight": "bold"})
         else:
             ax1 = fig.add_subplot(1, 1, 1)
@@ -133,9 +140,16 @@ class ModEMLog(object):
                 else:
                     lw = 2
                     zorder = 3
-                (l1,) = ax1.plot(
-                    self.log_df.index, self.log_df[key], lw=lw, zorder=zorder
-                )
+                try:
+                    (l1,) = ax1.plot(
+                        self.log_df.index,
+                        self.log_df[key],
+                        lw=lw,
+                        zorder=zorder,
+                    )
+                except ValueError:
+                    print(key)
+                    continue
                 line_list.append(l1)
                 line_labels.append(key.capitalize())
 
@@ -157,7 +171,7 @@ class ModEMLog(object):
 # =============================================================================
 # Inputs
 # =============================================================================
-log_fn = r"c:\Users\jpeacock\Documents\SaudiArabia\af10_az44_NLCG.log"
+log_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geysers\modem_inv\inv_large_grid\gz_2017_z03_c021_NLCG.log"
 
 log_obj = ModEMLog(log_fn)
 log_obj.read_log_file()

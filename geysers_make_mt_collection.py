@@ -54,14 +54,17 @@ edi_path_2021 = Path(
 edi_path_2022 = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2022_EDI_files_birrp_processed\GeographicNorth\SS"
 )
+edi_path_2023 = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2023_EDI_files_birrp_processed\GeographicNorth\repeats\SS"
+)
 
 # =============================================================================
 mc = MTCollection(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC")
-mc.open_collection(basename="cec_geysers_monitoring_ss_02")
+mc.open_collection(basename="cec_geysers_monitoring_ss_03")
 
 for edi_fn in edi_path_2017.glob("*.edi"):
     tf = MT(edi_fn)
-    tf.read_tf_file()
+    tf.read()
     tf.survey_metadata.update(general_survey)
     tf.station_metadata.update(general_station)
 
@@ -96,7 +99,7 @@ for edi_fn in edi_path_2017.glob("*.edi"):
 
 for edi_fn in edi_path_2021.glob("*.edi"):
     tf = MT(edi_fn)
-    tf.read_tf_file()
+    tf.read()
     tf.survey_metadata.update(general_survey)
     tf.station_metadata.update(general_station)
 
@@ -133,7 +136,7 @@ for edi_fn in edi_path_2021.glob("*.edi"):
 
 for edi_fn in edi_path_2022.glob("*.edi"):
     tf = MT(edi_fn)
-    tf.read_tf_file()
+    tf.read()
     tf.survey_metadata.update(general_survey)
     tf.station_metadata.update(general_station)
 
@@ -141,6 +144,38 @@ for edi_fn in edi_path_2022.glob("*.edi"):
     tf.survey_metadata.name = "The Geysers MT Pahse 2 Survey"
 
     tf.station_metadata.location.declination.value = -13.49
+    tf.station_metadata.time_period._end_dt = (
+        tf.station_metadata.time_period._start_dt + (3600 * 25)
+    )
+
+    tf.tf_id = tf.station
+
+    tf.station_metadata.runs[0].hy.measurement_azimuth = 90
+    tf.station_metadata.runs[
+        0
+    ].ex.translated_azimuth = tf.station_metadata.location.declination.value
+    tf.station_metadata.runs[
+        0
+    ].hx.translated_azimuth = tf.station_metadata.location.declination.value
+    tf.station_metadata.runs[0].ey.translated_azimuth = (
+        90 + tf.station_metadata.location.declination.value
+    )
+    tf.station_metadata.runs[0].hy.translated_azimuth = (
+        90 + tf.station_metadata.location.declination.value
+    )
+
+    mc.add_tf(tf)
+
+for edi_fn in edi_path_2023.glob("*.edi"):
+    tf = MT(edi_fn)
+    tf.read()
+    tf.survey_metadata.update(general_survey)
+    tf.station_metadata.update(general_station)
+
+    tf.survey_metadata.id = "GZ2023"
+    tf.survey_metadata.name = "The Geysers MT Pahse 3 Survey repeated sites"
+
+    tf.station_metadata.location.declination.value = -13.48
     tf.station_metadata.time_period._end_dt = (
         tf.station_metadata.time_period._start_dt + (3600 * 25)
     )

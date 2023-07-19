@@ -289,8 +289,8 @@ def read_nc_file_points(
 
     pointsToVTK(
         vtk_fn.as_posix(),
-        yg,
-        xg,
+        -1 * yg,
+        -1 * xg,
         depth,
         values_dict,
     )
@@ -366,7 +366,7 @@ nc_list = [
     {"fn": "moho_temperature_great_basin.nc", "points": True},
 ]
 
-for nc_entry in nc_list[:-1]:
+for nc_entry in nc_list[-1:]:
 
     nc_fn = nc_path.joinpath(nc_entry["fn"])
     save_fn = Path(
@@ -380,8 +380,8 @@ for nc_entry in nc_list[:-1]:
             vtk_fn=save_fn,
             utm_zone=model_utm,
             crs=custom_crs,
-            shift_east=rel_shift_east,
-            shift_north=rel_shift_north,
+            shift_east=rel_shift_east - 1075000,
+            shift_north=rel_shift_north - 50000,
             units="km",
         )
     else:
