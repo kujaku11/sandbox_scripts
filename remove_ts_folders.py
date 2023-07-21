@@ -5,8 +5,9 @@ Created on Thu Aug 04 18:02:56 2016
 @author: jpeacock-pr
 """
 
-from pathlib import Path
 import shutil
+from pathlib import Path
+
 
 # data_folder = r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SCEC"
 # data_folder = "/mnt/hgfs/MT_Data/GB2022"
