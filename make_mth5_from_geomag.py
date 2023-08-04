@@ -47,6 +47,7 @@ make_mth5_object = MakeMTH5(
     mth5_version="0.2.0",
     interact=True,
     save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023",
+    **{"_ch_map": {"x": "h1", "y": "h2", "z": "h3"}}
 )
 mth5_object = make_mth5_object.from_usgs_geomag(request_df)
 
