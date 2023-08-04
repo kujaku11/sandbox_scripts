@@ -16,9 +16,9 @@ import pandas as pd
 # ==============================================================================
 coil_calibration_path = r"/mnt/hgfs/MT_Data/birrp_responses"
 birrp_path = r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big"
-local_path = Path(r"/mnt/hgfs/MT_Data/GZ2023")
+local_path = Path(r"/mnt/hgfs/MT_Data/BV2023")
 copy_edi_path = local_path.joinpath("EDI_Files_birrp")
-processing_csv = r"/mnt/hgfs/MT_Data/GZ2023/processing_loop.csv"
+processing_csv = r"/mnt/hgfs/MT_Data/BV2023/processing_loop.csv"
 skip_stations = []
 
 if not copy_edi_path.exists():
@@ -35,14 +35,14 @@ df_converter = {
 loop_df = pd.read_csv(processing_csv, converters=df_converter)
 
 # for loop in list(loop_df.itertuples())[[17, 27, 28, 29, 30]]:
-for loop in loop_df.iloc[[6, 14, 15, 44]].itertuples():
-    station = f"gz{loop.station}"
+for loop in loop_df.iloc[0:].itertuples():
+    station = f"bv{loop.station}"
     if station in skip_stations:
         continue
     # if station not in process_stations:
     #     continue
 
-    rr_station = [f"gz{ss.strip()}" for ss in loop.rr_station]
+    rr_station = [f"bv{ss.strip()}" for ss in loop.rr_station]
 
     block_dict = {
         4096: [int(ss.strip()) for ss in loop.block_4096],
