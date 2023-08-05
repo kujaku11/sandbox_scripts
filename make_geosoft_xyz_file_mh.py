@@ -40,19 +40,18 @@ rot_matrix = np.matrix(np.array([[cos_ang, sin_ang], [-sin_ang, cos_ang]]))
 # --> write model xyz file
 lines = [
     "# model_type = electrical resistivity",
-    "# model_location = Gabbs Valley, NV",
+    "# model_location = Mountain Home, ID",
     "# model_author = J Peacock",
     "# model_organization = U.S. Geological Survey",
-    "# model_date = 2020-10-23",
+    "# model_date = 2018-12-11",
     "# model_datum = NAD83 / UTM Zone 11",
     "# model_program = ModEM",
     "# model_starting_lambda = 100.00",
     "# model_starting_model = 100 ohm-m half-space",
-    "# model_prior_model = gv_t04_c03_NLCG_029.prm",
-    "# model_rms = 2.5",
-    "# data_error_z = 0.03 * sqrt(Zxy * Zyx) floor",
+    "# model_rms = 1.2",
+    "# data_error_z = 0.05 * sqrt(Zxy * Zyx) floor",
     "# data_error_t = 0.02 floor",
-    "# covariance = 0.025 applied twice",
+    "# covariance = 0.03",
 ]
 lines.append("# north (m) east(m) depth(m) resistivity (Ohm-m)")
 
@@ -84,7 +83,7 @@ for kk, zz in enumerate(mod_obj.grid_z[0:z_pad]):
             )
 
 save_fn = os.path.join(
-    os.path.dirname(mfn), "{0}_resistivity_nad83.xyz".format(save_root)
+    os.path.dirname(mfn), "{0}_resistivity_nad83_utm_11.xyz".format(save_root)
 )
 with open(save_fn, "w") as fid:
     fid.write("\n".join(lines))
