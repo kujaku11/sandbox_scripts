@@ -26,16 +26,16 @@ from mtpy import MT
 warnings.filterwarnings("ignore")
 # =============================================================================
 
-local_station = "020"
+local_station = "321"
 local_mth5_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\020_060723\vc020_mth5_from_phoenix.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\321_Phx\kl321_mth5_from_phoenix.h5"
 )
 
 # remote_station = None
 # remote_mth5_path = None
-remote_station = "029"
+remote_station = "326"
 remote_mth5_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\029_060823\vc029_mth5_from_phoenix.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\326_Phx\kl326_mth5_from_phoenix.h5"
 )
 
 start_time = MTime().now()
@@ -45,8 +45,8 @@ bursts = (
     list(range(5))
     + list(range(50, 60, 1))
     + list(range(100, 110, 1))
-    #    + list(range(150, 155, 1))
-    #    + list(range(100, 105, 1))
+    + list(range(150, 155, 1))
+    + list(range(100, 105, 1))
     # + list(range(200, 205, 1))
     # + list(range(250, 255, 1))
     # + list(range(300, 305, 1))
@@ -54,7 +54,7 @@ bursts = (
 )
 
 tf_list = []
-for ii, sample_rate in enumerate([150, 24000], 1):
+for ii, sample_rate in enumerate([24000], 1):
     st = MTime().now()
 
     if sample_rate == 24000:
@@ -121,7 +121,7 @@ for ii, sample_rate in enumerate([150, 24000], 1):
             decimation.estimator.engine = "RME"
         decimation.window.type = "dpss"
         decimation.window.additional_args = {"alpha": 2.5}
-        decimation.output_channels = ["e1", "e2", "h3"]
+        decimation.output_channels = ["e1", "e2"]
         decimation.input_channels = ["h1", "h2"]
         decimation.reference_channels = ["h1", "h2"]
         decimation.window.overlap = 64
@@ -169,7 +169,7 @@ for ii, sample_rate in enumerate([150, 24000], 1):
 if len(tf_list) > 1:
     combined_tf = tf_list[1].merge(
         {"tf": tf_list[0], "period_min": 0.03, "period_max": 10000},
-        period_max=0.031,
+        period_max=0.029,
     )
 
     if remote_station is None:

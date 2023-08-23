@@ -14,7 +14,7 @@ from mth5.io.zen import CoilResponse
 
 # =============================================================================
 
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx")
 antcal_fn = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\xamtant_combined_052523.cal"
 )
@@ -23,36 +23,46 @@ ant_cal = CoilResponse(calibration_file=antcal_fn)
 
 instrument_cals = {
     "10583": Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10583_647A23B6.rxcal.json"
+        r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\10583_647A23B6.rxcal.json"
     ),
     "10621": Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10583_647A23B6.rxcal.json"
+        r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\10621_647A2F41.rxcal.json"
     ),
     "10622": Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10583_647A23B6.rxcal.json"
+        r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\10622_647A2BDF.rxcal.json"
     ),
     "10623": Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10583_647A23B6.rxcal.json"
+        r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\10623_647A3468.rxcal.json"
     ),
     "10627": Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\10583_647A23B6.rxcal.json"
+        r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\10627_647A3112.rxcal.json"
     ),
 }
 
 coil_cals = {
     "57467": PhoenixCalibration(
         cal_fn=Path(
-            r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\57467_6441B4C2.scal.json"
+            r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\57467_64CC683E.scal.json"
         )
     ),
     "57479": PhoenixCalibration(
         cal_fn=Path(
-            r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\57467_6441B4C2.scal.json"
+            r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\57479_64CC683E.scal.json"
         )
     ),
     "53393": PhoenixCalibration(
         cal_fn=Path(
-            r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2023\57467_6441B4C2.scal.json"
+            r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\53393_64CC683E.scal.json"
+        )
+    ),
+    "53537": PhoenixCalibration(
+        cal_fn=Path(
+            r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\53537_64D0179C.scal.json"
+        )
+    ),
+    "53843": PhoenixCalibration(
+        cal_fn=Path(
+            r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\calibrations\53843_64D0179C.scal.json"
         )
     ),
 }
@@ -81,7 +91,7 @@ def get_coil_numbers(comment):
 #
 # =============================================================================
 
-for station_dir in list(survey_dir.iterdir())[10:11]:
+for station_dir in list(survey_dir.iterdir())[-1:]:
     if "zen" not in station_dir.name.lower() and station_dir.is_dir():
         station = station_dir.name[0:3]
         phx_collection = PhoenixCollection(file_path=station_dir)
@@ -90,7 +100,7 @@ for station_dir in list(survey_dir.iterdir())[10:11]:
         with MTH5() as m:
             collection_metadata = phx_collection.metadata_dict[station]
             m.open_mth5(
-                station_dir.joinpath(f"vc{station}_mth5_from_phoenix.h5"), "w"
+                station_dir.joinpath(f"kl{station}_mth5_from_phoenix.h5"), "w"
             )
             survey_metadata = collection_metadata.survey_metadata
             survey_group = m.add_survey(survey_metadata.id)
