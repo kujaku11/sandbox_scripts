@@ -26,17 +26,17 @@ from mtpy import MT
 warnings.filterwarnings("ignore")
 # =============================================================================
 
-local_station = "321"
+local_station = "323"
 local_mth5_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\321_Phx\kl321_mth5_from_phoenix.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\323_Phx\kl323_mth5_from_phoenix.h5"
 )
 
-# remote_station = None
-# remote_mth5_path = None
-remote_station = "326"
-remote_mth5_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\326_Phx\kl326_mth5_from_phoenix.h5"
-)
+remote_station = None
+remote_mth5_path = None
+# remote_station = "322"
+# remote_mth5_path = Path(
+#     r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\322_Phx\kl322_mth5_from_phoenix.h5"
+# )
 
 start_time = MTime().now()
 
@@ -46,15 +46,10 @@ bursts = (
     + list(range(50, 60, 1))
     + list(range(100, 110, 1))
     + list(range(150, 155, 1))
-    + list(range(100, 105, 1))
-    # + list(range(200, 205, 1))
-    # + list(range(250, 255, 1))
-    # + list(range(300, 305, 1))
-    # + list(range(350, 355, 1))
 )
 
 tf_list = []
-for ii, sample_rate in enumerate([24000], 1):
+for ii, sample_rate in enumerate([150, 24000], 1):
     st = MTime().now()
 
     if sample_rate == 24000:
@@ -179,7 +174,7 @@ if len(tf_list) > 1:
     else:
         edi = combined_tf.write(
             local_mth5_path.parent.joinpath(
-                f"val{local_station}_rr{remote_station}_combined.edi"
+                f"kla{local_station}_rr{remote_station}_combined.edi"
             )
         )
     mt_obj = MT()

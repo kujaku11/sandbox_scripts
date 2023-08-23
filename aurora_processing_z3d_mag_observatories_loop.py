@@ -63,8 +63,7 @@ class ProcessMTH5ObsRR:
 
         self.rr_station = rr_station
         self.rr_mth5_basename = rr_mth5_basename
-        self.rr_mth5_path = self.survey_dir.joinpath(self.rr_mth5_basename)
-        self._edi_folder = "EDI_files_birrp"
+        self._edi_folder = "EDI_files_aurora"
         self.sample_rate = 1
         self.combine = True
         self._mth5_basename = "_with_1s_run.h5"
@@ -81,12 +80,18 @@ class ProcessMTH5ObsRR:
         self._station = value
 
     @property
-    def save_path(self):
+    def station_path(self):
         return self.survey_dir.joinpath(self.station)
 
     @property
     def mth5_path(self):
-        return self.save_path.joinpath(f"{self.station}{self._mth5_basename}")
+        return self.survey_dir.joinpath(
+            "mth5", f"{self.station}{self._mth5_basename}"
+        )
+
+    @property
+    def rr_mth5_path(self):
+        return self.survey_dir.joinpath("mth5", self.rr_mth5_basename)
 
     @property
     def edi_path(self):
@@ -118,14 +123,14 @@ class ProcessMTH5ObsRR:
 
         """
 
-        for fn in self.save_path.glob("*"):
+        for fn in self.station_path.glob("*"):
             if fn.name.lower().endswith("hz.z3d"):
                 return True
         return False
 
     def make_mth5(self):
         ## get z3d files
-        zc = Z3DCollection(self.save_path)
+        zc = Z3DCollection(self.station_path)
         runs = zc.get_runs(sample_rates=[4096, 1024, 256])
         zen_station = list(runs.keys())[0]
 
@@ -177,7 +182,7 @@ class ProcessMTH5ObsRR:
             if self.combine:
                 p = combined_run.plot()
                 p.savefig(
-                    self.save_path.parent.joinpath(
+                    self.mth5_path.parent.joinpath(
                         f"{self.station}_1s_ts.png"
                     ),
                     dpi=300,
@@ -258,18 +263,20 @@ class ProcessMTH5ObsRR:
             )
             combine.write(
                 fn=self.edi_path.joinpath(
-                    f"{self.station}_rr_frn_combined_01.edi"
+                    f"{self.station}_rr_{self.rr_station}_combined_01.edi"
                 )
             )
 
-            combine.tf_id = f"{self.station}_rr_frn_combined"
+            combine.tf_id = f"{self.station}_rr_{self.rr_station}_combined"
             combine.survey_metadata.id = new_tf.survey_metadata.id
 
             self._add_tf_to_mth5(combine)
 
             p1 = combine.plot_mt_response(fig_num=5, plot_num=2)
             p1.save_plot(
-                self.edi_path.joinpath(f"{self.station}_rr_frn_combined.png"),
+                self.edi_path.joinpath(
+                    f"{self.station}_rr_{self.rr_station}_combined.png"
+                ),
                 fig_dpi=300,
                 close_plot=True,
             )
@@ -310,12 +317,13 @@ class ProcessMTH5ObsRR:
         self._add_tf_to_mth5(tf_cls)
 
         edi = tf_cls.write(
-            self.mth5_path.parent.joinpath(
+            self.edi_path.joinpath(
                 f"{self.station}_{self.sample_rate}_rr_frn.edi"
             )
         )
 
         self.merge_with_original(tf_cls)
+        return edi
 
 
 # =============================================================================
@@ -327,13 +335,17 @@ class ProcessMTH5ObsRR:
 # )
 # p.process()
 
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\BV2023")
 
-for station_path in survey_dir.iterdir():
-    station = station_path.name
-    if "cl" in station and station_path.is_dir():
+for station_path in list(survey_dir.joinpath("mth5").iterdir()):
+    station = station_path.name.split("_", 1)[0]
+    if "bv" in station and station_path.suffix == ".h5":
         try:
-            p_obj = ProcessMTH5ObsRR(station, survey_dir)
+            p_obj = ProcessMTH5ObsRR(
+                station,
+                survey_dir,
+                rr_mth5_basename="usgs_geomag_bou_frn_xy.h5",
+            )
             p_obj.process()
 
         except Exception as error:
