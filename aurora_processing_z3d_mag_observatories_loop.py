@@ -311,14 +311,14 @@ class ProcessMTH5ObsRR:
             z_file_path=None,
         )
 
-        tf_cls.tf_id = f"{self.station}_1s_rr_frn"
+        tf_cls.tf_id = f"{self.station}_1s_rr_{self.rr_station}"
         tf_cls.survey_metadata.id = self.survey
 
         self._add_tf_to_mth5(tf_cls)
 
         edi = tf_cls.write(
             self.edi_path.joinpath(
-                f"{self.station}_{self.sample_rate}_rr_frn.edi"
+                f"{self.station}_{self.sample_rate}_rr_{self.rr_station}.edi"
             )
         )
 

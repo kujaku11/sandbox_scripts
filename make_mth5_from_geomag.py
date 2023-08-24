@@ -33,12 +33,12 @@ from mth5.clients import MakeMTH5
 
 request_df = pd.DataFrame(
     {
-        "observatory": ["bou", "frn"],
+        "observatory": ["hon", "frn"],
         "type": ["adjusted"] * 2,
         "elements": [["x", "y"]] * 2,
         "sampling_period": [1] * 2,
-        "start": ["2023-07-23T00:00:00"] * 2,
-        "end": ["2023-08-04T00:00:00"] * 2,
+        "start": ["2023-07-24T00:00:00"] * 2,
+        "end": ["2023-08-18T00:00:00"] * 2,
     }
 )
 
@@ -46,9 +46,7 @@ request_df = pd.DataFrame(
 make_mth5_object = MakeMTH5(
     mth5_version="0.2.0",
     interact=True,
-    save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\BV2023\mth5",
+    save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023",
     **{"_ch_map": {"x": "h1", "y": "h2", "z": "h3"}}
 )
 mth5_object = make_mth5_object.from_usgs_geomag(request_df)
-
-mth5_object.close_mth5()
