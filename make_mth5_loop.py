@@ -20,10 +20,12 @@ from mth5.mth5 import MTH5
 # =============================================================================
 
 survey_dir = Path(r"c:\MT\BV2023")
+survey_dir = Path(r"d:\SAGE2023")
 save_dir = survey_dir.joinpath("mth5")
-for station in ["bv77", "bv96", "bv97", "bv55", "bv62"]:
+cal_file = Path(r"d:\SAGE2023\xamtant_combined_052523.cal")
+for station in ["vc009", "vc109"]:
 
-    station_path = Path(r"c:\MT\BV2023").joinpath(station)
+    station_path = survey_dir.joinpath(station)
     mth5_path = save_dir.joinpath(f"{station}_with_1s_run.h5")
     combine = True
 
@@ -46,7 +48,7 @@ for station in ["bv77", "bv96", "bv97", "bv55", "bv62"]:
                 for row in run_df.itertuples():
                     ch_ts = read_file(
                         row.fn,
-                        calibration_fn=r"c:\MT\antenna.cal",
+                        calibration_fn=cal_file,
                     )
                     run_group.from_channel_ts(ch_ts)
                 run_group.update_run_metadata()
