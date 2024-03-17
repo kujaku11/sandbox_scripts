@@ -17,7 +17,7 @@ from mtpy.utils.mtpy_logger import get_mtpy_logger
 # ==============================================================================
 coil_calibration_path = Path(r"/mnt/hgfs/MT_Data/birrp_responses_02")
 birrp_path = Path(r"/home/peacock/Documents/birrp52/SourceCode/birrp52_big")
-local_path = Path(r"/mnt/hgfs/MT_Data/GZ2023")
+local_path = Path(r"/mnt/hgfs/MT_Data/CL2021")
 copy_edi_path = local_path.joinpath("EDI_files_birrp")
 
 if not copy_edi_path.exists():
@@ -25,9 +25,9 @@ if not copy_edi_path.exists():
 # ==============================================================================
 # Station to process and remote reference
 # ==============================================================================
-station = "gz350"
-rr_station = ["gz311"]
-# rr_station = None
+station = "cl491"
+# rr_station = ["gz311"]
+rr_station = None
 
 block_dict = {4096: [0, 1, 2], 256: [1, 2, 3], 4: [0]}
 use_df_list = [4096, 256, 4]
