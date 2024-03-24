@@ -12,7 +12,7 @@ from pathlib import Path
 # data_folder = r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SCEC"
 # data_folder = "/mnt/hgfs/MT_Data/GB2022"
 # data_folder = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2021")
-data_folder = Path(r"c:\MT\GB2022")
+data_folder = Path(r"c:\MT\BM2022")
 for folder in data_folder.iterdir():
     if folder.is_dir():
         for p_folder in folder.iterdir():

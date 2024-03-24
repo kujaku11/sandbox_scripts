@@ -30,23 +30,28 @@ from mtpy import MT
 warnings.filterwarnings("ignore")
 # =============================================================================
 # survey_dir = Path(r"c:\MT\BV2023")
-survey_dir = Path(r"d:\SAGE2023")
+survey_dir = Path(r"c:\MT\ST2024")
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
-band_file = r"d:\SAGE2023\bandset.cfg"
-# band_file = r"c:\Users\peaco\Documents\GitHub\aurora\aurora\config\emtf_band_setup\bs_six_level.cfg"
+# band_file = r"d:\SAGE2023\bandset.cfg"
+band_file = r"c:\Users\peaco\Documents\GitHub\aurora\aurora\config\emtf_band_setup\bs_six_level.cfg"
+
+edi_path.mkdir(exist_ok=True)
 
 for local_station, rr_station in zip(
-    ["vc009", "vc109"],
-    [None, None],
+    ["st2020", "st2024", "st2025", "st3026"],
+    ["st2025", "st2025", "st3026", "st2025"],
 ):
-
     st = MTime().now()
     local_zen_station = str(int(local_station[2:]))
-    local_mth5 = survey_dir.joinpath("mth5", f"{local_station}_with_1s_run.h5")
+    local_mth5 = survey_dir.joinpath(
+        "mth5", f"{local_station}_with_1s_run.h5"
+    )
 
     if rr_station is not None:
         rr_zen_station = str(int(rr_station[2:]))
-        remote_mth5 = survey_dir.joinpath("mth5", f"{rr_station}_with_1s_run.h5")
+        remote_mth5 = survey_dir.joinpath(
+            "mth5", f"{rr_station}_with_1s_run.h5"
+        )
     else:
         remote_mth5 = None
     sample_rates = [4096, 256, 1]
@@ -63,7 +68,9 @@ for local_station, rr_station in zip(
             mth5_run_summary.from_mth5s([local_mth5, remote_mth5])
         run_summary = mth5_run_summary.clone()
         run_summary.add_duration()
-        run_summary.df = run_summary.df[run_summary.df.sample_rate == sample_rate]
+        run_summary.df = run_summary.df[
+            run_summary.df.sample_rate == sample_rate
+        ]
 
         kernel_dataset = KernelDataset()
         if sample_rate == 4096 or rr_station is None:
@@ -88,12 +95,17 @@ for local_station, rr_station in zip(
         for decimation in config.decimations:
             if sample_rate == 4096:
                 decimation.estimator.engine = "RME"
+                decimation.window.overlap = 128
+                decimation.window.num_samples = 1024
+
             else:
                 decimation.estimator.engine = "RME_RR"
+                decimation.window.overlap = 64
+                decimation.window.num_samples = 128
             decimation.window.type = "dpss"
             decimation.window.additional_args = {"alpha": 2.5}
-            decimation.window.overlap = 64
-            decimation.window.num_samples = 128
+            # decimation.window.overlap = 64
+            # decimation.window.num_samples = 128
             decimation.output_channels = ["ex", "ey", "hz"]
         # process
         try:
@@ -139,7 +151,11 @@ for local_station, rr_station in zip(
     elif sr_processed[4096] == True and sr_processed[256] == True:
         combined = tf_list[0].merge(
             [
-                {"tf": tf_list[1], "period_min": 1.0 / 25, "period_max": 10000},
+                {
+                    "tf": tf_list[1],
+                    "period_min": 1.0 / 25,
+                    "period_max": 10000,
+                },
             ],
             period_max=1.0 / 26,
         )
@@ -148,7 +164,9 @@ for local_station, rr_station in zip(
     combined.station = f"bv{combined.station}"
     combined.tf_id = f"bv{combined.station}_combined"
 
-    edi = combined.write(edi_path.joinpath(f"{combined.station}_combined.edi"))
+    edi = combined.write(
+        edi_path.joinpath(f"{combined.station}_combined.edi")
+    )
 
     # plot with MTpy
     mt_obj = MT()
@@ -157,11 +175,15 @@ for local_station, rr_station in zip(
     mt_obj._transfer_function = combined._transfer_function
     p1 = mt_obj.plot_mt_response(fig_num=6, plot_num=2)
     p1.save_plot(
-        edi_path.joinpath(f"{mt_obj.station}.png"), fig_dpi=300, close_plot=False
+        edi_path.joinpath(f"{mt_obj.station}.png"),
+        fig_dpi=300,
+        close_plot=False,
     )
 
     et = MTime().now()
 
     diff = et - st
-    logger.warning(f"Processing took: {diff % 60:02.0f}:{diff // 60:02.0f} minutes")
+    logger.warning(
+        f"Processing took: {diff % 60:02.0f}:{diff // 60:02.0f} minutes"
+    )
     print("\a")
