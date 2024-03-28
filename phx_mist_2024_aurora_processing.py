@@ -26,22 +26,18 @@ from mtpy import MT
 warnings.filterwarnings("ignore")
 # =============================================================================
 
-local_station = "1034"
+local_station = "3025"
 local_mth5_path = Path(r"c:\MT\ST2024\phx").joinpath(
     local_station, f"mist_{local_station}_mth5_from_phoenix.h5"
 )
 
-remote_station = "1033"
+remote_station = "1026"
 remote_mth5_path = Path(r"c:\MT\ST2024\phx").joinpath(
     remote_station, f"mist_{remote_station}_mth5_from_phoenix.h5"
 )
 
 # remote_station = None
 # remote_mth5_path = None
-# remote_station = "322"
-# remote_mth5_path = Path(
-#     r"c:\Users\jpeacock\OneDrive - DOI\MTData\Kilauea2023\phx\322_Phx\kl322_mth5_from_phoenix.h5"
-# )
 
 start_time = MTime().now()
 
@@ -130,8 +126,8 @@ for ii, sample_rate in enumerate([150, 24000], 1):
             decimation.window.overlap = 64
             decimation.window.num_samples = 128
         if sample_rate == 24000:
-            decimation.window.overlap = 128
-            decimation.window.num_samples = 1024
+            decimation.window.overlap = 64
+            decimation.window.num_samples = 256
 
     tf_cls = process_mth5(
         config,
@@ -174,20 +170,18 @@ for ii, sample_rate in enumerate([150, 24000], 1):
 ### merge
 if len(tf_list) > 1:
     combined_tf = tf_list[1].merge(
-        {"tf": tf_list[0], "period_min": 0.03, "period_max": 10000},
+        {"tf": tf_list[0], "period_min": 0.03, "period_max": 30000},
         period_max=0.029,
     )
 
     if remote_station is None:
         edi = combined_tf.write(
-            local_mth5_path.parent.joinpath(
-                f"val{local_station}_combined.edi"
-            )
+            local_mth5_path.parent.joinpath(f"st{local_station}_combined.edi")
         )
     else:
         edi = combined_tf.write(
             local_mth5_path.parent.joinpath(
-                f"kla{local_station}_rr{remote_station}_combined.edi"
+                f"st{local_station}_rr{remote_station}_combined.edi"
             )
         )
     mt_obj = MT()

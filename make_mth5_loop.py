@@ -27,7 +27,7 @@ cal_file = Path(r"c:\MT\antenna.cal")
 save_dir.mkdir(exist_ok=True)
 
 # loop over stations
-for station in ["st2024", "st2025", "st3026"]:
+for station in ["st9031"]:
     station_path = survey_dir.joinpath(station)
     mth5_path = save_dir.joinpath(f"{station}_with_1s_run.h5")
     combine = True
@@ -38,6 +38,7 @@ for station in ["st2024", "st2025", "st3026"]:
     zen_station = list(runs.keys())[0]
 
     with MTH5() as m:
+        print("=" * 50)
         m.open_mth5(mth5_path)
         survey_group = m.add_survey(survey_id)
         for station_id in runs.keys():
@@ -72,5 +73,5 @@ for station in ["st2024", "st2025", "st3026"]:
                 combined_run_group.update_metadata()
             station_group.update_metadata()
         survey_group.update_metadata()
-        print("=" * 50)
-        print("=" * 50)
+    print("=" * 50)
+    print("=" * 50)

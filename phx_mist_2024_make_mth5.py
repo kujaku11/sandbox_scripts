@@ -19,6 +19,9 @@ instrument_cals = {
     "10643": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
     "10521": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
     "10520": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
+    "10377": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
+    "10409": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
+    "10411": Path(r"c:\MT\ST2024\phx\1014\10643_65F9D6E8.rxcal.json"),
 }
 
 coil_cals = {
@@ -49,6 +52,33 @@ coil_cals = {
     "53421": PhoenixCalibration(
         cal_fn=Path(r"c:\MT\ST2024\phx\1014\53408_65F9CE33.scal.json")
     ),
+    "57087": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57514_65F9CE33.scal.json")
+    ),
+    "57085": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57458_65F9CE33.scal.json")
+    ),
+    "57140": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\53408_65F9CE33.scal.json")
+    ),
+    "57133": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57514_65F9CE33.scal.json")
+    ),
+    "57135": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57458_65F9CE33.scal.json")
+    ),
+    "57134": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\53408_65F9CE33.scal.json")
+    ),
+    "57139": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57514_65F9CE33.scal.json")
+    ),
+    "57141": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\57458_65F9CE33.scal.json")
+    ),
+    "57083": PhoenixCalibration(
+        cal_fn=Path(r"c:\MT\ST2024\phx\1014\53408_65F9CE33.scal.json")
+    ),
 }
 
 
@@ -56,15 +86,18 @@ coil_cals = {
 #
 # =============================================================================
 station_list = [
-    Path("c:/MT/ST2024/phx/1008"),
-    Path("c:/MT/ST2024/phx/1033"),
-    Path("c:/MT/ST2024/phx/1034"),
-    Path("c:/MT/ST2024/phx/9006"),
+    Path("c:/MT/ST2024/phx/1026"),
+    Path("c:/MT/ST2024/phx/1031"),
+    Path("c:/MT/ST2024/phx/3014"),
+    Path("c:/MT/ST2024/phx/3015"),
+    Path("c:/MT/ST2024/phx/3025"),
 ]
 
 for station_dir in station_list:
+
     if station_dir.is_dir():
         station = station_dir.name[0:]
+        print(f"{'='*10} {station} {'='*10}")
         phx_collection = PhoenixCollection(file_path=station_dir)
         run_dict = phx_collection.get_runs(sample_rates=[150, 24000])
 

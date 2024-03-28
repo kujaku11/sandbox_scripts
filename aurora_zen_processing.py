@@ -38,8 +38,8 @@ band_file = r"c:\Users\peaco\Documents\GitHub\aurora\aurora\config\emtf_band_set
 edi_path.mkdir(exist_ok=True)
 
 for local_station, rr_station in zip(
-    ["st2020", "st2024", "st2025", "st3026"],
-    ["st2025", "st2025", "st3026", "st2025"],
+    ["st9031"],
+    [None],
 ):
     st = MTime().now()
     local_zen_station = str(int(local_station[2:]))
@@ -159,10 +159,21 @@ for local_station, rr_station in zip(
             ],
             period_max=1.0 / 26,
         )
+    elif sr_processed[4096] == True and sr_processed[1] == True:
+        combined = tf_list[0].merge(
+            [
+                {
+                    "tf": tf_list[1],
+                    "period_min": 1.0 / 8,
+                    "period_max": 10000,
+                },
+            ],
+            period_max=5,
+        )
     else:
         print("Something went wrong, check logs.")
-    combined.station = f"bv{combined.station}"
-    combined.tf_id = f"bv{combined.station}_combined"
+    combined.station = f"st{combined.station}"
+    combined.tf_id = f"st{combined.station}_combined"
 
     edi = combined.write(
         edi_path.joinpath(f"{combined.station}_combined.edi")
