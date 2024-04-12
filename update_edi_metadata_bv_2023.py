@@ -44,9 +44,9 @@ for edi_fn in edi_path.glob("*.edi"):
     end = sdf.end.max().isoformat()
     ex_length = sdf.loc[sdf.component == "ex"].dipole.mean()
     ey_length = sdf.loc[sdf.component == "ey"].dipole.mean()
-    hx_sensor = sdf.loc[sdf.component == "hx"].coil_number.mean()
-    hy_sensor = sdf.loc[sdf.component == "hy"].coil_number.mean()
-    hz_sensor = sdf.loc[sdf.component == "hz"].coil_number.mean()
+    hx_sensor = int(sdf.loc[sdf.component == "hx"].coil_number.mean())
+    hy_sensor = int(sdf.loc[sdf.component == "hy"].coil_number.mean())
+    hz_sensor = int(sdf.loc[sdf.component == "hz"].coil_number.mean())
 
     # survey
     m.survey_metadata.comments = ""
@@ -189,7 +189,7 @@ for edi_fn in edi_path.glob("*.edi"):
     m.station_metadata.runs[0].hx.sensor.manufacturer = "Zonge International"
     m.station_metadata.runs[0].hx.sensor.model = "ANT4"
     m.station_metadata.runs[0].hx.sensor.type = "magnetic induction coil"
-    m.station_metadata.runs[0].hx.sensor.serial_number = hx_sensor
+    m.station_metadata.runs[0].hx.sensor.id = hx_sensor
     m.station_metadata.runs[0].hx.translated_azimuth = (
         m.station_metadata.runs[0].hx.measurement_azimuth
         - m.station_metadata.location.declination.value
@@ -205,7 +205,7 @@ for edi_fn in edi_path.glob("*.edi"):
     m.station_metadata.runs[0].hy.sensor.manufacturer = "Zonge International"
     m.station_metadata.runs[0].hy.sensor.model = "ANT4"
     m.station_metadata.runs[0].hy.sensor.type = "magnetic induction coil"
-    m.station_metadata.runs[0].hy.sensor.serial_number = hy_sensor
+    m.station_metadata.runs[0].hy.sensor.id = hy_sensor
     m.station_metadata.runs[0].hy.translated_azimuth = (
         m.station_metadata.runs[0].hy.measurement_azimuth
         - m.station_metadata.location.declination.value
@@ -215,19 +215,22 @@ for edi_fn in edi_path.glob("*.edi"):
     m.station_metadata.runs[0].hy.units = "nanotesla"
 
     ### HZ
-    m.station_metadata.runs[0].hz.channel_id = 3.0
-    m.station_metadata.runs[0].hz.measurement_azimuth = 0
-    m.station_metadata.runs[0].hz.measurement_tilt = 90
-    m.station_metadata.runs[0].hz.sensor.manufacturer = "Zonge International"
-    m.station_metadata.runs[0].hz.sensor.model = "ANT4"
-    m.station_metadata.runs[0].hz.sensor.type = "magnetic induction coil"
-    m.station_metadata.runs[0].hy.sensor.serial_number = hz_sensor
-    m.station_metadata.runs[0].hz.translated_azimuth = 0
-    m.station_metadata.runs[0].hz.translated_tilt = 90
-    m.station_metadata.runs[0].hz.type = "magnetic"
-    m.station_metadata.runs[0].hz.units = "nanotesla"
+    if hz_sensor:
+        m.station_metadata.runs[0].hz.channel_id = 3.0
+        m.station_metadata.runs[0].hz.measurement_azimuth = 0
+        m.station_metadata.runs[0].hz.measurement_tilt = 90
+        m.station_metadata.runs[
+            0
+        ].hz.sensor.manufacturer = "Zonge International"
+        m.station_metadata.runs[0].hz.sensor.model = "ANT4"
+        m.station_metadata.runs[0].hz.sensor.type = "magnetic induction coil"
+        m.station_metadata.runs[0].hz.sensor.id = hz_sensor
+        m.station_metadata.runs[0].hz.translated_azimuth = 0
+        m.station_metadata.runs[0].hz.translated_tilt = 90
+        m.station_metadata.runs[0].hz.type = "magnetic"
+        m.station_metadata.runs[0].hz.units = "nanotesla"
 
-    for ch in ["rrhx", "rrhy"]:
-        m.station_metadata.runs[0].remove_channel(ch)
+    # for ch in ["rrhx", "rrhy"]:
+    #     m.station_metadata.runs[0].remove_channel(ch)
 
     edi_obj = m.write(save_dir=edi_path.joinpath("updated"))

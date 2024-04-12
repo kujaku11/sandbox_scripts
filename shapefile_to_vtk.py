@@ -41,7 +41,10 @@ def shape_to_points(
 
     if x == None or y == None:
         new_x, new_y = project_points(
-            gdf.geometry.x.to_numpy(), gdf.geometry.y.to_numpy(), initial_crs, final_crs
+            gdf.geometry.x.to_numpy(),
+            gdf.geometry.y.to_numpy(),
+            initial_crs,
+            final_crs,
         )
     else:
         new_x, new_y = project_points(
@@ -55,20 +58,40 @@ def shape_to_points(
 
 
 def shp_to_vtk(
-    shp_fn, vtk_fn, final_epsg, model_center, model_depth=0, x="latitude", y="longitude"
+    shp_fn,
+    vtk_fn,
+    final_epsg,
+    model_center,
+    model_depth=0,
+    x="latitude",
+    y="longitude",
+    coordinate_system="enz-",
 ):
-    model_east, model_north = project_points(
-        model_center[0],
-        model_center[1],
-        pyproj.CRS("EPSG:4326"),
-        pyproj.CRS(f"EPSG:{final_epsg}"),
-    )
+    if model_center:
+        model_east, model_north = project_points(
+            model_center[0],
+            model_center[1],
+            pyproj.CRS("EPSG:4326"),
+            pyproj.CRS(f"EPSG:{final_epsg}"),
+        )
+    else:
+        model_east = 0
+        model_north = 0
 
     x, y, z = shape_to_points(
-        shp_fn, final_epsg, model_east, model_north, model_depth=model_depth, x=x, y=y
+        shp_fn,
+        final_epsg,
+        model_east,
+        model_north,
+        model_depth=model_depth,
+        x=x,
+        y=y,
     )
 
-    pointsToVTK(vtk_fn, y, x, z)
+    if "-" in coordinate_system:
+        pointsToVTK(vtk_fn, x, y, -1 * z)
+    else:
+        pointsToVTK(vtk_fn, y, x, z)
 
 
 # =============================================================================
@@ -84,21 +107,22 @@ model_center = (38.615252, -119.015192)
 #     32611,
 #     model_center)
 
-# # volcanoes
-# shp_to_vtk(
-#     r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\CaliforniaVolcano_locations_threatRank.shp",
-#     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\volcanoes",
-#     32611,
-#     model_center,
-#     x="Xcoord",
-#     y="Ycoord")
+# volcanoes
+shp_to_vtk(
+    r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\CaliforniaVolcano_locations_threatRank.shp",
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\volcanoes_enzm",
+    32611,
+    None,
+    x="Xcoord",
+    y="Ycoord",
+)
 
 # gold
-shp_to_vtk(
-    r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\gb_gold.shp",
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gold",
-    32611,
-    model_center,
-    x=None,
-    y=None,
-)
+# shp_to_vtk(
+#     r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\minerals\gb_gold.shp",
+#     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\modem_inv\gold",
+#     32611,
+#     model_center,
+#     x=None,
+#     y=None,
+# )

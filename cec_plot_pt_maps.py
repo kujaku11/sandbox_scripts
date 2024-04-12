@@ -18,12 +18,12 @@ save_path = Path(
 ### Open MTH5 file
 mc = MTCollection()
 mc.open_collection(
-    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss_03.h5"
+    filename=r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\cec_geysers_monitoring_ss_04.h5"
 )
 # =============================================================================
 ptype = "pseudo"
-survey_01 = "GZ2017"
-survey_02 = "GZ2023"
+survey_01 = "GZ2021"
+survey_02 = "GZ2022"
 
 ne_profile = (-122.8703335, 38.8077059, -122.7824293, 38.8775712)
 nw_profile = (-122.8571019, 38.8558099, -122.7051194, 38.7548775)
@@ -63,7 +63,7 @@ if ptype == "map":
         subplot_left=0.1,
     )
 
-    for freq in [0.1, 1, 3, 7, 10, 20, 30, 50, 70, 100, 200, 300]:
+    for freq in [0.1]:  # , 1, 3, 7, 10, 20, 30, 50, 70, 100, 200, 300]:
         ptm.plot_freq = 1.0 / freq
         ptm.plot()
 
@@ -72,7 +72,6 @@ if ptype == "map":
             fig_dpi=300,
         )
 
-    mc.close_collection()
 
 elif ptype == "pseudo":
     mc.working_dataframe = mc.master_dataframe.loc[
@@ -91,7 +90,6 @@ elif ptype == "pseudo":
         [ne_profile, nw_profile],
         ["ne_profile_rpt_ps.png", "nw_profile_rpt_ps.png"],
     ):
-
         md1_profile = md1.get_profile(*line, 750)
         md1_profile.remove_station("gz201", "GZ2021")
         md1_profile.remove_station("gz332", "GZ2021")
@@ -127,3 +125,5 @@ elif ptype == "pseudo":
         pts.save_plot(
             save_path.joinpath(f"{survey_01}_v_{survey_02}_{fn}"), fig_dpi=300
         )
+
+mc.close_collection()

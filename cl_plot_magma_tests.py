@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+# =============================================================================
+# imports
+# =============================================================================
+
+from pathlib import Path
+from mtpy import MTData
+
+# =============================================================================
+
+data_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_05_topo\cl_modem_data_z03_t02_tec_07.dat"
+)
+
+magma_path = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\magma_tests"
+)
+resp_fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\modem_inv\inv_05_topo\cl_z03_t02_c02x2_028.dat"
+)
+
+# build data
+d = MTData()
+d.from_modem(data_fn, survey="data")
+d.from_modem(resp_fn, survey="inv_model")
+
+for fn in magma_path.glob("*.dat"):
+    survey_id = "_".join(fn.stem.split("_")[-2:])
+    d.from_modem(fn, survey=survey_id)
+
+station = "cl326"
+
+pr = d.plot_mt_response(
+    [
+        f"data.{station}",
+        f"inv_model.{station}",
+        f"17km_30ohmm.{station}",
+        f"17km_20ohmm.{station}",
+        f"17km_10ohmm.{station}",
+        f"17km_3ohmm.{station}",
+        f"60km_30ohmm.{station}",
+        f"60km_10ohmm.{station}",
+        f"60km_3ohmm.{station}",
+    ],
+    plot_style="compare",
+    fig_num=2,
+)

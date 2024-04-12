@@ -32,8 +32,7 @@ import pyproj as proj
 def project_grid(
     latitude,
     longitude,
-    utm_zone=None,
-    epsg=None,
+    utm_epsg=None,
     shift_east=0.0,
     shift_north=0.0,
     points=False,
@@ -48,8 +47,8 @@ def project_grid(
     :type longitude: np.ndarray
     :param utm_zone: Desired UTM zone, defaults to None
     :type utm_zone: string, optional
-    :param epsg: desired UTM zone, defaults to None
-    :type epsg: int, optional
+    :param utm_epsg: desired UTM zone, defaults to None
+    :type utm_epsg: int, optional
     :param shift_east: meters to shift the grid east, defaults to 0.0
     :type shift_east: float, optional
     :param shift_north: meters to shift the grid north, defaults to 0.0
@@ -60,16 +59,16 @@ def project_grid(
     """
     if pyproj_str is None:
         lower_left = gis_tools.project_point_ll2utm(
-            latitude.min(), longitude.min(), utm_zone=utm_zone, epsg=epsg
+            latitude.min(), longitude.min(), epsg=utm_epsg
         )
         lower_right = gis_tools.project_point_ll2utm(
-            latitude.min(), longitude.max(), utm_zone=utm_zone, epsg=epsg
+            latitude.min(), longitude.max(), epsg=utm_epsg
         )
         upper_right = gis_tools.project_point_ll2utm(
-            latitude.max(), longitude.max(), utm_zone=utm_zone, epsg=epsg
+            latitude.max(), longitude.max(), epsg=utm_epsg
         )
         upper_left = gis_tools.project_point_ll2utm(
-            latitude.max(), longitude.min(), utm_zone=utm_zone, epsg=epsg
+            latitude.max(), longitude.min(), epsg=utm_epsg
         )
 
         utm_zone = lower_left[-1]
@@ -117,13 +116,13 @@ def project_grid(
 def read_nc_file(
     nc_file,
     vtk_fn=None,
-    utm_zone=None,
-    epsg=None,
+    utm_epsg=None,
     crs=None,
     shift_east=0.0,
     shift_north=0.0,
     units="m",
     shift_z=0.0,
+    coordinate_system="enz-",
 ):
     """
     Read NetCDF earth model file into UTM coordinates
@@ -133,8 +132,8 @@ def read_nc_file(
     :type longitude: np.ndarray
     :param utm_zone: Desired UTM zone, defaults to None
     :type utm_zone: string, optional
-    :param epsg: desired UTM zone, defaults to None
-    :type epsg: int, optional
+    :param utm_epsg: desired UTM zone, defaults to None
+    :type utm_epsg: int, optional
     :param shift_east: meters to shift the grid east, defaults to 0.0
     :type shift_east: float, optional
     :param shift_north: meters to shift the grid north, defaults to 0.0
@@ -172,45 +171,85 @@ def read_nc_file(
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
-        utm_zone=utm_zone,
-        epsg=epsg,
+        utm_epsg=utm_epsg,
         pyproj_str=crs,
         shift_east=shift_east,
         shift_north=shift_north,
     )
     print(f"Projected to {utm_zone}")
 
-    values_dict = {}
-    for key, value in nc_obj.variables.items():
-        if key in ["depth", "latitude", "longitude"]:
-            continue
-        v_array = np.zeros(
-            (nc_obj.latitude.size, nc_obj.longitude.size, nc_obj.depth.size)
+    if "+" in coordinate_system:
+        values_dict = {}
+        for key, value in nc_obj.variables.items():
+            if key in ["depth", "latitude", "longitude"]:
+                continue
+            v_array = np.zeros(
+                (
+                    nc_obj.latitude.size,
+                    nc_obj.longitude.size,
+                    nc_obj.depth.size,
+                )
+            )
+            for z_index in range(depth.size):
+                v_array[:, :, z_index] = value[z_index, :, :]
+            values_dict[key] = v_array
+
+        # need to add another cell to the depth
+        depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
+        # print(depth.shape, grid_east.shape, grid_north.shape)
+        gridToVTK(
+            vtk_fn.as_posix(),
+            grid_north * scale,
+            grid_east * scale,
+            depth * scale,
+            values_dict,
         )
-        for z_index in range(depth.size):
-            v_array[:, :, z_index] = value[z_index, :, :]
-        values_dict[key] = v_array
 
-    # need to add another cell to the depth
-    depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
-    # print(depth.shape, grid_east.shape, grid_north.shape)
-    gridToVTK(
-        vtk_fn.as_posix(),
-        grid_north * scale,
-        grid_east * scale,
-        depth * scale,
-        values_dict,
-    )
+        print(f"--> Wrote VTK file to {vtk_fn}")
+        return nc_obj, (grid_north * scale, grid_east * scale, depth * scale)
+    elif "-" in coordinate_system:
+        values_dict = {}
+        find_vp = False
+        find_vs = False
+        for key, value in nc_obj.variables.items():
+            if key in ["depth", "latitude", "longitude"]:
+                continue
+            v_array = np.zeros(
+                (
+                    nc_obj.longitude.size,
+                    nc_obj.latitude.size,
+                    nc_obj.depth.size,
+                )
+            )
+            for z_index in range(depth.size):
+                v_array[:, :, z_index] = value[z_index, :, :].T
+            values_dict[key] = v_array
+            if "vp" in key.lower():
+                find_vp = key
+            elif "vs" in key.lower():
+                find_vs = key
 
-    print(f"--> Wrote VTK file to {vtk_fn}")
-    return nc_obj, (grid_north * scale, grid_east * scale, depth * scale)
+        if find_vp and find_vs:
+            values_dict["vp/vs"] = values_dict[find_vp] / values_dict[find_vs]
+
+        # need to add another cell to the depth
+        depth = -1 * np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
+        gridToVTK(
+            vtk_fn.as_posix(),
+            grid_east * scale,
+            grid_north * scale,
+            depth * scale,
+            values_dict,
+        )
+
+        print(f"--> Wrote VTK file to {vtk_fn}")
+        return nc_obj, (grid_east * scale, grid_north * scale, depth * scale)
 
 
 def read_nc_file_points(
     nc_file,
     vtk_fn=None,
-    utm_zone=None,
-    epsg=None,
+    utm_epsg=None,
     crs=None,
     shift_east=0.0,
     shift_north=0.0,
@@ -218,6 +257,7 @@ def read_nc_file_points(
     shift_z=0.0,
     z_key="depth",
     bbox=None,
+    coordinate_system="enz-",
 ):
     """
     Read NetCDF earth model file into UTM coordinates
@@ -225,10 +265,8 @@ def read_nc_file_points(
     :param nc_file: full path to netCDF file
     :type nc_file: string or Path
     :type longitude: np.ndarray
-    :param utm_zone: Desired UTM zone, defaults to None
-    :type utm_zone: string, optional
-    :param epsg: desired UTM zone, defaults to None
-    :type epsg: int, optional
+    :param utm_epsg: desired UTM zone, defaults to None
+    :type utm_epsg: int, optional
     :param shift_east: meters to shift the grid east, defaults to 0.0
     :type shift_east: float, optional
     :param shift_north: meters to shift the grid north, defaults to 0.0
@@ -264,8 +302,7 @@ def read_nc_file_points(
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
-        utm_zone=utm_zone,
-        epsg=epsg,
+        utm_epsg=utm_epsg,
         pyproj_str=crs,
         shift_east=shift_east,
         shift_north=shift_north,
@@ -280,23 +317,43 @@ def read_nc_file_points(
     depth = (nc_obj.depth.values.ravel() * d_scale + shift_z) * scale
     depth = depth.astype(xg.dtype)
 
-    values_dict = {}
-    for key, value in nc_obj.variables.items():
-        if key in ["latitude", "longitude"]:
-            continue
-        value = value.values.ravel()
-        values_dict[key] = value.astype(xg.dtype)
+    if "+" in coordinate_system:
+        values_dict = {}
+        for key, value in nc_obj.variables.items():
+            if key in ["latitude", "longitude"]:
+                continue
+            value = value.values.ravel()
+            values_dict[key] = value.astype(xg.dtype)
 
-    pointsToVTK(
-        vtk_fn.as_posix(),
-        -1 * yg,
-        -1 * xg,
-        depth,
-        values_dict,
-    )
+        pointsToVTK(
+            vtk_fn.as_posix(),
+            -1 * yg,
+            -1 * xg,
+            depth,
+            values_dict,
+        )
 
-    print(f"--> Wrote VTK file to {vtk_fn}")
-    return nc_obj, (yg, xg, depth)
+        print(f"--> Wrote VTK file to {vtk_fn}")
+        return nc_obj, (yg, xg, depth)
+
+    elif "-" in coordinate_system:
+        values_dict = {}
+        for key, value in nc_obj.variables.items():
+            if key in ["latitude", "longitude"]:
+                continue
+            value = value.values.ravel()
+            values_dict[key] = value.astype(xg.dtype)
+
+        pointsToVTK(
+            vtk_fn.as_posix(),
+            1 * xg[::-1],
+            1 * yg[::-1],
+            -1 * depth,
+            values_dict,
+        )
+
+        print(f"--> Wrote VTK file to {vtk_fn}")
+        return nc_obj, (xg, yg, depth)
 
 
 # =============================================================================
@@ -320,21 +377,24 @@ custom_crs = None
 # model_utm = "11S"
 
 ## Clear Lake
-model_center = (38.986014, -122.778463)
-model_utm = "10S"
+# model_center = (38.986014, -122.778463)
+# model_utm = "10S"
 
-if custom_crs is None:
-    model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-        model_center[0], model_center[1], utm_zone=model_utm
-    )
-else:
-    default_proj = proj.Proj(init="epsg:4326")
-    custom_proj = proj.Proj(custom_crs)
-    model_east, model_north = proj.transform(
-        default_proj, custom_proj, model_center[1], model_center[0]
-    )
+model_center = (0, 0)
+model_utm = 32611
 
-    utm_zone = "custom"
+# if custom_crs is None:
+#     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
+#         model_center[0], model_center[1], epsg=model_utm
+#     )
+# else:
+#     default_proj = proj.Proj(init="epsg:4326")
+#     custom_proj = proj.Proj(custom_crs)
+#     model_east, model_north = proj.transform(
+#         default_proj, custom_proj, model_center[1], model_center[0]
+#     )
+
+#     utm_zone = "custom"
 
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
@@ -354,10 +414,11 @@ else:
 # rel_shift_north = -model_north - 250000
 
 # WUS_2010 -> SWUS
-rel_shift_east = -model_east
-rel_shift_north = -model_north
+rel_shift_east = 0
+rel_shift_north = 0
 
 nc_list = [
+    {"fn": "WUS256.r0.0.nc", "points": False},
     {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
     {"fn": "western_us_DNA13_percent.nc", "points": False},
     {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
@@ -366,29 +427,29 @@ nc_list = [
     {"fn": "moho_temperature_great_basin.nc", "points": True},
 ]
 
-for nc_entry in nc_list[-1:]:
-
+for nc_entry in nc_list[1:2]:
     nc_fn = nc_path.joinpath(nc_entry["fn"])
-    save_fn = Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\Clearlake\modem_inv",
-        nc_fn.stem,
-    )
+    # save_fn = Path(
+    #     r"c:\Users\jpeacock\OneDrive - DOI\Clearlake\modem_inv",
+    #     nc_fn.stem,
+    # )
+    save_fn = nc_fn.parent.joinpath(f"{nc_fn.stem}_enzm")
 
     if nc_entry["points"]:
         x_obj, grid = read_nc_file_points(
             nc_fn,
             vtk_fn=save_fn,
-            utm_zone=model_utm,
+            utm_epsg=model_utm,
             crs=custom_crs,
-            shift_east=rel_shift_east - 1075000,
-            shift_north=rel_shift_north - 50000,
+            shift_east=rel_shift_east,
+            shift_north=rel_shift_north,
             units="km",
         )
     else:
         x_obj, grid = read_nc_file(
             nc_fn,
             vtk_fn=save_fn,
-            utm_zone=model_utm,
+            utm_epsg=model_utm,
             crs=custom_crs,
             shift_east=rel_shift_east,
             shift_north=rel_shift_north,

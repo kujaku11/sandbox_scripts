@@ -59,143 +59,141 @@ edi_path_2023 = Path(
 )
 
 # =============================================================================
-mc = MTCollection(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC")
-mc.open_collection(basename="cec_geysers_monitoring_ss_03")
+with MTCollection(r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC") as mc:
+    mc.open_collection(basename="cec_geysers_monitoring_ss_04")
 
-for edi_fn in edi_path_2017.glob("*.edi"):
-    tf = MT(edi_fn)
-    tf.read()
-    tf.survey_metadata.update(general_survey)
-    tf.station_metadata.update(general_station)
+    for edi_fn in edi_path_2017.glob("*.edi"):
+        tf = MT(edi_fn)
+        tf.read()
+        tf.survey_metadata.update(general_survey)
+        tf.station_metadata.update(general_station)
 
-    tf.survey_metadata.id = "GZ2017"
-    tf.survey_metadata.name = "The Geysers MT Base Survey"
+        tf.survey_metadata.id = "GZ2017"
+        tf.survey_metadata.name = "The Geysers MT Base Survey"
 
-    tf.station = f"{tf.station[0:2]}3{tf.station[2:]}".lower()
-    tf.tf_id = tf.station
-    tf.station_metadata.location.declination.value = -13.86
-    tf.station_metadata.time_period._end_dt = (
-        tf.station_metadata.time_period._start_dt + (3600 * 25)
-    )
+        tf.station = f"{tf.station[0:2]}3{tf.station[2:]}".lower()
+        tf.tf_id = tf.station
+        tf.station_metadata.location.declination.value = -13.86
+        tf.station_metadata.time_period._end_dt = (
+            tf.station_metadata.time_period._start_dt + (3600 * 25)
+        )
 
-    tf.station_metadata.runs[0].ex.type = "electric"
-    tf.station_metadata.runs[0].ey.type = "electric"
-    tf.station_metadata.runs[0].hy.measurement_azimuth = 90
+        tf.station_metadata.runs[0].ex.type = "electric"
+        tf.station_metadata.runs[0].ey.type = "electric"
+        tf.station_metadata.runs[0].hy.measurement_azimuth = 90
 
-    tf.station_metadata.runs[
-        0
-    ].ex.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[
-        0
-    ].hx.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[0].ey.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
-    tf.station_metadata.runs[0].hy.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
+        tf.station_metadata.runs[
+            0
+        ].ex.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[
+            0
+        ].hx.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[0].ey.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
+        tf.station_metadata.runs[0].hy.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
 
-    mc.add_tf(tf)
+        mc.add_tf(tf)
 
-for edi_fn in edi_path_2021.glob("*.edi"):
-    tf = MT(edi_fn)
-    tf.read()
-    tf.survey_metadata.update(general_survey)
-    tf.station_metadata.update(general_station)
+    for edi_fn in edi_path_2021.glob("*.edi"):
+        tf = MT(edi_fn)
+        tf.read()
+        tf.survey_metadata.update(general_survey)
+        tf.station_metadata.update(general_station)
 
-    tf.survey_metadata.id = "GZ2021"
-    tf.survey_metadata.name = "The Geysers MT Phase 1 Survey"
+        tf.survey_metadata.id = "GZ2021"
+        tf.survey_metadata.name = "The Geysers MT Phase 1 Survey"
 
-    if not tf.station.startswith("g"):
-        tf.station = f"gz{tf.station}"
-    tf.tf_id = tf.station
+        if not tf.station.startswith("g"):
+            tf.station = f"gz{tf.station}"
+        tf.tf_id = tf.station
 
-    tf.station_metadata.location.declination.value = -13.56
-    tf.station_metadata.time_period._end_dt = (
-        tf.station_metadata.time_period._start_dt + (3600 * 25)
-    )
+        tf.station_metadata.location.declination.value = -13.56
+        tf.station_metadata.time_period._end_dt = (
+            tf.station_metadata.time_period._start_dt + (3600 * 25)
+        )
 
-    tf.station_metadata.runs[0].ex.type = "electric"
-    tf.station_metadata.runs[0].ey.type = "electric"
-    tf.station_metadata.runs[0].hy.measurement_azimuth = 90
+        tf.station_metadata.runs[0].ex.type = "electric"
+        tf.station_metadata.runs[0].ey.type = "electric"
+        tf.station_metadata.runs[0].hy.measurement_azimuth = 90
 
-    tf.station_metadata.runs[
-        0
-    ].ex.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[
-        0
-    ].hx.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[0].ey.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
-    tf.station_metadata.runs[0].hy.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
+        tf.station_metadata.runs[
+            0
+        ].ex.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[
+            0
+        ].hx.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[0].ey.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
+        tf.station_metadata.runs[0].hy.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
 
-    mc.add_tf(tf)
+        mc.add_tf(tf)
 
-for edi_fn in edi_path_2022.glob("*.edi"):
-    tf = MT(edi_fn)
-    tf.read()
-    tf.survey_metadata.update(general_survey)
-    tf.station_metadata.update(general_station)
+    for edi_fn in edi_path_2022.glob("*.edi"):
+        tf = MT(edi_fn)
+        tf.read()
+        tf.survey_metadata.update(general_survey)
+        tf.station_metadata.update(general_station)
 
-    tf.survey_metadata.id = "GZ2022"
-    tf.survey_metadata.name = "The Geysers MT Pahse 2 Survey"
+        tf.survey_metadata.id = "GZ2022"
+        tf.survey_metadata.name = "The Geysers MT Pahse 2 Survey"
 
-    tf.station_metadata.location.declination.value = -13.49
-    tf.station_metadata.time_period._end_dt = (
-        tf.station_metadata.time_period._start_dt + (3600 * 25)
-    )
+        tf.station_metadata.location.declination.value = -13.49
+        tf.station_metadata.time_period._end_dt = (
+            tf.station_metadata.time_period._start_dt + (3600 * 25)
+        )
 
-    tf.tf_id = tf.station
+        tf.tf_id = tf.station
 
-    tf.station_metadata.runs[0].hy.measurement_azimuth = 90
-    tf.station_metadata.runs[
-        0
-    ].ex.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[
-        0
-    ].hx.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[0].ey.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
-    tf.station_metadata.runs[0].hy.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
+        tf.station_metadata.runs[0].hy.measurement_azimuth = 90
+        tf.station_metadata.runs[
+            0
+        ].ex.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[
+            0
+        ].hx.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[0].ey.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
+        tf.station_metadata.runs[0].hy.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
 
-    mc.add_tf(tf)
+        mc.add_tf(tf)
 
-for edi_fn in edi_path_2023.glob("*.edi"):
-    tf = MT(edi_fn)
-    tf.read()
-    tf.survey_metadata.update(general_survey)
-    tf.station_metadata.update(general_station)
+    for edi_fn in edi_path_2023.glob("*.edi"):
+        tf = MT(edi_fn)
+        tf.read()
+        tf.survey_metadata.update(general_survey)
+        tf.station_metadata.update(general_station)
 
-    tf.survey_metadata.id = "GZ2023"
-    tf.survey_metadata.name = "The Geysers MT Pahse 3 Survey repeated sites"
+        tf.survey_metadata.id = "GZ2023"
+        tf.survey_metadata.name = "The Geysers MT Pahse 3 Survey repeated sites"
 
-    tf.station_metadata.location.declination.value = -13.48
-    tf.station_metadata.time_period._end_dt = (
-        tf.station_metadata.time_period._start_dt + (3600 * 25)
-    )
+        tf.station_metadata.location.declination.value = -13.48
+        tf.station_metadata.time_period._end_dt = (
+            tf.station_metadata.time_period._start_dt + (3600 * 25)
+        )
 
-    tf.tf_id = tf.station
+        tf.tf_id = tf.station
 
-    tf.station_metadata.runs[0].hy.measurement_azimuth = 90
-    tf.station_metadata.runs[
-        0
-    ].ex.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[
-        0
-    ].hx.translated_azimuth = tf.station_metadata.location.declination.value
-    tf.station_metadata.runs[0].ey.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
-    tf.station_metadata.runs[0].hy.translated_azimuth = (
-        90 + tf.station_metadata.location.declination.value
-    )
+        tf.station_metadata.runs[0].hy.measurement_azimuth = 90
+        tf.station_metadata.runs[
+            0
+        ].ex.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[
+            0
+        ].hx.translated_azimuth = tf.station_metadata.location.declination.value
+        tf.station_metadata.runs[0].ey.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
+        tf.station_metadata.runs[0].hy.translated_azimuth = (
+            90 + tf.station_metadata.location.declination.value
+        )
 
-    mc.add_tf(tf)
-
-mc.close_collection()
+        mc.add_tf(tf)

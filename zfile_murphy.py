@@ -4,7 +4,6 @@ import numpy as np
 
 class ZFile:
     def __init__(self, filename):
-
         # attempt to open file
         try:
             f = open(filename, "r")
@@ -26,23 +25,23 @@ class ZFile:
 
         # read coordinates and declination
         line = f.readline().strip().lower()
-        match = re.match(
+        re_match = re.match(
             r"\s*coordinate\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+"
             r"declination\s+(-?\d+\.?\d*)",
             line,
         )
-        self.coordinates = (float(match.group(1)), float(match.group(2)))
-        self.declination = float(match.group(3))
+        self.coordinates = (float(re_match.group(1)), float(re_match.group(2)))
+        self.declination = float(re_match.group(3))
 
         # read number of channels and number of frequencies
         line = f.readline().strip().lower()
-        match = re.match(
+        re_match = re.match(
             r"\s*number\s+of\s+channels\s+(\d+)\s+number\s+of"
             r"\s+frequencies\s+(\d+)",
             line,
         )
-        nchannels = int(match.group(1))
-        nfreqs = int(match.group(2))
+        nchannels = int(re_match.group(1))
+        nfreqs = int(re_match.group(2))
 
         # skip line
         f.readline()
@@ -52,16 +51,17 @@ class ZFile:
         self.channels = []
         for i in range(nchannels):
             line = f.readline().strip()
-            match = re.match(
-                r"\s*\d+\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+\w*\s+" r"(\w+)", line
+            re_match = re.match(
+                r"\s*\d+\s+(-?\d+\.?\d*)\s+(-?\d+\.?\d*)\s+\w*\s+" r"(\w+)",
+                line,
             )
-            self.orientation[i, 0] = float(match.group(1))
-            self.orientation[i, 1] = float(match.group(2))
-            if len(match.group(3)) > 2:
+            self.orientation[i, 0] = float(re_match.group(1))
+            self.orientation[i, 1] = float(re_match.group(2))
+            if len(re_match.group(3)) > 2:
                 # sometimes the channel ID comes out with extra stuff
-                self.channels.append(match.group(3)[:2].title())
+                self.channels.append(re_match.group(3)[:2].title())
             else:
-                self.channels.append(match.group(3).title())
+                self.channels.append(re_match.group(3).title())
 
         # skip blank line
         f.readline()
@@ -89,12 +89,12 @@ class ZFile:
 
         # now read data for each period
         for i in range(nfreqs):
-
             # extract period
             line = f.readline().strip()
             self.periods[i] = float(
                 re.match(
-                    r"\s*period\s*:\s+(\d+\.?\d*)\s+" r"decimation\s+level", line
+                    r"\s*period\s*:\s+(\d+\.?\d*)\s+" r"decimation\s+level",
+                    line,
                 ).group(1)
             )
 
@@ -104,13 +104,15 @@ class ZFile:
 
             # read transfer functions
             for j in range(nchannels - 2):
-                comp1_r, comp1_i, comp2_r, comp2_i = f.readline().strip().split()
-                self.transfer_functions[i, j, 0] = float(comp1_r) + 1.0j * float(
-                    comp1_i
+                comp1_r, comp1_i, comp2_r, comp2_i = (
+                    f.readline().strip().split()
                 )
-                self.transfer_functions[i, j, 1] = float(comp2_r) + 1.0j * float(
-                    comp2_i
-                )
+                self.transfer_functions[i, j, 0] = float(
+                    comp1_r
+                ) + 1.0j * float(comp1_i)
+                self.transfer_functions[i, j, 1] = float(
+                    comp2_r
+                ) + 1.0j * float(comp2_i)
 
             # skip label line
             f.readline()
@@ -131,16 +133,16 @@ class ZFile:
                 values = f.readline().strip().split()
                 for k in range(j + 1):
                     if j == k:
-                        self.sigma_e[i, j, k] = float(values[2 * k]) + 1.0j * float(
-                            values[2 * k + 1]
-                        )
+                        self.sigma_e[i, j, k] = float(
+                            values[2 * k]
+                        ) + 1.0j * float(values[2 * k + 1])
                     else:
-                        self.sigma_e[i, j, k] = float(values[2 * k]) + 1.0j * float(
-                            values[2 * k + 1]
-                        )
-                        self.sigma_e[i, k, j] = float(values[2 * k]) - 1.0j * float(
-                            values[2 * k + 1]
-                        )
+                        self.sigma_e[i, j, k] = float(
+                            values[2 * k]
+                        ) + 1.0j * float(values[2 * k + 1])
+                        self.sigma_e[i, k, j] = float(
+                            values[2 * k]
+                        ) - 1.0j * float(values[2 * k + 1])
 
             # val1_r, val1_i = f.readline().strip().split()
             # val2_r, val2_i, val3_r, val3_i = f.readline().strip().split()
@@ -158,7 +160,6 @@ class ZFile:
         f.close()
 
     def impedance(self, angle=0.0):
-
         # check to see if there are actually electric fields in the TFs
         if "Ex" not in self.channels and "Ey" not in self.channels:
             raise ValueError(
@@ -190,7 +191,9 @@ class ZFile:
         # build transformation matrix for predicted channels (electric fields)
         ex_index = self.channels.index("Ex")
         ey_index = self.channels.index("Ey")
-        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
+        v = np.eye(
+            self.transfer_functions.shape[1], self.transfer_functions.shape[1]
+        )
         v[ex_index - 2, ex_index - 2] = np.cos(
             (self.orientation[ex_index, 0] - angle) * np.pi / 180.0
         )
@@ -213,10 +216,18 @@ class ZFile:
 
         # now pull out the impedance tensor
         z = np.zeros((self.periods.size, 2, 2), dtype=np.complex64)
-        z[:, 0, 0] = rotated_transfer_functions[:, ex_index - 2, hx_index]  # Zxx
-        z[:, 0, 1] = rotated_transfer_functions[:, ex_index - 2, hy_index]  # Zxy
-        z[:, 1, 0] = rotated_transfer_functions[:, ey_index - 2, hx_index]  # Zyx
-        z[:, 1, 1] = rotated_transfer_functions[:, ey_index - 2, hy_index]  # Zyy
+        z[:, 0, 0] = rotated_transfer_functions[
+            :, ex_index - 2, hx_index
+        ]  # Zxx
+        z[:, 0, 1] = rotated_transfer_functions[
+            :, ex_index - 2, hy_index
+        ]  # Zxy
+        z[:, 1, 0] = rotated_transfer_functions[
+            :, ey_index - 2, hx_index
+        ]  # Zyx
+        z[:, 1, 1] = rotated_transfer_functions[
+            :, ey_index - 2, hy_index
+        ]  # Zyy
 
         # and the variance information
         var = np.zeros((self.periods.size, 2, 2))
@@ -242,7 +253,6 @@ class ZFile:
         return z, error
 
     def tippers(self, angle=0.0):
-
         # check to see if there is a vertical magnetic field in the TFs
         if "Hz" not in self.channels:
             raise ValueError(
@@ -273,7 +283,9 @@ class ZFile:
 
         # don't need to transform predicated channels (assuming no tilt in Hz)
         hz_index = self.channels.index("Hz")
-        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
+        v = np.eye(
+            self.transfer_functions.shape[1], self.transfer_functions.shape[1]
+        )
 
         # matrix multiplication...
         rotated_transfer_functions = np.matmul(
@@ -284,8 +296,12 @@ class ZFile:
 
         # now pull out tipper information
         tipper = np.zeros((self.periods.size, 2), dtype=np.complex64)
-        tipper[:, 0] = rotated_transfer_functions[:, hz_index - 2, hx_index]  # Tx
-        tipper[:, 1] = rotated_transfer_functions[:, hz_index - 2, hy_index]  # Ty
+        tipper[:, 0] = rotated_transfer_functions[
+            :, hz_index - 2, hx_index
+        ]  # Tx
+        tipper[:, 1] = rotated_transfer_functions[
+            :, hz_index - 2, hy_index
+        ]  # Ty
 
         # and the variance/error information
         var = np.zeros((self.periods.size, 2))
@@ -305,5 +321,5 @@ class ZFile:
 # =============================================================================
 # test
 # =============================================================================
-z_fn = r"c:\Users\jpeacock\OneDrive - DOI\MountainPass\FieldWork\LP_Data\MNP_LP_TF\mnp300.zmm"
+z_fn = r"c:\Users\jpeacock\OneDrive - DOI\mt\spectra_edis\s01_spectra.edi"
 z_obj = ZFile(z_fn)

@@ -44,6 +44,7 @@ mt_obj.survey_metadata.citation_dataset.doi = (
 # station information
 # =============================================================================
 mt_obj.station_metadata.id = "CO701"
+mt_obj.station_metadata.acquired_by.name = "CSM"
 mt_obj.station_metadata.geographic_name = "Walden South, CO, USA"
 mt_obj.station_metadata.time_period.start = "2023-05-19T10:30:00"
 mt_obj.station_metadata.time_period.end = "2023-05-25T10:30:00"
@@ -78,9 +79,24 @@ mt_obj.station_metadata.transfer_function.data_quality.rating.value = 5
 mt_obj.station_metadata.transfer_function.data_quality.good_from_period = 0.001
 mt_obj.station_metadata.transfer_function.data_quality.good_to_period = 3000
 mt_obj.station_metadata.transfer_function.data_quality.comments = (
-    "Best. Data. Ever"
+    "Best. Data. Ever."
 )
 mt_obj.station_metadata.transfer_function.runs_processed = []
+
+# =============================================================================
+# Field Notes
+# =============================================================================
+for ch in ["hx", "hy", "hz"]:
+    mt_obj.station_metadata.runs[0].channels[
+        ch
+    ].sensor.manufacturer = "Phoenix"
+for ch in ["ex", "ey"]:
+    mt_obj.station_metadata.runs[0].channels[
+        ch
+    ].negative.manufacturer = "Phoenix"
+    mt_obj.station_metadata.runs[0].channels[
+        ch
+    ].positive.manufacturer = "Phoenix"
 
 # =============================================================================
 # Make EMTF XML
@@ -132,5 +148,5 @@ xml_obj.processing_info.processing_software.author = "Phoenix Geophysics"
 
 xml_obj.write(
     r"c:\Users\jpeacock\OneDrive - DOI\mt\Mines\CO701_sample.xml",
-    skip_field_notes=True,
+    skip_field_notes=False,
 )
