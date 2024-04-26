@@ -11,15 +11,17 @@ Created on Wed Oct 24 11:35:51 2018
 # =============================================================================
 # Imports
 # =============================================================================
+from pathlib import Path
+import json
 import sciencebasepy as sb
-import getpass
+
 
 # =============================================================================
 # Parameters
 # =============================================================================
 page_id = "60dcb4c5d34e3a6dca21f73d"
 username = "jpeacock@usgs.gov"
-password = getpass.getpass()
+
 
 page_summary = (
     "This data set consists of 19 wideband magnetotelluric (MT) and 23 "
@@ -47,8 +49,12 @@ title = "Magnetotelluric and TEM Data from the Umatilla Indian Reservation Geoth
 # =============================================================================
 # login and get child ids
 # =============================================================================
-sb_session = sb.SbSession()
-sb_session.login(username, password)
+sb_session = sb.SbSession("beta")
+sb_session.get_token()
+fn = input("input filename: ")
+with open(fn, "r") as fid:
+    tk = json.load(fid)["science_base_token"]
+sb_session.add_token(tk)
 
 child_ids = sb_session.get_child_ids(page_id)
 # =============================================================================
@@ -61,13 +67,12 @@ for child_id in child_ids:
         print(f"---> skipping child id {child_id}".format())
         continue
 
-    ### adjust summary
-    # child_json["title"] = f"{title}: {child_json['title'][-15:]}".format(
-    #     title, child_json["title"]
-    # )
-
     ### adjust citation
     station = child_json["title"][-6:].strip()
+
+    ### adjust summary
+    child_json["title"] = f"{title}: MT station {station}"
+
     print("{'='*7} {station} {'='*7}")
     child_json["citation"] = (
         "Peacock, J. R. and Pepin, J. D., 2024, Magnetotelluric and TEM Data "
