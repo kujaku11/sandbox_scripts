@@ -8,9 +8,7 @@ Created on Mon Feb 06 15:57:59 2017
 from pathlib import Path
 from mth5.io.zen import Z3D
 
-station_folder = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Documents\GitHub\mt_examples\data\time_series\zen\WB28"
-)
+station_folder = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024")
 
 for fn in station_folder.rglob("*.z3d"):
     z3d_obj = Z3D(fn)

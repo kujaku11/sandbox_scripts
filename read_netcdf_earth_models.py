@@ -196,12 +196,15 @@ def read_nc_file(
 
         # need to add another cell to the depth
         depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
+        if depth[1] > 100:
+            depth *= scale
+
         # print(depth.shape, grid_east.shape, grid_north.shape)
         gridToVTK(
             vtk_fn.as_posix(),
             grid_north * scale,
             grid_east * scale,
-            depth * scale,
+            depth,
             values_dict,
         )
 
@@ -234,11 +237,13 @@ def read_nc_file(
 
         # need to add another cell to the depth
         depth = -1 * np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
+        if depth[1] > 100:
+            depth *= scale
         gridToVTK(
             vtk_fn.as_posix(),
             grid_east * scale,
             grid_north * scale,
-            depth * scale,
+            depth,
             values_dict,
         )
 
@@ -381,7 +386,7 @@ custom_crs = None
 # model_utm = "10S"
 
 model_center = (0, 0)
-model_utm = 32611
+model_utm = 32613
 
 # if custom_crs is None:
 #     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
@@ -418,22 +423,22 @@ rel_shift_east = 0
 rel_shift_north = 0
 
 nc_list = [
-    {"fn": "WUS256.r0.0.nc", "points": False},
-    {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
+    # {"fn": "WUS256.r0.0.nc", "points": False},
+    # {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
     {"fn": "western_us_DNA13_percent.nc", "points": False},
-    {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
-    {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
-    {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
-    {"fn": "moho_temperature_great_basin.nc", "points": True},
+    # {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
+    # {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
+    # {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
+    # {"fn": "moho_temperature_great_basin.nc", "points": True},
 ]
 
-for nc_entry in nc_list[1:2]:
+for nc_entry in nc_list:
     nc_fn = nc_path.joinpath(nc_entry["fn"])
     # save_fn = Path(
     #     r"c:\Users\jpeacock\OneDrive - DOI\Clearlake\modem_inv",
     #     nc_fn.stem,
     # )
-    save_fn = nc_fn.parent.joinpath(f"{nc_fn.stem}_enzm")
+    save_fn = nc_fn.parent.joinpath(f"{nc_fn.stem}_enzm_{model_utm}")
 
     if nc_entry["points"]:
         x_obj, grid = read_nc_file_points(

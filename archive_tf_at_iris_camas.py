@@ -26,16 +26,16 @@ from aurora import __version__ as aurora_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "INGENIOUS_ArgentaRise"
-year = "2023"
-declination = 12.6
+survey = "PFA_CamasPrairie"
+year = "2018"
+declination = 12.86
 plot = True
 
 project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Camas\EDI_Files_birrp\GeographicNorth"
 )
 
 # save files to one directory
@@ -47,9 +47,9 @@ save_path.mkdir(exist_ok=True)
 
 # survey information
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BV2023\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Camas\survey_summary.csv"
 )
-survey_summary.station = [f"bv{ss}" for ss in survey_summary.station]
+survey_summary.station = [ss for ss in survey_summary.station]
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
@@ -74,7 +74,7 @@ for edi_file in edi_path.glob("*.edi"):
         mt_obj.station_metadata.runs.remove(remove_run)
 
     # get row from survey data frame
-    row = survey_summary[survey_summary.station == mt_obj.station]
+    row = survey_summary[survey_summary.station == mt_obj.station.lower()]
     row = row.iloc[0]
 
     # update some of the metadata
@@ -82,12 +82,10 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.survey_metadata.funding_source.organization = (
         "U.S. Department of Energy Geothermal Technologies Office"
     )
-    mt_obj.survey_metadata.funding_source.grant_id = "DE-EE0009254"
+    mt_obj.survey_metadata.funding_source.grant_id = "EE-0006733"
     mt_obj.survey_metadata.funding_source.comments = (
         "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
+        "Technologies Office under award EE-0006733, and USGS "
         "Geothermal Resource Investigations Project."
     )
 
@@ -101,7 +99,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     mt_obj.station_metadata.location.declination.value = declination
     mt_obj.station_metadata.location.declination.model = "IGRF"
-    mt_obj.station_metadata.geographic_name = "Buffalo Valley, NV, USA"
+    mt_obj.station_metadata.geographic_name = "Fairfield, ID, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -201,7 +199,7 @@ for edi_file in edi_path.glob("*.edi"):
     rr = survey_summary.loc[
         survey_summary.start_date == row.start.date(), ["station"]
     ].station.to_list()
-    rr.remove(mt_obj.station)
+    rr.remove(mt_obj.station.lower())
     mt_obj.station_metadata.transfer_function.remote_references = rr
 
     processing_parameters = [
@@ -229,9 +227,9 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.transfer_function.sign_convention = (
         "exp(+ i\omega t)"
     )
-    mt_obj.station_metadata.transfer_function.software.author = "K. Kappler"
-    mt_obj.station_metadata.transfer_function.software.name = "Aurora"
-    mt_obj.station_metadata.transfer_function.software.version = aurora_version
+    mt_obj.station_metadata.transfer_function.software.author = "A. Chave"
+    mt_obj.station_metadata.transfer_function.software.name = "BIRRP"
+    mt_obj.station_metadata.transfer_function.software.version = "5.1.1"
     mt_obj.station_metadata.transfer_function.units = "[mV/km]/[nT]"
 
     # might be easiest to directly adjust the xml unles you want to rewrite the
@@ -254,22 +252,20 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.copyright.citation.survey_d_o_i = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
-    xml_obj.copyright.citation.selected_publications = "GRC paper"
+    # xml_obj.copyright.citation.selected_publications = "GRC paper"
     xml_obj.copyright.acknowledgement = (
         "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
-        "Geothermal Resource Investigations Project."
+        "Technologies Office under award EE-0006733"
+        ", and USGS Geothermal Resource Investigations Project."
     )
     xml_obj.copyright.additional_info = (
-        "These data were collected as part of the INGENIOUS project to "
+        "These data were collected as part of a Play Fairway project to "
         "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Buffalo Valley, NV."
+        "geothermal resources in the region of Baron Hot Springs, ID."
     )
 
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
-    xml_obj.site.data_quality_notes.good_to_period = 6060
+    xml_obj.site.data_quality_notes.good_to_period = 2048
     xml_obj.site.data_quality_notes.comments.author = "Jared Peacock"
     xml_obj.site.data_quality_notes.comments.value = "Power lines"
 
@@ -279,8 +275,8 @@ for edi_file in edi_path.glob("*.edi"):
     )
 
     # processing
-    xml_obj.processing_info.processing_software.name = "Aurora"
-    xml_obj.processing_info.processing_software.last_mod = "2024-05-01"
+    xml_obj.processing_info.processing_software.name = "BIRRP"
+    xml_obj.processing_info.processing_software.last_mod = "2020-05-01"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
 
     # write to file

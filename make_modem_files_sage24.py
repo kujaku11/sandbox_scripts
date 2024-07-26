@@ -16,9 +16,10 @@ from mtpy.modeling.modem import Covariance
 # =============================================================================
 
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\modem_inv\inv_02\bv_modem_data_z03_t02_tls_01.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\VC_2024_ZT_data_edit.dat"
 )
-topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
+# topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
+topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\SAGE\valles_topo.tiff"
 
 # =============================================================================
 # Make data file
@@ -36,9 +37,9 @@ if not dfn.exists():
             mc.open_collection(mc_path)
             mc.add_tf(mc.make_file_list(edi_path))
         mc.working_dataframe = mc.master_dataframe
-        md = mc.to_mt_md()
+        md = mc.to_mt_data()
 
-    md.utm_epsg = 32611
+    md.utm_epsg = 32612
 
     md.interpolate(np.logspace(np.log10(1.0 / 1000), np.log10(3000), 23))
 
@@ -49,10 +50,13 @@ if not dfn.exists():
     md.compute_relative_locations()
     md.compute_model_errors()
 
-    md.to_modem_md(md_filename=dfn.parent.joinpath("ld_modem_md_z03_t02.dat"))
+    md.to_modem(md_filename=dfn.parent.joinpath("ld_modem_z03_t02.dat"))
 else:
     md = MTData()
     md.from_modem(dfn)
+    md._center_lat = None
+    md._center_lon = None
+    md.utm_crs = 32613
 
 
 # =============================================================================
@@ -64,25 +68,28 @@ mod_obj = StructuredGrid3D(
 
 mod_obj.cell_size_east = 500
 mod_obj.cell_size_north = 500
-mod_obj.pad_east = 7
-mod_obj.pad_north = 7
+mod_obj.pad_east = 13
+mod_obj.pad_north = 13
 mod_obj.pad_num = 4
 mod_obj.ew_ext = 200000
 mod_obj.ns_ext = 200000
 mod_obj.z_mesh_method = "default"
 mod_obj.z_bottom = 200000
-mod_obj.z_target_depth = 70000
+mod_obj.z_target_depth = 60000
 mod_obj.pad_z = 5
-mod_obj.n_air_layers = 25
-mod_obj.n_layers = 90
-mod_obj.z1_layer = 25
+mod_obj.n_air_layers = 60
+mod_obj.n_layers = 110
+mod_obj.z1_layer = 20
 mod_obj.pad_stretch_v = 1.85
 mod_obj.z_layer_rounding = 1
-mod_obj.res_initial_value = 50
+mod_obj.res_initial_value = 70
 
 mod_obj.make_mesh()
 mod_obj.add_topography_to_model(
-    topography_file=topo_fn, max_elev=1930, airlayer_type="constant"
+    topography_file=topo_fn,
+    max_elev=3375,
+    airlayer_type="constant",
+    shift_east=-1200,
 )
 
 md.center_stations(mod_obj)
@@ -94,7 +101,7 @@ mod_obj.plot_mesh()
 
 mod_obj.to_modem(
     save_path=dfn.parent,
-    model_fn_basename="bv_sm02_topo.rho",
+    model_fn_basename="vc_sm70_topo.rho",
 )
 
 
@@ -105,5 +112,5 @@ cov.smoothing_z = 0.5
 cov.smoothing_num = 1
 
 cov.write_covariance_file(
-    dfn.parent.joinpath("covariance.cov"),
+    dfn.parent.joinpath("covariance.cov"), res_model=mod_obj.res_model
 )

@@ -19,15 +19,15 @@ from mth5.mth5 import MTH5
 
 # =============================================================================
 
-survey_id = "ST2024"
-survey_dir = Path(r"c:\MT").joinpath(survey_id)
+survey_id = "SAGE2024"
+survey_dir = Path(r"d:\\").joinpath(survey_id)
 save_dir = survey_dir.joinpath("mth5")
-cal_file = Path(r"c:\MT\antenna.cal")
+cal_file = Path(r"c:\Users\jpeacock\antenna.cal")
 
 save_dir.mkdir(exist_ok=True)
 
 # loop over stations
-for station in ["st9031"]:
+for station in ["sg2401", "sg2402", "sg2403", "sg2404", "sg2409"]:
     station_path = survey_dir.joinpath(station)
     mth5_path = save_dir.joinpath(f"{station}_with_1s_run.h5")
     combine = True
@@ -42,12 +42,9 @@ for station in ["st9031"]:
         m.open_mth5(mth5_path)
         survey_group = m.add_survey(survey_id)
         for station_id in runs.keys():
-            station_group = survey_group.stations_group.add_station(
-                station_id
-            )
-            station_group.metadata.update(
-                zc.station_metadata_dict[station_id]
-            )
+            station_group = survey_group.stations_group.add_station(station)
+            station_group.metadata.update(zc.station_metadata_dict[station_id])
+            station_group.metadata.id = station
             station_group.write_metadata()
             if combine:
                 run_list = []
@@ -58,6 +55,11 @@ for station in ["st9031"]:
                         row.fn,
                         calibration_fn=cal_file,
                     )
+                    # if ch_ts.component == "ex":
+                    #     ch_ts.channel_metadata.dipole_length = 55.0
+                    # elif ch_ts.component == "ey":
+                    #     ch_ts.channel_metadata.dipole_length = 71.0
+
                     run_group.from_channel_ts(ch_ts)
                 run_group.update_metadata()
                 if combine:

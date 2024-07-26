@@ -16,9 +16,10 @@ from mtpy.modeling.modem import Covariance
 # =============================================================================
 
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\modem_inv\inv_02\bv_modem_data_z03_t02_tls_01.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\modem_inv\inv_01\ld_modem_z03_t02_edit_02.dat"
 )
-topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
+# topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
+topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\lund_topo.tiff"
 
 # =============================================================================
 # Make data file
@@ -36,9 +37,9 @@ if not dfn.exists():
             mc.open_collection(mc_path)
             mc.add_tf(mc.make_file_list(edi_path))
         mc.working_dataframe = mc.master_dataframe
-        md = mc.to_mt_md()
+        md = mc.to_mt_data()
 
-    md.utm_epsg = 32611
+    md.utm_epsg = 32612
 
     md.interpolate(np.logspace(np.log10(1.0 / 1000), np.log10(3000), 23))
 
@@ -49,7 +50,7 @@ if not dfn.exists():
     md.compute_relative_locations()
     md.compute_model_errors()
 
-    md.to_modem_md(md_filename=dfn.parent.joinpath("ld_modem_md_z03_t02.dat"))
+    md.to_modem(md_filename=dfn.parent.joinpath("ld_modem_z03_t02.dat"))
 else:
     md = MTData()
     md.from_modem(dfn)
@@ -62,8 +63,8 @@ mod_obj = StructuredGrid3D(
     station_locations=md.station_locations, center_point=md.center_point
 )
 
-mod_obj.cell_size_east = 500
-mod_obj.cell_size_north = 500
+mod_obj.cell_size_east = 200
+mod_obj.cell_size_north = 200
 mod_obj.pad_east = 7
 mod_obj.pad_north = 7
 mod_obj.pad_num = 4
@@ -82,7 +83,7 @@ mod_obj.res_initial_value = 50
 
 mod_obj.make_mesh()
 mod_obj.add_topography_to_model(
-    topography_file=topo_fn, max_elev=1930, airlayer_type="constant"
+    topography_file=topo_fn, max_elev=None, airlayer_type="constant"
 )
 
 md.center_stations(mod_obj)
@@ -94,7 +95,7 @@ mod_obj.plot_mesh()
 
 mod_obj.to_modem(
     save_path=dfn.parent,
-    model_fn_basename="bv_sm02_topo.rho",
+    model_fn_basename="ld_sm02_topo.rho",
 )
 
 
@@ -105,5 +106,5 @@ cov.smoothing_z = 0.5
 cov.smoothing_num = 1
 
 cov.write_covariance_file(
-    dfn.parent.joinpath("covariance.cov"),
+    dfn.parent.joinpath("covariance.cov"), res_model=mod_obj.res_model
 )

@@ -15,7 +15,6 @@ from mtpy import MT
 
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import __version__ as mt_metadata_version
-from aurora import __version__ as aurora_version
 
 # =============================================================================
 ### EMFTXML's convention for naming things
@@ -27,7 +26,7 @@ from aurora import __version__ as aurora_version
 organization = "USGS"
 science_center = "GMEG"
 survey = "INGENIOUS_ArgentaRise"
-year = "2023"
+year = "2022"
 declination = 12.6
 plot = True
 
@@ -47,9 +46,9 @@ save_path.mkdir(exist_ok=True)
 
 # survey information
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BV2023\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BM2022\survey_summary.csv"
 )
-survey_summary.station = [f"bv{ss}" for ss in survey_summary.station]
+survey_summary.station = [f"bm{ss}" for ss in survey_summary.station]
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
@@ -101,7 +100,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     mt_obj.station_metadata.location.declination.value = declination
     mt_obj.station_metadata.location.declination.model = "IGRF"
-    mt_obj.station_metadata.geographic_name = "Buffalo Valley, NV, USA"
+    mt_obj.station_metadata.geographic_name = "Reese River Valley, NV, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -176,6 +175,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     # provenance: creator
     mt_obj.station_metadata.provenance.archive.name = fn_name
+    # mt_obj.station_metadata.provenance.archive.author = "J. Peacock"
     mt_obj.station_metadata.provenance.software.name = "mt-metadata"
     mt_obj.station_metadata.provenance.software.version = mt_metadata_version
 
@@ -219,7 +219,7 @@ for edi_file in edi_path.glob("*.edi"):
         f"{mt_obj.station}a"
     ]
     mt_obj.station_metadata.transfer_function.processing_type = (
-        "Robust Remote Reference Processing"
+        "Bounded Influence Remote Reference Processing"
     )
     mt_obj.station_metadata.transfer_function.data_quality.rating.value = int(
         mt_obj.estimate_tf_quality(round_qf=True)
@@ -229,9 +229,9 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.transfer_function.sign_convention = (
         "exp(+ i\omega t)"
     )
-    mt_obj.station_metadata.transfer_function.software.author = "K. Kappler"
-    mt_obj.station_metadata.transfer_function.software.name = "Aurora"
-    mt_obj.station_metadata.transfer_function.software.version = aurora_version
+    mt_obj.station_metadata.transfer_function.software.author = "A. Chave"
+    mt_obj.station_metadata.transfer_function.software.name = "BIRRP"
+    mt_obj.station_metadata.transfer_function.software.version = "5.2.1"
     mt_obj.station_metadata.transfer_function.units = "[mV/km]/[nT]"
 
     # might be easiest to directly adjust the xml unles you want to rewrite the
@@ -247,10 +247,21 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.attachment.description = "Original transfer function file used"
 
     # provenance: creator
+    # xml_obj.provenance.creating_application = "mtpy-v2 (v2.0.7)"
     xml_obj.provenance.create_time = str(MTime().now()).split(".")[0]
+    # xml_obj.provenance.creator.name = "Jared Peacock"
+    # xml_obj.provenance.creator.email = "jpeacock@usgs.gov"
+    # xml_obj.provenance.creator.org = "U.S. Geological Survey"
+    # xml_obj.provenance.creator.org_url = "https:\\www.usgs.gov"
+
+    # # provenance: submitter
+    # xml_obj.provenance.submitter.name = "Jared Peacock"
+    # xml_obj.provenance.submitter.email = "jpeacock@usgs.gov"
+    # xml_obj.provenance.submitter.org = "U.S. Geological Survey"
+    # xml_obj.provenance.submitter.org_url = "https:\\www.usgs.gov"
 
     # copyright: citation
-    xml_obj.copyright.citation.year = year
+    xml_obj.copyright.citation.year = "2022"
     xml_obj.copyright.citation.survey_d_o_i = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
@@ -265,11 +276,31 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.copyright.additional_info = (
         "These data were collected as part of the INGENIOUS project to "
         "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Buffalo Valley, NV."
+        "geothermal resources in the region of Battle Mountain, NV."
     )
 
+    # site:
+    # xml_obj.site.project = project
+    # xml_obj.site.survey = survey
+    # xml_obj.site.year_collected = year
+    # xml_obj.site.country = "USA"
+    # xml_obj.site.name = "Argenta Rise, NV, USA"
+    # xml_obj.site.location.declination.value = declination
+    # xml_obj.site.location.declination.model = "IGRF"
+    # xml_obj.site.acquired_by = "U.S Geological Survey"
+    # xml_obj.site.start = MTime(
+    #    mt_obj.station_metadata.transfer_function.processed_date
+    # )
+    # xml_obj.site.end = (
+    #     MTime(mt_obj.station_metadata.transfer_function.processed_date)
+    #     + 18 * 3600
+    # )
+
+    # xml_obj.site.data_quality_notes.rating = int(
+    #     mt_obj.estimate_tf_quality(round_qf=True)
+    # )
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
-    xml_obj.site.data_quality_notes.good_to_period = 6060
+    xml_obj.site.data_quality_notes.good_to_period = 2048
     xml_obj.site.data_quality_notes.comments.author = "Jared Peacock"
     xml_obj.site.data_quality_notes.comments.value = "Power lines"
 
@@ -279,9 +310,14 @@ for edi_file in edi_path.glob("*.edi"):
     )
 
     # processing
-    xml_obj.processing_info.processing_software.name = "Aurora"
-    xml_obj.processing_info.processing_software.last_mod = "2024-05-01"
+    # xml_obj.processing_info.remote_ref.type = (
+    #     "bounded influence robust remote referencing"
+    # )
+    xml_obj.processing_info.processing_software.name = "BIRRP 5.2"
+    xml_obj.processing_info.processing_software.last_mod = "2020-05-01"
+    # xml_obj.processing_info.processing_software.author = "A. Chave"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
+    # xml_obj.processing_info.sign_convention = "exp(+ i\omega t)"
 
     # write to file
     xml_obj.write(
@@ -294,5 +330,4 @@ for edi_file in edi_path.glob("*.edi"):
         p = mt_obj.plot_mt_response(plot_num=2)
         p.save_plot(save_path.joinpath(f"{fn_name}.png"), fig_dpi=300)
 
-    # rewrite edi file
     edi_obj = mt_obj.write(save_path.joinpath(f"{fn_name}.edi"))

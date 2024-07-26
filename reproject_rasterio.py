@@ -14,9 +14,10 @@ from rasterio.warp import calculate_default_transform, reproject, Resampling
 # =============================================================================
 
 geotiff_file = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\cv_dem.tif"
+    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\tiffs\Gravity_CBA_2670_All_400m_epsg_32613.tif"
 )
-dst_crs = "EPSG:32611"
+# dst_crs = "EPSG:32613"
+dst_crs = 4326
 
 with rasterio.open(geotiff_file) as src:
     transform, width, height = calculate_default_transform(
@@ -33,7 +34,7 @@ with rasterio.open(geotiff_file) as src:
     )
 
     with rasterio.open(
-        geotiff_file.parent.joinpath(f"{geotiff_file.stem}_epsg_32611.tif"),
+        geotiff_file.parent.joinpath(f"{geotiff_file.stem}_epsg_{dst_crs}.tif"),
         "w",
         **kwargs,
     ) as dst:

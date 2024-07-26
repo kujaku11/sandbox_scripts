@@ -26,16 +26,16 @@ from aurora import __version__ as aurora_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "INGENIOUS_ArgentaRise"
+survey = "INGENIOUS_BuffaloValley"
 year = "2023"
-declination = 12.6
+declination = 12.4
 plot = True
 
 project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\EDI_Files_aurora\edited\GeographicNorth\updated"
 )
 
 # save files to one directory
@@ -254,7 +254,7 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.copyright.citation.survey_d_o_i = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
-    xml_obj.copyright.citation.selected_publications = "GRC paper"
+    # xml_obj.copyright.citation.selected_publications = "GRC paper"
     xml_obj.copyright.acknowledgement = (
         "This project was funded by U.S. Department of Energy - Geothermal "
         "Technologies Office under award DE-EE0009254 to the University of "

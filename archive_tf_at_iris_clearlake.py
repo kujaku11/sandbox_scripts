@@ -26,16 +26,16 @@ from aurora import __version__ as aurora_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "INGENIOUS_ArgentaRise"
-year = "2023"
-declination = 12.6
+survey = "Clearlake"
+year = "2022"
+declination = 13.48
 plot = True
 
 project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\EDI_files_birrp\edited\geographic_north"
 )
 
 # save files to one directory
@@ -47,9 +47,9 @@ save_path.mkdir(exist_ok=True)
 
 # survey information
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BV2023\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021\survey_summary.csv"
 )
-survey_summary.station = [f"bv{ss}" for ss in survey_summary.station]
+# survey_summary.station = [f"{ss}" for ss in survey_summary.station]
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
@@ -62,7 +62,7 @@ survey_summary["start_date"] = [s.date() for s in survey_summary.start]
 for edi_file in edi_path.glob("*.edi"):
     mt_obj = MT()
     mt_obj.read(edi_file)
-    fn_name = f"{project}.{year}.{mt_obj.station}"
+    fn_name = f"{project}.{year}.{mt_obj.station.lower()}"
 
     # remove unnecessary runs
     remove_runs = []
@@ -74,21 +74,18 @@ for edi_file in edi_path.glob("*.edi"):
         mt_obj.station_metadata.runs.remove(remove_run)
 
     # get row from survey data frame
-    row = survey_summary[survey_summary.station == mt_obj.station]
+    row = survey_summary[survey_summary.station == mt_obj.station.lower()]
     row = row.iloc[0]
 
     # update some of the metadata
     mt_obj.survey_metadata.id = survey
     mt_obj.survey_metadata.funding_source.organization = (
-        "U.S. Department of Energy Geothermal Technologies Office"
+        "U.S. Geological Survey Volcano Hazards Program"
     )
-    mt_obj.survey_metadata.funding_source.grant_id = "DE-EE0009254"
+    # mt_obj.survey_metadata.funding_source.grant_id = "DE-EE0009254"
     mt_obj.survey_metadata.funding_source.comments = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
-        "Geothermal Resource Investigations Project."
+        "This project was funded by U.S. Geological Survey Volcano Hazards "
+        "Program."
     )
 
     mt_obj.survey_metadata.project = project
@@ -101,7 +98,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     mt_obj.station_metadata.location.declination.value = declination
     mt_obj.station_metadata.location.declination.model = "IGRF"
-    mt_obj.station_metadata.geographic_name = "Buffalo Valley, NV, USA"
+    mt_obj.station_metadata.geographic_name = "Clearlake, CA, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -173,6 +170,8 @@ for edi_file in edi_path.glob("*.edi"):
         mt_obj.station_metadata.runs[0].hz.channel_id = int(row.hz)
         mt_obj.station_metadata.runs[0].hz.channel_number = 3
         mt_obj.station_metadata.runs[0].hz.measurement_tilt = 90
+        mt_obj.station_metadata.runs[0].hz.measurement_azimuth = 0
+        mt_obj.station_metadata.runs[0].hz.translated_azimuth = 0
 
     # provenance: creator
     mt_obj.station_metadata.provenance.archive.name = fn_name
@@ -254,18 +253,15 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.copyright.citation.survey_d_o_i = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
-    xml_obj.copyright.citation.selected_publications = "GRC paper"
+    # xml_obj.copyright.citation.selected_publications = "GRC paper"
     xml_obj.copyright.acknowledgement = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
-        "Geothermal Resource Investigations Project."
+        "This project was funded by U.S. Geological Survey Volcano Hazards "
+        "Program."
     )
     xml_obj.copyright.additional_info = (
-        "These data were collected as part of the INGENIOUS project to "
-        "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Buffalo Valley, NV."
+        "These data were collected as part of a larger project to understand "
+        "volcanic hazards associated with the Clear Lake Volcanic System in "
+        "northern California."
     )
 
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
@@ -282,6 +278,15 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.processing_info.processing_software.name = "Aurora"
     xml_obj.processing_info.processing_software.last_mod = "2024-05-01"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
+
+    # run information
+    xml_obj.field_notes.run_list[0].sampling_rate = 256
+    xml_obj.field_notes.run_list[0].comments.author = "J. Peacock"
+    xml_obj.field_notes.run_list[0].comments.value = (
+        "Data were collected on a repeating schedule of 10 minutes at 4096 "
+        "samples/second, then 7 hours and 50 minutes at 256 samples/second. "
+        "All stations synchronously collect on the same schedule."
+    )
 
     # write to file
     xml_obj.write(
