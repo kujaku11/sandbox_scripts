@@ -25,16 +25,16 @@ from mt_metadata import __version__ as mt_metadata_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "INGENIOUS_ArgentaRise"
-year = "2022"
-declination = 12.6
-plot = False
+survey = "GabbsValley"
+year = "2020"
+declination = 12.5
+plot = True
 
 project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GabbsValley\EDI_Files\SharkTank"
 )
 
 # save files to one directory
@@ -46,16 +46,18 @@ save_path.mkdir(exist_ok=True)
 
 # survey information
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BM2022\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\GV2020\survey_summary.csv"
 )
-survey_summary.station = [f"bm{ss}" for ss in survey_summary.station]
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
 
+### run this to loop over all edi files in folder
+# for edi_file in edi_path.glob("*.edi"):
+
 ### use this to just do one file to make sure everything looks good
-# for edi_file in list(edi_path.glob("*.edi"))[0:1]:
-for edi_file in edi_path.glob("*.edi"):
+for edi_file in list(edi_path.glob("*.edi"))[-10:-9]:
+    # for edi_file in edi_path.glob("*.edi"):
     mt_obj = MT()
     mt_obj.read(edi_file)
     fn_name = f"{project}.{year}.{mt_obj.station}"
@@ -75,33 +77,51 @@ for edi_file in edi_path.glob("*.edi"):
 
     # update some of the metadata
     mt_obj.survey_metadata.id = survey
-    mt_obj.survey_metadata.funding_source.organization = (
-        "U.S. Department of Energy Geothermal Technologies Office"
-    )
-    mt_obj.survey_metadata.funding_source.grant_id = "DE-EE0009254"
+    mt_obj.survey_metadata.funding_source.organization = [
+        "U.S. Geological Survey Energy and Minerals Program"
+    ]
+    mt_obj.survey_metadata.funding_source.grant_id = ["Shark Tank"]
     mt_obj.survey_metadata.funding_source.comments = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
-        "Geothermal Resource Investigations Project."
+        "This project was funded by the U.S. Geological Survey Energy and "
+        "Mineral Program as part of the 'Shark Tank' initiative for innovative "
+        "research development."
     )
 
+    # release license
+    mt_obj.survey_metadata.release_license = "CC-BY-4.0"
+
     # citation
-    mt_obj.survey_metadata.citation_dataset.authors = "J. Peacock, B. Dean"
+    mt_obj.survey_metadata.citation_dataset.authors = (
+        "J. R. Peacock, D. L. Siler, B. Dean, L. Zielinski"
+    )
     mt_obj.survey_metadata.citation_dataset.title = (
-        "Magnetotelluric data near Battle Mountain, NV for the INGENIOUS "
-        "geothermal project"
+        "Magnetotelluric data in the Gabbs Valley region, Nevada"
     )
     mt_obj.survey_metadata.citation_dataset.doi = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
     mt_obj.survey_metadata.citation_dataset.year = year
 
+    # Journal Article
+    mt_obj.survey_metadata.citation_journal.title = (
+        "Bottom-Up and Top-Down Control on Hydrothermal Resources in the "
+        "Great Basin: An Example From Gabbs Valley, Nevada"
+    )
+    mt_obj.survey_metadata.citation_journal.authors = (
+        "Peacock, J. R. and Siler, D. L."
+    )
+    mt_obj.survey_metadata.citation_journal.doi = (
+        "https://doi.org/10.1029/2021GL095009"
+    )
+    mt_obj.survey_metadata.citation_journal.journal = "Geophys. Res. Lett."
+    mt_obj.survey_metadata.citation_journal.year = 2021
+    mt_obj.survey_metadata.citation_journal.volume = 48
+
     # project
     mt_obj.survey_metadata.project = project
     mt_obj.survey_metadata.country = "USA"
 
+    # site information
     mt_obj.station_metadata.runs[0].time_period.start = row.start
     mt_obj.station_metadata.runs[0].time_period.end = row.end
     mt_obj.station_metadata.update_time_period()
@@ -110,7 +130,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.location.declination.value = declination
     mt_obj.station_metadata.location.declination.model = "WMM"
     mt_obj.station_metadata.location.declination.epoch = "2020"
-    mt_obj.station_metadata.geographic_name = "Reese River Valley, NV, USA"
+    mt_obj.station_metadata.geographic_name = "Gabbs Valley, NV, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -126,6 +146,7 @@ for edi_file in edi_path.glob("*.edi"):
     ### ex
     mt_obj.station_metadata.runs[0].ex.dipole_length = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.x2 = row.dipole_ex
+    mt_obj.station_metadata.runs[0].ex.positive.y2 = 0
     mt_obj.station_metadata.runs[0].ex.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].ex.channel_number = 4
     mt_obj.station_metadata.runs[0].ex.positive.manufacturer = "Borin"
@@ -137,6 +158,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     ### ey
     mt_obj.station_metadata.runs[0].ey.dipole_length = row.dipole_ey
+    mt_obj.station_metadata.runs[0].ey.positive.x2 = 0
     mt_obj.station_metadata.runs[0].ey.positive.y2 = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.measurement_azimuth = 90
     mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90
@@ -154,7 +176,7 @@ for edi_file in edi_path.glob("*.edi"):
         "Zonge International"
     )
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
-    mt_obj.station_metadata.runs[0].hx.sensor.name = "ANT-4"
+    mt_obj.station_metadata.runs[0].hx.sensor.model = "ANT-4"
     mt_obj.station_metadata.runs[0].hx.channel_id = int(row.hx)
     mt_obj.station_metadata.runs[0].hx.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].hx.channel_number = 1
@@ -165,7 +187,7 @@ for edi_file in edi_path.glob("*.edi"):
         "Zonge International"
     )
     mt_obj.station_metadata.runs[0].hy.sensor.type = "Induction Coil"
-    mt_obj.station_metadata.runs[0].hy.sensor.name = "ANT-4"
+    mt_obj.station_metadata.runs[0].hy.sensor.model = "ANT-4"
     mt_obj.station_metadata.runs[0].hy.channel_id = int(row.hy)
     mt_obj.station_metadata.runs[0].hy.measurement_azimuth = 90
     mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90
@@ -178,14 +200,13 @@ for edi_file in edi_path.glob("*.edi"):
             "Zonge International"
         )
         mt_obj.station_metadata.runs[0].hz.sensor.type = "Induction Coil"
-        mt_obj.station_metadata.runs[0].hz.sensor.name = "ANT-4"
+        mt_obj.station_metadata.runs[0].hz.sensor.model = "ANT-4"
         mt_obj.station_metadata.runs[0].hz.channel_id = int(row.hz)
         mt_obj.station_metadata.runs[0].hz.channel_number = 3
         mt_obj.station_metadata.runs[0].hz.measurement_tilt = 90
 
     # provenance: creator
     mt_obj.station_metadata.provenance.archive.name = fn_name
-    # mt_obj.station_metadata.provenance.archive.author = "J. Peacock"
     mt_obj.station_metadata.provenance.software.name = "mt-metadata"
     mt_obj.station_metadata.provenance.software.version = mt_metadata_version
 
@@ -197,7 +218,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.creator.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.creator.url = r"https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.creator.url = r"https://www.usgs.gov"
 
     # provenance: submitter
     mt_obj.station_metadata.provenance.submitter.name = "Jared Peacock"
@@ -205,7 +226,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.submitter.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.submitter.url = r"https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.submitter.url = r"https://www.usgs.gov"
 
     # transfer function
     rr = survey_summary.loc[
@@ -229,7 +250,7 @@ for edi_file in edi_path.glob("*.edi"):
         f"{mt_obj.station}a"
     ]
     mt_obj.station_metadata.transfer_function.processing_type = (
-        "Bounded Influence Remote Reference Processing"
+        "Bounded Influence Robust Remote Reference Processing"
     )
     mt_obj.station_metadata.transfer_function.data_quality.rating.value = int(
         mt_obj.estimate_tf_quality(round_qf=True)
@@ -261,26 +282,27 @@ for edi_file in edi_path.glob("*.edi"):
 
     # copyright: citation
     xml_obj.copyright.release_status = "Data Citation Required"
-    xml_obj.copyright.acknowledgement = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and U.S. Geological Survey "
-        "Geothermal Resource Investigations Project."
+    xml_obj.copyright.acknowledgement = " ".join(
+        mt_obj.survey_metadata.funding_source.organization
     )
     xml_obj.copyright.additional_info = (
-        "These data were collected as part of the INGENIOUS project to "
-        "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Battle Mountain, NV."
+        mt_obj.survey_metadata.funding_source.comments
     )
 
-    # site
-    xml_obj.site.survey = survey
+    # Journal Publication
+    xml_obj.copyright.selected_publications = (
+        f"{mt_obj.survey_metadata.citation_journal.authors}, "
+        f"({mt_obj.survey_metadata.citation_journal.year}), "
+        f"{mt_obj.survey_metadata.citation_journal.title}, "
+        f"{mt_obj.survey_metadata.citation_journal.journal}, "
+        f"{mt_obj.survey_metadata.citation_journal.volume}, "
+        f"{mt_obj.survey_metadata.citation_journal.doi}."
+    )
 
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
     xml_obj.site.data_quality_notes.good_to_period = 2048
     xml_obj.site.data_quality_notes.comments.author = "Jared Peacock"
-    xml_obj.site.data_quality_notes.comments.value = "Power lines"
+    xml_obj.site.data_quality_notes.comments.value = "Minimal noise sources"
 
     xml_obj.site.data_quality_warnings.comments.author = "Jared Peacock"
     xml_obj.site.data_quality_warnings.comments.value = (
@@ -288,7 +310,9 @@ for edi_file in edi_path.glob("*.edi"):
     )
 
     # processing
-    xml_obj.processing_info.processing_software.name = "BIRRP 5.2"
+    xml_obj.processing_info.processing_software.name = (
+        mt_obj.station_metadata.transfer_function.software.name
+    )
     xml_obj.processing_info.processing_software.last_mod = "2020-05-01"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
 
@@ -312,4 +336,5 @@ for edi_file in edi_path.glob("*.edi"):
         p = mt_obj.plot_mt_response(plot_num=2)
         p.save_plot(save_path.joinpath(f"{fn_name}.png"), fig_dpi=300)
 
+    # rewrite edi file
     edi_obj = mt_obj.write(save_path.joinpath(f"{fn_name}.edi"))

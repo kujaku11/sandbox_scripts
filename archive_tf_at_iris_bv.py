@@ -29,7 +29,7 @@ science_center = "GMEG"
 survey = "INGENIOUS_BuffaloValley"
 year = "2023"
 declination = 12.4
-plot = True
+plot = False
 
 project = f"{organization}-{science_center}"
 
@@ -87,10 +87,25 @@ for edi_file in edi_path.glob("*.edi"):
         "This project was funded by U.S. Department of Energy - Geothermal "
         "Technologies Office under award DE-EE0009254 to the University of "
         "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
+        "Investigations of Undiscovered Systems (INGENIOUS), and U.S Geological Survey "
         "Geothermal Resource Investigations Project."
     )
 
+    # release license
+    mt_obj.survey_metadata.release_license = "CC-BY-4.0"
+
+    # citation
+    mt_obj.survey_metadata.citation_dataset.authors = (
+        "J. Peacock, B. Morbeck, W. Schermerhorn, G. Rae-Downing, G. Walker, "
+        "T. Earney, J. Glen"
+    )
+    mt_obj.survey_metadata.citation_dataset.title = "Magnetotelluric data from Buffalo Valley, NV for the INGENIOUS geothermal project"
+    mt_obj.survey_metadata.citation_dataset.doi = (
+        f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
+    )
+    mt_obj.survey_metadata.citation_dataset.year = year
+
+    # project
     mt_obj.survey_metadata.project = project
     mt_obj.survey_metadata.country = "USA"
 
@@ -100,7 +115,8 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.survey_metadata.update_time_period()
 
     mt_obj.station_metadata.location.declination.value = declination
-    mt_obj.station_metadata.location.declination.model = "IGRF"
+    mt_obj.station_metadata.location.declination.model = "WMM"
+    mt_obj.station_metadata.location.declination.epoch = "2020"
     mt_obj.station_metadata.geographic_name = "Buffalo Valley, NV, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
@@ -117,7 +133,7 @@ for edi_file in edi_path.glob("*.edi"):
     ### ex
     mt_obj.station_metadata.runs[0].ex.dipole_length = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.x2 = row.dipole_ex
-    mt_obj.station_metadata.runs[0].ex.translated_azimuth = declination
+    mt_obj.station_metadata.runs[0].ex.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].ex.channel_number = 4
     mt_obj.station_metadata.runs[0].ex.positive.manufacturer = "Borin"
     mt_obj.station_metadata.runs[0].ex.positive.type = "Ag-AgCl"
@@ -130,7 +146,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].ey.dipole_length = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.positive.y2 = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.measurement_azimuth = 90
-    mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90 + declination
+    mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90
     mt_obj.station_metadata.runs[0].ey.channel_number = 5
     mt_obj.station_metadata.runs[0].ey.positive.manufacturer = "Borin"
     mt_obj.station_metadata.runs[0].ey.positive.type = "Ag-AgCl"
@@ -147,7 +163,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
     mt_obj.station_metadata.runs[0].hx.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hx.channel_id = int(row.hx)
-    mt_obj.station_metadata.runs[0].hx.translated_azimuth = declination
+    mt_obj.station_metadata.runs[0].hx.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].hx.channel_number = 1
 
     ### hy
@@ -159,7 +175,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].hy.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hy.channel_id = int(row.hy)
     mt_obj.station_metadata.runs[0].hy.measurement_azimuth = 90
-    mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90 + declination
+    mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90
     mt_obj.station_metadata.runs[0].hy.channel_number = 2
 
     ### hz
@@ -187,7 +203,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.creator.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.creator.url = "https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.creator.url = r"https://www.usgs.gov"
 
     # provenance: submitter
     mt_obj.station_metadata.provenance.submitter.name = "Jared Peacock"
@@ -195,7 +211,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.submitter.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.submitter.url = "https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.submitter.url = r"https://www.usgs.gov"
 
     # transfer function
     rr = survey_summary.loc[
@@ -205,7 +221,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.transfer_function.remote_references = rr
 
     processing_parameters = [
-        c.split(".", 1)[-1].replace("  =  ", "=")
+        c.split(".", 2)[-1].replace(" = ", "=")
         for c in mt_obj.station_metadata.comments.split("\n")
         if "processing_parameters" in c
         and "nread" not in c
@@ -250,16 +266,12 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.provenance.create_time = str(MTime().now()).split(".")[0]
 
     # copyright: citation
-    xml_obj.copyright.citation.year = year
-    xml_obj.copyright.citation.survey_d_o_i = (
-        f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
-    )
-    # xml_obj.copyright.citation.selected_publications = "GRC paper"
+    xml_obj.copyright.release_status = "Data Citation Required"
     xml_obj.copyright.acknowledgement = (
         "This project was funded by U.S. Department of Energy - Geothermal "
         "Technologies Office under award DE-EE0009254 to the University of "
         "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
+        "Investigations of Undiscovered Systems (INGENIOUS), and U.S. Geological Survey "
         "Geothermal Resource Investigations Project."
     )
     xml_obj.copyright.additional_info = (
@@ -268,6 +280,8 @@ for edi_file in edi_path.glob("*.edi"):
         "geothermal resources in the region of Buffalo Valley, NV."
     )
 
+    # site
+    xml_obj.site.survey = survey
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
     xml_obj.site.data_quality_notes.good_to_period = 6060
     xml_obj.site.data_quality_notes.comments.author = "Jared Peacock"
@@ -282,6 +296,15 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.processing_info.processing_software.name = "Aurora"
     xml_obj.processing_info.processing_software.last_mod = "2024-05-01"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
+
+    # run information
+    xml_obj.field_notes.run_list[0].sampling_rate = 256
+    xml_obj.field_notes.run_list[0].comments.author = "J. Peacock"
+    xml_obj.field_notes.run_list[0].comments.value = (
+        "Data were collected on a repeating schedule of 10 minutes at 4096 "
+        "samples/second, then 7 hours and 50 minutes at 256 samples/second. "
+        "All stations synchronously collect on the same schedule."
+    )
 
     # write to file
     xml_obj.write(

@@ -55,11 +55,13 @@ d_dec = signal.decimate(data, sample_rate)
 df_dec = np.fft.rfft(d_dec)
 
 # decimated with scipy wrapper for xarray
-d_dec_sp = d.filt.decimate(1, dim="time")
+d_dec_sp = d.sps_filters.decimate(1, dim="time")
 df_dec_sp = np.fft.rfft(d_dec_sp)
 
 # decimated with scipy wrapper for xarray
-d_dec_sp2 = d.filt.decimate(8, dim="time").filt.decimate(1, dim="time")
+d_dec_sp2 = d.sps_filters.decimate(8, dim="time").sps_filters.decimate(
+    1, dim="time"
+)
 df_dec_sp2 = np.fft.rfft(d_dec_sp2)
 
 

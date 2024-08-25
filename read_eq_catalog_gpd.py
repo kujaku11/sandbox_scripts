@@ -18,8 +18,10 @@ from pyevtk.hl import pointsToVTK
 
 # =============================================================================
 
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\anss_eq_query.csv")
-model_epsg = 32612
+fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\ingenious\comcat_eq_northern_nv.csv"
+)
+model_epsg = 32611
 units = "km"
 scale = 1
 if units in ["km"]:

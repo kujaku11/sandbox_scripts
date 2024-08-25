@@ -87,9 +87,12 @@ for edi_file in list(edi_path.glob("*.edi"))[0:1]:
         "This project was funded by U.S. Department of Energy - Geothermal "
         "Technologies Office under award DE-EE0009254 to the University of "
         "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
+        "Investigations of Undiscovered Systems (INGENIOUS), and U.S. Geological Survey "
         "Geothermal Resource Investigations Project."
     )
+
+    # release license
+    mt_obj.survey_metadata.release_license = "CC-BY-4.0"
 
     # citation
     mt_obj.survey_metadata.citation_dataset.authors = (
@@ -268,7 +271,7 @@ for edi_file in list(edi_path.glob("*.edi"))[0:1]:
         "This project was funded by U.S. Department of Energy - Geothermal "
         "Technologies Office under award DE-EE0009254 to the University of "
         "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
+        "Investigations of Undiscovered Systems (INGENIOUS), and U.S. Geological Survey "
         "Geothermal Resource Investigations Project."
     )
     xml_obj.copyright.additional_info = (

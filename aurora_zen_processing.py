@@ -31,13 +31,13 @@ from mtpy import MT
 warnings.filterwarnings("ignore")
 # =============================================================================
 # survey_dir = Path(r"c:\MT\BV2023")
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB")
 # survey_dir = Path(r"d:\SAGE2024")
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
 # band_file = r"d:\SAGE2023\bandset.cfg"
-band_file = r"c:\Users\jpeacock\bandset.cfg"
+band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
 rr_4096 = False
-
+rr_geomag = False
 geomag_mth5 = (
     r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024\usgs_geomag_bou_xy.h5"
 )
@@ -46,9 +46,9 @@ rr_geomag_station = "Boulder"
 edi_path.mkdir(exist_ok=True)
 
 station_list = [
-    {"local": "sg2401", "remote": "sg2403"},
-    {"local": "sg2403", "remote": "sg2401"},
-    {"local": "sg2409", "remote": "sg2401"},
+    {"local": "mb99", "remote": "mb86"},
+    # {"local": "sg2403", "remote": "sg2401"},
+    # {"local": "sg2409", "remote": "sg2401"},
     # {"local": "sg2402", "remote": "sg2404"},
     # {"local": "sg2404", "remote": "sg2402"},
 ]
@@ -79,8 +79,9 @@ for station_dict in station_list:
         mth5_run_summary = RunSummary()
         if rr_station is None or sample_rate == 4096:
             mth5_run_summary.from_mth5s([local_mth5])
-        elif sample_rate == 1:
+        elif sample_rate == 1 and rr_geomag:
             mth5_run_summary.from_mth5s([local_mth5, geomag_mth5])
+
         else:
             mth5_run_summary.from_mth5s([local_mth5, remote_mth5])
         run_summary = mth5_run_summary.clone()
@@ -93,7 +94,7 @@ for station_dict in station_list:
         if rr_station is None or sample_rate == 4096:
             # run_summary.df = run_summary.df.iloc[0:1]
             kernel_dataset.from_run_summary(run_summary, local_zen_station)
-        elif sample_rate == 1:
+        elif sample_rate == 1 and rr_geomag:
             kernel_dataset.from_run_summary(
                 run_summary, local_zen_station, rr_geomag_station
             )

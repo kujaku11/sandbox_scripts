@@ -15,7 +15,6 @@ from mtpy import MT
 
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import __version__ as mt_metadata_version
-from aurora import __version__ as aurora_version
 
 # =============================================================================
 ### EMFTXML's convention for naming things
@@ -85,10 +84,24 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.survey_metadata.funding_source.grant_id = "EE-0006733"
     mt_obj.survey_metadata.funding_source.comments = (
         "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award EE-0006733, and USGS "
+        "Technologies Office under award EE-0006733, and U.S. Geological Survey "
         "Geothermal Resource Investigations Project."
     )
 
+    # citation
+    mt_obj.survey_metadata.citation_dataset.authors = (
+        "J. Peacock, W. Schermerhorn, T. Earney"
+    )
+    mt_obj.survey_metadata.citation_dataset.title = (
+        "Magnetotelluric data near Baron Hot Springs, Idaho"
+    )
+
+    mt_obj.survey_metadata.citation_dataset.doi = (
+        f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
+    )
+    mt_obj.survey_metadata.citation_dataset.year = year
+
+    # project
     mt_obj.survey_metadata.project = project
     mt_obj.survey_metadata.country = "USA"
 
@@ -98,7 +111,8 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.survey_metadata.update_time_period()
 
     mt_obj.station_metadata.location.declination.value = declination
-    mt_obj.station_metadata.location.declination.model = "IGRF"
+    mt_obj.station_metadata.location.declination.model = "WMM"
+    mt_obj.station_metadata.location.declination.epoch = "2020"
     mt_obj.station_metadata.geographic_name = "Fairfield, ID, USA"
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
@@ -115,7 +129,7 @@ for edi_file in edi_path.glob("*.edi"):
     ### ex
     mt_obj.station_metadata.runs[0].ex.dipole_length = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.x2 = row.dipole_ex
-    mt_obj.station_metadata.runs[0].ex.translated_azimuth = declination
+    mt_obj.station_metadata.runs[0].ex.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].ex.channel_number = 4
     mt_obj.station_metadata.runs[0].ex.positive.manufacturer = "Borin"
     mt_obj.station_metadata.runs[0].ex.positive.type = "Ag-AgCl"
@@ -128,7 +142,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].ey.dipole_length = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.positive.y2 = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.measurement_azimuth = 90
-    mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90 + declination
+    mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90
     mt_obj.station_metadata.runs[0].ey.channel_number = 5
     mt_obj.station_metadata.runs[0].ey.positive.manufacturer = "Borin"
     mt_obj.station_metadata.runs[0].ey.positive.type = "Ag-AgCl"
@@ -145,7 +159,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
     mt_obj.station_metadata.runs[0].hx.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hx.channel_id = int(row.hx)
-    mt_obj.station_metadata.runs[0].hx.translated_azimuth = declination
+    mt_obj.station_metadata.runs[0].hx.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].hx.channel_number = 1
 
     ### hy
@@ -157,7 +171,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.runs[0].hy.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hy.channel_id = int(row.hy)
     mt_obj.station_metadata.runs[0].hy.measurement_azimuth = 90
-    mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90 + declination
+    mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90
     mt_obj.station_metadata.runs[0].hy.channel_number = 2
 
     ### hz
@@ -185,7 +199,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.creator.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.creator.url = "https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.creator.url = r"https:\\www.usgs.gov"
 
     # provenance: submitter
     mt_obj.station_metadata.provenance.submitter.name = "Jared Peacock"
@@ -193,7 +207,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.submitter.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.submitter.url = "https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.submitter.url = r"https:\\www.usgs.gov"
 
     # transfer function
     rr = survey_summary.loc[
@@ -203,7 +217,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.transfer_function.remote_references = rr
 
     processing_parameters = [
-        c.split(".", 1)[-1].replace("  =  ", "=")
+        c.split(".", 2)[-1].replace("  =  ", "=")
         for c in mt_obj.station_metadata.comments.split("\n")
         if "processing_parameters" in c
         and "nread" not in c
@@ -248,21 +262,19 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.provenance.create_time = str(MTime().now()).split(".")[0]
 
     # copyright: citation
-    xml_obj.copyright.citation.year = year
-    xml_obj.copyright.citation.survey_d_o_i = (
-        f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
-    )
-    # xml_obj.copyright.citation.selected_publications = "GRC paper"
+    xml_obj.copyright.release_status = "Data Citation Required"
     xml_obj.copyright.acknowledgement = (
         "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award EE-0006733"
-        ", and USGS Geothermal Resource Investigations Project."
+        "Technologies Office under award EE-0006733, and U.S. Geological "
+        "Survey Geothermal Resource Investigations Project."
     )
     xml_obj.copyright.additional_info = (
         "These data were collected as part of a Play Fairway project to "
         "develop a 3D electrical resistivity model to characterize blind "
         "geothermal resources in the region of Baron Hot Springs, ID."
     )
+
+    xml_obj.site.survey = survey
 
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
     xml_obj.site.data_quality_notes.good_to_period = 2048

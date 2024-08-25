@@ -24,7 +24,7 @@ from mt_metadata import __version__ as mt_metadata_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "PFA_CamasPrairie"
+survey = "PFA_MountainHome"
 year = "2016"
 declination = 13.04
 plot = True
@@ -33,7 +33,7 @@ project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\Camas\EDI_Files_birrp"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\MountainHome\EDI_Files_Archive\quantec"
 )
 
 # save files to one directory
@@ -69,10 +69,10 @@ for edi_file in edi_path.glob("*.edi"):
 
     # update some of the metadata
     mt_obj.survey_metadata.id = survey
-    mt_obj.survey_metadata.funding_source.organization = (
+    mt_obj.survey_metadata.funding_source.organization = [
         "U.S. Department of Energy Geothermal Technologies Office"
-    )
-    mt_obj.survey_metadata.funding_source.grant_id = "DE-AC02-05CH11231"
+    ]
+    mt_obj.survey_metadata.funding_source.grant_id = ["DE-AC02-05CH11231"]
     mt_obj.survey_metadata.funding_source.comments = (
         "This work was also supported with funding by the Assistant Secretary"
         " for Energy Efficiency and Renewable Energy, Geothermal Technologies "
@@ -86,7 +86,7 @@ for edi_file in edi_path.glob("*.edi"):
         "Quantec Geoscience, E. Gasperikova"
     )
     mt_obj.survey_metadata.citation_dataset.title = (
-        "Magnetotelluric data near Baron Hot Springs, Idaho"
+        "Magnetotelluric data near Mountain Home, Idaho"
     )
     mt_obj.survey_metadata.citation_dataset.doi = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
@@ -100,7 +100,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.location.declination.value = declination
     mt_obj.station_metadata.location.declination.model = "WMM"
     mt_obj.station_metadata.location.declination.epoch = "2020"
-    mt_obj.station_metadata.geographic_name = "Fairfield, ID, USA"
+    mt_obj.station_metadata.geographic_name = "Mountain Home, ID, USA"
     mt_obj.station_metadata.acquired_by.name = "Quantec Geoscience"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -184,7 +184,7 @@ for edi_file in edi_path.glob("*.edi"):
     xml_obj.copyright.additional_info = (
         "These data were collected as part of a Play Fairway project to "
         "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Baron Hot Springs, ID."
+        "geothermal resources in the region of Mountain Home, ID."
     )
 
     xml_obj.site.survey = survey

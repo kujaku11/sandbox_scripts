@@ -25,16 +25,16 @@ from mt_metadata import __version__ as mt_metadata_version
 ### product_id = "project-survey-year"
 organization = "USGS"
 science_center = "GMEG"
-survey = "INGENIOUS_ArgentaRise"
-year = "2022"
-declination = 12.6
-plot = False
+survey = "PFA_MountBaker"
+year = "2016"
+declination = 16.1
+plot = True
 
 project = f"{organization}-{science_center}"
 
 # path to TF files
 edi_path = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\Battle_Mountain\EDI_files_birrp\edited\GeographicNorth"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB\EDI_Files_Archive"
 )
 
 # save files to one directory
@@ -46,19 +46,21 @@ save_path.mkdir(exist_ok=True)
 
 # survey information
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\BM2022\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB\survey_summary.csv"
 )
-survey_summary.station = [f"bm{ss}" for ss in survey_summary.station]
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
+
+### run this to loop over all edi files in folder
+# for edi_file in edi_path.glob("*.edi"):
 
 ### use this to just do one file to make sure everything looks good
 # for edi_file in list(edi_path.glob("*.edi"))[0:1]:
 for edi_file in edi_path.glob("*.edi"):
     mt_obj = MT()
     mt_obj.read(edi_file)
-    fn_name = f"{project}.{year}.{mt_obj.station}"
+    fn_name = f"{project}.{year}.{mt_obj.station.lower()}"
 
     # remove unnecessary runs
     remove_runs = []
@@ -69,48 +71,79 @@ for edi_file in edi_path.glob("*.edi"):
     for remove_run in remove_runs:
         mt_obj.station_metadata.runs.remove(remove_run)
 
+    mt_obj.station_metadata.runs[0].id = mt_obj.station_metadata.runs[
+        0
+    ].id.lower()
+
+    mt_obj.station = mt_obj.station.lower()
+    mt_obj.tf_id = mt_obj.station.lower()
+
     # get row from survey data frame
     row = survey_summary[survey_summary.station == mt_obj.station]
     row = row.iloc[0]
 
     # update some of the metadata
     mt_obj.survey_metadata.id = survey
-    mt_obj.survey_metadata.funding_source.organization = (
-        "U.S. Department of Energy Geothermal Technologies Office"
-    )
-    mt_obj.survey_metadata.funding_source.grant_id = "DE-EE0009254"
+    mt_obj.survey_metadata.funding_source.organization = [
+        "Department of Energy",
+        "U.S. Geological Survey Geothermal Resources Investigation Project",
+    ]
+    mt_obj.survey_metadata.funding_source.grant_id = ["DE-EE0006728"]
     mt_obj.survey_metadata.funding_source.comments = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and USGS "
-        "Geothermal Resource Investigations Project."
+        "This project was funded by the Department "
+        "of Energy, Office of Energy Efficiency and Renewable Energy (EERE), "
+        "Geothermal Technologies Offices, under Award Number DE-EE0006728 "
+        "granted to the Washington Geological Survey, a Division of the "
+        "Washington Department of Natural Resources, and by the Geothermal "
+        "Resources Investigation Project (GRIP) funded by the Energy "
+        "Resources Program of U.S. Geological Survey. "
     )
 
+    # release license
+    mt_obj.survey_metadata.release_license = "CC-BY-4.0"
+
     # citation
-    mt_obj.survey_metadata.citation_dataset.authors = "J. Peacock, B. Dean"
+    mt_obj.survey_metadata.citation_dataset.authors = "J. R. Peacock "
     mt_obj.survey_metadata.citation_dataset.title = (
-        "Magnetotelluric data near Battle Mountain, NV for the INGENIOUS "
-        "geothermal project"
+        "Magnetotelluric data of the eastern Mount Baker area, Washington for "
+        "Play Fairway Analysis of blind geothermal systems"
     )
     mt_obj.survey_metadata.citation_dataset.doi = (
         f"doi:10.17611/DP/EMTF/{science_center}/{survey}"
     )
     mt_obj.survey_metadata.citation_dataset.year = year
 
+    # Journal Article
+    mt_obj.survey_metadata.citation_journal.title = (
+        "Geothermal Play-Fairway Analysis of Washington State Prospects: "
+        "Final Report"
+    )
+    mt_obj.survey_metadata.citation_journal.authors = (
+        "Steely, A., Norman, D., et. al"
+    )
+    mt_obj.survey_metadata.citation_journal.doi = (
+        "https://doi.org/10.2172/1823116"
+    )
+    mt_obj.survey_metadata.citation_journal.journal = "Technical Report"
+    mt_obj.survey_metadata.citation_journal.year = 2021
+    mt_obj.survey_metadata.citation_journal.volume = "Report No. DOE-WGS-6728"
+
     # project
     mt_obj.survey_metadata.project = project
     mt_obj.survey_metadata.country = "USA"
+    mt_obj.survey_metadata.id = survey
 
+    # site information
     mt_obj.station_metadata.runs[0].time_period.start = row.start
     mt_obj.station_metadata.runs[0].time_period.end = row.end
     mt_obj.station_metadata.update_time_period()
     mt_obj.survey_metadata.update_time_period()
 
     mt_obj.station_metadata.location.declination.value = declination
-    mt_obj.station_metadata.location.declination.model = "WMM"
-    mt_obj.station_metadata.location.declination.epoch = "2020"
-    mt_obj.station_metadata.geographic_name = "Reese River Valley, NV, USA"
+    mt_obj.station_metadata.location.declination.model = "IGRF"
+    mt_obj.station_metadata.location.declination.epoch = year
+    mt_obj.station_metadata.geographic_name = "Mount Baker, WA, USA"
+    mt_obj.survey_metadata.geographic_name = survey
     mt_obj.station_metadata.acquired_by.name = "U.S. Geological Survey"
     mt_obj.station_metadata.orientation.method = "compass"
     mt_obj.station_metadata.orientation.reference_frame = "geographic"
@@ -126,6 +159,7 @@ for edi_file in edi_path.glob("*.edi"):
     ### ex
     mt_obj.station_metadata.runs[0].ex.dipole_length = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.x2 = row.dipole_ex
+    mt_obj.station_metadata.runs[0].ex.positive.y2 = 0
     mt_obj.station_metadata.runs[0].ex.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].ex.channel_number = 4
     mt_obj.station_metadata.runs[0].ex.positive.manufacturer = "Borin"
@@ -137,6 +171,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     ### ey
     mt_obj.station_metadata.runs[0].ey.dipole_length = row.dipole_ey
+    mt_obj.station_metadata.runs[0].ey.positive.x2 = 0
     mt_obj.station_metadata.runs[0].ey.positive.y2 = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.measurement_azimuth = 90
     mt_obj.station_metadata.runs[0].ey.translated_azimuth = 90
@@ -154,7 +189,7 @@ for edi_file in edi_path.glob("*.edi"):
         "Zonge International"
     )
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
-    mt_obj.station_metadata.runs[0].hx.sensor.name = "ANT-4"
+    mt_obj.station_metadata.runs[0].hx.sensor.model = "ANT-4"
     mt_obj.station_metadata.runs[0].hx.channel_id = int(row.hx)
     mt_obj.station_metadata.runs[0].hx.translated_azimuth = 0
     mt_obj.station_metadata.runs[0].hx.channel_number = 1
@@ -165,7 +200,7 @@ for edi_file in edi_path.glob("*.edi"):
         "Zonge International"
     )
     mt_obj.station_metadata.runs[0].hy.sensor.type = "Induction Coil"
-    mt_obj.station_metadata.runs[0].hy.sensor.name = "ANT-4"
+    mt_obj.station_metadata.runs[0].hy.sensor.model = "ANT-4"
     mt_obj.station_metadata.runs[0].hy.channel_id = int(row.hy)
     mt_obj.station_metadata.runs[0].hy.measurement_azimuth = 90
     mt_obj.station_metadata.runs[0].hy.translated_azimuth = 90
@@ -178,14 +213,13 @@ for edi_file in edi_path.glob("*.edi"):
             "Zonge International"
         )
         mt_obj.station_metadata.runs[0].hz.sensor.type = "Induction Coil"
-        mt_obj.station_metadata.runs[0].hz.sensor.name = "ANT-4"
+        mt_obj.station_metadata.runs[0].hz.sensor.model = "ANT-4"
         mt_obj.station_metadata.runs[0].hz.channel_id = int(row.hz)
         mt_obj.station_metadata.runs[0].hz.channel_number = 3
         mt_obj.station_metadata.runs[0].hz.measurement_tilt = 90
 
     # provenance: creator
     mt_obj.station_metadata.provenance.archive.name = fn_name
-    # mt_obj.station_metadata.provenance.archive.author = "J. Peacock"
     mt_obj.station_metadata.provenance.software.name = "mt-metadata"
     mt_obj.station_metadata.provenance.software.version = mt_metadata_version
 
@@ -197,7 +231,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.creator.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.creator.url = r"https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.creator.url = r"https://www.usgs.gov"
 
     # provenance: submitter
     mt_obj.station_metadata.provenance.submitter.name = "Jared Peacock"
@@ -205,7 +239,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.submitter.organization = (
         "U.S. Geological Survey"
     )
-    mt_obj.station_metadata.provenance.submitter.url = r"https:\\www.usgs.gov"
+    mt_obj.station_metadata.provenance.submitter.url = r"https://www.usgs.gov"
 
     # transfer function
     rr = survey_summary.loc[
@@ -229,7 +263,7 @@ for edi_file in edi_path.glob("*.edi"):
         f"{mt_obj.station}a"
     ]
     mt_obj.station_metadata.transfer_function.processing_type = (
-        "Bounded Influence Remote Reference Processing"
+        "Bounded Influence Robust Remote Reference Processing"
     )
     mt_obj.station_metadata.transfer_function.data_quality.rating.value = int(
         mt_obj.estimate_tf_quality(round_qf=True)
@@ -241,7 +275,7 @@ for edi_file in edi_path.glob("*.edi"):
     )
     mt_obj.station_metadata.transfer_function.software.author = "A. Chave"
     mt_obj.station_metadata.transfer_function.software.name = "BIRRP"
-    mt_obj.station_metadata.transfer_function.software.version = "5.2.1"
+    mt_obj.station_metadata.transfer_function.software.version = "5.1.1"
     mt_obj.station_metadata.transfer_function.units = "[mV/km]/[nT]"
 
     # might be easiest to directly adjust the xml unles you want to rewrite the
@@ -261,26 +295,27 @@ for edi_file in edi_path.glob("*.edi"):
 
     # copyright: citation
     xml_obj.copyright.release_status = "Data Citation Required"
-    xml_obj.copyright.acknowledgement = (
-        "This project was funded by U.S. Department of Energy - Geothermal "
-        "Technologies Office under award DE-EE0009254 to the University of "
-        "Nevada, Reno for the INnovative Geothermal Exploration through Novel "
-        "Investigations of Undiscovered Systems (INGENIOUS), and U.S. Geological Survey "
-        "Geothermal Resource Investigations Project."
+    xml_obj.copyright.acknowledgement = ", ".join(
+        mt_obj.survey_metadata.funding_source.organization
     )
     xml_obj.copyright.additional_info = (
-        "These data were collected as part of the INGENIOUS project to "
-        "develop a 3D electrical resistivity model to characterize blind "
-        "geothermal resources in the region of Battle Mountain, NV."
+        mt_obj.survey_metadata.funding_source.comments
     )
 
-    # site
-    xml_obj.site.survey = survey
+    # Journal Publication
+    xml_obj.copyright.selected_publications = (
+        f"{mt_obj.survey_metadata.citation_journal.authors}, "
+        f"({mt_obj.survey_metadata.citation_journal.year}), "
+        f"{mt_obj.survey_metadata.citation_journal.title}, "
+        f"{mt_obj.survey_metadata.citation_journal.journal}, "
+        f"{mt_obj.survey_metadata.citation_journal.volume}, "
+        f"{mt_obj.survey_metadata.citation_journal.doi}."
+    )
 
     xml_obj.site.data_quality_notes.good_from_period = 0.0013
     xml_obj.site.data_quality_notes.good_to_period = 2048
     xml_obj.site.data_quality_notes.comments.author = "Jared Peacock"
-    xml_obj.site.data_quality_notes.comments.value = "Power lines"
+    xml_obj.site.data_quality_notes.comments.value = "Minimal noise sources"
 
     xml_obj.site.data_quality_warnings.comments.author = "Jared Peacock"
     xml_obj.site.data_quality_warnings.comments.value = (
@@ -288,17 +323,20 @@ for edi_file in edi_path.glob("*.edi"):
     )
 
     # processing
-    xml_obj.processing_info.processing_software.name = "BIRRP 5.2"
-    xml_obj.processing_info.processing_software.last_mod = "2020-05-01"
+    xml_obj.processing_info.processing_software.name = (
+        mt_obj.station_metadata.transfer_function.software.name
+    )
+    xml_obj.processing_info.processing_software.last_mod = "2015-05-01"
     xml_obj.processing_info.processing_tag = xml_obj.site.id
 
     # run information
     xml_obj.field_notes.run_list[0].sampling_rate = 256
     xml_obj.field_notes.run_list[0].comments.author = "J. Peacock"
     xml_obj.field_notes.run_list[0].comments.value = (
-        "Data were collected on a repeating schedule of 10 minutes at 4096 "
-        "samples/second, then 7 hours and 50 minutes at 256 samples/second. "
-        "All stations synchronously collect on the same schedule."
+        "Data were collected on a repeating schedule of 5 minutes at 4096 "
+        "samples/second, then 15 minutes at 1024 samples/second, then 7 hours "
+        "and 50 minutes at 256 samples/second. All stations synchronously "
+        "collect on the same schedule."
     )
 
     # write to file
@@ -312,4 +350,5 @@ for edi_file in edi_path.glob("*.edi"):
         p = mt_obj.plot_mt_response(plot_num=2)
         p.save_plot(save_path.joinpath(f"{fn_name}.png"), fig_dpi=300)
 
+    # rewrite edi file
     edi_obj = mt_obj.write(save_path.joinpath(f"{fn_name}.edi"))
