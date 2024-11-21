@@ -154,6 +154,7 @@ def read_nc_file(
 
     # read .nc file into an xarray dataset
     nc_obj = xr.open_dataset(nc_file)
+    print(nc_obj.depth.units)
 
     if nc_obj.depth.units == "km":
         d_scale = 1000
@@ -197,6 +198,7 @@ def read_nc_file(
         # need to add another cell to the depth
         depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
         if depth[1] > 100:
+            print("scaling")
             depth *= scale
 
         # print(depth.shape, grid_east.shape, grid_north.shape)
@@ -237,7 +239,8 @@ def read_nc_file(
 
         # need to add another cell to the depth
         depth = -1 * np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
-        if depth[1] > 100:
+        if abs(depth[1]) > 100:
+            print("scaling")
             depth *= scale
         gridToVTK(
             vtk_fn.as_posix(),
@@ -292,6 +295,7 @@ def read_nc_file_points(
 
     # read .nc file into an xarray dataset
     nc_obj = xr.open_dataset(nc_file)
+    print(nc_obj.depth.units)
 
     if nc_obj.depth.units == "km":
         d_scale = 1000
@@ -386,7 +390,7 @@ custom_crs = None
 # model_utm = "10S"
 
 model_center = (0, 0)
-model_utm = 32613
+model_utm = 32610
 
 # if custom_crs is None:
 #     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
@@ -425,11 +429,11 @@ rel_shift_north = 0
 nc_list = [
     # {"fn": "WUS256.r0.0.nc", "points": False},
     # {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
-    {"fn": "western_us_DNA13_percent.nc", "points": False},
+    # {"fn": "western_us_DNA13_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
-    # {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
-    # {"fn": "moho_temperature_great_basin.nc", "points": True},
+    #{"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
+    {"fn": "moho_temperature_great_basin.nc", "points": True},
 ]
 
 for nc_entry in nc_list:
@@ -448,7 +452,7 @@ for nc_entry in nc_list:
             crs=custom_crs,
             shift_east=rel_shift_east,
             shift_north=rel_shift_north,
-            units="km",
+            units="m",
         )
     else:
         x_obj, grid = read_nc_file(
@@ -458,7 +462,7 @@ for nc_entry in nc_list:
             crs=custom_crs,
             shift_east=rel_shift_east,
             shift_north=rel_shift_north,
-            units="km",
+            units="m",
         )
 
 # vp = np.nan_to_num(nc_obj.variables["vp"][:])

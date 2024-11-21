@@ -13,6 +13,8 @@ import pandas as pd
 from scipy import interpolate
 import geopandas as gpd
 from pyevtk.hl import gridToVTK
+from mtpy.gis import raster_tools
+from mtpy.core import MTLocation
 
 
 # =============================================================================
@@ -104,10 +106,27 @@ vp1d = read_pstomo_1d(
 
 cell_data["dvp"] = cell_data["vp"] - vp1d
 
-gridToVTK(
-    fn.parent.joinpath(f"2024_furlong_vp_{epsg}_{units}").as_posix(),
-    x,
-    y,
-    depth,
-    cellData=cell_data,
-)
+lower_left = MTLocation()
+lower_left.utm_crs = epsg
+lower_left.east = x.min()
+lower_left.north = y.min()
+
+index = np.where(depth < 30000)[0][-1]
+
+
+raster_tools.array2raster(^M
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\dvp_30km.tif",^M
+    cell_data["dvp"][:, :, 60].T,^M
+    lower_left,^M
+    3000,
+    3000,
+    lower_left.utm_epsg
+    )
+
+# gridToVTK(
+#     fn.parent.joinpath(f"2024_furlong_vp_{epsg}_{units}").as_posix(),
+#     x,
+#     y,
+#     depth,
+#     cellData=cell_data,
+# )

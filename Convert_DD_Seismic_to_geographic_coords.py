@@ -17,29 +17,29 @@ from mtpy.core.mt_location import MTLocation
 # sfn = Path(
 #     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\cv_eq_new.csv"
 # )
-sfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq.csv")
-bbox = ()
+# sfn = Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq.csv")
+# bbox = ()
 
-sfn_list = [
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_1_to_2.csv"
-    ),
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_2_to_3.csv"
-    ),
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_3_to_4.csv"
-    ),
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_4_to_8.csv"
-    ),
-]
+# sfn_list = [
+#     Path(
+#         r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_1_to_2.csv"
+#     ),
+#     Path(
+#         r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_2_to_3.csv"
+#     ),
+#     Path(
+#         r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_3_to_4.csv"
+#     ),
+#     Path(
+#         r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\cl_usgs_eq_mag_4_to_8.csv"
+#     ),
+# ]
 
-df_list = []
-for fn in sfn_list:
-    df_list.append(pd.read_csv(fn))
+# df_list = []
+# for fn in sfn_list:
+#     df_list.append(pd.read_csv(fn))
 
-df = pd.concat(df_list)
+# df = pd.concat(df_list)
 # df = pd.read_csv(sfn)
 # df = df.loc[
 #     (df.lon >= -119.25)
@@ -47,23 +47,27 @@ df = pd.concat(df_list)
 #     & (df.lat >= 37.5)
 #     & (df.lat <= 38.35)
 # ]
+sfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\TexDocs\Presentations\mt_shortcourse\2024\yellowstone_model\eq_events.csv"
+)
+df = pd.read_csv(sfn)
 
 
 gdf = gpd.GeoDataFrame(
     df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
 )
 gdf.crs = "epsg:4326"
-gdf = gdf.to_crs(epsg=32610)
+gdf = gdf.to_crs(epsg=32612)
 
 # center = MTLocation(longitude=-118.897992, latitude=37.914380)
 # center.utm_epsg = 32611
 
-depth = -1000 * gdf.depth.to_numpy(dtype=float)
+depth = -1 * gdf.depth.to_numpy(dtype=float)
 
 pointsToVTK(
-    sfn.parent.joinpath(f"{sfn.stem}_enzm").as_posix(),
-    gdf.geometry.x.to_numpy(dtype=float),
-    gdf.geometry.y.to_numpy(dtype=float),
+    sfn.parent.joinpath(f"{sfn.stem}_enzm_km").as_posix(),
+    gdf.geometry.x.to_numpy(dtype=float) / 1000,
+    gdf.geometry.y.to_numpy(dtype=float) / 1000,
     depth,
     data={
         "mag": gdf.mag.to_numpy(dtype=float),

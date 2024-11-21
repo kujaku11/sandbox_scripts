@@ -29,28 +29,44 @@ df = pd.read_csv(
     names=["lon", "lat", "z", "vp", "moho"],
 )
 
-df = df.groupby("moho", as_index=False).first()
+#m_df = df.groupby("moho", as_index=False).first()
 
-gdf = gpd.GeoDataFrame(
-    df, geometry=gpd.points_from_xy(df.lon, df.lat), crs=4326
-)
-utm_gdf = gdf.to_crs(epsg=32610)
-utm_gdf["easting"] = utm_gdf.geometry.x
-utm_gdf["northing"] = utm_gdf.geometry.y
+for zz in df.z.unique():
+    z_df = df[df.z == zz]
+    z_df.to_csv(fn.parent.joinpath(f"2024_qi_{zz}km.csv"), index=False)
 
-scale = 1
-if units in ["km"]:
-    scale = 1000
 
-pointsToVTK(
-    Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic")
-    .joinpath(f"2024_li_moho_depth_{epsg}_{units}")
-    .as_posix(),
-    utm_gdf.easting.to_numpy() / scale,
-    utm_gdf.northing.to_numpy() / scale,
-    utm_gdf.moho.to_numpy() * -1000 / scale,
-    data={"moho": utm_gdf.moho.to_numpy()},
-)
+m_df = df.groupby("moho", as_index=False).first()
+m_df.to_csv(fn.parent.joinpath("2024_qi_moho.csv"), index=False)
+
+# gdf = gpd.GeoDataFrame(z_df, geometry=gpd.points_from_xy(z_df.lon, z_df.lat), crs=4326)
+# da = gdf.gdf.set_index(["y", "x"]).Value.to_xarray()
+# da = gdf.set_index(["y", "x"]).Value.to_xarray()
+
+# gdf["x"] = gdf.geometry.x
+# gdf["y"] = gdf.geometry.y
+# da = gdf.set_index(["y", "x"]).Value.to_xarray()
+# da = gdf.set_index(["y", "x"]).vp.to_xarray()
+# z_df.to_csv(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\2022_qi_seismic_model_ClearLake\ModelinGEOS\2004_qi_10km.csv", index=False)
+
+
+# utm_gdf = gdf.to_crs(epsg=32610)
+# utm_gdf["easting"] = utm_gdf.geometry.x
+# utm_gdf["northing"] = utm_gdf.geometry.y
+
+# scale = 1
+# if units in ["km"]:
+#     scale = 1000
+
+# pointsToVTK(
+#     Path(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic")
+#     .joinpath(f"2024_li_moho_depth_{epsg}_{units}")
+#     .as_posix(),
+#     utm_gdf.easting.to_numpy() / scale,
+#     utm_gdf.northing.to_numpy() / scale,
+#     utm_gdf.moho.to_numpy() * -1000 / scale,
+#     data={"moho": utm_gdf.moho.to_numpy()},
+# )
 
 # dx = int((utm_gdf.easting.max() - utm_gdf.easting.min()) / 2)
 # dy = int((utm_gdf.northing.max() - utm_gdf.northing.min()) / 2)
