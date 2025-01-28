@@ -266,6 +266,7 @@ def read_nc_file_points(
     z_key="depth",
     bbox=None,
     coordinate_system="enz-",
+    bounding_box=None,
 ):
     """
     Read NetCDF earth model file into UTM coordinates
@@ -295,9 +296,9 @@ def read_nc_file_points(
 
     # read .nc file into an xarray dataset
     nc_obj = xr.open_dataset(nc_file)
-    print(nc_obj.depth.units)
+    print(nc_obj[z_key].units)
 
-    if nc_obj.depth.units == "km":
+    if nc_obj[z_key].units == "km":
         d_scale = 1000
     else:
         d_scale = 1
@@ -306,6 +307,15 @@ def read_nc_file_points(
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords(
             {"longitude": nc_obj.longitude.values[:] - 360}
+        )
+
+    if bounding_box is not None:
+        nc_obj = nc_obj.where(
+            (nc_obj.latitude >= bounding_box["latitude"].min())
+            & (nc_obj.latitude <= bounding_box["latitude"].max())
+            & (nc_obj.longitude >= bounding_box["longitude"].min())
+            & (nc_obj.longitude <= bounding_box["longitude"].max()),
+            drop=True,
         )
 
     grid_east, grid_north, utm_zone = project_grid(
@@ -317,19 +327,20 @@ def read_nc_file_points(
         shift_north=shift_north,
         points=True,
     )
+
     print(f"Projected to {utm_zone}")
     xg, yg = np.meshgrid(grid_east, grid_north)
     xg = xg[::-1, ::-1].ravel() * scale
     yg = yg[::-1, ::-1].ravel() * scale
 
     # get appropriate grid values
-    depth = (nc_obj.depth.values.ravel() * d_scale + shift_z) * scale
+    depth = (nc_obj[z_key].values.ravel() * d_scale + shift_z) * scale
     depth = depth.astype(xg.dtype)
 
     if "+" in coordinate_system:
         values_dict = {}
         for key, value in nc_obj.variables.items():
-            if key in ["latitude", "longitude"]:
+            if key in ["latitude", "longitude", "spatial_ref"]:
                 continue
             value = value.values.ravel()
             values_dict[key] = value.astype(xg.dtype)
@@ -383,27 +394,30 @@ custom_crs = None
 
 # # Great Basin
 # model_center = (38.615252, -119.015192)
+model_center = (37.855540, -116.897222)
 # model_utm = "11S"
 
 ## Clear Lake
 # model_center = (38.986014, -122.778463)
 # model_utm = "10S"
 
-model_center = (0, 0)
-model_utm = 32610
+# model_center = (0, 0)
+model_utm = 32611
+coordinate_system = "nez+"
+units = "km"
 
-# if custom_crs is None:
-#     model_east, model_north, model_utm = gis_tools.project_point_ll2utm(
-#         model_center[0], model_center[1], epsg=model_utm
-#     )
-# else:
-#     default_proj = proj.Proj(init="epsg:4326")
-#     custom_proj = proj.Proj(custom_crs)
-#     model_east, model_north = proj.transform(
-#         default_proj, custom_proj, model_center[1], model_center[0]
-#     )
+if custom_crs is None:
+    model_east, model_north = gis_tools.project_point(
+        model_center[1], model_center[0], 4326, model_utm
+    )
+else:
+    default_proj = proj.Proj(init="epsg:4326")
+    custom_proj = proj.Proj(custom_crs)
+    model_east, model_north = proj.transform(
+        default_proj, custom_proj, model_center[1], model_center[0]
+    )
 
-#     utm_zone = "custom"
+    utm_zone = "custom"
 
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
@@ -422,27 +436,45 @@ model_utm = 32610
 # rel_shift_east = -model_east + 150000
 # rel_shift_north = -model_north - 250000
 
+clearlake_bbox = {
+    "latitude": np.array([38.65, 39.10]),
+    "longitude": np.array([-122.820, -122.32]),
+}
+
 # WUS_2010 -> SWUS
-rel_shift_east = 0
-rel_shift_north = 0
+# rel_shift_east = -model_east
+# rel_shift_north = -model_north
+
+# WUS256
+rel_shift_east = -model_east + 160000
+rel_shift_north = -model_north - 180000
 
 nc_list = [
-    # {"fn": "WUS256.r0.0.nc", "points": False},
+    # {"fn": "WUS256.r0.0.nc", "points": False, "z_key": "depth"},
+    {"fn": "WUS324.r0.0.nc", "points": False, "z_key": "depth"},
     # {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
     # {"fn": "western_us_DNA13_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_WUS-CAMH-2015.nc", "points": False},
-    #{"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
-    {"fn": "moho_temperature_great_basin.nc", "points": True},
+    # {"fn": "western_us_s_waves_Casc19-VS.nc", "points": False},
+    # {"fn": "moho_temperature_great_basin.nc", "points": True, "z_key": "depth"},
+    # {
+    #     "fn": "LITHO_gb_interp.nc",
+    #     "points": True,
+    #     "z_key": "asthenospheric_mantle_top_depth",
+    # },
+    # {
+    #     "fn": "LITHO_gb_interp.nc",
+    #     "points": True,
+    #     "z_key": "lid_bottom_depth",
+    # },
 ]
 
 for nc_entry in nc_list:
     nc_fn = nc_path.joinpath(nc_entry["fn"])
-    # save_fn = Path(
-    #     r"c:\Users\jpeacock\OneDrive - DOI\Clearlake\modem_inv",
-    #     nc_fn.stem,
-    # )
-    save_fn = nc_fn.parent.joinpath(f"{nc_fn.stem}_enzm_{model_utm}")
+    save_fn = nc_fn.parent.joinpath(
+        f"{nc_fn.stem}_{coordinate_system[0:-1]}_{model_utm}_{units}_{nc_entry['z_key']}"
+    )
 
     if nc_entry["points"]:
         x_obj, grid = read_nc_file_points(
@@ -452,7 +484,10 @@ for nc_entry in nc_list:
             crs=custom_crs,
             shift_east=rel_shift_east,
             shift_north=rel_shift_north,
-            units="m",
+            units=units,
+            z_key=nc_entry["z_key"],
+            bounding_box=None,
+            coordinate_system=coordinate_system,
         )
     else:
         x_obj, grid = read_nc_file(
@@ -462,7 +497,8 @@ for nc_entry in nc_list:
             crs=custom_crs,
             shift_east=rel_shift_east,
             shift_north=rel_shift_north,
-            units="m",
+            units=units,
+            coordinate_system=coordinate_system,
         )
 
 # vp = np.nan_to_num(nc_obj.variables["vp"][:])

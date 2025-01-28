@@ -4,8 +4,13 @@ Created on Wed Apr 22 10:08:47 2015
 
 @author: jpeacock
 """
+
+from pathlib import Path
+
 import os
 import time
+
+
 
 # ==============================================================================
 # Input variables
@@ -17,9 +22,10 @@ import time
 # folder_list = ['PyScripts', 'ModEM', 'wsinv3d']
 
 # dirpath = r"/mnt/hgfs/jpeacock/Documents"
-dirpath = os.path.abspath(r"c:\Users\jpeacock\Documents")
-svpath = os.path.abspath(r"e:\jpeacock")
-os.chdir(dirpath)
+home_path = Path(r"C:\Users\jpeacock\OneDrive - DOI")
+save_path = Path(r"E:\Peacock_Backup\OneDrive - DOI")
+
+
 
 folder_list = [folder for folder in os.listdir(dirpath) if os.path.isdir(folder)]
 
@@ -54,7 +60,7 @@ def check_fn_exists(fn, sftp_obj):
     r_string = check_dir_path(fn_dir_path, sftp_obj)
     try:
         sftp.stat(fn)
-    except IOError, e:
+    except IOError as e:
         if e[0] == 2:
             return False, r_string
 

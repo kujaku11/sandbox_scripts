@@ -50,6 +50,10 @@ from mtpy.core.mt_location import MTLocation
 sfn = Path(
     r"c:\Users\jpeacock\OneDrive - DOI\TexDocs\Presentations\mt_shortcourse\2024\yellowstone_model\eq_events.csv"
 )
+
+sfn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\anss_eq_query.csv"
+)
 df = pd.read_csv(sfn)
 
 
@@ -71,6 +75,6 @@ pointsToVTK(
     depth,
     data={
         "mag": gdf.mag.to_numpy(dtype=float),
-        "depth": depth,
+        "depth": -1 * depth,
     },
 )
