@@ -16,46 +16,47 @@ from pathlib import Path
 from loguru import logger
 import pandas as pd
 
-# from aurora.config.config_creator import ConfigCreator
-# from aurora.pipelines.process_mth5 import process_mth5
-# from aurora.pipelines.run_summary import RunSummary
-# from aurora.transfer_function.kernel_dataset import KernelDataset
-
 from mtpy.processing import AuroraProcessing
-
-# from mth5.helpers import close_open_files
-# from mth5.mth5 import MTH5
-
 from mt_metadata.utils.mttime import MTime
 
 
 warnings.filterwarnings("ignore")
 # =============================================================================
-# survey_dir = Path(r"c:\MT\BV2023")
+# path to already created MTH5 files.  These are usually one station per MTH5
 survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB")
-# survey_dir = Path(r"d:\SAGE2024")
+
+# path to store EDI files and make directory if not alread exists
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
-# band_file = r"d:\SAGE2023\bandset.cfg"
+edi_path.mkdir(exist_ok=True)
+
+# band setup file. This describes which frequency bands to process at 
+# each decimation level.  
 band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
+
+# remote reference high frequency data, sometimes its better to not
 rr_4096 = False
 rr_geomag = False
+
+# geomagnetic H5 file
 geomag_mth5 = (
     r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024\usgs_geomag_bou_xy.h5"
 )
+# station name for geomagnetic observatory
 rr_geomag_station = "Boulder"
 
-edi_path.mkdir(exist_ok=True)
-
+# list of stations to process.
 station_list = [
     {"local": "mb99", "remote": "mb86"},
 ]
 
+# How to combined transfer functions for the various sample rates.
 merge_dict = {
     256: {"period_min": 1.0 / 25, "period_max": 100},
     1: {"period_min": 100, "period_max": 10000},
     4096: {"period_min": 1.0 / 2000, "period_max": 1.0 / 26},
 }
 
+# loop over stations in the station list and process.
 for station_dict in station_list:
 
     st = MTime().now()
