@@ -18,9 +18,7 @@ from pyevtk.hl import pointsToVTK
 
 # =============================================================================
 
-fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\ingenious\comcat_eq_northern_nv.csv"
-)
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
 model_epsg = 32611
 units = "km"
 scale = 1

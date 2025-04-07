@@ -15,9 +15,13 @@ from mtpy.modeling.modem import Covariance
 
 # =============================================================================
 
+# dfn = Path(
+#     r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\modem_inv\inv_thermo\ldth_modem_data_z03_t02.dat"
+# )
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\modem_inv\inv_thermo\ldth_modem_data_z03_t02.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\utah\modem_inv\inv_thermo_02\ldth_modem_data_z03_t02_tec.dat"
 )
+
 # topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\western_us.tiff"
 
@@ -70,8 +74,8 @@ mod_obj = StructuredGrid3D(
     station_locations=md.station_locations, center_point=md.center_point
 )
 
-mod_obj.cell_size_east = 500
-mod_obj.cell_size_north = 500
+mod_obj.cell_size_east = 250
+mod_obj.cell_size_north = 250
 mod_obj.pad_east = 13
 mod_obj.pad_north = 13
 mod_obj.pad_num = 3
@@ -79,7 +83,7 @@ mod_obj.ew_ext = 300000
 mod_obj.ns_ext = 300000
 mod_obj.z_mesh_method = "default"
 mod_obj.z_bottom = 300000
-mod_obj.z_target_depth = 100000
+mod_obj.z_target_depth = 70000
 mod_obj.pad_z = 5
 mod_obj.n_air_layers = 25
 mod_obj.n_layers = 110
@@ -110,9 +114,9 @@ mod_obj.to_modem(
 
 
 cov = Covariance(grid_dimensions=mod_obj.res_model.shape)
-cov.smoothing_east = 0.5
-cov.smoothing_north = 0.5
-cov.smoothing_z = 0.5
+cov.smoothing_east = 0.25
+cov.smoothing_north = 0.25
+cov.smoothing_z = 0.25
 cov.smoothing_num = 1
 
 cov.write_covariance_file(

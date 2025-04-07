@@ -29,21 +29,17 @@ def read_pstomo_1d(fn, nz=150):
     return v
 
 
-def read_pstomo_velocity_file(
-    fn, nx=120, ny=174, nz=150, utm_epsg=32610, units="m"
-):
+def read_pstomo_velocity_file(fn, nx=120, ny=174, nz=150, utm_epsg=32610, units="m"):
     df = pd.read_csv(
         fn,
         names=["longitude", "latitude", "z", "vp"],
         delimiter="\s+",
     )
 
-    gdf = gpd.GeoDataFrame(
-        df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
-    )
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
     gdf.crs = 4326
 
-    gdf_utm = gdf.to_crs(epsg=32610)
+    gdf_utm = gdf.to_crs(epsg=utm_epsg)
     gdf_utm["easting"] = gdf_utm.geometry.x
     gdf_utm["northing"] = gdf_utm.geometry.y
 
@@ -85,13 +81,11 @@ fn_dict = {
     ),
 }
 
-epsg = 32610
-units = "m"
+epsg = 32611
+units = "km"
 cell_data = {}
 for key, fn in fn_dict.items():
-    x, y, depth, velocity = read_pstomo_velocity_file(
-        fn, utm_epsg=epsg, units=units
-    )
+    x, y, depth, velocity = read_pstomo_velocity_file(fn, utm_epsg=epsg, units=units)
     cell_data[key] = velocity
 
 # estimate vp/vs
@@ -114,19 +108,19 @@ lower_left.north = y.min()
 index = np.where(depth < 30000)[0][-1]
 
 
-raster_tools.array2raster(^M
-    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\dvp_30km.tif",^M
-    cell_data["dvp"][:, :, 60].T,^M
-    lower_left,^M
-    3000,
-    3000,
-    lower_left.utm_epsg
-    )
+# raster_tools.array2raster(^M
+#     r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\dvp_30km.tif",^M
+#     cell_data["dvp"][:, :, 60].T,^M
+#     lower_left,^M
+#     3000,
+#     3000,
+#     lower_left.utm_epsg
+#     )
 
-# gridToVTK(
-#     fn.parent.joinpath(f"2024_furlong_vp_{epsg}_{units}").as_posix(),
-#     x,
-#     y,
-#     depth,
-#     cellData=cell_data,
-# )
+gridToVTK(
+    fn.parent.joinpath(f"2024_furlong_vp_{epsg}_{units}").as_posix(),
+    x,
+    y,
+    depth,
+    cellData=cell_data,
+)

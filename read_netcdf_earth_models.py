@@ -6,7 +6,7 @@ All coordinates of these files are latitude and longitude in what is assumed
 to be WGS84
 
 Output a vtk file in UTM coordinates with a user defined shift to line up
-with existing models. 
+with existing models.
 
 @author J. Peacock
 """
@@ -166,9 +166,7 @@ def read_nc_file(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords(
-            {"longitude": nc_obj.longitude.values[:] - 360}
-        )
+        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
     grid_east, grid_north, utm_zone = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
@@ -305,9 +303,7 @@ def read_nc_file_points(
 
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
-        nc_obj = nc_obj.assign_coords(
-            {"longitude": nc_obj.longitude.values[:] - 360}
-        )
+        nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
 
     if bounding_box is not None:
         nc_obj = nc_obj.where(
@@ -403,7 +399,7 @@ model_center = (37.855540, -116.897222)
 
 # model_center = (0, 0)
 model_utm = 32611
-coordinate_system = "nez+"
+coordinate_system = "enz-"
 units = "km"
 
 if custom_crs is None:
@@ -446,12 +442,12 @@ clearlake_bbox = {
 # rel_shift_north = -model_north
 
 # WUS256
-rel_shift_east = -model_east + 160000
-rel_shift_north = -model_north - 180000
+rel_shift_east = -35000
+rel_shift_north = -85000
 
 nc_list = [
-    # {"fn": "WUS256.r0.0.nc", "points": False, "z_key": "depth"},
-    {"fn": "WUS324.r0.0.nc", "points": False, "z_key": "depth"},
+    {"fn": "WUS256.r0.0.nc", "points": False, "z_key": "depth"},
+    # {"fn": "WUS324.r0.0.nc", "points": False, "z_key": "depth"},
     # {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
     # {"fn": "western_us_DNA13_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
