@@ -1,0 +1,155 @@
+# This is an example file of the extra metadata desired to archive at IRIS EMTF SPUD
+# The important parts are in the Survey and Station metadata.  If you don't have all
+# the details about Runs and channels that can be omitted.  
+# Be sure to link an external data sources or publications, specifically in the 
+# survey metadata.
+# Extra metadata for archiving on EMTF SPUD
+# --------------------------------------
+# organization that collected the data, or PI
+organization = "USGS"
+
+# sub contractor or science center that collected the data
+science_center = "GMEG"
+
+# Name of the survey should be a self explanatory name
+survey = "PFA_MSH_South"
+
+# year data collected
+year = "2016"
+
+# Survey Metadata
+# --------------------------------------
+survey_metadata.id = survey
+survey_metadata.funding_source.organization = [
+	"Department of Energy",
+	"U.S. Geological Survey Geothermal Resources Investigation Project",
+]
+survey_metadata.funding_source.grant_id = ["DE-EE0006728"]
+survey_metadata.funding_source.comments = "This project was funded by the Department of Energy, Office of Energy Efficiency and Renewable Energy (EERE), Geothermal Technologies Offices, under Award Number DE-EE0006728 granted to the Washington Geological Survey, a Division of the Washington Department of Natural Resources, and by the Geothermal Resources Investigation Project (GRIP) funded by the Energy Resources Program of U.S. Geological Survey. "
+
+# release license should be a Creative Commons license https://creativecommons.org/share-your-work/
+survey_metadata.release_license = "CC-BY-4.0"
+
+# citation
+survey_metadata.citation_dataset.authors = "J. R. Peacock "
+survey_metadata.citation_dataset.title = "Magnetotelluric data of the southern Mount St. Helens area, Washington for Play Fairway Analysis of blind geothermal systems"
+survey_metadata.citation_dataset.year = year
+
+# Journal Article or published report
+survey_metadata.citation_journal.title = "Geothermal Play-Fairway Analysis of Washington State Prospects: Final Report"
+survey_metadata.citation_journal.authors = "Steely, A., Norman, D., et. al"
+survey_metadata.citation_journal.doi = "https://doi.org/10.2172/1823116"
+survey_metadata.citation_journal.journal = "Technical Report"
+survey_metadata.citation_journal.year = 2021
+survey_metadata.citation_journal.volume = "Report No. DOE-WGS-6728"
+
+# external data sources
+survey_metadata.citation_external_data_source.title = "data at GDR"
+survey_metadata.citation_external_data_source.author = "data collector"
+survey_metadata.citation_external_data_source.doi = "https://doi.org/10.2172/1823116"
+survey_metadata.citation_external_data_source.year = 2025
+
+# location
+survey_metadata.country = "USA"
+survey_metadata.state = "WA"
+
+# Station Information
+# --------------------------------------
+# start and end time of the station recording
+station_metadata.time_period.start = "1980-01-01T00:00:00"
+station_metadata.time_period.end = "1980-01-01T00:00:00"
+
+# site information
+station_metadata.location.declination.value = 11.7
+station_metadata.location.declination.model = "IGRF"
+station_metadata.geographic_name = "Mount St. Helens, WA, USA"
+station_metadata.acquired_by.name = "U.S. Geological Survey"
+station_metadata.orientation.method = "compass"
+station_metadata.orientation.reference_frame = "geographic"
+
+# provenance: creator of the transfer function
+station_metadata.provenance.creator.name = "Jared Peacock"
+station_metadata.provenance.creator.email = "jpeacock@usgs.gov"
+station_metadata.provenance.creator.organization = "U.S. Geological Survey"
+station_metadata.provenance.creator.url = r"https://www.usgs.gov"
+
+# provenance: submitter of the transfer function
+station_metadata.provenance.submitter.name = "Jared Peacock"
+station_metadata.provenance.submitter.email = "jpeacock@usgs.gov"
+station_metadata.provenance.submitter.organization = "U.S. Geological Survey"
+station_metadata.provenance.submitter.url = r"https://www.usgs.gov"
+
+# transfer function: any parameter known about how the transfer function was created
+station_metadata.transfer_function.processing_parameters = []
+station_metadata.transfer_function.processing_type = "Bounded Influence Robust Remote Reference Processing"
+station_metadata.comments = ""
+
+station_metadata.transfer_function.sign_convention = "exp(+ i\omega t)"
+station_metadata.transfer_function.software.author = "A. Chave"
+station_metadata.transfer_function.software.name = "BIRRP"
+station_metadata.transfer_function.software.version = "5.1.1"
+station_metadata.transfer_function.units = "[mV/km]/[nT]"
+
+
+# Run Metadata
+# --------------------------------------
+run_metadata.data_logger.id = "ZEN_046"
+run_metadata.data_logger.manufacturer = "Zonge International"
+run_metadata.data_logger.type = "ZEN 32-bit"
+run_metadata.data_logger.name = "ZEN"
+run_metadata.comments = "Any information about how the runs are set up for example: Data were collected on a repeating schedule of 5 minutes at 4096 samples/second, then 15 minutes at 1024 samples/second, then 7 hours and 50 minutes at 256 samples/second. All stations synchronously collect on the same schedule."
+
+### ex
+run_metadata.ex.dipole_length = 50
+run_metadata.ex.positive.x2 = 50
+run_metadata.ex.positive.y2 = 0
+run_metadata.ex.translated_azimuth = 0
+run_metadata.ex.channel_number = 4
+run_metadata.ex.positive.manufacturer = "Borin"
+run_metadata.ex.positive.type = "Ag-AgCl"
+run_metadata.ex.positive.name = "Stelth 1"
+run_metadata.ex.negative.manufacturer = "Borin"
+run_metadata.ex.negative.type = "Ag-AgCl"
+run_metadata.ex.negative.name = "Stelth 1"
+
+### ey
+run_metadata.ey.dipole_length = 50
+run_metadata.ey.positive.x2 = 0
+run_metadata.ey.positive.y2 = 50
+run_metadata.ey.measurement_azimuth = 90
+run_metadata.ey.translated_azimuth = 90
+run_metadata.ey.channel_number = 5
+run_metadata.ey.positive.manufacturer = "Borin"
+run_metadata.ey.positive.type = "Ag-AgCl"
+run_metadata.ey.positive.name = "Stelth 1"
+run_metadata.ey.negative.manufacturer = "Borin"
+run_metadata.ey.negative.type = "Ag-AgCl"
+run_metadata.ey.negative.name = "Stelth 1"
+
+### hx
+run_metadata.hx.sensor.id = 4394
+run_metadata.hx.sensor.manufacturer = "Zonge International"
+run_metadata.hx.sensor.type = "Induction Coil"
+run_metadata.hx.sensor.model = "ANT-4"
+run_metadata.hx.channel_id = 4394
+run_metadata.hx.translated_azimuth = 0
+run_metadata.hx.channel_number = 1
+
+### hy
+run_metadata.hy.sensor.id = 4384
+run_metadata.hy.sensor.manufacturer = "Zonge International"
+run_metadata.hy.sensor.type = "Induction Coil"
+run_metadata.hy.sensor.model = "ANT-4"
+run_metadata.hy.channel_id = 4384
+run_metadata.hy.measurement_azimuth = 90
+run_metadata.hy.translated_azimuth = 90
+run_metadata.hy.channel_number = 2
+
+### hz (if measured)
+run_metadata.hz.sensor.id = 4374
+run_metadata.hz.sensor.manufacturer = "Zonge International"
+run_metadata.hz.sensor.type = "Induction Coil"
+run_metadata.hz.sensor.model = "ANT-4"
+run_metadata.hz.channel_id = 4374
+run_metadata.hz.channel_number = 3
+run_metadata.hz.measurement_tilt = 90

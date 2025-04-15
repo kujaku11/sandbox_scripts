@@ -13,8 +13,9 @@ import pandas as pd
 from scipy import interpolate
 import geopandas as gpd
 from pyevtk.hl import gridToVTK
-from mtpy.gis import raster_tools
-from mtpy.core import MTLocation
+
+# from mtpy.gis import raster_tools
+# from mtpy.core import MTLocation
 
 
 # =============================================================================
@@ -81,8 +82,8 @@ fn_dict = {
     ),
 }
 
-epsg = 32611
-units = "km"
+epsg = 32610
+units = "m"
 cell_data = {}
 for key, fn in fn_dict.items():
     x, y, depth, velocity = read_pstomo_velocity_file(fn, utm_epsg=epsg, units=units)
@@ -100,12 +101,14 @@ vp1d = read_pstomo_1d(
 
 cell_data["dvp"] = cell_data["vp"] - vp1d
 
-lower_left = MTLocation()
-lower_left.utm_crs = epsg
-lower_left.east = x.min()
-lower_left.north = y.min()
+cell_data["dvs"] = cell_data["vs"] - np.nanmean(cell_data["vs"], axis=(0, 1))
 
-index = np.where(depth < 30000)[0][-1]
+# lower_left = MTLocation()
+# lower_left.utm_crs = epsg
+# lower_left.east = x.min()
+# lower_left.north = y.min()
+
+# index = np.where(depth < 30000)[0][-1]
 
 
 # raster_tools.array2raster(^M

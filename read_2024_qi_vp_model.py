@@ -29,7 +29,7 @@ df = pd.read_csv(
     names=["lon", "lat", "z", "vp", "moho"],
 )
 
-#m_df = df.groupby("moho", as_index=False).first()
+# m_df = df.groupby("moho", as_index=False).first()
 
 for zz in df.z.unique():
     z_df = df[df.z == zz]
@@ -39,12 +39,12 @@ for zz in df.z.unique():
 m_df = df.groupby("moho", as_index=False).first()
 m_df.to_csv(fn.parent.joinpath("2024_qi_moho.csv"), index=False)
 
-# gdf = gpd.GeoDataFrame(z_df, geometry=gpd.points_from_xy(z_df.lon, z_df.lat), crs=4326)
-# da = gdf.gdf.set_index(["y", "x"]).Value.to_xarray()
-# da = gdf.set_index(["y", "x"]).Value.to_xarray()
+gdf = gpd.GeoDataFrame(z_df, geometry=gpd.points_from_xy(z_df.lon, z_df.lat), crs=4326)
+da = gdf.gdf.set_index(["y", "x"]).Value.to_xarray()
+da = gdf.set_index(["y", "x"]).Value.to_xarray()
 
-# gdf["x"] = gdf.geometry.x
-# gdf["y"] = gdf.geometry.y
+gdf["x"] = gdf.geometry.x
+gdf["y"] = gdf.geometry.y
 # da = gdf.set_index(["y", "x"]).Value.to_xarray()
 # da = gdf.set_index(["y", "x"]).vp.to_xarray()
 # z_df.to_csv(r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\2022_qi_seismic_model_ClearLake\ModelinGEOS\2004_qi_10km.csv", index=False)
@@ -68,35 +68,35 @@ m_df.to_csv(fn.parent.joinpath("2024_qi_moho.csv"), index=False)
 #     data={"moho": utm_gdf.moho.to_numpy()},
 # )
 
-# dx = int((utm_gdf.easting.max() - utm_gdf.easting.min()) / 2)
-# dy = int((utm_gdf.northing.max() - utm_gdf.northing.min()) / 2)
+dx = int((utm_gdf.easting.max() - utm_gdf.easting.min()) / 2)
+dy = int((utm_gdf.northing.max() - utm_gdf.northing.min()) / 2)
 
-# x = np.linspace(utm_gdf.easting.min(), utm_gdf.easting.max(), dx + 1)
-# y = np.linspace(utm_gdf.northing.min(), utm_gdf.northing.max(), dy + 1)
-# depth = np.append(utm_gdf.z.unique() * 1000 * -1, [36000])
+x = np.linspace(utm_gdf.easting.min(), utm_gdf.easting.max(), dx + 1)
+y = np.linspace(utm_gdf.northing.min(), utm_gdf.northing.max(), dy + 1)
+depth = np.append(utm_gdf.z.unique() * 1000 * -1, [36000])
 
-# # interpolate onto a regular grid
-# new_vp = np.zeros((x.size - 1, y.size - 1, depth.size - 1))
+# interpolate onto a regular grid
+new_vp = np.zeros((x.size - 1, y.size - 1, depth.size - 1))
 
-# for index, z in enumerate(utm_gdf.z.unique()):
-#     zdf = utm_gdf[utm_gdf.z == z]
-#     grid_x = zdf.easting.array.reshape((ny, nx))
-#     grid_y = zdf.northing.array.reshape((ny, nx))
-#     velocity = zdf.vp.array.reshape((ny, nx))
+for index, z in enumerate(utm_gdf.z.unique()):
+    zdf = utm_gdf[utm_gdf.z == z]
+    grid_x = zdf.easting.array.reshape((ny, nx))
+    grid_y = zdf.northing.array.reshape((ny, nx))
+    velocity = zdf.vp.array.reshape((ny, nx))
 
-#     new_vp[:, :, index] = interpolate.griddata(
-#         (grid_x.ravel(), grid_y.ravel()),
-#         velocity.ravel(),
-#         (x[:-1, None], y[None, :-1]),
-#     )
+    new_vp[:, :, index] = interpolate.griddata(
+        (grid_x.ravel(), grid_y.ravel()),
+        velocity.ravel(),
+        (x[:-1, None], y[None, :-1]),
+    )
 
-# # estimate vp/vs
-# cell_data = {"vp": new_vp}
+# estimate vp/vs
+cell_data = {"vp": new_vp}
 
-# gridToVTK(
-#     fn.parent.joinpath("2024_li_vp").as_posix(),
-#     x,
-#     y,
-#     depth,
-#     cellData=cell_data,
-# )
+gridToVTK(
+    fn.parent.joinpath("2024_li_vp").as_posix(),
+    x,
+    y,
+    depth,
+    cellData=cell_data,
+)
