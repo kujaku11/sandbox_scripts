@@ -93,14 +93,15 @@ for key, fn in fn_dict.items():
 cell_data["vpvs"] = cell_data["vp"] / cell_data["vs"]
 
 # read 1D model
-vp1d = read_pstomo_1d(
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\2024_furlong_starting_1d_vel_p.txt"
-    )
-)
+# vp1d = read_pstomo_1d(
+#     Path(
+#         r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\2024_furlong_starting_1d_vel_p.txt"
+#     )
+# )
 
-cell_data["dvp"] = cell_data["vp"] - vp1d
+# cell_data["dvp"] = cell_data["vp"] - vp1d
 
+cell_data["dvp"] = cell_data["vp"] - np.nanmean(cell_data["vp"], axis=(0, 1))
 cell_data["dvs"] = cell_data["vs"] - np.nanmean(cell_data["vs"], axis=(0, 1))
 
 # lower_left = MTLocation()
