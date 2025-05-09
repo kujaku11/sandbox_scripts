@@ -18,16 +18,19 @@ from pyevtk.hl import pointsToVTK
 
 # =============================================================================
 
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
-model_epsg = 32611
-units = "km"
+# fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
+fn = Path(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\seismic\long_period_eqs\lp.events.hypoDD.catalog"
+)
+model_epsg = 32610
+units = "m"
 scale = 1
 if units in ["km"]:
     scale = 1000
 
 df = pd.read_csv(
     fn,
-    # delimiter="\s+",
+    delimiter="\s+",
     header=0,
     usecols=["time", "latitude", "longitude", "depth", "mag"],
     # usecols=["time utc", "lat", "lon", "depth km", "magnitude"], # umatilla
@@ -37,9 +40,7 @@ df = pd.read_csv(
 )
 
 
-gdf = gpd.GeoDataFrame(
-    df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
-)
+gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
 gdf.crs = {"init": "epsg:4326"}
 gdf.to_file(fn.parent.joinpath(f"{fn.stem}.shp"))
 
@@ -52,6 +53,6 @@ pointsToVTK(
     fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}").as_posix(),
     utm_gdf.easting.to_numpy() / scale,
     utm_gdf.northing.to_numpy() / scale,
-    utm_gdf.depth.to_numpy() * -1,
+    utm_gdf.depth.to_numpy() * -1000,
     data={"mag": utm_gdf.mag.to_numpy(), "depth": utm_gdf.depth.to_numpy()},
 )
