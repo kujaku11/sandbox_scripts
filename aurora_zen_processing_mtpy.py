@@ -16,37 +16,36 @@ from pathlib import Path
 from loguru import logger
 import pandas as pd
 
-from mtpy.processing import AuroraProcessing
+from mtpy.processing.aurora.process_aurora import AuroraProcessing
 from mt_metadata.utils.mttime import MTime
 
 
 warnings.filterwarnings("ignore")
 # =============================================================================
 # path to already created MTH5 files.  These are usually one station per MTH5
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021\archive")
 
 # path to store EDI files and make directory if not alread exists
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
 edi_path.mkdir(exist_ok=True)
 
-# band setup file. This describes which frequency bands to process at 
-# each decimation level.  
+# band setup file. This describes which frequency bands to process at
+# each decimation level.
 band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
 
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
-rr_geomag = False
+rr_geomag = True
 
 # geomagnetic H5 file
-geomag_mth5 = (
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024\usgs_geomag_bou_xy.h5"
-)
+geomag_mth5 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021\usgs_geomag_frn_xy.h5"
 # station name for geomagnetic observatory
-rr_geomag_station = "Boulder"
+rr_geomag_station = "Fresno"
 
 # list of stations to process.
 station_list = [
-    {"local": "mb99", "remote": "mb86"},
+    # {"local": "cl407", "remote": "cl408"},
+    {"local": "cl407", "remote": "cl409"},
 ]
 
 # How to combined transfer functions for the various sample rates.
@@ -66,15 +65,11 @@ for station_dict in station_list:
     ap.remote_station_id = station_dict["remote"]
 
     local_zen_station = ap.local_station_id
-    ap.local_mth5_path = survey_dir.joinpath(
-        "mth5", f"{ap.local_station_id}_with_1s_run.h5"
-    )
+    ap.local_mth5_path = survey_dir.joinpath(f"{ap.local_station_id}.h5")
 
     if ap.remote_station_id is not None:
         rr_zen_station = ap.remote_station_id
-        ap.remote_mth5_path = survey_dir.joinpath(
-            "mth5", f"{ap.remote_station_id}_with_1s_run.h5"
-        )
+        ap.remote_mth5_path = survey_dir.joinpath(f"{ap.remote_station_id}.h5")
     else:
         remote_mth5 = None
 
@@ -229,6 +224,7 @@ for station_dict in station_list:
     #     )
     # else:
     #     print("Something went wrong, check logs.")
+    # ap.merge_transfer_functions(tf_processed)
     # combined.station = f"{combined.station}"
     # combined.tf_id = f"{combined.station}_combined"
 
@@ -237,7 +233,7 @@ for station_dict in station_list:
     #     m.open_mth5(local_mth5)
     #     m.add_transfer_function(combined)
 
-    # # plot with MTpy
+    # plot with MTpy
     # mt_obj = MT()
     # mt_obj.survey_metadata = combined.survey_metadata
     # mt_obj._transfer_function = combined._transfer_function
@@ -251,7 +247,6 @@ for station_dict in station_list:
     et = MTime().now()
 
     diff = pd.Timedelta(et - st, unit="s")
-    logger.warning(
-        f"Processing took: {str(diff).split('days')[-1].strip()} minutes"
-    )
+    logger.warning(f"Processing took: {str(diff).split('days')[-1].strip()} minutes")
     print("\a")
+    tf_processed["combined"]["tf"].plot_mt_response(plot_num=2)

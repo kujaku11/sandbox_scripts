@@ -29,7 +29,7 @@ science_center = "GMEG"
 survey = "Clearlake"
 year = "2022"
 declination = 13.48
-plot = False
+plot = True
 
 project = f"{organization}-{science_center}"
 
@@ -59,7 +59,15 @@ survey_summary["start_date"] = [s.date() for s in survey_summary.start]
 
 ### use this to just do one file to make sure everything looks good
 # for edi_file in list(edi_path.glob("*.edi"))[0:1]:
-for edi_file in edi_path.glob("*.edi"):
+for edi_file in [
+    Path(
+        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\EDI_files_birrp\edited\geographic_north\cl407.edi"
+    ),
+    Path(
+        r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\EDI_files_birrp\edited\geographic_north\cl016.edi"
+    ),
+]:
+    # for edi_file in edi_path.glob("*.edi"):
     mt_obj = MT()
     mt_obj.read(edi_file)
     fn_name = f"{project}.{year}.{mt_obj.station.lower()}"
@@ -119,9 +127,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     # run in formation
     mt_obj.station_metadata.runs[0].data_logger.id = row.instrument_id
-    mt_obj.station_metadata.runs[0].data_logger.manufacturer = (
-        "Zonge International"
-    )
+    mt_obj.station_metadata.runs[0].data_logger.manufacturer = "Zonge International"
     mt_obj.station_metadata.runs[0].data_logger.type = "ZEN 32-bit"
     mt_obj.station_metadata.runs[0].data_logger.name = "ZEN"
 
@@ -152,9 +158,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     ### hx
     mt_obj.station_metadata.runs[0].hx.sensor.id = int(row.hx)
-    mt_obj.station_metadata.runs[0].hx.sensor.manufacturer = (
-        "Zonge International"
-    )
+    mt_obj.station_metadata.runs[0].hx.sensor.manufacturer = "Zonge International"
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
     mt_obj.station_metadata.runs[0].hx.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hx.channel_id = int(row.hx)
@@ -163,9 +167,7 @@ for edi_file in edi_path.glob("*.edi"):
 
     ### hy
     mt_obj.station_metadata.runs[0].hy.sensor.id = int(row.hy)
-    mt_obj.station_metadata.runs[0].hy.sensor.manufacturer = (
-        "Zonge International"
-    )
+    mt_obj.station_metadata.runs[0].hy.sensor.manufacturer = "Zonge International"
     mt_obj.station_metadata.runs[0].hy.sensor.type = "Induction Coil"
     mt_obj.station_metadata.runs[0].hy.sensor.name = "ANT-4"
     mt_obj.station_metadata.runs[0].hy.channel_id = int(row.hy)
@@ -176,9 +178,7 @@ for edi_file in edi_path.glob("*.edi"):
     ### hz
     if mt_obj.has_tipper():
         mt_obj.station_metadata.runs[0].hz.sensor.id = int(row.hz)
-        mt_obj.station_metadata.runs[0].hz.sensor.manufacturer = (
-            "Zonge International"
-        )
+        mt_obj.station_metadata.runs[0].hz.sensor.manufacturer = "Zonge International"
         mt_obj.station_metadata.runs[0].hz.sensor.type = "Induction Coil"
         mt_obj.station_metadata.runs[0].hz.sensor.name = "ANT-4"
         mt_obj.station_metadata.runs[0].hz.channel_id = int(row.hz)
@@ -192,22 +192,16 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.provenance.software.name = "mt-metadata"
     mt_obj.station_metadata.provenance.software.version = mt_metadata_version
 
-    mt_obj.station_metadata.provenance.create_time = str(MTime().now()).split(
-        "."
-    )[0]
+    mt_obj.station_metadata.provenance.create_time = str(MTime().now()).split(".")[0]
     mt_obj.station_metadata.provenance.creator.name = "Jared Peacock"
     mt_obj.station_metadata.provenance.creator.email = "jpeacock@usgs.gov"
-    mt_obj.station_metadata.provenance.creator.organization = (
-        "U.S. Geological Survey"
-    )
+    mt_obj.station_metadata.provenance.creator.organization = "U.S. Geological Survey"
     mt_obj.station_metadata.provenance.creator.url = r"https:\\www.usgs.gov"
 
     # provenance: submitter
     mt_obj.station_metadata.provenance.submitter.name = "Jared Peacock"
     mt_obj.station_metadata.provenance.submitter.email = "jpeacock@usgs.gov"
-    mt_obj.station_metadata.provenance.submitter.organization = (
-        "U.S. Geological Survey"
-    )
+    mt_obj.station_metadata.provenance.submitter.organization = "U.S. Geological Survey"
     mt_obj.station_metadata.provenance.submitter.url = r"https:\\www.usgs.gov"
 
     # transfer function
@@ -228,9 +222,7 @@ for edi_file in edi_path.glob("*.edi"):
     mt_obj.station_metadata.transfer_function.processing_parameters = (
         processing_parameters
     )
-    mt_obj.station_metadata.transfer_function.runs_processed = [
-        f"{mt_obj.station}a"
-    ]
+    mt_obj.station_metadata.transfer_function.runs_processed = [f"{mt_obj.station}a"]
     mt_obj.station_metadata.transfer_function.processing_type = (
         "Robust Remote Reference Processing"
     )
@@ -239,9 +231,7 @@ for edi_file in edi_path.glob("*.edi"):
     )
     mt_obj.station_metadata.comments = ""
 
-    mt_obj.station_metadata.transfer_function.sign_convention = (
-        "exp(+ i\omega t)"
-    )
+    mt_obj.station_metadata.transfer_function.sign_convention = "exp(+ i\omega t)"
     mt_obj.station_metadata.transfer_function.software.author = "K. Kappler"
     mt_obj.station_metadata.transfer_function.software.name = "Aurora"
     mt_obj.station_metadata.transfer_function.software.version = aurora_version

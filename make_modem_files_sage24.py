@@ -16,7 +16,7 @@ from mtpy.modeling.modem import Covariance
 # =============================================================================
 
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\VC_2024_ZT_data_edit.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\vc02_topo\VC_2024_ZT_data_edit.dat"
 )
 # topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
 topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\SAGE\valles_topo.tiff"
@@ -25,38 +25,14 @@ topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\SAGE\valles_topo.tiff"
 # Make data file
 # =============================================================================
 if not dfn.exists():
-    edi_path = Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\LD2024\EDI_Files_aurora\edited\GeographicNorth"
-    )
-    mc_path = edi_path.joinpath("ld2024.h5")
-
-    with MTCollection() as mc:
-        if mc_path.exists():
-            mc.open_collection(mc_path)
-        else:
-            mc.open_collection(mc_path)
-            mc.add_tf(mc.make_file_list(edi_path))
-        mc.working_dataframe = mc.master_dataframe
-        md = mc.to_mt_data()
-
-    md.utm_epsg = 32612
-
-    md.interpolate(np.logspace(np.log10(1.0 / 1000), np.log10(3000), 23))
-
-    md.z_model_error.error_type = "eigen"
-    md.z_model_error.error_value = 3
-    md.t_model_error.error_value = 0.02
-
-    md.compute_relative_locations()
-    md.compute_model_errors()
-
-    md.to_modem(md_filename=dfn.parent.joinpath("ld_modem_z03_t02.dat"))
+    raise FileNotFoundError(f"Could not find {dfn}.")
 else:
     md = MTData()
     md.from_modem(dfn)
     md._center_lat = None
     md._center_lon = None
     md.utm_crs = 32613
+    md.compute_relative_locations()
 
 
 # =============================================================================
@@ -79,7 +55,7 @@ mod_obj.z_target_depth = 60000
 mod_obj.pad_z = 5
 mod_obj.n_air_layers = 60
 mod_obj.n_layers = 110
-mod_obj.z1_layer = 20
+mod_obj.z1_layer = 25
 mod_obj.pad_stretch_v = 1.85
 mod_obj.z_layer_rounding = 1
 mod_obj.res_initial_value = 70
@@ -89,7 +65,7 @@ mod_obj.add_topography_to_model(
     topography_file=topo_fn,
     max_elev=3375,
     airlayer_type="constant",
-    shift_east=-1200,
+    shift_east=0,  # -1200,
 )
 
 md.center_stations(mod_obj)

@@ -33,11 +33,13 @@ resp_fn_02 = Path(
 
 # build data
 d = MTData()
-d.from_modem(data_fn, survey="data")
-d.from_modem(resp_fn, survey="inv_z03_t02_c02_040")
-d.from_modem(resp_fn_02, survey="inv_z03_t02_c02x2_028")
-
-for fn in magma_path.glob("*.dat"):
+# d.from_modem(data_fn, survey="data")
+# d.from_modem(resp_fn, survey="inv_z03_t02_c02_040")
+# d.from_modem(resp_fn_02, survey="inv_z03_t02_c02x2_028")
+fn_list = list(magma_path.glob("cl_test_doi*.dat")) + list(
+    magma_path.glob("cl_test_lp*.dat")
+)
+for fn in fn_list:
     survey_id = "_".join(fn.stem.split("_")[-2:])
     d.from_modem(fn, survey=survey_id)
 
