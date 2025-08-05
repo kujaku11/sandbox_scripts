@@ -20,9 +20,9 @@ request_df = pd.DataFrame(
         "type": ["adjusted"] * n,
         "elements": [["x", "y"]] * n,
         "sampling_period": [1] * n,
-        "start": ["2024-06-22T12:00:00"],
+        "start": ["2025-06-20T12:00:00"],
         "end": [
-            "2024-06-27T00:00:00",
+            "2025-06-25T12:00:00",
         ],
     }
 )
@@ -30,6 +30,6 @@ request_df = pd.DataFrame(
 make_mth5_object = MakeMTH5(
     mth5_version="0.2.0",
     interact=False,
-    save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024",
+    save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2025",
 )
 mth5_object = make_mth5_object.from_usgs_geomag(request_df)

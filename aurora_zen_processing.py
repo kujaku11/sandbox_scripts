@@ -18,8 +18,8 @@ import pandas as pd
 
 from aurora.config.config_creator import ConfigCreator
 from aurora.pipelines.process_mth5 import process_mth5
-from aurora.pipelines.run_summary import RunSummary
-from aurora.transfer_function.kernel_dataset import KernelDataset
+from mth5.processing.run_summary import RunSummary
+from mth5.processing.kernel_dataset import KernelDataset
 
 from mth5.helpers import close_open_files
 from mth5.mth5 import MTH5
@@ -30,27 +30,28 @@ from mtpy import MT
 
 warnings.filterwarnings("ignore")
 # =============================================================================
-# survey_dir = Path(r"c:\MT\BV2023")
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\MB")
-# survey_dir = Path(r"d:\SAGE2024")
+survey_dir = Path(
+    r"d:\WD SmartWare.swstor\IGSWMBWGLTGG032\Volume.b5634234.da89.11e2.aa2b.806e6f6e6963\MT\SAGE2025"
+)
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
 # band_file = r"d:\SAGE2023\bandset.cfg"
-band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
+band_file = r"c:\\Users\\jpeacock\\OneDrive - DOI\\MTData\bandset.cfg"
 rr_4096 = False
-rr_geomag = False
-geomag_mth5 = (
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2024\usgs_geomag_bou_xy.h5"
-)
+rr_geomag = True
+geomag_mth5 = survey_dir.joinpath("usgs_geomag_bou_xy.h5")
 rr_geomag_station = "Boulder"
 
 edi_path.mkdir(exist_ok=True)
 
 station_list = [
-    {"local": "mb99", "remote": "mb86"},
-    # {"local": "sg2403", "remote": "sg2401"},
-    # {"local": "sg2409", "remote": "sg2401"},
-    # {"local": "sg2402", "remote": "sg2404"},
-    # {"local": "sg2404", "remote": "sg2402"},
+    {"local": "sg2504", "remote": "sg2503"},
+    # {"local": "sg2501", "remote": "sg2508"},
+    # {"local": "sg2502", "remote": "sg2505"},
+    # {"local": "sg2504", "remote": "sg2503"},
+    # {"local": "sg2505", "remote": "sg2502"},
+    # {"local": "sg2508", "remote": "sg2501"},
+    # {"local": "sg2509", "remote": "sg2510"},
+    # {"local": "sg2510", "remote": "sg2509"},
 ]
 
 for station_dict in station_list:
@@ -60,13 +61,11 @@ for station_dict in station_list:
     st = MTime().now()
 
     local_zen_station = local_station
-    local_mth5 = survey_dir.joinpath("mth5", f"{local_station}_with_1s_run.h5")
+    local_mth5 = survey_dir.joinpath("mth5", f"{local_station}.h5")
 
     if rr_station is not None:
         rr_zen_station = rr_station
-        remote_mth5 = survey_dir.joinpath(
-            "mth5", f"{rr_station}_with_1s_run.h5"
-        )
+        remote_mth5 = survey_dir.joinpath("mth5", f"{rr_station}.h5")
     else:
         remote_mth5 = None
     sample_rates = [4096, 256, 1]
@@ -88,7 +87,14 @@ for station_dict in station_list:
         run_summary.df = run_summary.df[
             run_summary.df.sample_rate == sample_rate
         ]
-        run_summary.add_duration()
+        # run_summary.add_duration()
+
+        if sample_rate != 1:
+            run_summary.df = run_summary.df[
+                run_summary.df.end < "2025-06-24T18:00:00"
+            ]
+        else:
+            run_summary.df.end[:] = "2025-06-24T18:00:00"
 
         kernel_dataset = KernelDataset()
         if rr_station is None or sample_rate == 4096:
@@ -195,11 +201,11 @@ for station_dict in station_list:
             period_max=5,
         )
     else:
-        print("Something went wrong, check logs.")
-    combined.station = f"{combined.station}"
-    combined.tf_id = f"{combined.station}_combined"
+        combined = tf_list[0]
+    combined.station = f"{local_station}"
+    combined.tf_id = f"{local_station}_combined"
 
-    edi = combined.write(edi_path.joinpath(f"{combined.station}_combined.edi"))
+    edi = combined.write(edi_path.joinpath(f"{local_station}_combined.edi"))
     with MTH5() as m:
         m.open_mth5(local_mth5)
         m.add_transfer_function(combined)
