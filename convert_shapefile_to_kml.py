@@ -11,15 +11,15 @@ import fiona
 
 fiona.drvsupport.supported_drivers["KML"] = "rw"
 fiona.drvsupport.supported_drivers["kml"] = "rw"
-fiona.drvsupport.supported_drivers[
-    "libkml"
-] = "rw"  # enable KML support which is disabled by default
-fiona.drvsupport.supported_drivers[
-    "LIBKML"
-] = "rw"  # enable KML support which is disabled by default
+fiona.drvsupport.supported_drivers["libkml"] = (
+    "rw"  # enable KML support which is disabled by default
+)
+fiona.drvsupport.supported_drivers["LIBKML"] = (
+    "rw"  # enable KML support which is disabled by default
+)
 
 shp_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\2024\MT_2024_draft_locations.shp"
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\FieldWork\2025_pilsbury\2025_lake_pilsbury_mt_nfs_approved.shp"
 )
 # r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\USGS_MTPlan_For_NOI\buffalo_valley_mt_stations.shp"
 

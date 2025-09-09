@@ -19,8 +19,8 @@ from pyevtk.hl import pointsToVTK
 # =============================================================================
 
 # fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\SAGE\vc_earthquakes.csv")
-model_epsg = 32613
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\eq_query.csv")
+model_epsg = 32611
 units = "km"
 scale = 1
 if units in ["km"]:
@@ -38,9 +38,7 @@ df = pd.read_csv(
 )
 
 
-gdf = gpd.GeoDataFrame(
-    df, geometry=gpd.points_from_xy(df.longitude, df.latitude)
-)
+gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
 gdf.crs = {"init": "epsg:4326"}
 gdf.to_file(fn.parent.joinpath(f"{fn.stem}.shp"))
 

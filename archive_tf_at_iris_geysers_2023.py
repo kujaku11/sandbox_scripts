@@ -14,6 +14,7 @@ import pandas as pd
 from mtpy import MT
 
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.timeseries import Electric, Magnetic
 from mt_metadata import __version__ as mt_metadata_version
 
 # =============================================================================
@@ -62,13 +63,16 @@ save_path = Path(
 save_path.mkdir(exist_ok=True)
 
 ### survey information
+# survey_summary = pd.read_csv(
+#     r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\survey_summary.csv"
+# )
 survey_summary = pd.read_csv(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\survey_summary.csv"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\archive\cec_survey_summaries_renamed.csv"
 )
 survey_summary.start = pd.to_datetime(survey_summary.start)
 survey_summary.end = pd.to_datetime(survey_summary.end)
 survey_summary["start_date"] = [s.date() for s in survey_summary.start]
-survey_summary["station"] = [f"gz{ss}" for ss in survey_summary.station]
+# survey_summary["station"] = [f"gz{ss}" for ss in survey_summary.station]
 
 ### run this to loop over all edi files in folder
 # for edi_file in edi_path.glob("*.edi"):
@@ -77,14 +81,14 @@ survey_summary["station"] = [f"gz{ss}" for ss in survey_summary.station]
 # for edi_file in list(edi_path.glob("*.edi"))[0:1]:
 edi_list = [
     Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\EDI_files_birrp\rr_frn\GeographicNorth\edited\gz2072.edi"
+        r"c:\Users\jpeacock\OneDrive - DOI\Geysers\CEC\2023_EDI_files_birrp_processed\GeographicNorth_rr_frn\updated\gz2354.edi"
     ),
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\EDI_files_birrp\rr_frn\GeographicNorth\edited\gz3062.edi"
-    ),
-    Path(
-        r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\EDI_files_birrp\rr_frn\GeographicNorth\edited\gz3102.edi"
-    ),
+    # Path(
+    #     r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\EDI_files_birrp\rr_frn\GeographicNorth\edited\gz3062.edi"
+    # ),
+    # Path(
+    #     r"c:\Users\jpeacock\OneDrive - DOI\MTData\GZ2023\EDI_files_birrp\rr_frn\GeographicNorth\edited\gz3102.edi"
+    # ),
 ]
 # for edi_file in edi_path.glob("*.edi"):
 for edi_file in edi_list:
@@ -105,9 +109,10 @@ for edi_file in edi_list:
     row = row.iloc[0]
     original_station = str(mt_obj.station)
 
-    mt_obj.station = change_station_name(mt_obj.station[:-1], year)
-    mt_obj.tf_id = f"{mt_obj.station.lower()}_repeat"
-    fn_name = f"{project}.{year}.{mt_obj.station.lower()}_repeat"
+    # mt_obj.station = change_station_name(mt_obj.station[:-1], year)
+    # mt_obj.tf_id = f"{mt_obj.station.lower()}_repeat"
+    mt_obj.tf_id = mt_obj.station
+    fn_name = f"{project}.{year}.{mt_obj.station.lower()}"
 
     # update some of the metadata
     mt_obj.survey_metadata.id = survey
@@ -184,6 +189,8 @@ for edi_file in edi_list:
     mt_obj.station_metadata.runs[0].data_logger.name = "ZEN"
 
     # ### ex
+    if mt_obj.station_metadata.runs[0].ex is None:
+        mt_obj.station_metadata.runs[0].add_channel(Electric(component="ex"))
     mt_obj.station_metadata.runs[0].ex.dipole_length = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.x2 = row.dipole_ex
     mt_obj.station_metadata.runs[0].ex.positive.y2 = 0
@@ -197,6 +204,8 @@ for edi_file in edi_list:
     mt_obj.station_metadata.runs[0].ex.negative.name = "Stelth 1"
 
     # ### ey
+    if mt_obj.station_metadata.runs[0].ey is None:
+        mt_obj.station_metadata.runs[0].add_channel(Electric(component="ey"))
     mt_obj.station_metadata.runs[0].ey.dipole_length = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.positive.y2 = row.dipole_ey
     mt_obj.station_metadata.runs[0].ey.positive.x2 = 0
@@ -211,6 +220,8 @@ for edi_file in edi_list:
     mt_obj.station_metadata.runs[0].ey.negative.name = "Stelth 1"
 
     # ### hx
+    if mt_obj.station_metadata.runs[0].hx is None:
+        mt_obj.station_metadata.runs[0].add_channel(Magnetic(component="hx"))
     mt_obj.station_metadata.runs[0].hx.sensor.id = int(row.hx)
     mt_obj.station_metadata.runs[0].hx.sensor.manufacturer = "Zonge International"
     mt_obj.station_metadata.runs[0].hx.sensor.type = "Induction Coil"
@@ -220,6 +231,8 @@ for edi_file in edi_list:
     mt_obj.station_metadata.runs[0].hx.channel_number = 1
 
     ### hy
+    if mt_obj.station_metadata.runs[0].hy is None:
+        mt_obj.station_metadata.runs[0].add_channel(Magnetic(component="hy"))
     mt_obj.station_metadata.runs[0].hy.sensor.id = int(row.hy)
     mt_obj.station_metadata.runs[0].hy.sensor.manufacturer = "Zonge International"
     mt_obj.station_metadata.runs[0].hy.sensor.type = "Induction Coil"
@@ -231,6 +244,8 @@ for edi_file in edi_list:
 
     ### hz
     if mt_obj.has_tipper():
+        if mt_obj.station_metadata.runs[0].hz is None:
+            mt_obj.station_metadata.runs[0].add_channel(Magnetic(component="hz"))
         mt_obj.station_metadata.runs[0].hz.sensor.id = int(row.hz)
         mt_obj.station_metadata.runs[0].hz.sensor.manufacturer = "Zonge International"
         mt_obj.station_metadata.runs[0].hz.sensor.type = "Induction Coil"
