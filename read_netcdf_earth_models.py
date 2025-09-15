@@ -18,7 +18,7 @@ import xarray as xr
 import numpy as np
 
 # from scipy import interpolate
-
+from mtpy.core.mt_location import MTLocation
 import mtpy.utils.gis_tools as gis_tools
 from pyevtk.hl import gridToVTK, pointsToVTK
 import pyproj as proj
@@ -57,46 +57,29 @@ def project_grid(
     :rtype: float, float, string
 
     """
-    if pyproj_str is None:
-        lower_left = gis_tools.project_point_ll2utm(
-            latitude.min(), longitude.min(), epsg=utm_epsg
-        )
-        lower_right = gis_tools.project_point_ll2utm(
-            latitude.min(), longitude.max(), epsg=utm_epsg
-        )
-        upper_right = gis_tools.project_point_ll2utm(
-            latitude.max(), longitude.max(), epsg=utm_epsg
-        )
-        upper_left = gis_tools.project_point_ll2utm(
-            latitude.max(), longitude.min(), epsg=utm_epsg
-        )
-
-        utm_zone = lower_left[-1]
-    else:
-        default_proj = proj.Proj(init="epsg:4326")
-        custom_proj = proj.Proj(pyproj_str)
-        lower_left = proj.transform(
-            default_proj, custom_proj, longitude.min(), latitude.min()
-        )
-        lower_right = proj.transform(
-            default_proj, custom_proj, longitude.max(), latitude.min()
-        )
-        upper_right = proj.transform(
-            default_proj, custom_proj, longitude.max(), latitude.max()
-        )
-        upper_left = proj.transform(
-            default_proj, custom_proj, longitude.min(), latitude.max()
-        )
-        utm_zone = "custom"
+    if pyproj_str is not None:
+        utm_epsg = pyproj_str
+    lower_left = MTLocation(
+        latitude=latitude.min(), longitude=longitude.min(), utm_crs=utm_epsg
+    )
+    lower_right = MTLocation(
+        latitude=latitude.min(), longitude=longitude.max(), utm_crs=utm_epsg
+    )
+    upper_right = MTLocation(
+        latitude=latitude.max(), longitude=longitude.max(), utm_crs=utm_epsg
+    )
+    upper_left = MTLocation(
+        latitude=latitude.max(), longitude=longitude.min(), utm_crs=utm_epsg
+    )
 
     # get corners
     # not that since we have to have a regular grid we cannot take into account
     # distortion of the cells caused by the given projection.  So we will look
     # for the mean location.
-    left = np.array([lower_left[0], upper_left[0]]).mean()
-    right = np.array([lower_right[0], upper_right[0]]).mean()
-    bottom = np.array([lower_left[1], lower_right[1]]).mean()
-    top = np.array([upper_left[1], upper_right[1]]).mean()
+    left = np.array([lower_left.east, upper_left.east]).mean()
+    right = np.array([lower_right.east, upper_right.east]).mean()
+    bottom = np.array([lower_left.north, lower_right.north]).mean()
+    top = np.array([upper_left.north, upper_right.north]).mean()
     print(left, right, bottom, top)
     # this is hack to put the data on a regular grid
     # if the cells do not have even spacing bummer.
@@ -110,7 +93,7 @@ def project_grid(
     east += shift_east
     north += shift_north
 
-    return east, north, utm_zone
+    return east, north
 
 
 def read_nc_file(
@@ -167,7 +150,7 @@ def read_nc_file(
     # check longitude if its in 0 - 360 mode:
     if nc_obj.longitude.max() > 180:
         nc_obj = nc_obj.assign_coords({"longitude": nc_obj.longitude.values[:] - 360})
-    grid_east, grid_north, utm_zone = project_grid(
+    grid_east, grid_north = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
         utm_epsg=utm_epsg,
@@ -175,7 +158,7 @@ def read_nc_file(
         shift_east=shift_east,
         shift_north=shift_north,
     )
-    print(f"Projected to {utm_zone}")
+    print(f"Projected to {utm_epsg}")
 
     if "+" in coordinate_system:
         values_dict = {}
@@ -191,13 +174,20 @@ def read_nc_file(
             )
             for z_index in range(depth.size):
                 v_array[:, :, z_index] = value[z_index, :, :]
-            values_dict[key] = v_array
+            values_dict[key.lower()] = v_array
 
         # need to add another cell to the depth
         depth = np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
         if depth[1] > 100:
             print("scaling")
             depth *= scale
+
+        keys = [k.lower() for k in values_dict.keys()]
+        if "vsv" in keys and "vsh" in keys:
+            print("Computing radial anisotropy")
+            values_dict["radial_anisotropy"] = (
+                np.nan_to_num(values_dict["vsh"]) - np.nan_to_num(values_dict["vsv"])
+            ) / np.nan_to_num(values_dict["vsv"])
 
         # print(depth.shape, grid_east.shape, grid_north.shape)
         gridToVTK(
@@ -234,6 +224,12 @@ def read_nc_file(
 
         if find_vp and find_vs:
             values_dict["vp/vs"] = values_dict[find_vp] / values_dict[find_vs]
+
+        keys = [k.lower() for k in values_dict.keys()]
+        if "vsv" in keys and "vsh" in keys:
+            values_dict["radial_anisotropy"] = (
+                values_dict["vsh"] - values_dict["vsv"]
+            ) / values_dict["vsv"]
 
         # need to add another cell to the depth
         depth = -1 * np.append(depth, depth[-1] + (depth[-1] - depth[-2]))
@@ -314,7 +310,7 @@ def read_nc_file_points(
             drop=True,
         )
 
-    grid_east, grid_north, utm_zone = project_grid(
+    grid_east, grid_north = project_grid(
         nc_obj.latitude.values,
         nc_obj.longitude.values,
         utm_epsg=utm_epsg,
@@ -324,7 +320,7 @@ def read_nc_file_points(
         points=True,
     )
 
-    print(f"Projected to {utm_zone}")
+    print(f"Projected to {utm_epsg}")
     xg, yg = np.meshgrid(grid_east, grid_north)
     xg = xg[::-1, ::-1].ravel() * scale
     yg = yg[::-1, ::-1].ravel() * scale
@@ -377,6 +373,10 @@ def read_nc_file_points(
 # =============================================================================
 nc_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models")
 
+model_utm = 32611
+coordinate_system = "nez+"
+units = "km"
+
 points = False
 # custom_crs = "+proj=tmerc +lat_0=0 +lon_0=-113.25 +k=0.9996 +x_0=4511000 +y_0=0 +ellps=WGS84 +units=m +no_defs"
 custom_crs = None
@@ -390,7 +390,7 @@ custom_crs = None
 
 # # Great Basin
 # model_center = (38.615252, -119.015192)
-model_center = (37.855540, -116.897222)
+model_center = MTLocation(latitude=37.855540, longitude=-116.897222, utm_crs=model_utm)
 # model_utm = "11S"
 
 ## Clear Lake
@@ -398,22 +398,20 @@ model_center = (37.855540, -116.897222)
 # model_utm = "10S"
 
 # model_center = (0, 0)
-model_utm = 32611
-coordinate_system = "enz-"
-units = "km"
 
-if custom_crs is None:
-    model_east, model_north = gis_tools.project_point(
-        model_center[1], model_center[0], 4326, model_utm
-    )
-else:
-    default_proj = proj.Proj(init="epsg:4326")
-    custom_proj = proj.Proj(custom_crs)
-    model_east, model_north = proj.transform(
-        default_proj, custom_proj, model_center[1], model_center[0]
-    )
 
-    utm_zone = "custom"
+# if custom_crs is None:
+#     model_east, model_north = gis_tools.project_point(
+#         model_center[1], model_center[0], 4326, model_utm
+#     )
+# else:
+#     default_proj = proj.Proj(init="epsg:4326")
+#     custom_proj = proj.Proj(custom_crs)
+#     model_east, model_north = proj.transform(
+#         default_proj, custom_proj, model_center[1], model_center[0]
+#     )
+
+#     utm_zone = "custom"
 
 # relative shifts to center model on mt mode
 # NWUS11 - CA/NV
@@ -442,12 +440,20 @@ clearlake_bbox = {
 # rel_shift_north = -model_north
 
 # WUS256
-rel_shift_east = -35000
-rel_shift_north = -85000
+rel_shift_east = -model_center.east - 35000
+rel_shift_north = -model_center.north - 85000
 
+# CUSRA
+# rel_shift_east = -350000 - 25000
+# rel_shift_north = -4950000 + 75000
+
+# rel_shift_east = -model_center.east
+# rel_shift_north = -model_center.north
 nc_list = [
-    {"fn": "WUS256.r0.0.nc", "points": False, "z_key": "depth"},
-    # {"fn": "WUS324.r0.0.nc", "points": False, "z_key": "depth"},
+    # {"fn": "CUSRA2021.r0.0.nc", "points": False, "z_key": "depth"},
+    # {"fn": "CANVAS.r0.0.nc", "points": False, "z_key": "depth"},
+    # {"fn": "WUS256.r0.0.nc", "points": False, "z_key": "depth"},
+    {"fn": "WUS324.r0.0.nc", "points": False, "z_key": "depth"},
     # {"fn": "western_us_NWUS11-vp_vs.nc", "points": False},
     # {"fn": "western_us_DNA13_percent.nc", "points": False},
     # {"fn": "western_us_s_waves_wUS-SH-2010_percent.nc", "points": False},
