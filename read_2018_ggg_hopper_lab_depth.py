@@ -24,12 +24,21 @@ gdf = gpd.GeoDataFrame(
     df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs=4326
 )
 
-utm_gdf = gdf.to_crs(32611)
+utm_zone = 32610
+utm_gdf = gdf.to_crs(utm_zone)
+
+# pointsToVTK(
+#     fn.parent.joinpath(f"2018_hopper_lab_depth_{utm_zone}_km_ned").as_posix(),
+#     utm_gdf.geometry.x.to_numpy() / 1000,
+#     utm_gdf.geometry.y.to_numpy() / 1000,
+#     -1 * utm_gdf.depth.to_numpy(),
+#     {"depth": utm_gdf.depth.to_numpy()},
+# )
 
 pointsToVTK(
-    fn.parent.joinpath("2018_hopper_lab_depth_32611_km_ned").as_posix(),
-    utm_gdf.geometry.x.to_numpy() / 1000,
-    utm_gdf.geometry.y.to_numpy() / 1000,
-    -1 * utm_gdf.depth.to_numpy(),
+    fn.parent.joinpath(f"2018_hopper_lab_depth_{utm_zone}_m_enzm").as_posix(),
+    utm_gdf.geometry.x.to_numpy(),
+    utm_gdf.geometry.y.to_numpy(),
+    -1 * utm_gdf.depth.to_numpy() * 1000,
     {"depth": utm_gdf.depth.to_numpy()},
 )
