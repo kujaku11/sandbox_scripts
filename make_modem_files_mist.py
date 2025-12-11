@@ -16,7 +16,7 @@ from mtpy.modeling.modem import Covariance
 # =============================================================================
 
 dfn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MIST\modem_inv\inv_02\mist_modem_data_z03_t02_tec.dat"
+    r"c:\Users\jpeacock\OneDrive - DOI\MIST\modem_inv\inv_03\mist_modem_data_big_05.dat"
 )
 
 # topo_fn = r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\westcoast_etopo.asc"
@@ -58,7 +58,7 @@ else:
     md.from_modem(dfn)
     md._center_lat = None
     md._center_lon = None
-    md.utm_crs = utm_epsg
+    md.compute_relative_locations()
 
 
 # =============================================================================
@@ -72,17 +72,17 @@ mod_obj.cell_size_east = 1500
 mod_obj.cell_size_north = 1500
 mod_obj.pad_east = 10
 mod_obj.pad_north = 10
-mod_obj.pad_num = 3
+mod_obj.pad_num = 5
 mod_obj.ew_ext = 400000
 mod_obj.ns_ext = 400000
 mod_obj.z_mesh_method = "default"
-mod_obj.z_bottom = 300000
-mod_obj.z_target_depth = 150000
-mod_obj.pad_z = 5
+mod_obj.z_bottom = 600000
+mod_obj.z_target_depth = 200000
+mod_obj.pad_z = 6
 mod_obj.n_air_layers = 25
 mod_obj.n_layers = 110
 mod_obj.z1_layer = 25
-mod_obj.pad_stretch_v = 1.85
+mod_obj.pad_stretch_v = 1.6
 mod_obj.z_layer_rounding = 1
 mod_obj.res_initial_value = 30
 
@@ -92,6 +92,7 @@ mod_obj.add_topography_to_model(
     max_elev=800,
     airlayer_type="constant",
     shift_east=0,
+    shift_north=0,
 )
 
 md.center_stations(mod_obj)
@@ -115,11 +116,11 @@ mod_obj.to_modem(
 
 
 cov = Covariance(grid_dimensions=mod_obj.res_model.shape)
-cov.smoothing_east = 0.25
-cov.smoothing_north = 0.25
-cov.smoothing_z = 0.25
+cov.smoothing_east = 0.5
+cov.smoothing_north = 0.5
+cov.smoothing_z = 0.3
 cov.smoothing_num = 1
 
 cov.write_covariance_file(
-    dfn.parent.joinpath("covariance.cov"), res_model=mod_obj.res_model
+    dfn.parent.joinpath("covariance_topo.cov"), res_model=mod_obj.res_model
 )

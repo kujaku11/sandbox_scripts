@@ -9,6 +9,7 @@ Created on Thu Jul 11 15:29:40 2024
 # =============================================================================
 from pathlib import Path
 from mth5.io.zen import Z3DCollection
+from loguru import logger
 
 # =============================================================================
 
@@ -18,7 +19,7 @@ folder = Path(r"C:\Users\jpeacock\OneDrive - DOI\MTData")
 survey_dict = {
     # "BM2022": {"survey": "BM2022"}
     # "BV2023": {"survey": "BV2023"},
-    "CL2021": {"survey": "CL2021"},
+    # "CL2021": {"survey": "CL2021"},
     # "Camas": {"survey": "CM2018"},
     # "GabbsValley": {"survey": "GV2017"},
     # "Geysers": {"survey": "GZ2017"},
@@ -41,6 +42,7 @@ survey_dict = {
     # "SanPabloBay": {"survey": "SPB2015"},
     # "UM": {"survey": "UMTIR2020"},
     # "Umatilla": {"survey": "UMTIR2017"},
+    "CM2025": {"survey": "ColumbusMarsh2025"},
 }
 
 for key, sdict in survey_dict.items():
@@ -118,3 +120,4 @@ for key, sdict in survey_dict.items():
 
     except Exception as error:
         print(f"ERROR: {key}\n{error}")
+        logger.exception(error)

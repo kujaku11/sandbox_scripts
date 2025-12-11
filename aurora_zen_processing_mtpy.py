@@ -17,13 +17,15 @@ from loguru import logger
 import pandas as pd
 
 from mtpy.processing.aurora.process_aurora import AuroraProcessing
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common import MTime
+from mth5.helpers import close_open_files
+from mtpy import MT
 
 
 warnings.filterwarnings("ignore")
 # =============================================================================
 # path to already created MTH5 files.  These are usually one station per MTH5
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021\archive")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025\mth5")
 
 # path to store EDI files and make directory if not alread exists
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
@@ -32,221 +34,129 @@ edi_path.mkdir(exist_ok=True)
 # band setup file. This describes which frequency bands to process at
 # each decimation level.
 band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
+band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
 
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
 rr_geomag = True
 
 # geomagnetic H5 file
-geomag_mth5 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2021\usgs_geomag_frn_xy.h5"
+geomag_mth5 = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025\usgs_geomag_frn_xy.h5")
 # station name for geomagnetic observatory
 rr_geomag_station = "Fresno"
 
 # list of stations to process.
 station_list = [
-    # {"local": "cl407", "remote": "cl408"},
-    {"local": "cl407", "remote": "cl409"},
+    {"local": "cm217", "remote": "cm215"},
 ]
 
 # How to combined transfer functions for the various sample rates.
 merge_dict = {
     256: {"period_min": 1.0 / 25, "period_max": 100},
     1: {"period_min": 100, "period_max": 10000},
-    4096: {"period_min": 1.0 / 2000, "period_max": 1.0 / 26},
+    4096: {"period_min": 1.0 / 2048, "period_max": 1.0 / 26},
 }
+
+sample_rates = [4096, 256, 1]
+# sample_rates = [256]  # sample rates to process
 
 # loop over stations in the station list and process.
 for station_dict in station_list:
 
     st = MTime().now()
 
+    processing_dict = dict([(sr, {"config": None, "kernel_dataset": None}) for sr in sample_rates])
+
+    # setup AuroraProcessing object
     ap = AuroraProcessing(merge_dictionary=merge_dict)
     ap.local_station_id = station_dict["local"]
-    ap.remote_station_id = station_dict["remote"]
-
-    local_zen_station = ap.local_station_id
     ap.local_mth5_path = survey_dir.joinpath(f"{ap.local_station_id}.h5")
 
-    if ap.remote_station_id is not None:
-        rr_zen_station = ap.remote_station_id
-        ap.remote_mth5_path = survey_dir.joinpath(f"{ap.remote_station_id}.h5")
-    else:
-        remote_mth5 = None
-
-    ap.run_summary = ap.get_run_summary()
+    
 
     ## this will run defaults and remote reference each sample rate to
     ## the specified remote reference.
-    tf_processed = ap.process([4096, 256, 1])
+    # tf_processed = ap.process([4096, 256, 1])
 
-    ## if you want more control the you need to create a kernel dataset
-    ## and a configuration for each sample rate.
-    ## 4096
-    # build kernel dataset
-    # if rr_4096:
-    #     kds_4096 = ap.create_kernel_dataset(sample_rate=4096)
-    # else:
-    #     kds_4096 = ap.create_kernel_dataset(
-    #         remote_station_id=None, sample_rate=4096
-    #     )
 
-    # # build config
-    # config = ap.create_config
+    # if you want more control the you need to create a kernel dataset
+    # and a configuration for each sample rate.
 
-    # processing_dict = {}
+    for sample_rate in sample_rates:
+        close_open_files()
+        ap.df = None  # reset the dataframe
+        if station_dict["remote"] is None:
+            ap.remote_station_id = None
+        elif sample_rate == 4096 and not rr_4096:
+            ap.remote_station_id = None
+        elif sample_rate == 1 and rr_geomag:
+            ap.remote_station_id = rr_geomag_station
+            ap.remote_mth5_path = geomag_mth5
+        else:
+            ap.remote_station_id = station_dict["remote"]
+            ap.remote_mth5_path = survey_dir.joinpath(f"{ap.remote_station_id}.h5")
 
-    # for sr in [4096, 256, 1]:
 
-    # sample_rates =
-    # # sample_rates = [1]
+        # create run summary
+        run_summary = ap.get_run_summary()
+        run_summary.set_sample_rate(sample_rate, inplace=True)
 
-    # tf_list = []
-    # sr_processed = {4096: False, 256: False, 1: False}
-    # for sample_rate in sample_rates:
-    #     close_open_files()
-    #     mth5_run_summary = RunSummary()
-    #     if rr_station is None or sample_rate == 4096:
-    #         mth5_run_summary.from_mth5s([local_mth5])
-    #     elif sample_rate == 1 and rr_geomag:
-    #         mth5_run_summary.from_mth5s([local_mth5, geomag_mth5])
+        # create kernel dataset
+        kernel_dataset = ap.create_kernel_dataset(
+            run_summary=run_summary,
+            local_station_id=ap.local_station_id,
+            remote_station_id=ap.remote_station_id,
+        )
 
-    #     else:
-    #         mth5_run_summary.from_mth5s([local_mth5, remote_mth5])
-    #     run_summary = mth5_run_summary.clone()
-    #     run_summary.df = run_summary.df[
-    #         run_summary.df.sample_rate == sample_rate
-    #     ]
-    #     run_summary.add_duration()
+        # drop runs that are too short
+        if sample_rate == 4096:
+            mimimum_run_duration = 100  # seconds
+            band_setup_file = band_file_4096
+        elif sample_rate == 256:
+            mimimum_run_duration = 1000  # seconds
+            band_setup_file = band_file
+        elif sample_rate == 1:
+            mimimum_run_duration = 3600 * 5  # seconds
+            band_setup_file = band_file
 
-    #     kernel_dataset = KernelDataset()
-    #     if rr_station is None or sample_rate == 4096:
-    #         # run_summary.df = run_summary.df.iloc[0:1]
-    #         kernel_dataset.from_run_summary(run_summary, local_zen_station)
-    #     elif sample_rate == 1 and rr_geomag:
-    #         kernel_dataset.from_run_summary(
-    #             run_summary, local_zen_station, rr_geomag_station
-    #         )
-    #     else:
-    #         kernel_dataset.from_run_summary(
-    #             run_summary, local_zen_station, rr_zen_station
-    #         )
-    #     if sample_rate == 4096:
-    #         mimimum_run_duration = 100  # seconds
-    #     elif sample_rate == 256:
-    #         mimimum_run_duration = 1000  # seconds
-    #     elif sample_rate == 1:
-    #         mimimum_run_duration = 3600 * 5  # seconds
-    #     kernel_dataset.drop_runs_shorter_than(mimimum_run_duration)
+        kernel_dataset.drop_runs_shorter_than(mimimum_run_duration)
 
-    #     cc = ConfigCreator()
-    #     config = cc.create_from_kernel_dataset(
-    #         kernel_dataset,
-    #         emtf_band_file=band_file,
-    #     )
-    #     for decimation in config.decimations:
-    #         if sample_rate == 4096:
-    #             if rr_4096:
-    #                 decimation.estimator.engine = "RME_RR"
-    #             else:
-    #                 decimation.estimator.engine = "RME"
-    #             decimation.window.overlap = 128
-    #             decimation.window.num_samples = 1024
+        # create configuration object
+        config = ap.create_config(
+            kernel_dataset=kernel_dataset,
+            **{"emtf_band_file": band_setup_file,
+               "input_channels": kernel_dataset.input_channels,
+               "output_channels": kernel_dataset.output_channels,
+               },
+        )
 
-    #         else:
-    #             decimation.estimator.engine = "RME_RR"
-    #             decimation.window.overlap = 64
-    #             decimation.window.num_samples = 128
-    #         decimation.window.type = "dpss"
-    #         decimation.window.additional_args = {"alpha": 2.5}
-    #         decimation.output_channels = ["ex", "ey", "hz"]
-    #     # process
-    #     try:
-    #         tf_obj = process_mth5(
-    #             config,
-    #             kernel_dataset,
-    #             units="MT",
-    #             show_plot=False,
-    #             z_file_path=None,
-    #         )
-    #         tf_obj.tf_id = f"{local_station}_{sample_rate}"
+        # add to processing dictionary
+        processing_dict[sample_rate]["config"] = config
+        processing_dict[sample_rate]["kernel_dataset"] = kernel_dataset
 
-    #         tf_list.append(tf_obj)
-    #         sr_processed[sample_rate] = True
-
-    #         with MTH5() as m:
-    #             m.open_mth5(local_mth5)
-    #             m.add_transfer_function(tf_obj)
-    #     except Exception as error:
-    #         close_open_files()
-    #         logger.exception(error)
-    #         logger.error(f"skipping {sample_rate}")
-    #         sr_processed[sample_rate] = False
-    # if (
-    #     sr_processed[4096] == True
-    #     and sr_processed[256] == True
-    #     and sr_processed[1] == True
-    # ):
-    #     combined = tf_list[0].merge(
-    #         [
-    #             {"tf": tf_list[1], "period_min": 1.0 / 25, "period_max": 100},
-    #             {"tf": tf_list[2], "period_min": 100, "period_max": 10000},
-    #         ],
-    #         period_max=1.0 / 26,
-    #     )
-    # elif sr_processed[256] == True and sr_processed[1] == True:
-    #     combined = tf_list[0].merge(
-    #         [
-    #             {"tf": tf_list[1], "period_min": 100, "period_max": 10000},
-    #         ],
-    #         period_max=100,
-    #     )
-    # elif sr_processed[4096] == True and sr_processed[256] == True:
-    #     combined = tf_list[0].merge(
-    #         [
-    #             {
-    #                 "tf": tf_list[1],
-    #                 "period_min": 1.0 / 25,
-    #                 "period_max": 10000,
-    #             },
-    #         ],
-    #         period_max=1.0 / 26,
-    #     )
-    # elif sr_processed[4096] == True and sr_processed[1] == True:
-    #     combined = tf_list[0].merge(
-    #         [
-    #             {
-    #                 "tf": tf_list[1],
-    #                 "period_min": 1.0 / 8,
-    #                 "period_max": 10000,
-    #             },
-    #         ],
-    #         period_max=5,
-    #     )
-    # else:
-    #     print("Something went wrong, check logs.")
-    # ap.merge_transfer_functions(tf_processed)
-    # combined.station = f"{combined.station}"
-    # combined.tf_id = f"{combined.station}_combined"
-
-    # edi = combined.write(edi_path.joinpath(f"{combined.station}_combined.edi"))
-    # with MTH5() as m:
-    #     m.open_mth5(local_mth5)
-    #     m.add_transfer_function(combined)
+    ### process
+    processed_dict = ap.process(
+        processing_dict=processing_dict,
+    )
 
     # plot with MTpy
-    # mt_obj = MT()
-    # mt_obj.survey_metadata = combined.survey_metadata
-    # mt_obj._transfer_function = combined._transfer_function
-    # p1 = mt_obj.plot_mt_response(fig_num=6, plot_num=2)
-    # p1.save_plot(
-    #     edi_path.joinpath(f"{mt_obj.station}.png"),
-    #     fig_dpi=300,
-    #     close_plot=False,
-    # )
+    try:
+        combined = processed_dict["combined"]["tf"]
+    except KeyError:
+        raise ValueError("Processing did not complete successfully. Check logs.")
+    
+    mt_obj = MT()
+    mt_obj.survey_metadata = combined.survey_metadata
+    mt_obj._transfer_function = combined._transfer_function
+    p1 = mt_obj.plot_mt_response(fig_num=6, plot_num=2)
+    p1.save_plot(
+        edi_path.joinpath(f"{mt_obj.station}.png"),
+        fig_dpi=300,
+        close_plot=False,
+    )
 
     et = MTime().now()
 
     diff = pd.Timedelta(et - st, unit="s")
     logger.warning(f"Processing took: {str(diff).split('days')[-1].strip()} minutes")
     print("\a")
-    tf_processed["combined"]["tf"].plot_mt_response(plot_num=2)

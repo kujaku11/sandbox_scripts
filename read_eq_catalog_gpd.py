@@ -19,8 +19,8 @@ from pyevtk.hl import pointsToVTK
 # =============================================================================
 
 # fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\eq_query.csv")
-model_epsg = 32611
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\kilauea\HVO1DXC8618_V1.0.txt")
+model_epsg = 32605
 units = "km"
 scale = 1
 if units in ["km"]:
@@ -28,9 +28,13 @@ if units in ["km"]:
 
 df = pd.read_csv(
     fn,
-    delimiter=",",
+    # delimiter=",",
+    delimiter="\s+",
+    names=["year", "month", "day", "hour", "minute", "second", "count","latitude", 
+           "longitude", "depth", "mag", "a1", "n1", "n2", "n3", "rms", "gap", 
+           "dist", "azm", "type", "auth", "review", "rel_lat", "rel_lon", "rel_depth"],
     header=0,
-    usecols=["time", "latitude", "longitude", "depth", "mag"],
+    usecols=["latitude", "longitude", "depth", "mag"],
     # usecols=["time utc", "lat", "lon", "depth km", "magnitude"], # umatilla
     index_col=False,
     # skipfooter=1,
@@ -48,6 +52,20 @@ utm_gdf["northing"] = utm_gdf.geometry.y
 
 df["easting"] = utm_gdf["easting"]
 df["northing"] = utm_gdf["northing"]
+
+# ind=find(eqdat(:,14)>1); % only grab relocated eqs
+#   eqdat=eqdat([ind],:);
+#   ind=find(eqdat(:,10)<15 & eqdat(:,10)>0); % only grab eqs < 15 km depth (and not in the air...)
+#   eqdat=eqdat([ind],:);
+#   ind=find(eqdat(:,9)>-155.5);
+#   eqdat=eqdat([ind],:);
+#   ind=find(eqdat(:,9)<-154.8);
+#   eqdat=eqdat([ind],:);
+#   ind=find(eqdat(:,8)<19.6);
+#   eqdat=eqdat([ind],:);
+#   ind=find(eqdat(:,8)>19.15);
+#   eqdat=eqdat([ind],:);
+#   eqdat=eqdat(:,[1:6,8:11]); % save only necessary columns
 
 df.to_csv(
     fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}.csv").as_posix(),

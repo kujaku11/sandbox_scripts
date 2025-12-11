@@ -12,24 +12,29 @@ import pandas as pd
 from mth5.clients import MakeMTH5
 
 # =============================================================================
-obs = ["bou"]
+obs = ["frn"]
 n = len(obs)
 request_df = pd.DataFrame(
     {
-        "observatory": ["bou"],
+        "observatory": obs,
         "type": ["adjusted"] * n,
         "elements": [["x", "y"]] * n,
         "sampling_period": [1] * n,
-        "start": ["2025-06-20T12:00:00"],
+        "start": ["2025-06-03T12:00:00"] * n,
         "end": [
-            "2025-06-25T12:00:00",
-        ],
+            "2025-06-11T00:00:00",
+        ] * n,
     }
 )
 
-make_mth5_object = MakeMTH5(
-    mth5_version="0.2.0",
-    interact=False,
-    save_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2025",
+
+mth5_object = MakeMTH5.from_usgs_geomag(
+    request_df, 
+    **{"save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025", 
+       "interact": False,
+         "mth5_version": "0.2.0"
+         }
 )
-mth5_object = make_mth5_object.from_usgs_geomag(request_df)
+
+
+
