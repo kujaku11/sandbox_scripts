@@ -52,9 +52,9 @@ station_list = [
 
 # How to combined transfer functions for the various sample rates.
 merge_dict = {
-    256: {"period_min": 1.0 / 25, "period_max": 100},
+    256: {"period_min": 1.0 / 7.9, "period_max": 100},
     1: {"period_min": 100, "period_max": 10000},
-    4096: {"period_min": 1.0 / 2048, "period_max": 1.0 / 26},
+    4096: {"period_min": 1.0 / 2048, "period_max": 1.0 / 8},
 }
 
 sample_rates = [4096, 256, 1]
