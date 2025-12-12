@@ -19,7 +19,7 @@ import pandas as pd
 from mtpy.processing.aurora.process_aurora import AuroraProcessing
 from mt_metadata.common import MTime
 from mth5.helpers import close_open_files
-from mtpy import MT
+from mtpy import MT, MTData
 
 
 warnings.filterwarnings("ignore")
@@ -34,7 +34,7 @@ edi_path.mkdir(exist_ok=True)
 # band setup file. This describes which frequency bands to process at
 # each decimation level.
 band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
-band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
+band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096_02.cfg"
 
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
@@ -124,6 +124,7 @@ for station_dict in station_list:
         # create configuration object
         config = ap.create_config(
             kernel_dataset=kernel_dataset,
+            add_coherence_weights=True,
             **{"emtf_band_file": band_setup_file,
                "input_channels": kernel_dataset.input_channels,
                "output_channels": kernel_dataset.output_channels,
@@ -138,6 +139,16 @@ for station_dict in station_list:
     processed_dict = ap.process(
         processing_dict=processing_dict,
     )
+
+    # plot each TF for each sample rate
+    md = MTData()
+    for sample_rate, processed in processed_dict.items():
+        if "tf" not in processed:
+            logger.warning(f"No transfer function for {sample_rate} Hz")
+            continue
+        md.add_station(processed["tf"], survey=f"sr_{sample_rate}")
+
+    md.plot_mt_response(list(md.keys()), plot_style="compare", fig_num=2)
 
     # plot with MTpy
     try:
