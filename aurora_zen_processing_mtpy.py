@@ -34,7 +34,7 @@ edi_path.mkdir(exist_ok=True)
 # band setup file. This describes which frequency bands to process at
 # each decimation level.
 band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
-band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096_02.cfg"
+band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
 
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
