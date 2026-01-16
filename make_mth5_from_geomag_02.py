@@ -20,21 +20,20 @@ request_df = pd.DataFrame(
         "type": ["adjusted"] * n,
         "elements": [["x", "y"]] * n,
         "sampling_period": [1] * n,
-        "start": ["2025-06-03T12:00:00"] * n,
+        "start": ["2025-08-22T00:00:00"] * n,
         "end": [
-            "2025-06-11T00:00:00",
-        ] * n,
+            "2025-08-30T00:00:00",
+        ]
+        * n,
     }
 )
 
 
 mth5_object = MakeMTH5.from_usgs_geomag(
-    request_df, 
-    **{"save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025", 
-       "interact": False,
-         "mth5_version": "0.2.0"
-         }
+    request_df,
+    **{
+        "save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5",
+        "interact": False,
+        "mth5_version": "0.2.0",
+    }
 )
-
-
-

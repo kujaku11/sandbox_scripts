@@ -42,7 +42,8 @@ survey_dict = {
     # "SanPabloBay": {"survey": "SPB2015"},
     # "UM": {"survey": "UMTIR2020"},
     # "Umatilla": {"survey": "UMTIR2017"},
-    "CM2025": {"survey": "ColumbusMarsh2025"},
+    # "CM2025": {"survey": "ColumbusMarsh2025"},
+    "CL2025": {"survey": "CL2025"},
 }
 
 for key, sdict in survey_dict.items():
@@ -58,9 +59,7 @@ for key, sdict in survey_dict.items():
             sdf.loc[sdf.station == station, "start"] = df[
                 df.station == station
             ].start.min()
-            sdf.loc[sdf.station == station, "end"] = df[
-                df.station == station
-            ].end.max()
+            sdf.loc[sdf.station == station, "end"] = df[df.station == station].end.max()
             sdf.loc[sdf.station == station, "latitude"] = df[
                 df.station == station
             ].latitude.mean()

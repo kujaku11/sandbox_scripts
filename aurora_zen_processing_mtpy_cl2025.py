@@ -30,7 +30,7 @@ plt.ioff()
 warnings.filterwarnings("ignore")
 # =============================================================================
 # path to already created MTH5 files.  These are usually one station per MTH5
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025\mth5")
+survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5")
 
 # path to store EDI files and make directory if not alread exists
 edi_path = survey_dir.joinpath("EDI_Files_aurora")
@@ -47,43 +47,39 @@ rr_geomag = True
 
 # geomagnetic H5 file
 geomag_mth5 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CM2025\usgs_geomag_frn_xy.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_frn_xy.h5"
 )
 # station name for geomagnetic observatory
 rr_geomag_station = "Fresno"
 
 # list of stations to process.
 station_list = [
-    {"local": "cm217", "remote": "cm215"},  # pull from mth5
-    {"local": "cm216", "remote": "cm215"},
-    {"local": "cm226", "remote": "cm215"},
-    {"local": "cm215", "remote": "cm226"},
-    {"local": "cm214", "remote": "cm225"},
-    {"local": "cm210", "remote": "cm225"},
-    {"local": "cm213", "remote": "cm225"},
-    {"local": "cm225", "remote": "cm213"},
-    {"local": "cm208", "remote": "cm211"},
-    {"local": "cm219", "remote": "cm211"},
-    {"local": "cm230", "remote": "cm211"},
-    {"local": "cm220", "remote": "cm211"},
-    {"local": "cm211", "remote": "cm220"},  # singular matrix issue
-    {"local": "cm228", "remote": "cm205"},
-    {"local": "cm207", "remote": "cm205"},
-    {"local": "cm209", "remote": "cm205"},
-    {"local": "cm206", "remote": "cm205"},
-    {"local": "cm205", "remote": "cm206"},  # redo
-    {"local": "cm204", "remote": "cm231"},  # redo
-    {"local": "cm224", "remote": "cm231"},  # redo
-    {"local": "cm218", "remote": "cm231"},
-    {"local": "cm231", "remote": "cm218"},
-    {"local": "cm201", "remote": "cm202"},
-    {"local": "cm222", "remote": "cm202"},
-    {"local": "cm202", "remote": "cm221"},
-    {"local": "cm221", "remote": "cm202"},
-    {"local": "cm203", "remote": "cm227"},
-    {"local": "cm223", "remote": "cm227"},  # redo
-    {"local": "cm212", "remote": "cm227"},
-    {"local": "cm227", "remote": "cm212"},  # singular matrix issue
+    {"local": "cl553", "remote": "cl507"},
+    {"local": "cl501", "remote": "cl507"},
+    {"local": "cl502", "remote": "cl507"},
+    {"local": "cl507", "remote": "cl502"},
+    {"local": "cl534", "remote": "cl541"},
+    {"local": "cl551", "remote": "cl541"},
+    {"local": "cl541", "remote": "cl551"},
+    {"local": "cl542", "remote": "cl535"},
+    {"local": "cl543", "remote": "cl535"},
+    {"local": "cl590", "remote": "cl535"},
+    {"local": "cl535", "remote": "cl590"},
+    {"local": "cl538", "remote": "cl547"},
+    {"local": "cl546", "remote": "cl547"},
+    {"local": "cl547", "remote": "cl546"},
+    {"local": "cl539", "remote": "cl536"},
+    {"local": "cl532", "remote": "cl536"},
+    {"local": "cl518", "remote": "cl536"},
+    {"local": "cl536", "remote": "cl518"},
+    {"local": "cl526", "remote": "cl510"},
+    {"local": "cl516", "remote": "cl526"},
+    {"local": "cl514", "remote": "cl526"},
+    {"local": "cl510", "remote": "cl526"},
+    {"local": "cl508", "remote": "cl530"},
+    {"local": "cl529", "remote": "cl530"},
+    {"local": "cl524", "remote": "cl530"},
+    {"local": "cl530", "remote": "cl524"},
 ]
 
 
@@ -160,7 +156,7 @@ for station_dict in station_list:
             # create configuration object
             config = ap.create_config(
                 kernel_dataset=kernel_dataset,
-                add_coherence_weights=False,
+                add_coherence_weights=True,
                 **{
                     "emtf_band_file": band_setup_file,
                     "input_channels": kernel_dataset.input_channels,
