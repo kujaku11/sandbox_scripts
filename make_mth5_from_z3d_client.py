@@ -17,7 +17,7 @@ survey_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025")
 mth5_path = survey_path.joinpath("mth5")
 mth5_path.mkdir(exist_ok=True, parents=True)
 
-for folder in list(survey_path.iterdir())[1:]:
+for folder in list(survey_path.iterdir()):
     if folder.is_dir() and folder.name.startswith(survey_stem):
         print(folder.name)
 
