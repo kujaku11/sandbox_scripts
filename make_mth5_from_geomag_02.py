@@ -12,7 +12,7 @@ import pandas as pd
 from mth5.clients import MakeMTH5
 
 # =============================================================================
-obs = ["frn"]
+obs = ["bou"]
 n = len(obs)
 request_df = pd.DataFrame(
     {

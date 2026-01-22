@@ -33,7 +33,7 @@ warnings.filterwarnings("ignore")
 survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5")
 
 # path to store EDI files and make directory if not alread exists
-edi_path = survey_dir.joinpath("EDI_Files_aurora")
+edi_path = survey_dir.joinpath("EDI_Files_aurora_geomag_rr")
 edi_path.mkdir(exist_ok=True)
 
 # band setup file. This describes which frequency bands to process at
@@ -44,42 +44,42 @@ band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
 rr_geomag = True
-
+use_coherence_weighting = False
 # geomagnetic H5 file
 geomag_mth5 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_frn_xy.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_bou_xy.h5"
 )
 # station name for geomagnetic observatory
-rr_geomag_station = "Fresno"
+rr_geomag_station = "Boulder"
 
 # list of stations to process.
 station_list = [
-    {"local": "cl553", "remote": "cl507"},
-    {"local": "cl501", "remote": "cl507"},
-    {"local": "cl502", "remote": "cl507"},
-    {"local": "cl507", "remote": "cl502"},
-    {"local": "cl534", "remote": "cl541"},
-    {"local": "cl551", "remote": "cl541"},
-    {"local": "cl541", "remote": "cl551"},
-    {"local": "cl542", "remote": "cl535"},
-    {"local": "cl543", "remote": "cl535"},
-    {"local": "cl590", "remote": "cl535"},
-    {"local": "cl535", "remote": "cl590"},
-    {"local": "cl538", "remote": "cl547"},
-    {"local": "cl546", "remote": "cl547"},
-    {"local": "cl547", "remote": "cl546"},
-    {"local": "cl539", "remote": "cl536"},
-    {"local": "cl532", "remote": "cl536"},
-    {"local": "cl518", "remote": "cl536"},
-    {"local": "cl536", "remote": "cl518"},
-    {"local": "cl526", "remote": "cl510"},
-    {"local": "cl516", "remote": "cl526"},
-    {"local": "cl514", "remote": "cl526"},
-    {"local": "cl510", "remote": "cl526"},
-    {"local": "cl508", "remote": "cl530"},
-    {"local": "cl529", "remote": "cl530"},
-    {"local": "cl524", "remote": "cl530"},
-    {"local": "cl530", "remote": "cl524"},
+    {"local": "cl553", "remote": None},
+    # {"local": "cl501", "remote": "cl507"},
+    # {"local": "cl502", "remote": "cl507"},
+    # {"local": "cl507", "remote": "cl502"},
+    # {"local": "cl534", "remote": "cl541"},
+    # {"local": "cl551", "remote": "cl541"},
+    # {"local": "cl541", "remote": "cl551"},
+    # {"local": "cl542", "remote": "cl535"},
+    # {"local": "cl543", "remote": "cl535"},
+    # {"local": "cl590", "remote": "cl535"},
+    # {"local": "cl535", "remote": "cl590"},
+    # {"local": "cl538", "remote": "cl547"},
+    # {"local": "cl546", "remote": "cl547"},
+    # {"local": "cl547", "remote": "cl546"},
+    # {"local": "cl539", "remote": "cl536"},
+    # {"local": "cl532", "remote": "cl536"},
+    # {"local": "cl518", "remote": "cl536"},
+    # {"local": "cl536", "remote": "cl518"},
+    # {"local": "cl526", "remote": "cl510"},
+    # {"local": "cl516", "remote": "cl526"},
+    # {"local": "cl514", "remote": "cl526"},
+    # {"local": "cl510", "remote": "cl526"},
+    # {"local": "cl508", "remote": "cl530"},
+    # {"local": "cl529", "remote": "cl530"},
+    # {"local": "cl524", "remote": "cl530"},
+    # {"local": "cl530", "remote": "cl524"},
 ]
 
 
@@ -90,7 +90,7 @@ merge_dict = {
     4096: {"period_min": 1.0 / 2048, "period_max": 1.0 / 8},
 }
 
-sample_rates = [4096, 256, 1]
+sample_rates = [1]  # [4096, 256, 1]
 # sample_rates = [256]  # sample rates to process
 
 # loop over stations in the station list and process.
@@ -156,12 +156,12 @@ for station_dict in station_list:
             # create configuration object
             config = ap.create_config(
                 kernel_dataset=kernel_dataset,
-                add_coherence_weights=True,
+                add_coherence_weights=use_coherence_weighting,
                 **{
                     "emtf_band_file": band_setup_file,
                     "input_channels": kernel_dataset.input_channels,
                     "output_channels": kernel_dataset.output_channels,
-                    "save_fcs": True,
+                    "save_fcs": False,
                     "save_fcs_type": "h5",
                 },
             )
