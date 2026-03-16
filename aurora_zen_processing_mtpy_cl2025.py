@@ -33,7 +33,7 @@ warnings.filterwarnings("ignore")
 survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5")
 
 # path to store EDI files and make directory if not alread exists
-edi_path = survey_dir.joinpath("EDI_Files_aurora_geomag_rr")
+edi_path = survey_dir.joinpath("EDI_Files_aurora_geomag_rr_boulder")
 edi_path.mkdir(exist_ok=True)
 
 # band setup file. This describes which frequency bands to process at
@@ -44,42 +44,42 @@ band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
 rr_geomag = True
-use_coherence_weighting = False
+use_coherence_weighting = True
 # geomagnetic H5 file
 geomag_mth5 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_bou_xy.h5"
+    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_frn_xy.h5"
 )
 # station name for geomagnetic observatory
-rr_geomag_station = "Boulder"
+rr_geomag_station = "Fresno"
 
 # list of stations to process.
 station_list = [
-    {"local": "cl553", "remote": None},
     # {"local": "cl501", "remote": "cl507"},
-    # {"local": "cl502", "remote": "cl507"},
-    # {"local": "cl507", "remote": "cl502"},
-    # {"local": "cl534", "remote": "cl541"},
-    # {"local": "cl551", "remote": "cl541"},
-    # {"local": "cl541", "remote": "cl551"},
-    # {"local": "cl542", "remote": "cl535"},
-    # {"local": "cl543", "remote": "cl535"},
-    # {"local": "cl590", "remote": "cl535"},
-    # {"local": "cl535", "remote": "cl590"},
-    # {"local": "cl538", "remote": "cl547"},
-    # {"local": "cl546", "remote": "cl547"},
-    # {"local": "cl547", "remote": "cl546"},
-    # {"local": "cl539", "remote": "cl536"},
-    # {"local": "cl532", "remote": "cl536"},
-    # {"local": "cl518", "remote": "cl536"},
-    # {"local": "cl536", "remote": "cl518"},
-    # {"local": "cl526", "remote": "cl510"},
-    # {"local": "cl516", "remote": "cl526"},
-    # {"local": "cl514", "remote": "cl526"},
-    # {"local": "cl510", "remote": "cl526"},
-    # {"local": "cl508", "remote": "cl530"},
-    # {"local": "cl529", "remote": "cl530"},
-    # {"local": "cl524", "remote": "cl530"},
-    # {"local": "cl530", "remote": "cl524"},
+    {"local": "cl502", "remote": "cl507"},
+    {"local": "cl507", "remote": "cl502"},
+    {"local": "cl508", "remote": "cl530"},
+    {"local": "cl510", "remote": "cl526"},
+    {"local": "cl514", "remote": "cl526"},
+    {"local": "cl516", "remote": "cl526"},
+    {"local": "cl518", "remote": "cl536"},
+    {"local": "cl524", "remote": "cl530"},
+    {"local": "cl526", "remote": "cl510"},
+    {"local": "cl529", "remote": "cl530"},
+    {"local": "cl530", "remote": "cl524"},
+    {"local": "cl532", "remote": "cl536"},
+    {"local": "cl534", "remote": "cl541"},
+    {"local": "cl535", "remote": "cl590"},
+    {"local": "cl536", "remote": "cl518"},
+    {"local": "cl538", "remote": "cl547"},
+    {"local": "cl539", "remote": "cl536"},
+    {"local": "cl541", "remote": "cl551"},
+    {"local": "cl542", "remote": "cl535"},
+    {"local": "cl543", "remote": "cl535"},
+    {"local": "cl546", "remote": "cl547"},
+    {"local": "cl547", "remote": "cl546"},
+    {"local": "cl551", "remote": "cl541"},
+    {"local": "cl553", "remote": "cl507"},
+    {"local": "cl590", "remote": "cl535"},
 ]
 
 
@@ -118,7 +118,7 @@ for station_dict in station_list:
         for sample_rate in sample_rates:
             close_open_files()
             ap.df = None  # reset the dataframe
-            if station_dict["remote"] is None:
+            if station_dict["remote"] is None and not rr_geomag:
                 ap.remote_station_id = None
             elif sample_rate == 4096 and not rr_4096:
                 ap.remote_station_id = None
@@ -183,7 +183,12 @@ for station_dict in station_list:
                 continue
             md.add_station(processed["tf"], survey=f"sr_{sample_rate}")
 
-        # md.plot_mt_response(list(md.keys()), plot_style="compare", fig_num=2)
+        p2 = md.plot_mt_response(list(md.keys())[::-1], plot_style="compare", fig_num=2)
+        p2.save_plot(
+            edi_path.joinpath(f"{ap.local_station_id}_tfs.png"),
+            fig_dpi=300,
+            close_plot=True,
+        )
 
         # plot with MTpy
         try:
@@ -213,6 +218,6 @@ for station_dict in station_list:
 
     except Exception as e:
         logger.error(f"Processing failed for station {ap.local_station_id}")
-        logger.error(e)
+        logger.exception(e)
         close_open_files()
         continue

@@ -13,14 +13,17 @@ Created on Tue Aug 25 10:34:28 2020
 from pathlib import Path
 import pandas as pd
 import geopandas as gpd
+from mtpy.core.mt_location import MTLocation
 
 from pyevtk.hl import pointsToVTK
 
 # =============================================================================
-
+center_location = MTLocation(
+    latitude=37.856, longitude=-116.897, elevation=0, utm_epsg=32611
+)
 # fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\MIST\mist_eq_mag_all.csv")
-fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\kilauea\HVO1DXC8618_V1.0.txt")
-model_epsg = 32605
+fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\gb_eq_north_all.csv")
+model_epsg = 32611
 units = "km"
 scale = 1
 if units in ["km"]:
@@ -28,11 +31,35 @@ if units in ["km"]:
 
 df = pd.read_csv(
     fn,
-    # delimiter=",",
-    delimiter="\s+",
-    names=["year", "month", "day", "hour", "minute", "second", "count","latitude", 
-           "longitude", "depth", "mag", "a1", "n1", "n2", "n3", "rms", "gap", 
-           "dist", "azm", "type", "auth", "review", "rel_lat", "rel_lon", "rel_depth"],
+    delimiter=",",
+    # delimiter=r"\s+",
+    # names=[
+    #     "year",
+    #     "month",
+    #     "day",
+    #     "hour",
+    #     "minute",
+    #     "second",
+    #     "count",
+    #     "latitude",
+    #     "longitude",
+    #     "depth",
+    #     "mag",
+    #     "a1",
+    #     "n1",
+    #     "n2",
+    #     "n3",
+    #     "rms",
+    #     "gap",
+    #     "dist",
+    #     "azm",
+    #     "type",
+    #     "auth",
+    #     "review",
+    #     "rel_lat",
+    #     "rel_lon",
+    #     "rel_depth",
+    # ],
     header=0,
     usecols=["latitude", "longitude", "depth", "mag"],
     # usecols=["time utc", "lat", "lon", "depth km", "magnitude"], # umatilla
@@ -47,8 +74,8 @@ gdf.crs = {"init": "epsg:4326"}
 gdf.to_file(fn.parent.joinpath(f"{fn.stem}.shp"))
 
 utm_gdf = gdf.to_crs(model_epsg)
-utm_gdf["easting"] = utm_gdf.geometry.x
-utm_gdf["northing"] = utm_gdf.geometry.y
+utm_gdf["easting"] = utm_gdf.geometry.x - center_location.east + 160000
+utm_gdf["northing"] = utm_gdf.geometry.y - center_location.north - 120000
 
 df["easting"] = utm_gdf["easting"]
 df["northing"] = utm_gdf["northing"]
@@ -67,16 +94,24 @@ df["northing"] = utm_gdf["northing"]
 #   eqdat=eqdat([ind],:);
 #   eqdat=eqdat(:,[1:6,8:11]); % save only necessary columns
 
-df.to_csv(
-    fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}.csv").as_posix(),
-    index=False,
-)
+# df.to_csv(
+#     fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}.csv").as_posix(),
+#     index=False,
+# )
 
+
+# pointsToVTK(
+#     fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}").as_posix(),
+#     utm_gdf.easting.to_numpy() / scale,
+#     utm_gdf.northing.to_numpy() / scale,
+#     utm_gdf.depth.to_numpy(),  # * -1,
+#     data={"mag": utm_gdf.mag.to_numpy(), "depth": utm_gdf.depth.to_numpy()},
+# )
 
 pointsToVTK(
     fn.parent.joinpath(f"{fn.stem}_{units}_{model_epsg}").as_posix(),
-    utm_gdf.easting.to_numpy() / scale,
     utm_gdf.northing.to_numpy() / scale,
-    utm_gdf.depth.to_numpy() * -1,
+    utm_gdf.easting.to_numpy() / scale,
+    utm_gdf.depth.to_numpy(),  # * -1,
     data={"mag": utm_gdf.mag.to_numpy(), "depth": utm_gdf.depth.to_numpy()},
 )

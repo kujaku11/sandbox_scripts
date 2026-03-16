@@ -13,9 +13,7 @@ import rasterio
 # fname = r"c:\Users\jpeacock-pr\Documents\MonoBasin\Maps\MonoDEM\ASTER\MB_Crop_survey_area.tif"
 # fname = r"c:\Users\jpeacock\Documents\MonoBasin\Maps\MonoDEM\ASTER\LV16_Crop_survey_area.tif"
 # fname = Path(r"c:\Users\jpeacock\Downloads\exportImage.tif")
-fname = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MonoBasin\MB_Crop_survey_area_dem.tif"
-)
+fname = Path(r"c:\Users\jpeacock\OneDrive - DOI\western_us.tiff")
 #
 # line_name = 'profile4'
 # fname = r"c:\Users\jpeacock-pr\Documents\MonoBasin\Maps\MonoDEM\ASTER\MB_map_{0}.tif".format(line_name)
