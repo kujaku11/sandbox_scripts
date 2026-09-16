@@ -30,7 +30,7 @@ plt.ioff()
 warnings.filterwarnings("ignore")
 # =============================================================================
 # path to already created MTH5 files.  These are usually one station per MTH5
-survey_dir = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5")
+survey_dir = Path(r"c:\Users\peaco\zen_test_data\mth5")
 
 # path to store EDI files and make directory if not alread exists
 edi_path = survey_dir.joinpath("EDI_Files_aurora_geomag_rr")
@@ -38,24 +38,22 @@ edi_path.mkdir(exist_ok=True)
 
 # band setup file. This describes which frequency bands to process at
 # each decimation level.
-band_file = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset.cfg"
-band_file_4096 = r"c:\Users\jpeacock\OneDrive - DOI\MTData\bandset_4096.cfg"
+band_file = r"c:\Users\peaco\OneDrive\Documents\GitHub\aurora\aurora\config\emtf_band_setup\bs_six_level.cfg"
+band_file_4096 = r"c:\Users\peaco\OneDrive\Documents\GitHub\aurora\aurora\config\emtf_band_setup\bs_six_level.cfg"
 
 # remote reference high frequency data, sometimes its better to not
 rr_4096 = False
 rr_geomag = True
 use_coherence_weighting = False
 # geomagnetic H5 file
-geomag_mth5 = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5\usgs_geomag_bou_xy.h5"
-)
+geomag_mth5 = Path(r"c:\Users\peaco\zen_test_data\usgs_geomag_bou_xy.h5")
 # station name for geomagnetic observatory
 rr_geomag_station = "Boulder"
 
 # list of stations to process.
 station_list = [
-    {"local": "cl553", "remote": None},
-    # {"local": "cl501", "remote": "cl507"},
+    # {"local": "cl553", "remote": None},
+    {"local": "cl501", "remote": None},
     # {"local": "cl502", "remote": "cl507"},
     # {"local": "cl507", "remote": "cl502"},
     # {"local": "cl534", "remote": "cl541"},
@@ -118,7 +116,7 @@ for station_dict in station_list:
         for sample_rate in sample_rates:
             close_open_files()
             ap.df = None  # reset the dataframe
-            if station_dict["remote"] is None:
+            if station_dict["remote"] is None and not rr_geomag:
                 ap.remote_station_id = None
             elif sample_rate == 4096 and not rr_4096:
                 ap.remote_station_id = None

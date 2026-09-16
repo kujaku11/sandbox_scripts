@@ -13,7 +13,7 @@ from mth5.clients import MakeMTH5
 # =============================================================================
 survey_stem = "cl"
 
-survey_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025")
+survey_path = Path(r"c:\Users\peaco\zen_test_data")
 mth5_path = survey_path.joinpath("mth5")
 mth5_path.mkdir(exist_ok=True, parents=True)
 
@@ -25,7 +25,7 @@ for folder in list(survey_path.iterdir()):
             MakeMTH5.from_zen(
                 folder,
                 save_path=mth5_path.joinpath(f"{folder.name}.h5"),
-                calibration_path=r"c:\Users\jpeacock\OneDrive - DOI\MTData\antenna_20190411.cal",
+                calibration_path=r"c:\Users\peaco\zen_test_data\antenna.cal",
                 survey_id="cl2025",
                 station_stem=survey_stem,
             )
