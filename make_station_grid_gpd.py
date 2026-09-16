@@ -7,13 +7,25 @@ Created on Thu Feb 10 12:02:18 2022
 # =============================================================================
 # Imports
 # =============================================================================
+from pathlib import Path
 import numpy as np
 import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely.geometry import Point
 
+import fiona
+
+fiona.drvsupport.supported_drivers["KML"] = "rw"
+fiona.drvsupport.supported_drivers["kml"] = "rw"
+fiona.drvsupport.supported_drivers["libkml"] = (
+    "rw"  # enable KML support which is disabled by default
+)
+fiona.drvsupport.supported_drivers["LIBKML"] = (
+    "rw"  # enable KML support which is disabled by default
+)
+
 # =============================================================================
-save_shp = r"c:\Users\jpeacock\OneDrive - DOI\volcanoes\newberry\newberry_proposed_mt.shp"
+save_shp = Path(r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GRIP\Alaska\akmt_proposed_2026.shp")
 
 # Clayton Valley
 # bbox = {"latitude": np.array([37.3679476,  38.5198050]),
@@ -25,20 +37,26 @@ save_shp = r"c:\Users\jpeacock\OneDrive - DOI\volcanoes\newberry\newberry_propos
 #     "longitude": np.array([-117.0384026, -116.7590040]),
 # }
 
-# Newberry
+# # Newberry
+# bbox = {
+#     "latitude": np.array([43.6, 43.85]),
+#     "longitude": np.array([-121.42, -120.89]),
+# }
+
+### AKMT
 bbox = {
-    "latitude": np.array([43.6, 43.85]),
-    "longitude": np.array([-121.42, -120.89]),
+    "latitude": np.array([61.4, 66.3]),
+    "longitude": np.array([-168, -141]),
 }
 
-spacing = 3000
-station = "nb"
-rotation_angle = 45
+spacing = 30000
+station = "akmt"
+rotation_angle = 0
 rcos = np.cos(np.deg2rad(rotation_angle))
 rsin = np.sin(np.deg2rad(rotation_angle))
 
 wgs84_crs = CRS.from_epsg(4326)
-utm_crs = CRS.from_epsg(32610)
+utm_crs = CRS.from_epsg(32606)
 
 proj = Transformer.from_crs(wgs84_crs, utm_crs)
 rev_proj = Transformer.from_crs(utm_crs, wgs84_crs)
@@ -78,6 +96,12 @@ for xx in x:
         geometry.append(Point(lon, lat))
         count += 1
 
+print(f"Total number of stations: {count}")
 
 gdf = gpd.GeoDataFrame(entry, crs=wgs84_crs, geometry=geometry)
 gdf.to_file(save_shp)
+
+gdf = gdf.rename(columns={"station": "name"})
+# gdf["name"] = [f"ld{x:03}" for x in range(len(gdf.name))]
+gdf = gdf.to_crs(epsg=4326)
+gdf.to_file(save_shp.parent.joinpath(f"{save_shp.stem}.kml"), driver="kml")

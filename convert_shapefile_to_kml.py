@@ -19,11 +19,13 @@ fiona.drvsupport.supported_drivers["LIBKML"] = (
 )
 
 shp_fn = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\FieldWork\2025_pilsbury\2025_lake_pilsbury_mt_nfs_approved.shp"
+    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\2026_SAGE_proposed_mt.shp"
 )
 # r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\BuffaloValley\USGS_MTPlan_For_NOI\buffalo_valley_mt_stations.shp"
 
 gdf = gpd.read_file(shp_fn)
+print(gdf.columns)
+gdf = gdf[["station", "geometry"]]
 gdf = gdf.rename(columns={"station": "name"})
 # gdf["name"] = [f"ld{x:03}" for x in range(len(gdf.name))]
 gdf = gdf.to_crs(epsg=4326)

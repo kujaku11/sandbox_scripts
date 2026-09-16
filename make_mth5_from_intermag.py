@@ -15,22 +15,20 @@ from mth5.clients import MakeMTH5
 # =============================================================================
 obs = ["bou"]
 n = len(obs)
+
 request_df = pd.DataFrame(
     {
         "observatory": obs,
-        "type": ["adjusted"] * n,
-        "elements": [["x", "y"]] * n,
-        "sampling_period": [1] * n,
-        "start": ["2026-06-18T00:00:00"] * n,
-        "end": [
-            "2026-06-24T13:00:00",
-        ]
-        * n,
+        "type": ["adjusted"],
+        "elements": [["x", "y"]],
+        "sampling_period": [1],
+        "start": ["2026-06-18T00:00:00"],
+        "end": ["2026-06-24T13:00:00"],
     }
 )
 
 
-mth5_object = MakeMTH5.from_usgs_geomag(
+mth5_object = MakeMTH5.from_intermag(
     request_df,
     **{
         "save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\SAGE2026\mth5",

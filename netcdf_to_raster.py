@@ -15,10 +15,13 @@ import rioxarray as rio
 import numpy as np
 
 # =============================================================================
-# netcdf_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\WUS324.r0.0.nc")
-netcdf_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\CUSRA2021.r0.0.nc")
+netcdf_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\WUS324.r0.0.nc")
+# netcdf_fn = Path(r"c:\Users\jpeacock\OneDrive - DOI\earth_models\CUSRA2021.r0.0.nc")
+# netcdf_fn = Path(
+#     r"c:\Users\jpeacock\OneDrive - DOI\earth_models\western_us_s_waves_WUS-CAMH-2015.nc"
+# )
 outline = Path(r"c:\Users\jpeacock\OneDrive - DOI\ArcGIS\cb_2018_us_nation_5m.shp")
-save_path = netcdf_fn.parent.joinpath("cusra2021_rasters")
+save_path = netcdf_fn.parent.joinpath("wus_vpvs_rasters")
 save_path.mkdir(exist_ok=True, parents=True)
 
 d = xr.open_dataset(netcdf_fn)
@@ -30,8 +33,8 @@ with fiona.open(outline, "r") as shpfile:
 
 
 for index in range(len(d.depth.values)):
-    # for comp in ["VS", "VP", "XS", "RHO"]:
-    for comp in ["radial"]:
+    # # for comp in ["VS", "VP", "XS", "RHO"]:
+    for comp in ["vpvs", "QKAPPA"]:
         z = d.depth.values[index]
         try:
             gtif_fn = save_path.joinpath(f"{comp}_{z:.0f}_km.tif")
@@ -40,6 +43,8 @@ for index in range(len(d.depth.values)):
                     "vsv"
                 ].isel(depth=index)
                 data = data.fillna(-666)
+            elif comp == "vpvs":
+                data = d["VP"].isel(depth=index) / d["VS"].isel(depth=index)
             else:
                 data = d[comp].isel(depth=index)
             clipped_data = data.rio.clip(shape)

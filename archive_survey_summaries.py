@@ -8,7 +8,7 @@ Created on Thu Jul 11 15:29:40 2024
 # Imports
 # =============================================================================
 from pathlib import Path
-from mth5.io.zen import Z3DCollection
+from mt_io.zen import Z3DCollection
 from loguru import logger
 
 # =============================================================================
@@ -43,7 +43,8 @@ survey_dict = {
     # "UM": {"survey": "UMTIR2020"},
     # "Umatilla": {"survey": "UMTIR2017"},
     # "CM2025": {"survey": "ColumbusMarsh2025"},
-    "CL2025": {"survey": "CL2025"},
+    # "CL2025": {"survey": "CL2025"},
+    "SAGE2026": {"survey": "SAGE2026"},
 }
 
 for key, sdict in survey_dict.items():
