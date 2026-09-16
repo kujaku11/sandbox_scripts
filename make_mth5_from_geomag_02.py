@@ -12,7 +12,7 @@ import pandas as pd
 from mth5.clients import MakeMTH5
 
 # =============================================================================
-obs = ["bou"]
+obs = ["frn"]
 n = len(obs)
 request_df = pd.DataFrame(
     {
@@ -20,9 +20,9 @@ request_df = pd.DataFrame(
         "type": ["adjusted"] * n,
         "elements": [["x", "y"]] * n,
         "sampling_period": [1] * n,
-        "start": ["2025-08-22T00:00:00"] * n,
+        "start": ["2026-01-20T00:00:00"] * n,
         "end": [
-            "2025-08-30T00:00:00",
+            "2026-01-31T00:00:00",
         ]
         * n,
     }
@@ -32,7 +32,7 @@ request_df = pd.DataFrame(
 mth5_object = MakeMTH5.from_usgs_geomag(
     request_df,
     **{
-        "save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\CL2025\mth5",
+        "save_path": r"c:\Users\jpeacock\OneDrive - DOI\MTData\MIST2026\mth5",
         "interact": False,
         "mth5_version": "0.2.0",
     }
