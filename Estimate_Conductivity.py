@@ -8,6 +8,8 @@ Created on Thu Mar 20 13:12:40 2014
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 import numpy as np
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
 
 
 def arrhenius(temperature, wtp_h2o, pressure=1):
@@ -66,7 +68,7 @@ def nernst_einstein(mobility, charge, concentration, temperature, haven):
     nernst-einstein equation for electrical conductivity of melt
     """
     k = 1.3806e-23
-    sigma_melt = mobility * charge ** 2 * concentration / (k * temperature * haven)
+    sigma_melt = mobility * charge**2 * concentration / (k * temperature * haven)
 
     return sigma_melt
 
@@ -85,8 +87,8 @@ def modified_brick(sigma_1, sigma_2, percent_2):
     p1 = percent_2
     n = 2.0 / 3
 
-    sigma_eff = s2 * (s2 * (p1 ** n - 1) - s1 * p1 ** n) / s1 * (p1 - p1 ** n) - s2 * (
-        p1 ** n - p1 - 1
+    sigma_eff = s2 * (s2 * (p1**n - 1) - s1 * p1**n) / s1 * (p1 - p1**n) - s2 * (
+        p1**n - p1 - 1
     )
 
     sigma_eff = np.nan_to_num(sigma_eff)
@@ -106,9 +108,9 @@ def modified_archies(sigma_1, sigma_2, percent_2, m=1.05):
     s2 = sigma_2
     p2 = 1 - percent_2
 
-    p = np.log(1 - p2 ** m) / np.log(1 - p2)
+    p = np.log(1 - p2**m) / np.log(1 - p2)
 
-    sigma_eff = s1 * (1 - p2) ** p + s2 * p2 ** m
+    sigma_eff = s1 * (1 - p2) ** p + s2 * p2**m
 
     return sigma_eff
 
@@ -227,7 +229,7 @@ T_r = 825.0 + 273.5  # rhyolite temperature
 T_d = 900.0 + 273.5  # dacite temperature
 
 
-melt_percent = np.arange(0, 51, 5) / 100.0  # melt percent array
+melt_percent = np.arange(0, 30, 3) / 100.0  # melt percent array
 
 sigma_regional = 1.0 / 100
 
@@ -258,241 +260,426 @@ ob_rhyolite = 1 - calculate_ob(ob_rhyolite_dict)
 ob_dacite = 1 - calculate_ob(ob_dacite_dict)
 
 wtp_h2o_min = 1.0
-wtp_h2o_max = 5.0
+wtp_h2o_max = 3.0
 
 
 # ==============================================================================
 # plot
 # ==============================================================================
-plt.close("all")
-plt.rcParams["font.size"] = 7
-plt.rcParams["figure.subplot.hspace"] = 0.3
-plt.rcParams["figure.subplot.top"] = 0.9
-plt.rcParams["figure.subplot.bottom"] = 0.1
-plt.rcParams["figure.subplot.left"] = 0.16
-plt.rcParams["figure.subplot.right"] = 0.97
-plt.rcParams["grid.linewidth"] = 0.15
-plt.rcParams["grid.color"] = (0.5, 0.5, 0.5)
+# plt.close("all")
+# plt.rcParams["font.size"] = 7
+# plt.rcParams["figure.subplot.hspace"] = 0.3
+# plt.rcParams["figure.subplot.top"] = 0.9
+# plt.rcParams["figure.subplot.bottom"] = 0.1
+# plt.rcParams["figure.subplot.left"] = 0.16
+# plt.rcParams["figure.subplot.right"] = 0.97
+# plt.rcParams["grid.linewidth"] = 0.15
+# plt.rcParams["grid.color"] = (0.5, 0.5, 0.5)
 
-label_font_dict = {"size": 8, "weight": "bold"}
-ylabel_coords = (-0.135, 0.5)
-xlabel_coords = (0.5, -0.125)
+# label_font_dict = {"size": 8, "weight": "bold"}
+# ylabel_coords = (-0.135, 0.5)
+# xlabel_coords = (0.5, -0.125)
 
-fig = plt.figure(1, figsize=[3, 4], dpi=300)
-ax = fig.add_subplot(2, 1, 1)
-# ax2 = fig.add_subplot(3, 1, 2)
-ax3 = fig.add_subplot(2, 1, 2)
+# fig = plt.figure(1, figsize=[3, 4], dpi=300)
+# ax = fig.add_subplot(2, 1, 1)
+# # ax2 = fig.add_subplot(3, 1, 2)
+# ax3 = fig.add_subplot(2, 1, 2)
 
-plt.cla()
-line_list = []
-label_list = []
+# plt.cla()
+# line_list = []
+# label_list = []
 
-line_list2 = []
-label_list2 = []
+# line_list2 = []
+# label_list2 = []
 
-line_list3 = []
-label_list3 = []
+# line_list3 = []
+# label_list3 = []
 
-line_list_mp = []
-label_list_mp = []
+# line_list_mp = []
+# label_list_mp = []
 
-for wtp_h2o in np.arange(wtp_h2o_min, wtp_h2o_max + 1, 1.0):
-    if wtp_h2o == 0:
-        wtp_h2o = 0.01
+# for wtp_h2o in np.arange(wtp_h2o_min, wtp_h2o_max + 1, 1.0):
+#     if wtp_h2o == 0:
+#         wtp_h2o = 0.01
 
-    # --> plot resistivity vs. temperature
-    line_color = tuple(3 * [0.9 - 0.9 * wtp_h2o / (wtp_h2o_max)])
-    sigma_a = arrhenius(T, wtp_h2o, pressure=0.5)
-    (line_rhyolite,) = ax.plot(
-        1.0 / sigma_a,
-        T - 273.5,
-        "-",
-        marker="s",
-        ms=2,
-        lw=0.5,
-        color=line_color,
-        mfc=line_color,
-        mec=line_color,
+#     # --> plot resistivity vs. temperature
+#     line_color = tuple(3 * [0.9 - 0.9 * wtp_h2o / (wtp_h2o_max)])
+#     sigma_a = arrhenius(T, wtp_h2o, pressure=0.5)
+#     (line_rhyolite,) = ax.plot(
+#         1.0 / sigma_a,
+#         T - 273.5,
+#         "-",
+#         marker="s",
+#         ms=2,
+#         lw=0.5,
+#         color=line_color,
+#         mfc=line_color,
+#         mec=line_color,
+#     )
+
+#     sigma_d = dacite_arrhenius(T, wtp_h2o, pressure=1.2)
+#     #    line_color_d = (.75-wtp_h2o/wtp_h2o_max,
+#     #                    1,
+#     #                    .75-wtp_h2o/wtp_h2o_max)
+#     (line_dacite,) = ax.plot(
+#         1.0 / sigma_d,
+#         T - 273.5,
+#         "-.",
+#         marker="o",
+#         ms=2,
+#         lw=0.5,
+#         color=line_color,
+#         mfc=line_color,
+#         mec=line_color,
+#     )
+#     line_dacite.set_dashes((3, 1))
+
+#     #    #--> plot viscosity vs melt resistivity
+#     #    sigma_a = arrhenius(T, wtp_h2o)
+#     #    # plot rhyolite
+#     #    nu_rhyolite = viscosity(T_r, ob_rhyolite, wtp_h2o, sigma_a)
+#     #    line_nu_rhyolite, = ax2.semilogy(1./sigma_a, nu_rhyolite,
+#     #                         '-',
+#     #                         lw=.5,
+#     #                         marker='s',
+#     #                         ms=2,
+#     #                         mec=line_color,
+#     #                         color=line_color)
+#     #
+#     #    # plot dacite
+#     #    sigma_a = dacite_arrhenius(T, wtp_h2o)
+#     #    nu_dacite = viscosity(T_d, ob_dacite, wtp_h2o, sigma_a)
+#     #    line_nu_dacite, = ax2.semilogy(1./sigma_a, nu_dacite,
+#     #                     '-.',
+#     #                     lw=.5,
+#     #                     marker='o',
+#     #                     ms=2,
+#     #                     mec=line_color,
+#     #                     color=line_color)
+#     #    line_nu_dacite.set_dashes((3, 1))
+#     if wtp_h2o == wtp_h2o_max:
+#         # --> line list for viscosity
+#         #        line_list3.append(line_nu_rhyolite)
+#         #        label_list3.append('rhyolite')
+#         #        line_list3.append(line_nu_dacite)
+#         #        label_list3.append('dacite')
+
+#         # --> line list for melt resistivity vs. temperature
+#         line_list2.append(line_rhyolite)
+#         label_list2.append("rhyolite")
+#         line_list2.append(line_dacite)
+#         label_list2.append("dacite")
+#     #
+
+#     line_list.append(line_rhyolite)
+#     label_list.append(" {0:.0f}% $H_2O$".format(wtp_h2o))
+#     #    line_list.append(l2)
+#     #    label_list.append('$H_2O$ {0:.1f}%'.format(wtp_h2o))
+
+#     # --> plot melt percentage vs. bulk resistivity
+#     sigma_melt = arrhenius(T_r, wtp_h2o)
+#     sigma_ma_low = modified_archies(sigma_regional, sigma_melt, 1 - melt_percent)
+#     sigma_ma_low[0] = sigma_regional
+
+#     (line_melt_percent,) = ax3.semilogx(
+#         1.0 / sigma_ma_low,
+#         melt_percent,
+#         "-",
+#         lw=0.5,
+#         marker="s",
+#         ms=1.5,
+#         mec=line_color,
+#         color=line_color,
+#     )
+
+#     sigma_melt = dacite_arrhenius(T_d, wtp_h2o)
+#     sigma_ma_low = modified_archies(sigma_regional, sigma_melt, 1 - melt_percent)
+#     sigma_ma_low[0] = sigma_regional
+
+#     (line_melt_percent_dacite,) = ax3.semilogx(
+#         1.0 / sigma_ma_low,
+#         melt_percent,
+#         "-.",
+#         lw=0.5,
+#         marker="o",
+#         ms=1.5,
+#         mec=line_color,
+#         color=line_color,
+#     )
+#     line_melt_percent_dacite.set_dashes((3, 1))
+
+
+# # make a legend on top of the figure for water percent
+# fig.legend(
+#     line_list,
+#     label_list,
+#     loc="upper center",
+#     prop={"size": 6},
+#     ncol=5,
+#     markerscale=0.5,
+#     handletextpad=0.05,
+#     columnspacing=0.05,
+# )
+
+# # --> resitivity vs temperature
+# ax.fill_between([0, 12], [750, 750], [850, 850], color=(0.75, 0.75, 0.75), alpha=0.35)
+# ax.set_ylabel(r"Temperature ($^\circ$C)", fontdict=label_font_dict)
+# ax.set_xlabel(r"Melt Resistivity ($\Omega \cdot$m)", fontdict=label_font_dict)
+# ax.legend(line_list2, label_list2, loc="upper right", prop={"size": 6}, ncol=1)
+# ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+# ax.xaxis.set_major_locator(MultipleLocator(1))
+# ax.grid(which="major")
+# ax.set_xlim(0, 11.5)
+
+# # --> resistivity vs. viscosity
+
+# # ax2.fill_between([1.4, 2.2], [10**0, 10**0], [10**10, 10**10],
+# #                color=(.75, .75, .75),
+# #                alpha=.35)
+# #
+# # ax2.set_ylim(10**2, 10**8)
+# # ax2.set_xlim(0, 10)
+# # ax2.set_ylabel('Viscosity (Pa$\cdot$m)',
+# #               fontdict=label_font_dict)
+# # ax2.set_xlabel('Melt Resistivity ($\Omega \cdot$m)',
+# #               fontdict=label_font_dict)
+# ##ax2.xaxis.set_minor_locator(MultipleLocator(.1))
+# # ax2.grid(which='major', color=(.85, .85, .85))
+# # ax2.legend(line_list3, label_list3, loc='upper right', prop={'size':6},
+# #          ncol=1)
+
+
+# # --> resistivity vs. melt percent
+# ax3.fill_between([5, 15], [0, 0], [0.5, 0.5], color=(0.75, 0.75, 0.75), alpha=0.35)
+
+# ax3.set_ylabel("Melt Percent", fontdict=label_font_dict)
+# ax3.set_xlabel(r"Bulk Resistivity ($\Omega \cdot$m)", fontdict=label_font_dict)
+# ax3.set_ylim(0, 1)
+# ax3.set_xlim(0, 1 / sigma_regional)
+# ax3.yaxis.set_minor_locator(MultipleLocator(0.05))
+# ax3.yaxis.grid(which="both")
+# ax3.xaxis.grid(which="both")
+# ax3.legend(line_list2, label_list2, loc="upper right", prop={"size": 6}, ncol=1)
+
+# # ax3.legend(line_list3, label_list3, loc='upper right', prop={'size':6},
+# #          ncol=1)
+
+# ax.text(
+#     0.23,
+#     715,
+#     "a",
+#     fontdict=label_font_dict,
+#     horizontalalignment="left",
+#     verticalalignment="bottom",
+#     bbox={"facecolor": "w", "alpha": 1},
+# )
+
+# # ax2.text(1.225, 10**2+100, 'b',
+# #        fontdict=label_font_dict,
+# #        horizontalalignment='left',
+# #        verticalalignment='bottom',
+# #        bbox={'facecolor':'w', 'alpha':1})
+
+# ax3.text(
+#     2.2,
+#     0.02,
+#     "b",
+#     fontdict=label_font_dict,
+#     horizontalalignment="left",
+#     verticalalignment="bottom",
+#     bbox={"facecolor": "w", "alpha": 1},
+# )
+
+# # set grid lines behind all objects
+# for xx in [ax, ax3]:
+#     xx.yaxis.set_label_coords(ylabel_coords[0], ylabel_coords[1])
+#     xx.xaxis.set_label_coords(xlabel_coords[0], xlabel_coords[1])
+#     [line.set_zorder(3) for line in xx.lines]
+
+# plt.show()
+
+# # fig.savefig(r"c:\Users\jpeacock-pr\Google Drive\JVG\mb_resistivities_plot.svg",
+# #            dpi=300)
+
+
+def plot_bulk_resistivity(
+    rhyolite=True,
+    dacite=False,
+    basalt=True,
+    host_rock_resistivity=100,
+    wtp_h2o_min=0.01,
+    wtp_h2o_max=5.0,
+    h2o_step=1.0,
+    cmap="magma",
+):
+
+    # ==============================================================================
+    # input values
+    # ==============================================================================
+
+    melt_percent = np.arange(0, 50, 1) / 100.0  # melt percent array
+
+    sigma_regional = 1.0 / host_rock_resistivity
+
+    plt.close("all")
+    plt.rcParams["font.size"] = 7
+    plt.rcParams["figure.subplot.hspace"] = 0.3
+    plt.rcParams["figure.subplot.top"] = 0.9
+    plt.rcParams["figure.subplot.bottom"] = 0.1
+    plt.rcParams["figure.subplot.left"] = 0.16
+    plt.rcParams["figure.subplot.right"] = 0.97
+    plt.rcParams["grid.linewidth"] = 0.15
+    plt.rcParams["grid.color"] = (0.5, 0.5, 0.5)
+
+    label_font_dict = {"size": 8, "weight": "bold"}
+    ylabel_coords = (-0.135, 0.5)
+    xlabel_coords = (0.5, -0.125)
+
+    fig = plt.figure(1, figsize=[5, 5], dpi=300)
+    ax = fig.add_subplot(1, 1, 1)
+
+    plt.cla()
+    line_list = []
+    label_list = []
+
+    line_list2 = []
+    label_list2 = []
+
+    wtp_water = np.arange(wtp_h2o_min, wtp_h2o_max + 1, 1.0)
+
+    colors = cm.get_cmap(cmap, len(wtp_water))
+    norm = mcolors.Normalize(wtp_water.min(), wtp_water.max())
+
+    for index, wtp_h2o in enumerate(wtp_water):
+        if wtp_h2o == 0:
+            wtp_h2o = 0.01
+
+        # --> plot resistivity vs. temperature
+        line_color = colors(norm(index))
+        (h2o_line,) = ax.plot([0, 0], [0, 0], color=line_color, ls="-", lw=0.5)
+        line_list.append(h2o_line)
+        label_list.append(f"{wtp_h2o:.0f}% $H_{2}O$")
+
+        # --> plot melt percentage vs. bulk resistivity
+        if rhyolite:
+            sigma_melt = arrhenius(T_r, wtp_h2o)
+            sigma_ma_low = modified_archies(
+                sigma_regional, sigma_melt, 1 - melt_percent
+            )
+            sigma_ma_low[0] = sigma_regional
+
+            (rhyolite_line_melt_percent,) = ax.semilogx(
+                1.0 / sigma_ma_low,
+                melt_percent,
+                "-",
+                lw=0.5,
+                marker="s",
+                ms=1.5,
+                mec=line_color,
+                color=line_color,
+            )
+            if index == 0:
+                line_list2.append(rhyolite_line_melt_percent)
+                label_list2.append("rhyolite")
+
+        if dacite:
+            sigma_melt = dacite_arrhenius(T_d, wtp_h2o)
+            sigma_ma_low = modified_archies(
+                sigma_regional, sigma_melt, 1 - melt_percent
+            )
+            sigma_ma_low[0] = sigma_regional
+
+            (dacite_line_melt_percent,) = ax.semilogx(
+                1.0 / sigma_ma_low,
+                melt_percent,
+                "-.",
+                lw=0.5,
+                marker="o",
+                ms=1.5,
+                mec=line_color,
+                color=line_color,
+            )
+            dacite_line_melt_percent.set_dashes((3, 1))
+
+            if index == 0:
+                line_list2.append(dacite_line_melt_percent)
+                label_list2.append("dacite")
+
+        if basalt:
+            sigma_melt = basalt_arrhenius(T_d, wtp_h2o_max - wtp_h2o)
+            sigma_ma_low = modified_archies(
+                sigma_regional, sigma_melt, 1 - melt_percent
+            )
+            sigma_ma_low[0] = sigma_regional
+
+            (basalt_line_melt_percent,) = ax.semilogx(
+                1.0 / sigma_ma_low,
+                melt_percent,
+                ":",
+                lw=0.5,
+                marker="v",
+                ms=1.5,
+                mec=line_color,
+                color=line_color,
+            )
+            basalt_line_melt_percent.set_dashes((2, 1))
+
+            if index == 0:
+                line_list2.append(basalt_line_melt_percent)
+                label_list2.append("basalt")
+
+    # make a legend on top of the figure for water percent
+    fig.legend(
+        line_list,
+        label_list,
+        loc="upper center",
+        prop={"size": 6},
+        ncol=5,
+        markerscale=0.5,
+        handletextpad=0.01,
+        columnspacing=0.1,
     )
 
-    sigma_d = dacite_arrhenius(T, wtp_h2o, pressure=1.2)
-    #    line_color_d = (.75-wtp_h2o/wtp_h2o_max,
-    #                    1,
-    #                    .75-wtp_h2o/wtp_h2o_max)
-    (line_dacite,) = ax.plot(
-        1.0 / sigma_d,
-        T - 273.5,
-        "-.",
-        marker="o",
-        ms=2,
-        lw=0.5,
-        color=line_color,
-        mfc=line_color,
-        mec=line_color,
-    )
-    line_dacite.set_dashes((3, 1))
+    # --> resistivity vs. melt percent
+    # ax.fill_between([5, 15], [0, 0], [0.5, 0.5], color=(0.75, 0.75, 0.75), alpha=0.35)
 
-    #    #--> plot viscosity vs melt resistivity
-    #    sigma_a = arrhenius(T, wtp_h2o)
-    #    # plot rhyolite
-    #    nu_rhyolite = viscosity(T_r, ob_rhyolite, wtp_h2o, sigma_a)
-    #    line_nu_rhyolite, = ax2.semilogy(1./sigma_a, nu_rhyolite,
-    #                         '-',
-    #                         lw=.5,
-    #                         marker='s',
-    #                         ms=2,
-    #                         mec=line_color,
-    #                         color=line_color)
-    #
-    #    # plot dacite
-    #    sigma_a = dacite_arrhenius(T, wtp_h2o)
-    #    nu_dacite = viscosity(T_d, ob_dacite, wtp_h2o, sigma_a)
-    #    line_nu_dacite, = ax2.semilogy(1./sigma_a, nu_dacite,
-    #                     '-.',
-    #                     lw=.5,
-    #                     marker='o',
-    #                     ms=2,
-    #                     mec=line_color,
-    #                     color=line_color)
-    #    line_nu_dacite.set_dashes((3, 1))
-    if wtp_h2o == wtp_h2o_max:
-        # --> line list for viscosity
-        #        line_list3.append(line_nu_rhyolite)
-        #        label_list3.append('rhyolite')
-        #        line_list3.append(line_nu_dacite)
-        #        label_list3.append('dacite')
+    ax.set_ylabel("Melt Percent", fontdict=label_font_dict)
+    ax.set_xlabel(r"Bulk Resistivity ($\Omega \cdot$m)", fontdict=label_font_dict)
+    ax.set_ylim(0, 0.2)
+    ax.set_xlim(1, 1 / sigma_regional)
+    ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+    ax.yaxis.set_major_locator(MultipleLocator(0.05))
+    ax.yaxis.grid(which="major", ls="-", color=(0.25, 0.25, 0.25))
+    ax.yaxis.grid(which="minor", ls="--", color=(0.75, 0.75, 0.75))
+    ax.xaxis.grid(which="both")
+    ax.legend(line_list2, label_list2, loc="upper right", prop={"size": 6}, ncol=1)
 
-        # --> line list for melt resistivity vs. temperature
-        line_list2.append(line_rhyolite)
-        label_list2.append("rhyolite")
-        line_list2.append(line_dacite)
-        label_list2.append("dacite")
-    #
+    # # set grid lines behind all objects
+    # for xx in [ax]:
+    #     xx.yaxis.set_label_coords(ylabel_coords[0], ylabel_coords[1])
+    #     xx.xaxis.set_label_coords(xlabel_coords[0], xlabel_coords[1])
+    #     [line.set_zorder(3) for line in xx.lines]
 
-    line_list.append(line_rhyolite)
-    label_list.append(" {0:.0f}% $H_2O$".format(wtp_h2o))
-    #    line_list.append(l2)
-    #    label_list.append('$H_2O$ {0:.1f}%'.format(wtp_h2o))
+    # fig.tight_layout()
 
-    # --> plot melt percentage vs. bulk resistivity
-    sigma_melt = arrhenius(T_r, wtp_h2o)
-    sigma_ma_low = modified_archies(sigma_regional, sigma_melt, 1 - melt_percent)
-    sigma_ma_low[0] = sigma_regional
+    plt.show()
 
-    (line_melt_percent,) = ax3.semilogx(
-        1.0 / sigma_ma_low,
-        melt_percent,
-        "-",
-        lw=0.5,
-        marker="s",
-        ms=1.5,
-        mec=line_color,
-        color=line_color,
-    )
-
-    sigma_melt = dacite_arrhenius(T_d, wtp_h2o)
-    sigma_ma_low = modified_archies(sigma_regional, sigma_melt, 1 - melt_percent)
-    sigma_ma_low[0] = sigma_regional
-
-    (line_melt_percent_dacite,) = ax3.semilogx(
-        1.0 / sigma_ma_low,
-        melt_percent,
-        "-.",
-        lw=0.5,
-        marker="o",
-        ms=1.5,
-        mec=line_color,
-        color=line_color,
-    )
-    line_melt_percent_dacite.set_dashes((3, 1))
+    # fig.savefig(r"c:\Users\jpeacock-pr\Google Drive\JVG\mb_resistivities_plot.svg",
+    #            dpi=300)
+    return fig
 
 
-# make a legend on top of the figure for water percent
-fig.legend(
-    line_list,
-    label_list,
-    loc="upper center",
-    prop={"size": 6},
-    ncol=5,
-    markerscale=0.5,
-    handletextpad=0.05,
-    columnspacing=0.05,
+figure_plot = plot_bulk_resistivity(
+    rhyolite=True,
+    dacite=False,
+    basalt=True,
+    wtp_h2o_min=0.01,
+    wtp_h2o_max=4.0,
+    host_rock_resistivity=200,
+    cmap="copper",
 )
 
-# --> resitivity vs temperature
-ax.fill_between([0, 12], [750, 750], [850, 850], color=(0.75, 0.75, 0.75), alpha=0.35)
-ax.set_ylabel("Temperature ($^\circ$C)", fontdict=label_font_dict)
-ax.set_xlabel("Melt Resistivity ($\Omega \cdot$m)", fontdict=label_font_dict)
-ax.legend(line_list2, label_list2, loc="upper right", prop={"size": 6}, ncol=1)
-ax.xaxis.set_minor_locator(MultipleLocator(0.25))
-ax.xaxis.set_major_locator(MultipleLocator(1))
-ax.grid(which="major")
-ax.set_xlim(0, 11.5)
-
-# --> resistivity vs. viscosity
-
-# ax2.fill_between([1.4, 2.2], [10**0, 10**0], [10**10, 10**10],
-#                color=(.75, .75, .75),
-#                alpha=.35)
-#
-# ax2.set_ylim(10**2, 10**8)
-# ax2.set_xlim(0, 10)
-# ax2.set_ylabel('Viscosity (Pa$\cdot$m)',
-#               fontdict=label_font_dict)
-# ax2.set_xlabel('Melt Resistivity ($\Omega \cdot$m)',
-#               fontdict=label_font_dict)
-##ax2.xaxis.set_minor_locator(MultipleLocator(.1))
-# ax2.grid(which='major', color=(.85, .85, .85))
-# ax2.legend(line_list3, label_list3, loc='upper right', prop={'size':6},
-#          ncol=1)
-
-
-# --> resistivity vs. melt percent
-ax3.fill_between([5, 15], [0, 0], [0.5, 0.5], color=(0.75, 0.75, 0.75), alpha=0.35)
-
-ax3.set_ylabel("Melt Percent", fontdict=label_font_dict)
-ax3.set_xlabel("Bulk Resistivity ($\Omega \cdot$m)", fontdict=label_font_dict)
-ax3.set_ylim(0, 1)
-ax3.set_xlim(0, 1 / sigma_regional)
-ax3.yaxis.set_minor_locator(MultipleLocator(0.05))
-ax3.yaxis.grid(which="both")
-ax3.xaxis.grid(which="both")
-ax3.legend(line_list2, label_list2, loc="upper right", prop={"size": 6}, ncol=1)
-
-# ax3.legend(line_list3, label_list3, loc='upper right', prop={'size':6},
-#          ncol=1)
-
-ax.text(
-    0.23,
-    715,
-    "a",
-    fontdict=label_font_dict,
-    horizontalalignment="left",
-    verticalalignment="bottom",
-    bbox={"facecolor": "w", "alpha": 1},
+figure_plot.savefig(
+    r"c:\Users\jpeacock\OneDrive - DOI\ClearLake\jvgr_manuscript\Figures\supplemental\melt_percent_plot.png",
+    dpi=300,
 )
-
-# ax2.text(1.225, 10**2+100, 'b',
-#        fontdict=label_font_dict,
-#        horizontalalignment='left',
-#        verticalalignment='bottom',
-#        bbox={'facecolor':'w', 'alpha':1})
-
-ax3.text(
-    2.2,
-    0.02,
-    "b",
-    fontdict=label_font_dict,
-    horizontalalignment="left",
-    verticalalignment="bottom",
-    bbox={"facecolor": "w", "alpha": 1},
-)
-
-# set grid lines behind all objects
-for xx in [ax, ax3]:
-    xx.yaxis.set_label_coords(ylabel_coords[0], ylabel_coords[1])
-    xx.xaxis.set_label_coords(xlabel_coords[0], xlabel_coords[1])
-    [line.set_zorder(3) for line in xx.lines]
-
-# fig.savefig(r"c:\Users\jpeacock-pr\Google Drive\JVG\mb_resistivities_plot.svg",
-#            dpi=300)
