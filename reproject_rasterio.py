@@ -4,6 +4,7 @@ Created on Wed Jan 24 16:09:55 2024
 
 @author: jpeacock
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -14,12 +15,15 @@ from rasterio.warp import calculate_default_transform, reproject, Resampling
 # =============================================================================
 
 geotiff_file = Path(
-    r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\tiffs\Gravity_CBA_2670_All_400m_epsg_32613.tif"
+    # r"c:\Users\jpeacock\OneDrive - DOI\SAGE\modem_inv\tiffs\Gravity_CBA_2670_All_400m_epsg_32613.tif"
+    r"c:\Users\jpeacock\OneDrive - DOI\Geothermal\GreatBasin\cvcm_dem.tiff"
 )
-# dst_crs = "EPSG:32613"
-dst_crs = 4326
+dst_crs = 32611
+
+# dst_crs = 4326
 
 with rasterio.open(geotiff_file) as src:
+    print(src.crs, src.width, src.height, src.bounds, src.count)
     transform, width, height = calculate_default_transform(
         src.crs, dst_crs, src.width, src.height, *src.bounds
     )
@@ -48,3 +52,6 @@ with rasterio.open(geotiff_file) as src:
                 dst_crs=dst_crs,
                 resampling=Resampling.nearest,
             )
+        print(
+            f"saved to {geotiff_file.parent.joinpath(f"{geotiff_file.stem}_epsg_{dst_crs}.tif")}"
+        )
